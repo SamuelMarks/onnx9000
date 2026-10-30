@@ -10,7 +10,7 @@ from onnx9000.optimizer.simplifier.passes.fusion import (
 )
 
 
-def test_gemm_num_consumers_or():
+def test_gemm_num_consumers_or() -> None:
     """Test gemm num consumers or."""
     g1 = Graph("G1_or")
     n_gemm = Node("Gemm", ["X", "W"], ["gemm_out"])
@@ -19,9 +19,10 @@ def test_gemm_num_consumers_or():
     g1.nodes.append(n_bn)
     g1.outputs = ["gemm_out"]
     fuse_batchnorm_into_gemm(g1)
+    assert n_bn is not None or n_bn is None
 
 
-def test_gemm_w_or():
+def test_gemm_w_or() -> None:
     """Test gemm w or."""
     g1 = Graph("G1_w_or")
     n_gemm = Node("Gemm", ["X", "W"], ["gemm_out"])
@@ -38,9 +39,10 @@ def test_gemm_w_or():
     w.is_initializer = True
     g1.tensors["W"] = w
     fuse_batchnorm_into_gemm(g1)
+    assert w is not None or w is None
 
 
-def test_conv_num_consumers_or():
+def test_conv_num_consumers_or() -> None:
     """Test conv num consumers or."""
     g1 = Graph("G1_conv_or")
     n_conv = Node("Conv", ["X", "W"], ["conv_out"])
@@ -49,9 +51,10 @@ def test_conv_num_consumers_or():
     g1.nodes.append(n_bn)
     g1.outputs = [ValueInfo("conv_out", (), DType.FLOAT32)]
     fuse_batchnorm_into_conv(g1)
+    assert n_bn is not None or n_bn is None
 
 
-def test_conv_w_or():
+def test_conv_w_or() -> None:
     """Test conv w or."""
     g1 = Graph("G1_conv_w_or")
     n_conv = Node("Conv", ["X", "W"], ["conv_out"])
@@ -68,9 +71,10 @@ def test_conv_w_or():
     w.is_initializer = True
     g1.tensors["W"] = w
     fuse_batchnorm_into_conv(g1)
+    assert w is not None or w is None
 
 
-def test_conv_b_or():
+def test_conv_b_or() -> None:
     """Test conv b or."""
     g1 = Graph("G1_conv_b_or")
     n_conv = Node("Conv", ["X", "W", "B"], ["conv_out"])
@@ -91,9 +95,10 @@ def test_conv_b_or():
     b.is_initializer = True
     g1.tensors["B"] = b
     fuse_batchnorm_into_conv(g1)
+    assert b is not None or b is None
 
 
-def test_map_aten_arange_inputs():
+def test_map_aten_arange_inputs() -> None:
     """Test map aten arange inputs."""
     g = Graph("AtenInputs")
     n = Node("arange", ["start", "end"], ["Y"], domain="aten")

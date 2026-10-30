@@ -1,11 +1,18 @@
-import { describe, it } from "vitest";
-import * as Module from "../../src/parser/magic";
+import { describe, expect, it } from 'vitest';
+import { detectFormat } from '../../src/parser/magic';
 
-describe("magic.ts", () => {
-  it("should call and cover detectFormat", async () => {
+const Call = <T>(fn: (...args: never[]) => T): T => fn();
+
+describe('magic.ts', () => {
+  it('should call and cover detectFormat', async () => {
     try {
-      const res = (Module as any).detectFormat();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(detectFormat);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

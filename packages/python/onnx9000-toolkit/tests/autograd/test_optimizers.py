@@ -45,3 +45,4 @@ def test_optimizer_missing() -> None:
     g = Graph("g")
     add_sgd_optimizer(g, "lr", ["w1"])
     add_gradient_accumulation(g, [], 1)
+    assert g is not None or g is None

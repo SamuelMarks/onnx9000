@@ -1,4 +1,8 @@
-import { Tensor } from "../ir/tensor.js";
+/**
+ * @fileoverview tensor_utils module for core.
+ */
+import { ShapeInferenceError } from '../exceptions.js';
+import { Tensor } from '../ir/tensor.js';
 
 /**
  * Utility class for manipulating Tensors specifically for sequence lengths.
@@ -9,8 +13,8 @@ export class SequenceTensorUtils {
    */
   static expandSequenceDimension(tensor: Tensor, newSeqLen: number): Tensor {
     if (tensor.shape.length < 2) {
-      throw new Error(
-        "Tensor must have at least 2 dimensions to expand sequence length.",
+      throw new ShapeInferenceError(
+        'Tensor must have at least 2 dimensions to expand sequence length.',
       );
     }
 
@@ -42,9 +46,8 @@ export class SequenceTensorUtils {
     // Copy existing data. This assumes contiguous layout and dimension expansion at the end.
     // Wait, if it's [batch, seq, hidden_size], changing seq means reshaping the inner blocks.
     const batchSize = newShape[0] as number;
-    const innerVol = newShape
-      .slice(2)
-      .reduce((a, b) => (a as number) * (b as number), 1) as number;
+    const innerVol = newShape.slice(2).reduce((a, b) => (a as number) * (b as number), 1) as number;
+    const oldNumeric = oldData as Float32Array | Int32Array | Uint8Array | Float64Array | null;
 
     for (let b = 0; b < batchSize; b++) {
       const oldBatchOffset = b * oldSeqLen * innerVol;
@@ -54,20 +57,12 @@ export class SequenceTensorUtils {
       // Because TS data is flat typed array:
       for (let s = 0; s < oldSeqLen; s++) {
         for (let i = 0; i < innerVol; i++) {
-          newData[newBatchOffset + s * innerVol + i] = (oldData as any)[
-            oldBatchOffset + s * innerVol + i
-          ];
+          newData[newBatchOffset + s * innerVol + i] =
+            oldNumeric?.[oldBatchOffset + s * innerVol + i] ?? 0;
         }
       }
     }
 
-    return new Tensor(
-      `${tensor.name}_expanded`,
-      newShape,
-      tensor.dtype,
-      false,
-      false,
-      newData,
-    );
+    return new Tensor(`${tensor.name}_expanded`, newShape, tensor.dtype, false, false, newData);
   }
 }

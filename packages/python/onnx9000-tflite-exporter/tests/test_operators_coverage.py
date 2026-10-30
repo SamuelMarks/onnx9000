@@ -15,31 +15,43 @@ from onnx9000.tflite_exporter.compiler.operators import (
 class MockBuilder:
     """MockBuilder implementation."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Perform   init   operation."""
         self.fields = {}
 
-    def start_object(self, n):
+    def start_object(
+        self, n: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> None:
         """Perform start object operation."""
         self.fields = {}
 
-    def add_field_int8(self, i, v, default):
+    def add_field_int8(
+        self,
+        i: int | float | str | bool | bytes | list | dict | tuple | None,
+        v: int | float | str | bool | bytes | list | dict | tuple | None,
+        default: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
         """Perform add field int8 operation."""
         self.fields[i] = v
 
-    def add_field_int32(self, i, v, default):
+    def add_field_int32(
+        self,
+        i: int | float | str | bool | bytes | list | dict | tuple | None,
+        v: int | float | str | bool | bytes | list | dict | tuple | None,
+        default: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
         """Perform add field int32 operation."""
         self.fields[i] = v
 
-    def end_object(self):
+    def end_object(self) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Perform end object operation."""
         return self.fields
 
 
-def test_map_cast():
+def test_map_cast() -> None:
     """Test map cast."""
     b = MockBuilder()
-    for to_val, expected_type in [
+    for to_val, _expected_type in [
         (2, 4),
         (3, 9),
         (6, 2),
@@ -54,7 +66,7 @@ def test_map_cast():
         assert res[1] is not None
 
 
-def test_map_seq_rnn():
+def test_map_seq_rnn() -> None:
     """Test map seq rnn."""
     b = MockBuilder()
     n = Node("LSTM", [], [], {"time_major": Attribute("time_major", "INT", 1)})
@@ -62,7 +74,7 @@ def test_map_seq_rnn():
     assert res[0] == 1
 
 
-def test_map_pool2d_options():
+def test_map_pool2d_options() -> None:
     """Test map pool2d options."""
     b = MockBuilder()
     n = Node("MaxPool", [], [], {"auto_pad": Attribute("auto_pad", "STRING", b"SAME_UPPER")})
@@ -73,7 +85,7 @@ def test_map_pool2d_options():
     assert res[0] == 1
 
 
-def test_map_conv2d_options():
+def test_map_conv2d_options() -> None:
     """Test map conv2d options."""
     b = MockBuilder()
     n = Node("Conv", [], [], {"auto_pad": Attribute("auto_pad", "STRING", b"SAME_UPPER")})
@@ -84,7 +96,7 @@ def test_map_conv2d_options():
     assert res[0] == 1
 
 
-def test_map_transpose_conv():
+def test_map_transpose_conv() -> None:
     """Test map transpose conv."""
     b = MockBuilder()
     n = Node(
@@ -100,7 +112,7 @@ def test_map_transpose_conv():
     assert res[0] == 1
 
 
-def test_map_depthwise_conv2d_options():
+def test_map_depthwise_conv2d_options() -> None:
     """Test map depthwise conv2d options."""
     b = MockBuilder()
     n = Node("Conv", [], [], {"auto_pad": Attribute("auto_pad", "STRING", b"SAME_UPPER")})
@@ -111,7 +123,7 @@ def test_map_depthwise_conv2d_options():
     assert res[0] == 1
 
 
-def test_map_space_to_depth():
+def test_map_space_to_depth() -> None:
     """Test map space to depth."""
     b = MockBuilder()
     n = Node("SpaceToDepth", [], [], {"blocksize": Attribute("blocksize", "INT", 2)})

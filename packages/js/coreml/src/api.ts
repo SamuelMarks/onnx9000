@@ -2,13 +2,19 @@
  * @fileoverview api.ts
  * Provides api functionality for the coreml package.
  */
-import type { Graph } from "@onnx9000/core";
-import { ONNXToMILConverter } from "./converter.js";
-import { MILToONNXConverter } from "./importer.js";
-import type { Program } from "./mil/ast.js";
-import { MLPackageBuilder } from "./mlpackage.js";
-import type { Model } from "./schema.js";
+import type { Graph } from '@onnx9000/core';
+import { ONNXToMILConverter } from './converter.js';
+import { MILToONNXConverter } from './importer.js';
+import type { Program } from './mil/ast.js';
+import { MLPackageBuilder } from './mlpackage.js';
+import type { Model } from './schema.js';
 
+/**
+ * Executes `convertToCoreML`.
+ * @param graph Parameter `graph`.
+ * @param options Parameter `options`.
+ * @returns Result of `convertToCoreML`.
+ */
 export function convertToCoreML(
   graph: Graph,
   options: { dynamicBatching?: boolean } = {},
@@ -17,11 +23,23 @@ export function convertToCoreML(
   return converter.convert();
 }
 
+/**
+ * Executes `importCoreML`.
+ * @param program Parameter `program`.
+ * @returns Result of `importCoreML`.
+ */
 export function importCoreML(program: Program): Graph {
   const converter = new MILToONNXConverter(program);
   return converter.convert();
 }
 
+/**
+ * Executes `buildMLPackage`.
+ * @param model Parameter `model`.
+ * @param weights Parameter `weights`.
+ * @param options Parameter `options`.
+ * @returns Result of `buildMLPackage`.
+ */
 export function buildMLPackage(
   model: Model,
   weights: Uint8Array = new Uint8Array(0),
@@ -30,7 +48,7 @@ export function buildMLPackage(
     outputMappings?: Record<string, string>;
     stateful?: boolean;
     generateSwiftBoilerplate?: boolean;
-    computePrecision?: "Float16" | "Float32";
+    computePrecision?: 'Float16' | 'Float32';
     imageInputs?: Record<
       string,
       {

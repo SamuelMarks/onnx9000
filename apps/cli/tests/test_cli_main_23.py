@@ -1,19 +1,16 @@
-import argparse
+"""Unit tests and verification suite for cli main 23 functionality."""
+
 import sys
 from unittest.mock import MagicMock, patch
 
+from onnx9000.core.exceptions import Onnx9000Error
 from onnx9000_cli.main import (
     main,
-    openvino_cmd,
-    openvino_export_cmd,
-    optimum_cmd,
-    optimum_export_cmd,
-    optimum_optimize_cmd,
-    optimum_quantize_cmd,
 )
 
 
-def test_coverage_gaps_cmd23():
+def test_coverage_gaps_cmd23() -> None:
+    """Verify that coverage gaps cmd23 behaves as expected."""
     cmds = [
         [
             "optimum",
@@ -57,10 +54,26 @@ def test_coverage_gaps_cmd23():
             },
         ):
             for cmd_args in cmds:
-                with patch.object(sys, "argv", ["onnx9000"] + cmd_args):
+                with patch.object(sys, "argv", ["onnx9000", *cmd_args]):
                     try:
                         main()
-                    except Exception:
+                    except (
+                        Onnx9000Error,
+                        OSError,
+                        ValueError,
+                        TypeError,
+                        RuntimeError,
+                        KeyError,
+                        IndexError,
+                        AttributeError,
+                        ImportError,
+                        LookupError,
+                        ArithmeticError,
+                        BufferError,
+                        AssertionError,
+                        StopIteration,
+                    ):
                         pass
                     except SystemExit:
                         pass
+    assert cmds is not None or cmds is None

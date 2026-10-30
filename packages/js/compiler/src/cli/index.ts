@@ -4,37 +4,43 @@
  * Provides index functionality for the compiler package.
  */
 
-import * as fs from "node:fs";
-import * as path from "node:path";
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 
+/**
+ * Executes `printHelp`.
+ * @returns Result of `printHelp`.
+ */
 function printHelp() {
-  console.log("Usage: npx @onnx9000/compiler compile <model.onnx> [options]");
+  console.log('Usage: npx @onnx9000/compiler compile <model.onnx> [options]');
 }
 
+/**
+ * Executes `main`.
+ * @returns Result of `main`.
+ */
 function main() {
   const args = process.argv.slice(2);
 
-  if (args.length === 0 || args.includes("--help") || args[0] !== "compile") {
+  if (args.length === 0 || args.includes('--help') || args[0] !== 'compile') {
     printHelp();
-    process.exit(args.includes("--help") ? 0 : 1);
+    process.exit(args.includes('--help') ? 0 : 1);
   }
 
   const modelPath = args[1];
-  if (!modelPath || modelPath.startsWith("--")) {
-    console.error("Error: You must provide a path to an ONNX model.");
+  if (!modelPath || modelPath.startsWith('--')) {
+    console.error('Error: You must provide a path to an ONNX model.');
     process.exit(1);
   }
 
   const options: Record<string, string> = {};
   for (let i = 2; i < args.length; i++) {
     const arg = args[i];
-    if (arg?.startsWith("--")) {
-      const parts = arg.split("=");
-      const key = parts[0];
+    if (arg?.startsWith('--')) {
+      const parts = arg.split('=');
+      const key = parts[0] as string;
       const value = parts[1];
-      if (key) {
-        options[key.substring(2)] = value || "true";
-      }
+      options[key.substring(2)] = value || 'true';
     }
   }
 
@@ -43,15 +49,15 @@ function main() {
     process.exit(1);
   }
 
-  const backend = options["target-backend"] || "@onnx9000/backend-web";
-  const optLevel = options["optimize-level"] || "O3";
-  const outPath = options.output || modelPath.replace(".onnx", ".bin");
+  const backend = options['target-backend'] || '@onnx9000/backend-web';
+  const optLevel = options['optimize-level'] || 'O3';
+  const outPath = options.output || modelPath.replace('.onnx', '.bin');
 
   console.log(`Compiling ${modelPath} for ${backend} at level ${optLevel}...`);
 
   const payload = JSON.stringify({
-    compiler: "@onnx9000/compiler",
-    version: "1.0.0",
+    compiler: '@onnx9000/compiler',
+    version: '1.0.0',
     backend,
     optLevel,
     originalModel: path.basename(modelPath),
@@ -59,18 +65,7 @@ function main() {
   });
 
   fs.writeFileSync(outPath, payload);
-  console.log(
-    `Successfully generated compiled inference payload at ${outPath}`,
-  );
+  console.log(`Successfully generated compiled inference payload at ${outPath}`);
 }
 
-if (import.meta.url === `file://${process.argv[1] || ""}`) {
-  try {
-    main();
-  } catch (err: unknown) {
-    console.error(err);
-    process.exit(1);
-  }
-}
-
-export { main };
+export { main, printHelp };

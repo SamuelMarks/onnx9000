@@ -1,12 +1,16 @@
 """Tests for audio final."""
 
-import pytest
+from onnx9000.core.exceptions import Onnx9000Error
 from onnx9000.core.ir import Constant, Graph, Node
 from onnx9000.optimizer.surgeon.audio import fold_mel_weights
 
 
-def test_fold_mel_weights_exception():
-    """Docstring for D103."""
+def test_fold_mel_weights_exception() -> None:
+    """Verify that fold mel weights exception behaves as expected.
+
+    Raises:
+        Exception: If an invalid state or argument is encountered during execution.
+    """
     graph = Graph("test_graph")
 
     # Constants for inputs
@@ -16,15 +20,28 @@ def test_fold_mel_weights_exception():
     class CrashingDict(dict):
         """Crashing dict."""
 
-        def __init__(self, *args, **kwargs):
-            """Init."""
+        def __init__(
+            self,
+            *args: int | float | str | bool | bytes | list | dict | tuple | None,
+            **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+        ) -> None:
+            """Initialize CrashingDict with configured parameters and state.
+
+            Args:
+                *args: Variadic positional arguments for args.
+                **kwargs: Variadic keyword arguments for kwargs.
+            """
             super().__init__(*args, **kwargs)
             self.should_crash = False
 
-        def __setitem__(self, key, value):
+        def __setitem__(
+            self,
+            key: int | float | str | bool | bytes | list | dict | tuple | None,
+            value: int | float | str | bool | bytes | list | dict | tuple | None,
+        ) -> None:
             """Setitem."""
             if self.should_crash:
-                raise Exception("force crash")
+                raise Onnx9000Error("force crash")
             super().__setitem__(key, value)
 
     graph.tensors = CrashingDict()
@@ -41,7 +58,7 @@ def test_fold_mel_weights_exception():
     assert len(graph.nodes) == 1
 
 
-def test_fold_mel_weights_success():
+def test_fold_mel_weights_success() -> None:
     """Test successful generation of Mel weights."""
     import struct
 

@@ -2,18 +2,25 @@
  * @fileoverview Tabs.ts
  * Provides Tabs functionality for the Sphinx Demo UI.
  */
-// @ts-nocheck
 import { Component } from '../core/Component';
 
+/** Interface `TabItem` definition. */
 export interface TabItem {
+  /** Property `id`. */
   id: string;
+  /** Property `label`. */
   label: string;
+  /** Property `content`. */
   content: HTMLElement;
 }
 
+/** Interface `TabsOptions` definition. */
 export interface TabsOptions {
+  /** Property `tabs`. */
   tabs: TabItem[];
+  /** Property `initialTabId`. */
   initialTabId?: string;
+  /** Property `onChange`. */
   onChange?: (tabId: string) => void;
 }
 
@@ -22,11 +29,19 @@ export interface TabsOptions {
  * Supports keyboard navigation (Left/Right arrows, Home, End).
  */
 export class Tabs extends Component<HTMLDivElement> {
+  /** Property `options` of `Tabs`. */
   private options: TabsOptions;
+  /** Property `activeTabId` of `Tabs`. */
   private activeTabId: string | null = null;
+  /** Property `tabButtons` of `Tabs`. */
   private tabButtons: Map<string, HTMLButtonElement> = new Map();
+  /** Property `tabPanels` of `Tabs`. */
   private tabPanels: Map<string, HTMLElement> = new Map();
 
+  /**
+   * Initializes a new `Tabs` instance.
+   * @param options Parameter `options`.
+   */
   constructor(options: TabsOptions) {
     super();
     this.options = options;
@@ -38,6 +53,10 @@ export class Tabs extends Component<HTMLDivElement> {
     this.element = this.render();
   }
 
+  /**
+   * Executes `render` on `Tabs`.
+   * @returns Result of `render`.
+   */
   protected render(): HTMLDivElement {
     const container = document.createElement('div');
     container.className = 'demo-tabs-container';
@@ -95,6 +114,7 @@ export class Tabs extends Component<HTMLDivElement> {
     return container;
   }
 
+  /** Executes `onMount` on `Tabs`. */
   protected onMount(): void {
     // Click handlers
     this.tabButtons.forEach((btn, tabId) => {
@@ -106,13 +126,16 @@ export class Tabs extends Component<HTMLDivElement> {
     this.addDOMListener(tabList, 'keydown', (e) => this.handleKeyDown(e as KeyboardEvent));
   }
 
+  /**
+   * Executes `handleKeyDown` on `Tabs`.
+   * @param e Parameter `e`.
+   */
   private handleKeyDown(e: KeyboardEvent): void {
     const activeBtn = Array.from(this.tabButtons.values()).find(
-      (b) => b.getAttribute('tabindex') === '0'
-    );
-    if (!activeBtn) return;
+      (b) => b.getAttribute('tabindex') === '0',
+    ) as HTMLButtonElement;
 
-    const currentIndex = parseInt(activeBtn.getAttribute('data-index') || '0', 10);
+    const currentIndex = parseInt(activeBtn.getAttribute('data-index') as string, 10);
     const maxIndex = this.options.tabs.length - 1;
 
     let newIndex = currentIndex;
@@ -145,6 +168,10 @@ export class Tabs extends Component<HTMLDivElement> {
     }
   }
 
+  /**
+   * Executes `selectTab` on `Tabs`.
+   * @param tabId Parameter `tabId`.
+   */
   public selectTab(tabId: string): void {
     if (this.activeTabId === tabId) return;
 
@@ -181,6 +208,10 @@ export class Tabs extends Component<HTMLDivElement> {
     }
   }
 
+  /**
+   * Executes `getActiveTabId` on `Tabs`.
+   * @returns Result of `getActiveTabId`.
+   */
   public getActiveTabId(): string | null {
     return this.activeTabId;
   }

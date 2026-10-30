@@ -102,7 +102,7 @@ export class AgentRunner {
     let currentInput = initialInput;
 
     for (const nodeId of sortedIds) {
-      const node = dag.nodes.find((n) => n.id === nodeId)!;
+      const node = dag.nodes.find((n) => n.id === nodeId);
 
       // 612. Visualize thought process
       globalEvents.emit('agentStep', { nodeId, status: 'running' });

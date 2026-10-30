@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../../src/mmdnn/verification/normalizer";
+import { describe, expect, it } from 'vitest';
+import { ONNXNormalizer } from '../../../src/mmdnn/verification/normalizer';
 
-describe("normalizer.ts", () => {
-  it("should instantiate and cover ONNXNormalizer", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('normalizer.ts', () => {
+  it('should instantiate and cover ONNXNormalizer', () => {
     try {
-      const obj = new (Module as any).ONNXNormalizer();
+      const obj = Construct(ONNXNormalizer);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

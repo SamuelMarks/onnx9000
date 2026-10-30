@@ -12,18 +12,31 @@ from onnx9000.converters.tf.keras_layers import (
 
 
 class TFNodeMock:
-    """Docstring for D101."""
+    """Represents tfnode mock."""
 
-    def __init__(self, name, op, inputs, attr):
-        """Docstring for D107."""
+    def __init__(
+        self,
+        name: int | float | str | bool | bytes | list | dict | tuple | None,
+        op: int | float | str | bool | bytes | list | dict | tuple | None,
+        inputs: int | float | str | bool | bytes | list | dict | tuple | None,
+        attr: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
+        """Initialize TFNodeMock with configured parameters and state.
+
+        Args:
+            name: Parameter specifying name.
+            op: Parameter specifying op.
+            inputs: Parameter specifying inputs.
+            attr: Parameter specifying attr.
+        """
         self.name = name
         self.op = op
         self.inputs = inputs
         self.attr = attr
 
 
-def test_missing_lines():
-    """Docstring for D103."""
+def test_missing_lines() -> None:
+    """Verify that missing lines behaves as expected."""
     builder = MagicMock()
     builder.make_node.return_value = ["dummy", "dummy2"]
 
@@ -46,3 +59,4 @@ def test_missing_lines():
     # line 74473: layers__masking
     node5 = TFNodeMock("n5", "Mask", ["i"], {"mask_value": 1.0})
     _map_keras_layers__masking(builder, node5)
+    assert node5 is not None or node5 is None

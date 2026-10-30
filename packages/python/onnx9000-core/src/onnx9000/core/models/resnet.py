@@ -1,9 +1,5 @@
 """Resnet."""
 
-import logging
-from collections.abc import Callable, Sequence
-from typing import Any, Optional, Union
-
 from onnx9000.core.ir import Tensor, Variable
 from onnx9000.core.ops import add, flatten, global_average_pool, max_pool
 from onnx9000.core.primitives import BatchNormalization, ConvND, Gemm, Relu
@@ -26,8 +22,16 @@ class BasicBlock:
         stride: int = 1,
         downsample: bool = False,
         prefix: str = "",
-    ):
-        """Init."""
+    ) -> None:
+        """Initialize BasicBlock with configured parameters and state.
+
+        Args:
+            inplanes: Parameter specifying inplanes (int).
+            planes: Parameter specifying planes (int).
+            stride: Parameter specifying stride (int).
+            downsample: Parameter specifying downsample (bool).
+            prefix: Parameter specifying prefix (str).
+        """
         self.prefix = prefix
         self.conv1 = ConvND(
             2, inplanes, planes, kernel_size=3, stride=stride, padding=1, bias=False
@@ -49,7 +53,14 @@ class BasicBlock:
             self.downsample_bn = BatchNormalization(planes * self.expansion)
 
     def __call__(self, x: Tensor) -> Tensor:
-        """Call."""
+        """Invoke BasicBlock with the provided inputs and keyword arguments.
+
+        Args:
+            x: Parameter specifying x (Tensor).
+
+        Returns:
+            Result of call (Tensor).
+        """
         identity = x
 
         out = self.conv1(
@@ -125,8 +136,14 @@ class BasicBlock:
 class ResNet:
     """ResNet implementation built using IR macros/primitives."""
 
-    def __init__(self, block_type: type, layers: list[int], num_classes: int = 1000):
-        """Init."""
+    def __init__(self, block_type: type, layers: list[int], num_classes: int = 1000) -> None:
+        """Initialize ResNet with configured parameters and state.
+
+        Args:
+            block_type: Parameter specifying block type (type).
+            layers: Parameter specifying layers (list[int]).
+            num_classes: Parameter specifying num classes (int).
+        """
         self.inplanes = 64
         self.conv1 = ConvND(2, 3, self.inplanes, kernel_size=7, stride=2, padding=3, bias=False)
         self.bn1 = BatchNormalization(self.inplanes)
@@ -147,7 +164,7 @@ class ResNet:
         blocks: int,
         stride: int = 1,
         prefix: str = "",
-    ) -> list[Any]:
+    ) -> list[int | float | str | bool | bytes | list | dict | tuple | None]:
         """Make layer."""
         downsample = False
         if stride != 1 or self.inplanes != planes * block_type.expansion:
@@ -163,7 +180,14 @@ class ResNet:
 
     def __call__(self, x: Tensor) -> Tensor:
         # Initial Convolution
-        """Call."""
+        """Invoke ResNet with the provided inputs and keyword arguments.
+
+        Args:
+            x: Parameter specifying x (Tensor).
+
+        Returns:
+            Result of call (Tensor).
+        """
         x = self.conv1(
             x,
             get_param("conv1.weight", [self.conv1.out_channels, self.conv1.in_channels, 7, 7]),
@@ -195,11 +219,11 @@ class ResNet:
         return x
 
 
-def resnet18(**kwargs: Any) -> ResNet:
+def resnet18(**kwargs: int | float | str | bool | bytes | list | dict | tuple | None) -> ResNet:
     """Resnet 18."""
     return ResNet(BasicBlock, [2, 2, 2, 2], **kwargs)
 
 
-def resnet50(**kwargs: Any) -> ResNet:
+def resnet50(**kwargs: int | float | str | bool | bytes | list | dict | tuple | None) -> ResNet:
     """Resnet 50."""
     return ResNet(BasicBlock, [3, 4, 6, 3], **kwargs)

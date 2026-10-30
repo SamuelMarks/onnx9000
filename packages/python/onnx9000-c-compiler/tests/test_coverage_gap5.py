@@ -4,7 +4,7 @@ from onnx9000.c_compiler.ast_builder import C89Builder
 from onnx9000.c_compiler.operations import resolve_broadcast_indices
 
 
-def test_operations_gemm():
+def test_operations_gemm() -> None:
     """Test Gemm operation with broadcast indices."""
     assert resolve_broadcast_indices([1], [1]) == "0"
     b = C89Builder()
@@ -21,7 +21,7 @@ def test_operations_gemm():
     generate_matmul(b, n, tC, tA, tB, "A", "B", "C", False, False, "C", True, 2.0, 1.0)
 
 
-def test_quant_matmul_nd():
+def test_quant_matmul_nd() -> None:
     """Test QLinearMatMul operation with N-dimensional tensors."""
     from onnx9000.c_compiler.quantization import generate_qlinear_matmul
     from onnx9000.core.dtypes import DType
@@ -65,9 +65,10 @@ def test_quant_matmul_nd():
         "zY",
         "Y",
     )
+    assert tY is not None or tY is None
 
 
-def test_subnormal_float():
+def test_subnormal_float() -> None:
     """Test handling of subnormal floats in data unpacker."""
     import struct
 

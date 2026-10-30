@@ -3,11 +3,9 @@
 This module provides tests to ensure 100% code coverage for the native backend.
 """
 
-import sys
 from unittest.mock import MagicMock, patch
 
 import numpy as np
-import pytest
 from onnx9000.backends.codegen.compiler import compile_cpp
 from onnx9000.backends.cpu.ops import OP_REGISTRY
 from onnx9000.backends.tensorrt.provider import TensorrtExecutionProvider
@@ -27,13 +25,24 @@ def test_cpu_ops_coverage_gaps() -> None:
     a = np.array([1.0, 2.0], dtype=np.float32)
     gelu([a], {})
 
-    # reducesum_op with no axes and keepdims=0
+    # im2col with h=0
+    from onnx9000.backends.cpu.ops import im2col
+
+    im2col(np.zeros((1, 1, 0, 0), dtype=np.float32), 1, 1, 1, 1, 1, 1)
+
+    # reducesum_op with and without axes
     reducesum = OP_REGISTRY["ReduceSum"]
     reducesum([a], {"keepdims": 0})
+    reducesum([a], {"axes": [0], "keepdims": 1})
 
-    # reducemean_op with no axes and keepdims=0
+    # reducemean_op with and without axes
     reducemean = OP_REGISTRY["ReduceMean"]
     reducemean([a], {"keepdims": 0})
+    reducemean([a], {"axes": [0], "keepdims": 1})
+
+    # layernorm_op without bias (2 inputs)
+    layernorm = OP_REGISTRY["LayerNormalization"]
+    layernorm([a, a], {})
 
     # reducemax_op
     reducemax = OP_REGISTRY["ReduceMax"]
@@ -69,14 +78,17 @@ def test_cpu_ops_coverage_gaps() -> None:
     # reducel1_op
     reducel1 = OP_REGISTRY["ReduceL1"]
     reducel1([a], {"keepdims": 0})
+    reducel1([a], {"axes": [0], "keepdims": 1})
 
     # reducel2_op
     reducel2 = OP_REGISTRY["ReduceL2"]
     reducel2([a], {"keepdims": 0})
+    reducel2([a], {"axes": [0], "keepdims": 1})
 
     # reducelogsum_op
     reducelogsum = OP_REGISTRY["ReduceLogSum"]
     reducelogsum([a], {"keepdims": 0})
+    reducelogsum([a], {"axes": [0], "keepdims": 1})
 
     # reducelogsumexp_op
     reducelogsumexp = OP_REGISTRY["ReduceLogSumExp"]
@@ -85,6 +97,22 @@ def test_cpu_ops_coverage_gaps() -> None:
     # reducesumsquare_op
     reducesumsquare = OP_REGISTRY["ReduceSumSquare"]
     reducesumsquare([a], {"keepdims": 0})
+    reducesumsquare([a], {"axes": [0], "keepdims": 1})
+
+    # Executor and session partial branches
+    from onnx9000.backends.cpu.executor import CPUExecutionProvider
+    from onnx9000.backends.session import InferenceSession
+    from onnx9000.core.ir import Graph, Tensor
+
+    ep = CPUExecutionProvider({})
+    g = Graph("branch_test")
+    g.initializers.append("missing_init")
+    g.add_node(Node("Relu", ["x"], ["y1", "y2"], {}))
+    g.outputs.append(Tensor("y1", (2,), DType.FLOAT32))
+    sess = InferenceSession(g, providers=[ep])
+    assert sess.get_overridable_initializers() == []
+    res = sess.run(["y1"], {"x": Tensor("x", (2,), DType.FLOAT32, data=a)})
+    assert len(res) == 1
 
     # einsum_op
     einsum = OP_REGISTRY["Einsum"]

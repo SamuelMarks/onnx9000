@@ -1,34 +1,46 @@
 """Pytorch fx parser module."""
 
 import json
-from typing import Any
 
+from onnx9000.core.exceptions import Onnx9000Error
 from onnx9000.core.ir import Graph, Node, Tensor
-from onnx9000.core.registry import global_registry
+from onnx9000.core.registry import global_registry, register_op
 
 # Define standard mappings for PyTorch ATen ops to ONNX ops using the registry
 # In a real setup, these would be properly decorated functions, but we can do it here inline for the parser
 
 
-def _map_aten_add_Tensor(inputs: list[str], outputs: list[str], params: dict[str, Any]) -> Node:
+def _map_aten_add_Tensor(
+    inputs: list[str],
+    outputs: list[str],
+    params: dict[str, int | float | str | bool | bytes | list | dict | tuple | None],
+) -> Node:
     """Map aten add tensor."""
     return Node(op_type="Add", inputs=inputs, outputs=outputs, name=f"add_{outputs[0]}")
 
 
-def _map_aten_mul_Tensor(inputs: list[str], outputs: list[str], params: dict[str, Any]) -> Node:
+def _map_aten_mul_Tensor(
+    inputs: list[str],
+    outputs: list[str],
+    params: dict[str, int | float | str | bool | bytes | list | dict | tuple | None],
+) -> Node:
     """Map aten mul tensor."""
     return Node(op_type="Mul", inputs=inputs, outputs=outputs, name=f"mul_{outputs[0]}")
 
 
 def _map_aten_convolution_default(
-    inputs: list[str], outputs: list[str], params: dict[str, Any]
+    inputs: list[str],
+    outputs: list[str],
+    params: dict[str, int | float | str | bool | bytes | list | dict | tuple | None],
 ) -> Node:
     """Map aten convolution default."""
     return Node(op_type="Conv", inputs=inputs, outputs=outputs, name=f"conv_{outputs[0]}")
 
 
 def _map_aten_native_batch_norm_legit_no_training_default(
-    inputs: list[str], outputs: list[str], params: dict[str, Any]
+    inputs: list[str],
+    outputs: list[str],
+    params: dict[str, int | float | str | bool | bytes | list | dict | tuple | None],
 ) -> Node:
     """Map aten native batch norm legit no training default."""
     return Node(
@@ -40,7 +52,9 @@ def _map_aten_native_batch_norm_legit_no_training_default(
 
 
 def _map_aten_native_layer_norm_default(
-    inputs: list[str], outputs: list[str], params: dict[str, Any]
+    inputs: list[str],
+    outputs: list[str],
+    params: dict[str, int | float | str | bool | bytes | list | dict | tuple | None],
 ) -> Node:
     """Map aten native layer norm default."""
     return Node(
@@ -51,18 +65,28 @@ def _map_aten_native_layer_norm_default(
     )
 
 
-def _map_aten_bmm_default(inputs: list[str], outputs: list[str], params: dict[str, Any]) -> Node:
+def _map_aten_bmm_default(
+    inputs: list[str],
+    outputs: list[str],
+    params: dict[str, int | float | str | bool | bytes | list | dict | tuple | None],
+) -> Node:
     """Map aten bmm default."""
     return Node(op_type="MatMul", inputs=inputs, outputs=outputs, name=f"bmm_{outputs[0]}")
 
 
-def _map_aten_mm_default(inputs: list[str], outputs: list[str], params: dict[str, Any]) -> Node:
+def _map_aten_mm_default(
+    inputs: list[str],
+    outputs: list[str],
+    params: dict[str, int | float | str | bool | bytes | list | dict | tuple | None],
+) -> Node:
     """Map aten mm default."""
     return Node(op_type="MatMul", inputs=inputs, outputs=outputs, name=f"mm_{outputs[0]}")
 
 
 def _map_aten_max_pool2d_with_indices_default(
-    inputs: list[str], outputs: list[str], params: dict[str, Any]
+    inputs: list[str],
+    outputs: list[str],
+    params: dict[str, int | float | str | bool | bytes | list | dict | tuple | None],
 ) -> Node:
     # Discard indices if unused by returning only first output normally mapped
     """Map aten max pool2d with indices default."""
@@ -74,35 +98,52 @@ def _map_aten_max_pool2d_with_indices_default(
     )
 
 
-def _map_aten_gelu_default(inputs: list[str], outputs: list[str], params: dict[str, Any]) -> Node:
+def _map_aten_gelu_default(
+    inputs: list[str],
+    outputs: list[str],
+    params: dict[str, int | float | str | bool | bytes | list | dict | tuple | None],
+) -> Node:
     """Map aten gelu default."""
     return Node(op_type="Gelu", inputs=inputs, outputs=outputs, name=f"gelu_{outputs[0]}")
 
 
 def _map_aten_arange_start_step(
-    inputs: list[str], outputs: list[str], params: dict[str, Any]
+    inputs: list[str],
+    outputs: list[str],
+    params: dict[str, int | float | str | bool | bytes | list | dict | tuple | None],
 ) -> Node:
     """Map aten arange start step."""
     return Node(op_type="Range", inputs=inputs, outputs=outputs, name=f"arange_{outputs[0]}")
 
 
-def _map_aten_where_self(inputs: list[str], outputs: list[str], params: dict[str, Any]) -> Node:
+def _map_aten_where_self(
+    inputs: list[str],
+    outputs: list[str],
+    params: dict[str, int | float | str | bool | bytes | list | dict | tuple | None],
+) -> Node:
     """Map aten where self."""
     return Node(op_type="Where", inputs=inputs, outputs=outputs, name=f"where_{outputs[0]}")
 
 
-def _map_aten_copy_(inputs: list[str], outputs: list[str], params: dict[str, Any]) -> Node:
+def _map_aten_copy_(
+    inputs: list[str],
+    outputs: list[str],
+    params: dict[str, int | float | str | bool | bytes | list | dict | tuple | None],
+) -> Node:
     """Map aten copy ."""
     return Node(op_type="Identity", inputs=inputs, outputs=outputs, name=f"copy_{outputs[0]}")
 
 
-def _map_aten_add_(inputs: list[str], outputs: list[str], params: dict[str, Any]) -> Node:
+def _map_aten_add_(
+    inputs: list[str],
+    outputs: list[str],
+    params: dict[str, int | float | str | bool | bytes | list | dict | tuple | None],
+) -> Node:
     """Map aten add ."""
     return Node(op_type="Add", inputs=inputs, outputs=outputs, name=f"add_{outputs[0]}")
 
 
 # Register them so the parser can use the global_registry as intended by the architecture
-from onnx9000.core.registry import register_op
 
 register_op("pytorch", "aten.add.Tensor")(_map_aten_add_Tensor)
 register_op("pytorch", "aten.mul.Tensor")(_map_aten_mul_Tensor)
@@ -127,7 +168,14 @@ class PyTorchFXParser:
     """Parses PyTorch ExportedProgram JSON."""
 
     def parse_json(self, export_json_str: str) -> Graph:
-        """Docstring for D102."""
+        """Execute parse json on PyTorchFXParser.
+
+        Args:
+            export_json_str: Parameter specifying export json str (str).
+
+        Returns:
+            Result of parse json (Graph).
+        """
         data = json.loads(export_json_str)
         graph = Graph(name="PyTorch_FX_Exported")
 
@@ -150,7 +198,22 @@ class PyTorchFXParser:
                 try:
                     op_func = global_registry.get_op("pytorch", target)
                     ir_node = op_func(inputs=args, outputs=[out] if out else [], params={})
-                except Exception:
+                except (
+                    Onnx9000Error,
+                    OSError,
+                    ValueError,
+                    TypeError,
+                    RuntimeError,
+                    KeyError,
+                    IndexError,
+                    AttributeError,
+                    ImportError,
+                    LookupError,
+                    ArithmeticError,
+                    BufferError,
+                    AssertionError,
+                    StopIteration,
+                ):
                     ir_node = Node(
                         op_type=target,
                         inputs=args,
@@ -173,6 +236,13 @@ class PyTorchFXParser:
 
 
 def load_pytorch_fx(json_str: str) -> Graph:
-    """Docstring for D103."""
+    """Execute load pytorch fx operation.
+
+    Args:
+        json_str: Parameter specifying json str (str).
+
+    Returns:
+        Result of load pytorch fx (Graph).
+    """
     parser = PyTorchFXParser()
     return parser.parse_json(json_str)

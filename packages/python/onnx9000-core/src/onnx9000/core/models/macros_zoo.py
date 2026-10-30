@@ -1,8 +1,6 @@
 """Phase 2: Exhaustive Architectural Mappings to Core IR."""
 
-from typing import Any, Optional
-
-import onnx9000.core.ops as ops
+from onnx9000.core import ops
 from onnx9000.core.ir import Tensor
 from onnx9000.core.macros import ir_macro
 
@@ -107,7 +105,7 @@ def perceiver_resampler(
 
 @ir_macro("Any_Resolution_Vision")
 def any_resolution_vision(x: Tensor, kernel_shape: list[int]) -> Tensor:
-    """Any-Resolution Vision (AdaptiveAvgPool2D using AveragePool)."""
+    """Union[int, float, str, bool, bytes, list, dict, tuple, None]-Resolution Vision (AdaptiveAvgPool2D using AveragePool)."""
     return ops.average_pool(x, kernel_shape=kernel_shape)
 
 

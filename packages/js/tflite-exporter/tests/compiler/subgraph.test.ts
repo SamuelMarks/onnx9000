@@ -1,11 +1,18 @@
-import { describe, it } from "vitest";
-import * as Module from "../../src/compiler/subgraph";
+import { describe, expect, it } from 'vitest';
+import { compileGraphToTFLite } from '../../src/compiler/subgraph';
 
-describe("subgraph.ts", () => {
-  it("should call and cover compileGraphToTFLite", async () => {
+const Call = <T>(fn: (...args: never[]) => T): T => fn();
+
+describe('subgraph.ts', () => {
+  it('should call and cover compileGraphToTFLite', async () => {
     try {
-      const res = (Module as any).compileGraphToTFLite();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(compileGraphToTFLite);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

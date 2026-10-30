@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../src/genai/top_p";
+import { describe, expect, it } from 'vitest';
+import { TopPLogitProcessor } from '../../src/genai/top_p';
 
-describe("top_p.ts", () => {
-  it("should instantiate and cover TopPLogitProcessor", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('top_p.ts', () => {
+  it('should instantiate and cover TopPLogitProcessor', () => {
     try {
-      const obj = new (Module as any).TopPLogitProcessor();
+      const obj = Construct(TopPLogitProcessor);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

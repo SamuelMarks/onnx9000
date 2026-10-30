@@ -2,15 +2,20 @@
  * @fileoverview BenchmarkPanel.ts
  * Provides BenchmarkPanel functionality for the Sphinx Demo UI.
  */
-// @ts-nocheck
 import { Component } from '../core/Component';
 
+/** Represents the `BenchmarkPanel` class. */
 export class BenchmarkPanel extends Component<HTMLDivElement> {
+  /** Initializes a new `BenchmarkPanel` instance. */
   constructor() {
     super();
     this.element = this.render();
   }
 
+  /**
+   * Executes `render` on `BenchmarkPanel`.
+   * @returns Result of `render`.
+   */
   protected render(): HTMLDivElement {
     const container = document.createElement('div');
     container.className = 'demo-benchmark-panel';

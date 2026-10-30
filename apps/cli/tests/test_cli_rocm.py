@@ -1,10 +1,13 @@
+"""Unit tests and verification suite for cli rocm functionality."""
+
 import argparse
 from unittest.mock import patch
 
 from onnx9000_cli.main import rocm_cmd
 
 
-def test_rocm_cmd():
+def test_rocm_cmd() -> None:
+    """Verify that rocm cmd behaves as expected."""
     args = argparse.Namespace(model="dummy.onnx")
     with patch("builtins.print") as mock_print:
         with patch("onnx9000.backends.rocm.executor.Dispatcher") as mock_dispatcher:

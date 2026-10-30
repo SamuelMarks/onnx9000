@@ -1,5 +1,8 @@
-import { Tensor } from "../index.js";
-import type { LogitProcessor } from "./logit_processors.js";
+/**
+ * @fileoverview top_p module for core.
+ */
+import { Onnx9000Error, Tensor } from '../index.js';
+import type { LogitProcessor } from './logit_processors.js';
 
 /**
  * Nucleus sampling processor that keeps only the top tokens with cumulative probability P.
@@ -11,7 +14,7 @@ export class TopPLogitProcessor implements LogitProcessor {
    */
   constructor(private topP: number) {
     if (topP <= 0 || topP > 1.0) {
-      throw new Error("topP must be in (0, 1].");
+      throw new Onnx9000Error('topP must be in (0, 1].');
     }
   }
 
@@ -29,19 +32,19 @@ export class TopPLogitProcessor implements LogitProcessor {
     const probs = new Float32Array(vocabSize);
     let sumProbs = 0;
 
-    for (let i = 0; i < vocabSize; i++) {
-      const data = logits.data;
-      probs[i] = Math.exp(data[offset + i]! - maxLogit);
-      sumProbs += probs[i]!;
+    for (const [i, v] of logits.data.subarray(offset, offset + vocabSize).entries()) {
+      const p = Math.exp(v - maxLogit);
+      probs[i] = p;
+      sumProbs += p;
     }
 
-    for (let i = 0; i < vocabSize; i++) {
-      probs[i] = probs[i]! / sumProbs;
+    for (const [i, p] of probs.entries()) {
+      probs[i] = p / sumProbs;
     }
 
     const vals: { val: number; idx: number }[] = [];
-    for (let i = 0; i < vocabSize; i++) {
-      vals.push({ val: probs[i]!, idx: i });
+    for (const [i, p] of probs.entries()) {
+      vals.push({ val: p, idx: i });
     }
 
     vals.sort((a, b) => b.val - a.val);
@@ -50,7 +53,8 @@ export class TopPLogitProcessor implements LogitProcessor {
     let thresholdIdx = vocabSize - 1;
 
     for (let i = 0; i < vocabSize; i++) {
-      cumulativeProb += vals[i]?.val ?? 0;
+      const item = vals[i] as { val: number; idx: number };
+      cumulativeProb += item.val;
       if (cumulativeProb > this.topP) {
         thresholdIdx = i;
         break;

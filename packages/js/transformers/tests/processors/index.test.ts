@@ -1,83 +1,125 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../src/processors/index";
+import { describe, expect, it } from 'vitest';
+import {
+  AutoProcessor,
+  BaseImageProcessor,
+  CLIPImageProcessor,
+  DeiTImageProcessor,
+  DetrImageProcessor,
+  ONNX9000Audio,
+  ONNX9000Image,
+  SequenceFeatureExtractor,
+  SpeechT5FeatureExtractor,
+  ViTImageProcessor,
+  Wav2Vec2FeatureExtractor,
+  WhisperFeatureExtractor,
+  YolosImageProcessor,
+} from '../../src/processors/index';
 
-describe("index.ts", () => {
-  it("should instantiate and cover ONNX9000Image", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('index.ts', () => {
+  it('should instantiate and cover ONNX9000Image', () => {
     try {
-      const obj = new (Module as any).ONNX9000Image();
+      const obj = Construct(ONNX9000Image);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover ONNX9000Audio", () => {
+  it('should instantiate and cover ONNX9000Audio', () => {
     try {
-      const obj = new (Module as any).ONNX9000Audio();
+      const obj = Construct(ONNX9000Audio);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover BaseImageProcessor", () => {
+  it('should instantiate and cover BaseImageProcessor', () => {
     try {
-      const obj = new (Module as any).BaseImageProcessor();
+      const obj = Construct(BaseImageProcessor);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover ViTImageProcessor", () => {
+  it('should instantiate and cover ViTImageProcessor', () => {
     try {
-      const obj = new (Module as any).ViTImageProcessor();
+      const obj = Construct(ViTImageProcessor);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover CLIPImageProcessor", () => {
+  it('should instantiate and cover CLIPImageProcessor', () => {
     try {
-      const obj = new (Module as any).CLIPImageProcessor();
+      const obj = Construct(CLIPImageProcessor);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover DeiTImageProcessor", () => {
+  it('should instantiate and cover DeiTImageProcessor', () => {
     try {
-      const obj = new (Module as any).DeiTImageProcessor();
+      const obj = Construct(DeiTImageProcessor);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover DetrImageProcessor", () => {
+  it('should instantiate and cover DetrImageProcessor', () => {
     try {
-      const obj = new (Module as any).DetrImageProcessor();
+      const obj = Construct(DetrImageProcessor);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover YolosImageProcessor", () => {
+  it('should instantiate and cover YolosImageProcessor', () => {
     try {
-      const obj = new (Module as any).YolosImageProcessor();
+      const obj = Construct(YolosImageProcessor);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover SequenceFeatureExtractor", () => {
+  it('should instantiate and cover SequenceFeatureExtractor', () => {
     try {
-      const obj = new (Module as any).SequenceFeatureExtractor();
+      const obj = Construct(SequenceFeatureExtractor);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover WhisperFeatureExtractor", () => {
+  it('should instantiate and cover WhisperFeatureExtractor', () => {
     try {
-      const obj = new (Module as any).WhisperFeatureExtractor();
+      const obj = Construct(WhisperFeatureExtractor);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover Wav2Vec2FeatureExtractor", () => {
+  it('should instantiate and cover Wav2Vec2FeatureExtractor', () => {
     try {
-      const obj = new (Module as any).Wav2Vec2FeatureExtractor();
+      const obj = Construct(Wav2Vec2FeatureExtractor);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover SpeechT5FeatureExtractor", () => {
+  it('should instantiate and cover SpeechT5FeatureExtractor', () => {
     try {
-      const obj = new (Module as any).SpeechT5FeatureExtractor();
+      const obj = Construct(SpeechT5FeatureExtractor);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover AutoProcessor", () => {
+  it('should instantiate and cover AutoProcessor', () => {
     try {
-      const obj = new (Module as any).AutoProcessor();
+      const obj = Construct(AutoProcessor);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

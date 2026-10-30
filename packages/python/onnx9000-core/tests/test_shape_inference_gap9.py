@@ -5,7 +5,7 @@ from onnx9000.core.ir import Attribute, Graph, Node, Tensor
 from onnx9000.core.shape_inference import infer_shapes_and_types
 
 
-def test_split_dynamic():
+def test_split_dynamic() -> None:
     """Tests the split dynamic functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (10, 20), DType.FLOAT32))
@@ -16,7 +16,7 @@ def test_split_dynamic():
     assert "split_1" in str(g.tensors["y1"].shape)
 
 
-def test_loop_missing_body_out():
+def test_loop_missing_body_out() -> None:
     """Tests the loop missing body out functionality."""
     g = Graph("g")
     body_g = Graph("body")

@@ -13,12 +13,17 @@ from onnx9000.backends.testing.downloader import (
 )
 
 
-def test_downloader_and_extractor(monkeypatch) -> None:
+def test_downloader_and_extractor(
+    monkeypatch: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Tests the downloader and extractor functionality."""
     with tempfile.TemporaryDirectory() as tmpdir:
         base_dir = Path(tmpdir)
 
-        def mock_retrieve(url, filename) -> None:
+        def mock_retrieve(
+            url: int | float | str | bool | bytes | list | dict | tuple | None,
+            filename: int | float | str | bool | bytes | list | dict | tuple | None,
+        ) -> None:
             """Test the mock retrieve functionality."""
             mem_zip = io.BytesIO()
             with zipfile.ZipFile(mem_zip, mode="w") as zf:
@@ -39,12 +44,17 @@ def test_downloader_and_extractor(monkeypatch) -> None:
         assert extracted_dir_2 == extracted_dir
 
 
-def test_downloader_missing_dir(monkeypatch) -> None:
+def test_downloader_missing_dir(
+    monkeypatch: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Tests the downloader missing dir functionality."""
     with tempfile.TemporaryDirectory() as tmpdir:
         base_dir = Path(tmpdir)
 
-        def mock_retrieve(url, filename) -> None:
+        def mock_retrieve(
+            url: int | float | str | bool | bytes | list | dict | tuple | None,
+            filename: int | float | str | bool | bytes | list | dict | tuple | None,
+        ) -> None:
             """Test the mock retrieve functionality."""
             mem_zip = io.BytesIO()
             with zipfile.ZipFile(mem_zip, mode="w") as zf:

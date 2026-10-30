@@ -1,7 +1,5 @@
 """Convnext."""
 
-from typing import Any
-
 from onnx9000.core.ir import Tensor, Variable
 from onnx9000.core.ops import add, global_average_pool
 from onnx9000.core.primitives import (
@@ -14,15 +12,30 @@ from onnx9000.core.primitives import (
 
 
 def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:
-    """Docstring for D103."""
+    """Execute get param operation.
+
+    Args:
+        name: Parameter specifying name (str).
+        shape: Parameter specifying shape (list[int]).
+        dtype: Parameter specifying dtype (int).
+
+    Returns:
+        Result of get param (Variable).
+    """
     return Variable(name=name, shape=shape, dtype=dtype)
 
 
 class ConvNeXtBlock:
     """ConvNeXt Block."""
 
-    def __init__(self, dim: int, drop_path: float = 0.0, prefix: str = ""):
-        """Docstring for D107."""
+    def __init__(self, dim: int, drop_path: float = 0.0, prefix: str = "") -> None:
+        """Initialize ConvNeXtBlock with configured parameters and state.
+
+        Args:
+            dim: Parameter specifying dim (int).
+            drop_path: Parameter specifying drop path (float).
+            prefix: Parameter specifying prefix (str).
+        """
         self.prefix = prefix
         self.dim = dim
         self.dwconv = DepthwiseConv(2, dim, kernel_size=7, padding=3)
@@ -33,7 +46,14 @@ class ConvNeXtBlock:
         # Drop path and layer scale omitted for simplicity of AST builder
 
     def __call__(self, x: Tensor) -> Tensor:
-        """Docstring for D102."""
+        """Invoke ConvNeXtBlock with the provided inputs and keyword arguments.
+
+        Args:
+            x: Parameter specifying x (Tensor).
+
+        Returns:
+            Result of call (Tensor).
+        """
         identity = x
 
         out = self.dwconv(
@@ -80,8 +100,13 @@ class ConvNeXtBlock:
 class ConvNeXt:
     """ConvNeXt model built using IR primitives."""
 
-    def __init__(self, in_chans: int = 3, num_classes: int = 1000):
-        """Docstring for D107."""
+    def __init__(self, in_chans: int = 3, num_classes: int = 1000) -> None:
+        """Initialize ConvNeXt with configured parameters and state.
+
+        Args:
+            in_chans: Parameter specifying in chans (int).
+            num_classes: Parameter specifying num classes (int).
+        """
         self.num_classes = num_classes
         self.stem_conv = ConvND(2, in_chans, 96, kernel_size=4, stride=4)
         self.stem_norm = LayerNormalization((96,), epsilon=1e-6)
@@ -93,7 +118,14 @@ class ConvNeXt:
         self.head = Gemm(trans_b=1)
 
     def __call__(self, x: Tensor) -> Tensor:
-        """Docstring for D102."""
+        """Invoke ConvNeXt with the provided inputs and keyword arguments.
+
+        Args:
+            x: Parameter specifying x (Tensor).
+
+        Returns:
+            Result of call (Tensor).
+        """
         x = self.stem_conv(
             x,
             get_param(
@@ -128,6 +160,15 @@ class ConvNeXt:
         return x
 
 
-def convnext_tiny(**kwargs: Any) -> ConvNeXt:
-    """Docstring for D103."""
+def convnext_tiny(
+    **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> ConvNeXt:
+    """Execute convnext tiny operation.
+
+    Args:
+        **kwargs: Variadic keyword arguments for kwargs.
+
+    Returns:
+        Result of convnext tiny (ConvNeXt).
+    """
     return ConvNeXt(**kwargs)

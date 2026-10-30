@@ -2,18 +2,24 @@
  * @fileoverview PromoteButton.ts
  * Provides PromoteButton functionality for the Sphinx Demo UI.
  */
-// @ts-nocheck
 import { Component } from '../core/Component';
 import { globalEventBus } from '../core/EventBus';
 
+/** Represents the `PromoteButton` class. */
 export class PromoteButton extends Component<HTMLButtonElement> {
+  /** Property `isProcessing` of `PromoteButton`. */
   private isProcessing = false;
 
+  /** Initializes a new `PromoteButton` instance. */
   constructor() {
     super();
     this.element = this.render();
   }
 
+  /**
+   * Executes `render` on `PromoteButton`.
+   * @returns Result of `render`.
+   */
   protected render(): HTMLButtonElement {
     const btn = document.createElement('button');
     btn.className = 'demo-btn-promote';
@@ -23,6 +29,7 @@ export class PromoteButton extends Component<HTMLButtonElement> {
     return btn;
   }
 
+  /** Executes `onMount` on `PromoteButton`. */
   protected onMount(): void {
     this.addDOMListener(this.element, 'click', () => {
       if (!this.element.disabled) {
@@ -35,14 +42,14 @@ export class PromoteButton extends Component<HTMLButtonElement> {
       globalEventBus.on<boolean>('WASM_PROCESSING_START', () => {
         this.isProcessing = true;
         this.element.disabled = true;
-      })
+      }),
     );
 
     this.onCleanup(
       globalEventBus.on<boolean>('WASM_PROCESSING_END', (success) => {
         this.isProcessing = false;
         this.element.disabled = !success;
-      })
+      }),
     );
 
     // Enable when an artifact is generated successfully
@@ -51,14 +58,14 @@ export class PromoteButton extends Component<HTMLButtonElement> {
         if (!this.isProcessing) {
           this.element.disabled = false;
         }
-      })
+      }),
     );
 
     // Clear disables it
     this.onCleanup(
       globalEventBus.on<object>('TARGET_CLEARED', () => {
         this.element.disabled = true;
-      })
+      }),
     );
   }
 }

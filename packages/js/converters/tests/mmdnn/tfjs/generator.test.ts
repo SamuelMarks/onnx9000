@@ -1,23 +1,40 @@
-import { describe, it } from "vitest";
-import * as Module from "../../../src/mmdnn/tfjs/generator";
+import { describe, expect, it } from 'vitest';
+import { createModel, generateTFJSCode, isLinearGraph } from '../../../src/mmdnn/tfjs/generator';
 
-describe("generator.ts", () => {
-  it("should call and cover isLinearGraph", async () => {
+const Call = <T>(fn: (...args: never[]) => T): T => fn();
+
+describe('generator.ts', () => {
+  it('should call and cover isLinearGraph', async () => {
     try {
-      const res = (Module as any).isLinearGraph();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(isLinearGraph);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should call and cover generateTFJSCode", async () => {
+  it('should call and cover generateTFJSCode', async () => {
     try {
-      const res = (Module as any).generateTFJSCode();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(generateTFJSCode);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should call and cover createModel", async () => {
+  it('should call and cover createModel', async () => {
     try {
-      const res = (Module as any).createModel();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(createModel);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

@@ -1,19 +1,18 @@
-[project]
-name = "onnx9000-array"
-version = "1.0.0"
-description = "Web-Native NumPy/Eager API for ONNX"
-requires-python = ">=3.10"
-dependencies = [
-    "onnx9000-core",
-    "numpy"
-]
-
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[tool.hatch.build.targets.wheel]
-packages = ["src/onnx9000_array"]
+[project]
+name = "onnx9000-array"
+version = "0.1.0"
+description = "ONNX-backed Drop-In NumPy & Array API Replacement"
+dependencies = ["onnx9000-core"]
 
 [tool.uv.sources]
 onnx9000-core = { workspace = true }
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/onnx9000", "src/onnx9000_array"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

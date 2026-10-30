@@ -1,13 +1,25 @@
+/**
+ * @fileoverview safetensors.node module for core.
+ */
 import {
+  SafetensorsError,
   SafetensorsHeaderTooLargeError,
   SafetensorsInvalidJSONError,
   type TensorInfo,
-} from "./safetensors.js";
+} from './safetensors.js';
 
 /**
  * Minimal interface for Node.js 'fs' module.
  */
 export interface NodeFS {
+  /**
+   * Method `readSync`.
+   * @param fd Parameter `fd`.
+   * @param buffer Parameter `buffer`.
+   * @param offset Parameter `offset`.
+   * @param length Parameter `length`.
+   * @param position Parameter `position`.
+   */
   readSync(
     fd: number,
     buffer: Uint8Array,
@@ -15,13 +27,16 @@ export interface NodeFS {
     length: number,
     position: number | null,
   ): number;
+  /**
+   * Method `writeFileSync`.
+   * @param path Parameter `path`.
+   * @param data Parameter `data`.
+   * @param options Parameter `options`.
+   */
   writeFileSync(
     path: string | number,
     data: Uint8Array,
-    options?:
-      | { encoding?: string | null; mode?: number | string; flag?: string }
-      | string
-      | null,
+    options?: { encoding?: string | null; mode?: number | string; flag?: string } | string | null,
   ): void;
 }
 
@@ -38,7 +53,7 @@ export function readSafetensorsHeaderSync(fd: number, fs: NodeFS) {
 
   const headerSizeBig = buf8.readBigUInt64LE(0);
   if (headerSizeBig > BigInt(100 * 1024 * 1024)) {
-    throw new SafetensorsHeaderTooLargeError("Header size exceeds 100MB");
+    throw new SafetensorsHeaderTooLargeError('Header size exceeds 100MB');
   }
   const headerSize = Number(headerSizeBig);
 
@@ -46,7 +61,7 @@ export function readSafetensorsHeaderSync(fd: number, fs: NodeFS) {
   const bufHeader = Buffer.alloc(headerSize);
   fs.readSync(fd, bufHeader, 0, headerSize, 8);
 
-  const headerStr = bufHeader.toString("utf-8");
+  const headerStr = bufHeader.toString('utf-8');
   let headerObj: Record<string, TensorInfo | Record<string, string>>;
   try {
     headerObj = JSON.parse(headerStr);
@@ -80,7 +95,7 @@ export function readSafetensorsChunkSync(
   return new Uint8Array(buf.buffer, buf.byteOffset, buf.byteLength);
 }
 
-import { saveSafetensors } from "./safetensors.js";
+import { saveSafetensors } from './safetensors.js';
 
 /**
  * Synchronously saves tensors into a safetensors file.
@@ -92,24 +107,16 @@ import { saveSafetensors } from "./safetensors.js";
 export function saveSafetensorsFileSync(
   filename: string,
   fs: NodeFS,
-  tensors: Record<
-    string,
-    Uint8Array | { data: Uint8Array; dtype?: string; shape?: number[] }
-  >,
+  tensors: Record<string, Uint8Array | { data: Uint8Array; dtype?: string; shape?: number[] }>,
   metadata?: Record<string, string>,
 ) {
   try {
     const bytes = saveSafetensors(tensors, metadata);
-    fs.writeFileSync(
-      filename,
-      Buffer.from(bytes.buffer, bytes.byteOffset, bytes.byteLength),
-    );
+    fs.writeFileSync(filename, Buffer.from(bytes.buffer, bytes.byteOffset, bytes.byteLength));
   } catch (e) {
     const error = e as Error & { code?: string };
-    if (error.code === "ENOSPC" || error.message.includes("ENOSPC")) {
-      throw new Error(
-        `SafetensorsWriteError: disk space exhausted writing ${filename}`,
-      );
+    if (error.code === 'ENOSPC' || error.message.includes('ENOSPC')) {
+      throw new SafetensorsError(`SafetensorsWriteError: disk space exhausted writing ${filename}`);
     }
     throw error;
   }

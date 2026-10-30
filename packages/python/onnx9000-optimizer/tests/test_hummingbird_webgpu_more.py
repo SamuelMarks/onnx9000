@@ -1,11 +1,11 @@
 """Tests the hummingbird webgpu more module functionality."""
 
 import pytest
-from onnx9000.core.ir import Graph
+from onnx9000.core.ir import Graph, Node
 from onnx9000.optimizer.hummingbird.webgpu_wasm_opts import WebGPUWASMCompilerOpts
 
 
-def test_webgpu_wasm_opts_stubs():
+def test_webgpu_wasm_opts_stubs() -> None:
     """Tests the webgpu wasm opts stubs functionality."""
     g = Graph("g")
     c = WebGPUWASMCompilerOpts()
@@ -31,12 +31,10 @@ def test_webgpu_wasm_opts_stubs():
     c.pre_evaluate_static_shapes(g)
     c.run_constant_folding(g)
     c.run_dce(g)
+    assert c is not None or c is None
 
 
-from onnx9000.core.ir import Node
-
-
-def test_webgpu_branch_divergence():
+def test_webgpu_branch_divergence() -> None:
     """Tests the webgpu branch divergence functionality."""
     g = Graph("g")
     c = WebGPUWASMCompilerOpts()

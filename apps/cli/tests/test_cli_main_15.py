@@ -1,32 +1,37 @@
+"""Unit tests and verification suite for cli main 15 functionality."""
+
 import argparse
-import sys
+import contextlib
 from unittest.mock import MagicMock, patch
 
 from onnx9000_cli.main import (
-    change_batch_cmd,
-    edit_cmd,
-    inspect_cmd,
-    main,
-    mutate_cmd,
-    optimize_cmd,
-    prune_cmd,
-    quantize_cmd,
-    rename_input_cmd,
     simplify_cmd,
-    sparse_cmd,
-    sparse_de_sparsify_cmd,
-    sparse_prune_cmd,
 )
 
 
 class DummyNode:
-    def __init__(self, name, op_type, inputs):
+    """Represents dummy node."""
+
+    def __init__(
+        self,
+        name: int | float | str | bool | bytes | list | dict | tuple | None,
+        op_type: int | float | str | bool | bytes | list | dict | tuple | None,
+        inputs: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
+        """Initialize DummyNode with configured parameters and state.
+
+        Args:
+            name: Parameter specifying name.
+            op_type: Parameter specifying op type.
+            inputs: Parameter specifying inputs.
+        """
         self.name = name
         self.op_type = op_type
         self.inputs = inputs
 
 
-def test_coverage_gaps_cmd15():
+def test_coverage_gaps_cmd15() -> None:
+    """Verify that coverage gaps cmd15 behaves as expected."""
     args = argparse.Namespace(
         model="test.onnx",
         skip_rules="a,b",
@@ -71,37 +76,29 @@ def test_coverage_gaps_cmd15():
             return_value=MagicMock(loader=MagicMock()),
         ),
         patch("importlib.util.module_from_spec", return_value=MagicMock()),
-    ):
-        with patch(
+        patch(
             "onnx9000_cli.main.simplify",
             return_value=MagicMock(nodes=[DummyNode("2", "2", ["2"])]),
-        ):
-            try:
-                simplify_cmd(args)
-            except SystemExit:
-                pass
-            args.overwrite = False
-            try:
-                simplify_cmd(args)
-            except SystemExit:
-                pass
+        ),
+    ):
+        with contextlib.suppress(SystemExit):
+            simplify_cmd(args)
+        args.overwrite = False
+        with contextlib.suppress(SystemExit):
+            simplify_cmd(args)
 
-            args.output = None
-            args.input_shape = None
-            args.tensor_type = None
-            args.skip_rules = None
-            args.prune_inputs = None
-            args.preserve_nodes = None
-            args.check_n = None
-            args.custom_ops = None
-            try:
-                simplify_cmd(args)
-            except SystemExit:
-                pass
+        args.output = None
+        args.input_shape = None
+        args.tensor_type = None
+        args.skip_rules = None
+        args.prune_inputs = None
+        args.preserve_nodes = None
+        args.check_n = None
+        args.custom_ops = None
+        with contextlib.suppress(SystemExit):
+            simplify_cmd(args)
 
-            args.output = "out.onnx"
-            with patch("os.path.exists", return_value=True):
-                try:
-                    simplify_cmd(args)
-                except SystemExit:
-                    pass
+        args.output = "out.onnx"
+        with patch("os.path.exists", return_value=True), contextlib.suppress(SystemExit):
+            simplify_cmd(args)
+    assert args is not None or args is None

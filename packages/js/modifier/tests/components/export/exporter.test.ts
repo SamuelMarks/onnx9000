@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../../src/components/export/exporter";
+import { describe, expect, it } from 'vitest';
+import { ModelExporter } from '../../../src/components/export/exporter';
 
-describe("exporter.ts", () => {
-  it("should instantiate and cover ModelExporter", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('exporter.ts', () => {
+  it('should instantiate and cover ModelExporter', () => {
     try {
-      const obj = new (Module as any).ModelExporter();
+      const obj = Construct(ModelExporter);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

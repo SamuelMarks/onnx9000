@@ -4,7 +4,7 @@ from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Attribute, DynamicDim, Graph, Node, Tensor
 
 
-def test_profiler_resnet50_mock():
+def test_profiler_resnet50_mock() -> None:
     """Tests the profiler resnet50 mock functionality."""
     # A single bottleneck block: 1x1 conv -> 3x3 conv -> 1x1 conv
     g = Graph("resnet50")
@@ -51,7 +51,7 @@ def test_profiler_resnet50_mock():
     assert res.total_macs > 0
 
 
-def test_profiler_bert_mock():
+def test_profiler_bert_mock() -> None:
     """Tests the profiler bert mock functionality."""
     g = Graph("bert")
     g.add_tensor(Tensor("X", shape=(DynamicDim("B"), DynamicDim("S"), 768), dtype=DType.FLOAT32))
@@ -62,7 +62,7 @@ def test_profiler_bert_mock():
     assert "B * S" in str(res.total_macs) or "(2 * B * S * 768^2" in str(res.total_macs)
 
 
-def test_profiler_mobilenet_depthwise():
+def test_profiler_mobilenet_depthwise() -> None:
     """Tests the profiler mobilenet depthwise functionality."""
     g = Graph("mobilenet")
     g.add_tensor(Tensor("X", shape=(1, 32, 112, 112), dtype=DType.FLOAT32))
@@ -91,7 +91,7 @@ def test_profiler_mobilenet_depthwise():
     assert res.total_macs == 3612672
 
 
-def test_profiler_slice_dynamic():
+def test_profiler_slice_dynamic() -> None:
     """Tests the profiler slice dynamic functionality."""
     g = Graph("test")
     g.add_tensor(Tensor("X", shape=(DynamicDim("B"), 20, 30), dtype=DType.FLOAT32))

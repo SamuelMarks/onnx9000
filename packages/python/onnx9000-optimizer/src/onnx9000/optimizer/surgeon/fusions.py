@@ -57,12 +57,9 @@ def fuse_flash_attention(graph: Graph) -> Graph:
                     idx = graph.nodes.index(v_matmul)
                     graph.nodes[idx] = flash_attn
 
-                    if qk_matmul in graph.nodes:
-                        graph.nodes.remove(qk_matmul)
-                    if div_node in graph.nodes:
-                        graph.nodes.remove(div_node)
-                    if softmax_node in graph.nodes:
-                        graph.nodes.remove(softmax_node)
+                    graph.nodes.remove(qk_matmul)
+                    graph.nodes.remove(div_node)
+                    graph.nodes.remove(softmax_node)
 
     return graph
 
@@ -86,7 +83,7 @@ def fuse_horizontal_gemm(graph: Graph) -> Graph:
                 input_to_gemms[primary_input] = []
             input_to_gemms[primary_input].append(node)
 
-    for inp_name, gemms in input_to_gemms.items():
+    for _inp_name, gemms in input_to_gemms.items():
         if len(gemms) < 2:
             continue
 
@@ -109,10 +106,6 @@ def fuse_horizontal_gemm(graph: Graph) -> Graph:
         ]
 
         if len(fusible) >= 2:
-            import struct
-
-            from onnx9000.core.dtypes import DType
-
             concat_data = b""
             shapes = []
             for g in fusible:

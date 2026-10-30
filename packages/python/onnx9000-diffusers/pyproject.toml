@@ -11,7 +11,10 @@ dependencies = [
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/onnx9000_diffusers"]
+packages = ["src/onnx9000", "src/onnx9000_diffusers"]
 
 [tool.uv.sources]
 onnx9000-core = { workspace = true }
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

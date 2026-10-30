@@ -174,7 +174,7 @@ class FusionOptimizer:
         return json.dumps({"fusions": 0})
 
     @staticmethod
-    def run_fusions(graph: Graph, disable_rules: dict[str, bool] = None) -> None:
+    def run_fusions(graph: Graph, disable_rules: dict[str, bool] | None = None) -> None:
         """Allow explicit masking of fusions (disabling specific rules via dict configs)."""
         if disable_rules is None:
             disable_rules = {}

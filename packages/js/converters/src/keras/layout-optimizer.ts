@@ -1,21 +1,31 @@
-// @ts-nocheck
+/**
+ * @fileoverview layout-optimizer module for converters.
+ */
 /**
  * Represents a single edge between operations detailing the memory layout tensor specification.
  */
 export interface LayoutEdge {
+  /** Property `sourceNode`. */
   sourceNode: string;
+  /** Property `targetNode`. */
   targetNode: string;
+  /** Property `tensorName`. */
   tensorName: string;
-  layout: "NCHW" | "NHWC" | "NCDHW" | "NDHWC" | "NCW" | "NWC" | "UNKNOWN";
+  /** Property `layout`. */
+  layout: 'NCHW' | 'NHWC' | 'NCDHW' | 'NDHWC' | 'NCW' | 'NWC' | 'UNKNOWN';
 }
 
 /**
  * Interface mapping to an ONNX protobuf Node node equivalent structure.
  */
 export interface OnnxNodeLike {
+  /** Property `opType`. */
   opType: string;
+  /** Property `inputs`. */
   inputs: string[];
+  /** Property `outputs`. */
   outputs: string[];
+  /** Property `attributes`. */
   attributes: { name: string; ints?: number[] }[];
 }
 
@@ -28,7 +38,8 @@ export class LayoutOptimizer {
    * Collection of recorded tensor edges in topological form.
    */
   public edges: LayoutEdge[] = [];
-  private layoutState = new Map<string, LayoutEdge["layout"]>();
+  /** Property `layoutState` of `LayoutOptimizer`. */
+  private layoutState = new Map<string, LayoutEdge['layout']>();
 
   /**
    * Records a tensor's memory layout traversing between a source node to a target node.
@@ -42,7 +53,7 @@ export class LayoutOptimizer {
     tensorName: string,
     sourceNode: string,
     targetNode: string,
-    layout: LayoutEdge["layout"],
+    layout: LayoutEdge['layout'],
   ): void {
     this.edges.push({ sourceNode, targetNode, tensorName, layout });
     this.layoutState.set(tensorName, layout);
@@ -54,8 +65,8 @@ export class LayoutOptimizer {
    * @param tensorName Internal topological string identifier.
    * @returns The exact enumerated layout structure, or UNKNOWN if missing.
    */
-  public getLayout(tensorName: string): LayoutEdge["layout"] {
-    return this.layoutState.get(tensorName) || "UNKNOWN";
+  public getLayout(tensorName: string): LayoutEdge['layout'] {
+    return this.layoutState.get(tensorName) || 'UNKNOWN';
   }
 
   /**
@@ -65,12 +76,9 @@ export class LayoutOptimizer {
    * @param expectedLayout String identifying the consumer operator's layout specification requirement.
    * @returns A boolean determining if an explicit dynamic transpose needs emitting.
    */
-  public needsTranspose(
-    tensorName: string,
-    expectedLayout: LayoutEdge["layout"],
-  ): boolean {
+  public needsTranspose(tensorName: string, expectedLayout: LayoutEdge['layout']): boolean {
     const current = this.getLayout(tensorName);
-    if (current === "UNKNOWN" || expectedLayout === "UNKNOWN") return false;
+    if (current === 'UNKNOWN' || expectedLayout === 'UNKNOWN') return false;
     return current !== expectedLayout;
   }
 
@@ -85,17 +93,15 @@ export class LayoutOptimizer {
     for (let i = 0; i < graphNodes.length; i++) {
       const node = graphNodes[i];
       if (
-        node?.opType === "Transpose" &&
+        node?.opType === 'Transpose' &&
         i + 1 < graphNodes.length &&
-        graphNodes[i + 1]?.opType === "Transpose"
+        graphNodes[i + 1]?.opType === 'Transpose'
       ) {
         const nextNode = graphNodes[i + 1];
         // Only optimize if they share the same tensor path
         if (nextNode?.inputs[0] === node?.outputs[0]) {
-          const perm1 = node?.attributes.find((a) => a.name === "perm")?.ints;
-          const perm2 = nextNode?.attributes.find(
-            (a) => a.name === "perm",
-          )?.ints;
+          const perm1 = node?.attributes.find((a) => a.name === 'perm')?.ints;
+          const perm2 = nextNode?.attributes.find((a) => a.name === 'perm')?.ints;
 
           if (this.isIdentityPermutation(perm1, perm2)) {
             i++; // skip nextNode too
@@ -103,16 +109,22 @@ export class LayoutOptimizer {
           }
         }
       }
-      optimized.push(node!);
+      if (node) optimized.push(node);
     }
     return optimized;
   }
 
+  /**
+   * Executes `isIdentityPermutation` on `LayoutOptimizer`.
+   * @param perm1 Parameter `perm1`.
+   * @param perm2 Parameter `perm2`.
+   * @returns Result of `isIdentityPermutation`.
+   */
   private isIdentityPermutation(perm1?: number[], perm2?: number[]): boolean {
     if (!perm1 || !perm2 || perm1.length !== perm2.length) return false;
     const combined = new Array(perm1.length);
     for (let i = 0; i < perm1.length; i++) {
-      combined[i] = perm1[perm2[i]!];
+      combined[i] = perm1[perm2[i] as number];
     }
     for (let i = 0; i < combined.length; i++) {
       if (combined[i] !== i) return false;

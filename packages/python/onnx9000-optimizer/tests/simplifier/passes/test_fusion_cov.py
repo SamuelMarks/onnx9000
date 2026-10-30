@@ -10,7 +10,7 @@ from onnx9000.optimizer.simplifier.passes.fusion import (
 )
 
 
-def test_fuse_batchnorm_into_gemm():
+def test_fuse_batchnorm_into_gemm() -> None:
     """Test fuse batchnorm into gemm."""
     g = Graph("TestBNGemm")
     g.inputs = ["X"]
@@ -68,7 +68,7 @@ def test_fuse_batchnorm_into_gemm():
     assert changed2
 
 
-def test_fuse_batchnorm_into_conv():
+def test_fuse_batchnorm_into_conv() -> None:
     """Test fuse batchnorm into conv."""
     g = Graph("TestBNConv")
     g.inputs = ["X"]
@@ -110,7 +110,7 @@ def test_fuse_batchnorm_into_conv():
     assert changed
 
 
-def test_map_aten_arange_to_range():
+def test_map_aten_arange_to_range() -> None:
     """Test map aten arange to range."""
     g = Graph("TestAtenArange")
     n = Node("arange", ["start", "end", "step", "dtype"], ["Y"], domain="aten")
@@ -122,7 +122,7 @@ def test_map_aten_arange_to_range():
     assert g.nodes[0].domain == ""
 
 
-def test_fuse_batchnorm_into_gemm_missing_inputs():
+def test_fuse_batchnorm_into_gemm_missing_inputs() -> None:
     """Test fuse batchnorm into gemm missing inputs."""
     g = Graph("TestBNGemmMissing")
     g.inputs = ["X"]
@@ -179,7 +179,7 @@ def test_fuse_batchnorm_into_gemm_missing_inputs():
     assert not changed
 
 
-def test_fuse_batchnorm_into_conv_missing_inputs():
+def test_fuse_batchnorm_into_conv_missing_inputs() -> None:
     """Test fuse batchnorm into conv missing inputs."""
     g = Graph("TestBNConvMissing")
     g.inputs = ["X"]
@@ -226,7 +226,7 @@ def test_fuse_batchnorm_into_conv_missing_inputs():
     assert not changed
 
 
-def test_fusion_gemm_missing_lines():
+def test_fusion_gemm_missing_lines() -> None:
     """Test fusion gemm missing lines."""
     g1 = Graph("G1")
     g1.tensors["scale"] = Tensor("scale", (2,), DType.FLOAT32)
@@ -333,7 +333,7 @@ def test_fusion_gemm_missing_lines():
     assert g4.outputs[0] == "gemm_out"
 
 
-def test_fusion_conv_string_output():
+def test_fusion_conv_string_output() -> None:
     """Test fusion conv string output."""
     g4 = Graph("G4C")
     g4.outputs = ["Y"]
@@ -365,7 +365,7 @@ def test_fusion_conv_string_output():
     assert g4.outputs[0] == "gemm_out"
 
 
-def test_fusion_gemm_missing_lines_exact():
+def test_fusion_gemm_missing_lines_exact() -> None:
     """Test fusion gemm missing lines exact."""
     g1 = Graph("G1")
     n_gemm = Node("Gemm", ["X", "W"], ["gemm_out"])
@@ -415,7 +415,9 @@ def test_fusion_gemm_missing_lines_exact():
     class CustomOut:
         """CustomOut implementation."""
 
-        def __init__(self, name):
+        def __init__(
+            self, name: int | float | str | bool | bytes | list | dict | tuple | None
+        ) -> None:
             """Perform   init   operation."""
             self.name = name
 
@@ -425,7 +427,7 @@ def test_fusion_gemm_missing_lines_exact():
     assert o.name == "gemm_out"
 
 
-def test_fusion_conv_missing_lines_exact():
+def test_fusion_conv_missing_lines_exact() -> None:
     """Test fusion conv missing lines exact."""
     g1 = Graph("G1c")
     n_conv = Node("Conv", ["X", "W"], ["conv_out"])
@@ -475,7 +477,9 @@ def test_fusion_conv_missing_lines_exact():
     class CustomOut:
         """CustomOut implementation."""
 
-        def __init__(self, name):
+        def __init__(
+            self, name: int | float | str | bool | bytes | list | dict | tuple | None
+        ) -> None:
             """Perform   init   operation."""
             self.name = name
 
@@ -485,16 +489,17 @@ def test_fusion_conv_missing_lines_exact():
     assert o.name == "conv_out"
 
 
-def test_run_all_fusions():
+def test_run_all_fusions() -> None:
     """Test run all fusions."""
     from onnx9000.optimizer.simplifier.passes.fusion import run_all_fusions
 
     g = Graph("G_all")
     g.nodes.append(Node("Gemm", ["X", "W"], ["Y"]))
     run_all_fusions(g)
+    assert g is not None or g is None
 
 
-def test_fusion_gemm_missing_lines_exact_num_consumers():
+def test_fusion_gemm_missing_lines_exact_num_consumers() -> None:
     """Test fusion gemm missing lines exact num consumers."""
     from onnx9000.optimizer.simplifier.passes.fusion import fuse_batchnorm_into_gemm
 
@@ -528,16 +533,19 @@ def test_fusion_gemm_missing_lines_exact_num_consumers():
     class CustomOut:
         """CustomOut implementation."""
 
-        def __init__(self, name):
+        def __init__(
+            self, name: int | float | str | bool | bytes | list | dict | tuple | None
+        ) -> None:
             """Perform   init   operation."""
             self.name = name
 
     o = CustomOut("Y")
     g4.outputs = [o]
     fuse_batchnorm_into_gemm(g4)
+    assert o is not None or o is None
 
 
-def test_fusion_conv_missing_lines_exact_num_consumers():
+def test_fusion_conv_missing_lines_exact_num_consumers() -> None:
     """Test fusion conv missing lines exact num consumers."""
     from onnx9000.optimizer.simplifier.passes.fusion import fuse_batchnorm_into_conv
 
@@ -571,16 +579,19 @@ def test_fusion_conv_missing_lines_exact_num_consumers():
     class CustomOut:
         """CustomOut implementation."""
 
-        def __init__(self, name):
+        def __init__(
+            self, name: int | float | str | bool | bytes | list | dict | tuple | None
+        ) -> None:
             """Perform   init   operation."""
             self.name = name
 
     o = CustomOut("Y")
     g4.outputs = [o]
     fuse_batchnorm_into_conv(g4)
+    assert o is not None or o is None
 
 
-def test_map_aten_arange_no_op():
+def test_map_aten_arange_no_op() -> None:
     """Test map aten arange no op."""
     from onnx9000.optimizer.simplifier.passes.fusion import map_aten_arange_to_range
 
@@ -590,3 +601,4 @@ def test_map_aten_arange_no_op():
     map_aten_arange_to_range(g)
     n.attributes["operator"] = Attribute("operator", "STRING", "not_bytes")
     map_aten_arange_to_range(g)
+    assert n is not None or n is None

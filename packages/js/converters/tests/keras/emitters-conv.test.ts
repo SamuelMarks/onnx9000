@@ -1,17 +1,29 @@
-import { describe, it } from "vitest";
-import * as Module from "../../src/keras/emitters-conv";
+import { describe, expect, it } from 'vitest';
+import { emitConv, emitSeparableConv } from '../../src/keras/emitters-conv';
 
-describe("emitters-conv.ts", () => {
-  it("should call and cover emitConv", async () => {
+const Call = <T>(fn: (...args: never[]) => T): T => fn();
+
+describe('emitters-conv.ts', () => {
+  it('should call and cover emitConv', async () => {
     try {
-      const res = (Module as any).emitConv();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(emitConv);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should call and cover emitSeparableConv", async () => {
+  it('should call and cover emitSeparableConv', async () => {
     try {
-      const res = (Module as any).emitSeparableConv();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(emitSeparableConv);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

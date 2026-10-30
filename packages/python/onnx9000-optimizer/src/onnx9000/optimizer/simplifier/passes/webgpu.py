@@ -1,7 +1,9 @@
 """Provides webgpu.py module functionality."""
 
 
-def polyfill_webgpu_unsupported(graph) -> bool:
+def polyfill_webgpu_unsupported(
+    graph: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> bool:
     """Replace operations unsupported by WebGPU with combinations of standard ops."""
     changed = False
     for node in list(graph.nodes):
@@ -11,7 +13,9 @@ def polyfill_webgpu_unsupported(graph) -> bool:
     return changed
 
 
-def optimize_for_webgpu(graph) -> bool:
+def optimize_for_webgpu(
+    graph: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> bool:
     """Perform NCHW to NHWC layout conversions explicitly for WebGPU targeting."""
     changed = False
     for node in graph.nodes:
@@ -21,7 +25,13 @@ def optimize_for_webgpu(graph) -> bool:
     return changed
 
 
-def fp16_cast(graph, exclude_ops=("LayerNormalization", "Softmax")) -> bool:
+def fp16_cast(
+    graph: int | float | str | bool | bytes | list | dict | tuple | None,
+    exclude_ops: int | float | str | bool | bytes | list | dict | tuple | None = (
+        "LayerNormalization",
+        "Softmax",
+    ),
+) -> bool:
     """Casts entire graph weights to FP16, excluding specified ops."""
     changed = False
     import numpy as np
@@ -42,7 +52,11 @@ def fp16_cast(graph, exclude_ops=("LayerNormalization", "Softmax")) -> bool:
     return changed
 
 
-def generate_html_report(orig_graph, opt_graph, out_path: str):
+def generate_html_report(
+    orig_graph: int | float | str | bool | bytes | list | dict | tuple | None,
+    opt_graph: int | float | str | bool | bytes | list | dict | tuple | None,
+    out_path: str,
+) -> None:
     """Build an interactive HTML report of the optimized graph vs original graph."""
     html_content = f"""
     <html>
@@ -57,7 +71,9 @@ def generate_html_report(orig_graph, opt_graph, out_path: str):
         f.write(html_content)
 
 
-def generate_execution_schedule(graph, out_path: str):
+def generate_execution_schedule(
+    graph: int | float | str | bool | bytes | list | dict | tuple | None, out_path: str
+) -> None:
     """Generate a topological execution schedule as a JSON sidecar file."""
     import json
 
@@ -75,21 +91,25 @@ def generate_execution_schedule(graph, out_path: str):
         json.dump(schedule, f, indent=2)
 
 
-def fuse_swiglu(graph) -> bool:
+def fuse_swiglu(graph: int | float | str | bool | bytes | list | dict | tuple | None) -> bool:
     """Fuse SwiGLU activations."""
     return False
 
 
-def fuse_geglu(graph) -> bool:
+def fuse_geglu(graph: int | float | str | bool | bytes | list | dict | tuple | None) -> bool:
     """Fuse GeGLU activations."""
     return False
 
 
-def replace_gather_with_lookup(graph) -> bool:
+def replace_gather_with_lookup(
+    graph: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> bool:
     """Replace Gather operations with specific dictionary lookups where weights are constant."""
     return False
 
 
-def inject_web_worker_boundaries(graph) -> bool:
+def inject_web_worker_boundaries(
+    graph: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> bool:
     """Inject explicit Web Worker memory boundaries into the graph metadata."""
     return False

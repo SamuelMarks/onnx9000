@@ -24,11 +24,20 @@ def test_train_layernorm() -> None:
 
     builder = AOTBuilder(g)
 
-    def loss_gen(gr, p, t, o):
+    def loss_gen(
+        gr: int | float | str | bool | bytes | list | dict | tuple | None,
+        p: int | float | str | bool | bytes | list | dict | tuple | None,
+        t: int | float | str | bool | bytes | list | dict | tuple | None,
+        o: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
         """Test the loss gen functionality."""
         add_mse_loss(gr, p, t, o)
 
-    def opt_gen(gr, lr, p):
+    def opt_gen(
+        gr: int | float | str | bool | bytes | list | dict | tuple | None,
+        lr: int | float | str | bool | bytes | list | dict | tuple | None,
+        p: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
         """Test the opt gen functionality."""
         return None
 

@@ -4,7 +4,8 @@ import logging
 import os
 import subprocess
 import tempfile
-from typing import Optional
+
+from onnx9000.core.exceptions import BackendExecutionError
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +35,7 @@ class CUDACompiler:
             return b""
         except subprocess.CalledProcessError as e:
             logger.error(f"nvcc compilation failed: {e.stderr.decode('utf-8')}")
-            raise RuntimeError("CUDA Kernel compilation failed") from e
+            raise BackendExecutionError("CUDA Kernel compilation failed") from e
         finally:
             if os.path.exists(cu_path):
                 os.remove(cu_path)

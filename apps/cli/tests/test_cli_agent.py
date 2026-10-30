@@ -1,10 +1,13 @@
+"""Unit tests and verification suite for cli agent functionality."""
+
 import argparse
 from unittest.mock import patch
 
 from onnx9000_cli.main import agent_cmd
 
 
-def test_agent_cmd():
+def test_agent_cmd() -> None:
+    """Verify that agent cmd behaves as expected."""
     args = argparse.Namespace(task=["prune", "the", "graph"])
     with patch("builtins.print") as mock_print:
         agent_cmd(args)
@@ -16,7 +19,8 @@ def test_agent_cmd():
         mock_print.assert_any_call("Final Answer: Task completed successfully.")
 
 
-def test_agent_cmd_empty_task():
+def test_agent_cmd_empty_task() -> None:
+    """Verify that agent cmd empty task behaves as expected."""
     args = argparse.Namespace(task=[])
     with patch("builtins.print") as mock_print:
         agent_cmd(args)

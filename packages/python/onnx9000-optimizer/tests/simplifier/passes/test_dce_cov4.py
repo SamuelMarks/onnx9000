@@ -10,7 +10,7 @@ from onnx9000.optimizer.simplifier.passes.dce import (
 )
 
 
-def test_slice_dynamic_inputs_with_defaults():
+def test_slice_dynamic_inputs_with_defaults() -> None:
     """Test slice dynamic inputs with defaults."""
     g = Graph("TestSliceDefaults")
     g.tensors["X"] = Tensor("X", (2,), DType.FLOAT32)
@@ -34,7 +34,7 @@ def test_slice_dynamic_inputs_with_defaults():
     assert changed
 
 
-def test_reduce_scalar_vi():
+def test_reduce_scalar_vi() -> None:
     """Test reduce scalar vi."""
     g = Graph("TestReduceVI")
     g.inputs = [ValueInfo("X", (), DType.FLOAT32)]
@@ -46,7 +46,7 @@ def test_reduce_scalar_vi():
     assert changed
 
 
-def test_cf_scalars():
+def test_cf_scalars() -> None:
     """Test cf scalars."""
     g = Graph("TestIfScalar")
     t_cond = Tensor("cond", (), DType.BOOL)
@@ -69,7 +69,7 @@ def test_cf_scalars():
     assert changed
 
 
-def test_cf_loop_scalars():
+def test_cf_loop_scalars() -> None:
     """Test cf loop scalars."""
     g = Graph("TestLoopScalar")
     t_m = Tensor("M", (), DType.INT64)
@@ -89,7 +89,7 @@ def test_cf_loop_scalars():
     assert changed
 
 
-def test_slice_dynamic_steps_not_init():
+def test_slice_dynamic_steps_not_init() -> None:
     """Test slice dynamic steps not init."""
     g = Graph("TestSliceSteps")
     g.tensors["X"] = Tensor("X", (2,), DType.FLOAT32)
@@ -114,7 +114,7 @@ def test_slice_dynamic_steps_not_init():
     assert not changed
 
 
-def test_cf_subgraph_tensors():
+def test_cf_subgraph_tensors() -> None:
     """Test cf subgraph tensors."""
     g = Graph("TestIfSubG")
     g.inputs = ["cond"]
@@ -140,14 +140,14 @@ def test_cf_subgraph_tensors():
     assert changed
 
 
-def test_cf_multi_run():
+def test_cf_multi_run() -> None:
     """Test cf multi run."""
     g = Graph("TestMultiRun")
     cf = ControlFlowFoldingPass()
     assert not cf.run(g)
 
 
-def test_dce_slice_dynamic_steps_string():
+def test_dce_slice_dynamic_steps_string() -> None:
     """Test dce slice dynamic steps string."""
     g = Graph("TestSliceStepsStr")
     g.tensors["X"] = Tensor("X", (2,), DType.FLOAT32)
@@ -172,7 +172,7 @@ def test_dce_slice_dynamic_steps_string():
     assert not changed
 
 
-def test_dce_loop_run_once_local_changed():
+def test_dce_loop_run_once_local_changed() -> None:
     """Test dce loop run once local changed."""
     g = Graph("TestRunOnce")
     sub = Graph("Sub")
@@ -188,20 +188,18 @@ def test_dce_loop_run_once_local_changed():
     dce = DCEPass()
     run_count = 0
 
-    def _run_once_mock(g):
+    def _run_once_mock(g: int | float | str | bool | bytes | list | dict | tuple | None) -> bool:
         """Perform  run once mock operation."""
         nonlocal run_count
         run_count += 1
-        if getattr(g, "name", "") == "Sub" and run_count < 3:
-            return True
-        return False
+        return bool(getattr(g, "name", "") == "Sub" and run_count < 3)
 
     dce._run_once = _run_once_mock
     changed = dce.run(g)
     assert changed
 
 
-def test_dce_if_tensor_not_initializer():
+def test_dce_if_tensor_not_initializer() -> None:
     """Test dce if tensor not initializer."""
     g = Graph("TestIfTensors")
     g.tensors["cond"] = Tensor("cond", (), DType.BOOL)
@@ -222,7 +220,7 @@ def test_dce_if_tensor_not_initializer():
     assert changed
 
 
-def test_cf_folding_with_subgraph_tensors():
+def test_cf_folding_with_subgraph_tensors() -> None:
     """Test cf folding with subgraph tensors."""
     g = Graph("TestSubTensors")
     g.inputs = ["cond"]
@@ -250,7 +248,7 @@ def test_cf_folding_with_subgraph_tensors():
     assert changed
 
 
-def test_slice_dynamic_steps_empty_string():
+def test_slice_dynamic_steps_empty_string() -> None:
     """Test slice dynamic steps empty string."""
     g = Graph("TestSliceStepsEmptyStr")
     g.tensors["X"] = Tensor("X", (2,), DType.FLOAT32)
@@ -274,7 +272,7 @@ def test_slice_dynamic_steps_empty_string():
     assert changed
 
 
-def test_dce_rewire_out_is_string():
+def test_dce_rewire_out_is_string() -> None:
     """Test dce rewire out is string."""
     g = Graph("TestRewireStr")
     g.inputs = ["X"]
@@ -290,7 +288,7 @@ def test_dce_rewire_out_is_string():
     assert g.outputs[0] == "X"
 
 
-def test_slice_dynamic_steps_not_1():
+def test_slice_dynamic_steps_not_1() -> None:
     """Test slice dynamic steps not 1."""
     g = Graph("TestSliceStepsNot1")
     g.tensors["X"] = Tensor("X", (2,), DType.FLOAT32)
@@ -318,7 +316,7 @@ def test_slice_dynamic_steps_not_1():
     assert not changed
 
 
-def test_cf_subgraph_changed():
+def test_cf_subgraph_changed() -> None:
     """Test cf subgraph changed."""
     g = Graph("TestIfSubChanged")
     g.inputs = ["cond"]

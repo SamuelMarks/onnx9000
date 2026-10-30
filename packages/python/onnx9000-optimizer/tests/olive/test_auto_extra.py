@@ -11,10 +11,14 @@ class SkipPass(Pass):
     """A pass that should be skipped."""
 
     def __init__(self) -> None:
-        """Initialize the instance."""
+        """Initialize SkipPass with configured parameters and state."""
         super().__init__("SkipPass")
 
-    def run(self, model, context):
+    def run(
+        self,
+        model: int | float | str | bool | bytes | list | dict | tuple | None,
+        context: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Execute the run operation."""
         return model
 

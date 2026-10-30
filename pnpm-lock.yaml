@@ -111,7 +111,7 @@ importers:
     devDependencies:
       vitest:
         specifier: ^1.6.0
-        version: 1.6.0(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.0(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   apps/demo-agent:
     dependencies:
@@ -1204,8 +1204,8 @@ importers:
         specifier: ^5.0.0
         version: 5.9.3
       vite:
-        specifier: ^4.0.0
-        version: 4.5.14(@types/node@25.5.0)
+        specifier: ^5.4.11
+        version: 5.4.11(@types/node@25.5.0)
 
   apps/onnx2c-ui:
     dependencies:
@@ -1369,13 +1369,17 @@ importers:
         version: 1.6.1(@types/node@20.19.37)(jsdom@24.1.3(canvas@3.2.3))
 
   packages/js/agent:
+    dependencies:
+      '@onnx9000/core':
+        specifier: workspace:*
+        version: link:../core
     devDependencies:
       typescript:
         specifier: ^5.0.0
         version: 5.9.3
       vitest:
         specifier: ^1.6.1
-        version: 1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/arena:
     dependencies:
@@ -1385,13 +1389,13 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.0(vitest@1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3)))
+        version: 1.6.0(vitest@1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3)))
       typescript:
         specifier: ^5.0.0
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/array:
     dependencies:
@@ -1407,7 +1411,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.37)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.1(@types/node@20.19.37)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/backend-web:
     dependencies:
@@ -1417,13 +1421,13 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.0(vitest@1.6.0(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3)))
+        version: 1.6.0(vitest@1.6.0(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3)))
       vite:
         specifier: 5.4.11
         version: 5.4.11(@types/node@25.5.0)
       vitest:
         specifier: ^1.6.0
-        version: 1.6.0(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.0(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/c-compiler:
     dependencies:
@@ -1439,13 +1443,13 @@ importers:
         version: 22.19.15
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.0(vitest@1.6.1(@types/node@22.19.15)(jsdom@29.1.1(canvas@3.2.3)))
+        version: 1.6.0(vitest@1.6.1(@types/node@22.19.15)(jsdom@29.0.0(canvas@3.2.3)))
       typescript:
         specifier: ^5.4.5
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@22.19.15)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.1(@types/node@22.19.15)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/compile:
     devDependencies:
@@ -1454,7 +1458,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/compiler:
     dependencies:
@@ -1464,13 +1468,13 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.0(vitest@1.6.0(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3)))
+        version: 1.6.0(vitest@1.6.0(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3)))
       vite:
         specifier: 5.4.11
         version: 5.4.11(@types/node@25.5.0)
       vitest:
         specifier: ^1.6.0
-        version: 1.6.0(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.0(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/converters:
     dependencies:
@@ -1497,13 +1501,13 @@ importers:
         version: 25.5.0
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.0(vitest@1.6.0(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3)))
+        version: 1.6.0(vitest@1.6.0(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3)))
       vite:
         specifier: 5.4.11
         version: 5.4.11(@types/node@25.5.0)
       vitest:
         specifier: ^1.6.0
-        version: 1.6.0(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.0(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/coreml:
     dependencies:
@@ -1516,13 +1520,13 @@ importers:
         version: 25.5.0
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.0(vitest@1.6.0(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3)))
+        version: 1.6.0(vitest@1.6.0(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3)))
       vite:
         specifier: 5.4.11
         version: 5.4.11(@types/node@25.5.0)
       vitest:
         specifier: ^1.6.0
-        version: 1.6.0(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.0(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/custom-ops:
     devDependencies:
@@ -1531,7 +1535,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/diffusers:
     dependencies:
@@ -1544,25 +1548,33 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/genai:
+    dependencies:
+      '@onnx9000/core':
+        specifier: workspace:*
+        version: link:../core
     devDependencies:
       typescript:
         specifier: ^5.0.0
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/gguf:
+    dependencies:
+      '@onnx9000/core':
+        specifier: workspace:*
+        version: link:../core
     devDependencies:
       typescript:
         specifier: ^5.0.0
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/graphsurgeon:
     devDependencies:
@@ -1571,16 +1583,20 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/hummingbird:
+    dependencies:
+      '@onnx9000/core':
+        specifier: workspace:*
+        version: link:../core
     devDependencies:
       typescript:
         specifier: ^5.0.0
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/iree-compiler:
     dependencies:
@@ -1593,28 +1609,32 @@ importers:
         version: 25.5.0
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.0(vitest@1.6.0(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3)))
+        version: 1.6.0(vitest@1.6.0(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3)))
       typescript:
         specifier: ^5.4.5
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.0(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.0(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/iree-runtime:
+    dependencies:
+      '@onnx9000/core':
+        specifier: workspace:*
+        version: link:../core
     devDependencies:
       '@types/node':
         specifier: ^25.5.0
         version: 25.5.0
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.0(vitest@1.6.0(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3)))
+        version: 1.6.0(vitest@1.6.0(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3)))
       typescript:
         specifier: ^5.4.5
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.0(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.0(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/json-extract:
     dependencies:
@@ -1627,13 +1647,13 @@ importers:
         version: 25.5.0
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.0(vitest@1.6.0(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3)))
+        version: 1.6.0(vitest@1.6.0(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3)))
       vite:
         specifier: 5.4.11
         version: 5.4.11(@types/node@25.5.0)
       vitest:
         specifier: ^1.6.0
-        version: 1.6.0(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.0(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/keras2onnx:
     dependencies:
@@ -1643,13 +1663,13 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.0(vitest@1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3)))
+        version: 1.6.0(vitest@1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3)))
       typescript:
         specifier: ^5.0.0
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/llama-web:
     dependencies:
@@ -1659,13 +1679,13 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.0(vitest@1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3)))
+        version: 1.6.0(vitest@1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3)))
       typescript:
         specifier: ^5.0.0
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/mlir:
     devDependencies:
@@ -1674,7 +1694,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/mlir-lowering:
     devDependencies:
@@ -1683,7 +1703,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/mmdnn:
     devDependencies:
@@ -1692,7 +1712,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/mobile-memory:
     devDependencies:
@@ -1701,7 +1721,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/modifier:
     dependencies:
@@ -1729,7 +1749,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/olive-optimizer:
     devDependencies:
@@ -1738,7 +1758,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/onnx-checker:
     devDependencies:
@@ -1747,7 +1767,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/onnx-script:
     devDependencies:
@@ -1756,7 +1776,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/onnx-tool:
     devDependencies:
@@ -1765,7 +1785,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/onnx2c:
     devDependencies:
@@ -1774,7 +1794,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/onnx2gguf:
     dependencies:
@@ -1787,7 +1807,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.0(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.0(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/onnx2tf:
     devDependencies:
@@ -1796,7 +1816,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/openvino:
     dependencies:
@@ -1809,7 +1829,7 @@ importers:
         version: 25.5.0
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.0(vitest@1.6.0(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3)))
+        version: 1.6.0(vitest@1.6.0(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3)))
       typescript:
         specifier: ^5.5.4
         version: 5.9.3
@@ -1818,7 +1838,7 @@ importers:
         version: 5.4.11(@types/node@25.5.0)
       vitest:
         specifier: ^1.6.0
-        version: 1.6.0(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.0(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/optimum:
     dependencies:
@@ -1828,22 +1848,26 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.0(vitest@1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3)))
+        version: 1.6.0(vitest@1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3)))
       typescript:
         specifier: ^5.0.0
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/ort-training:
+    dependencies:
+      '@onnx9000/core':
+        specifier: workspace:*
+        version: link:../core
     devDependencies:
       typescript:
         specifier: ^5.0.0
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/paddle2onnx:
     dependencies:
@@ -1853,13 +1877,13 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.0(vitest@1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3)))
+        version: 1.6.0(vitest@1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3)))
       typescript:
         specifier: ^5.0.0
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/profiler:
     devDependencies:
@@ -1868,16 +1892,20 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/progressive-loading:
+    dependencies:
+      '@onnx9000/core':
+        specifier: workspace:*
+        version: link:../core
     devDependencies:
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/pytorch-codegen:
     devDependencies:
@@ -1886,7 +1914,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/serve:
     dependencies:
@@ -1902,10 +1930,10 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.0(vitest@1.6.0(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3)))
+        version: 1.6.0(vitest@1.6.0(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3)))
       vitest:
         specifier: ^1.6.0
-        version: 1.6.0(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.0(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/simplify:
     devDependencies:
@@ -1914,7 +1942,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/skl2onnx:
     dependencies:
@@ -1924,13 +1952,13 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.0(vitest@1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3)))
+        version: 1.6.0(vitest@1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3)))
       typescript:
         specifier: ^5.0.0
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/sparse:
     devDependencies:
@@ -1939,7 +1967,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/tensorrt:
     dependencies:
@@ -1976,7 +2004,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/tflite-exporter:
     dependencies:
@@ -1989,13 +2017,13 @@ importers:
         version: 25.5.0
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.0(vitest@1.6.0(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3)))
+        version: 1.6.0(vitest@1.6.0(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3)))
       vite:
         specifier: 5.4.11
         version: 5.4.11(@types/node@25.5.0)
       vitest:
         specifier: ^1.6.0
-        version: 1.6.0(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.0(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/transformers:
     dependencies:
@@ -2008,13 +2036,13 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.0(vitest@1.6.0(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3)))
+        version: 1.6.0(vitest@1.6.0(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3)))
       vite:
         specifier: 5.4.11
         version: 5.4.11(@types/node@25.5.0)
       vitest:
         specifier: ^1.6.0
-        version: 1.6.0(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.0(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/triton-compiler:
     dependencies:
@@ -2032,7 +2060,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/wasm-compiler:
     dependencies:
@@ -2045,13 +2073,13 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.0(vitest@1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3)))
+        version: 1.6.0(vitest@1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3)))
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/webnn-polyfill:
     dependencies:
@@ -2070,22 +2098,26 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.0(vitest@1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3)))
+        version: 1.6.0(vitest@1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3)))
       typescript:
         specifier: ^5.0.0
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/js/zero-dep-classifier:
+    dependencies:
+      '@onnx9000/core':
+        specifier: workspace:*
+        version: link:../core
     devDependencies:
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+        version: 1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
 
   packages/python/onnx9000-backend-native: {}
 
@@ -2116,20 +2148,8 @@ packages:
     resolution: {integrity: sha512-2SZFvqMyvboVV1d15lMf7XiI3m7SDqXUuKaTymJYLN6dSGadqp+fVojqJlVoMlbZnlTmu3S0TLwLTJpvBMO1Aw==}
     engines: {node: ^20.19.0 || ^22.12.0 || >=24.0.0}
 
-  '@asamuzakjp/css-color@5.1.11':
-    resolution: {integrity: sha512-KVw6qIiCTUQhByfTd78h2yD1/00waTmm9uy/R7Ck/ctUyAPj+AEDLkQIdJW0T8+qGgj3j5bpNKK7Q3G+LedJWg==}
-    engines: {node: ^20.19.0 || ^22.12.0 || >=24.0.0}
-
   '@asamuzakjp/dom-selector@7.0.3':
     resolution: {integrity: sha512-Q6mU0Z6bfj6YvnX2k9n0JxiIwrCFN59x/nWmYQnAqP000ruX/yV+5bp/GRcF5T8ncvfwJQ7fgfP74DlpKExILA==}
-    engines: {node: ^20.19.0 || ^22.12.0 || >=24.0.0}
-
-  '@asamuzakjp/dom-selector@7.1.1':
-    resolution: {integrity: sha512-67RZDnYRc8H/8MLDgQCDE//zoqVFwajkepHZgmXrbwybzXOEwOWGPYGmALYl9J2DOLfFPPs6kKCqmbzV895hTQ==}
-    engines: {node: ^20.19.0 || ^22.12.0 || >=24.0.0}
-
-  '@asamuzakjp/generational-cache@1.0.1':
-    resolution: {integrity: sha512-wajfB8KqzMCN2KGNFdLkReeHncd0AslUSrvHVvvYWuU8ghncRJoA50kT3zP9MVL0+9g4/67H+cdvBskj9THPzg==}
     engines: {node: ^20.19.0 || ^22.12.0 || >=24.0.0}
 
   '@asamuzakjp/nwsapi@2.3.9':
@@ -2237,13 +2257,6 @@ packages:
       '@csstools/css-parser-algorithms': ^4.0.0
       '@csstools/css-tokenizer': ^4.0.0
 
-  '@csstools/css-calc@3.2.1':
-    resolution: {integrity: sha512-DtdHlgXh5ZkA43cwBcAm+huzgJiwx3ZTWVjBs94kwz2xKqSimDA3lBgCjphYgwgVUMWatSM0pDd8TILB1yrVVg==}
-    engines: {node: '>=20.19.0'}
-    peerDependencies:
-      '@csstools/css-parser-algorithms': ^4.0.0
-      '@csstools/css-tokenizer': ^4.0.0
-
   '@csstools/css-color-parser@3.1.0':
     resolution: {integrity: sha512-nbtKwh3a6xNVIp/VRuXV64yTKnb1IjTAEEh3irzS+HkKjAOYLTGNb9pmVNntZ8iVBHcWDA2Dof0QtPgFI1BaTA==}
     engines: {node: '>=18'}
@@ -2253,13 +2266,6 @@ packages:
 
   '@csstools/css-color-parser@4.0.2':
     resolution: {integrity: sha512-0GEfbBLmTFf0dJlpsNU7zwxRIH0/BGEMuXLTCvFYxuL1tNhqzTbtnFICyJLTNK4a+RechKP75e7w42ClXSnJQw==}
-    engines: {node: '>=20.19.0'}
-    peerDependencies:
-      '@csstools/css-parser-algorithms': ^4.0.0
-      '@csstools/css-tokenizer': ^4.0.0
-
-  '@csstools/css-color-parser@4.1.1':
-    resolution: {integrity: sha512-eZ5XOtyhK+mggRafYUWzA0tvaYOFgdY8AkgQiCJF9qNAePnUo/zmsqqYubBBb3sQ8uNUaSKTY9s9klfRaAXL0g==}
     engines: {node: '>=20.19.0'}
     peerDependencies:
       '@csstools/css-parser-algorithms': ^4.0.0
@@ -2279,14 +2285,6 @@ packages:
 
   '@csstools/css-syntax-patches-for-csstree@1.1.1':
     resolution: {integrity: sha512-BvqN0AMWNAnLk9G8jnUT77D+mUbY/H2b3uDTvg2isJkHaOufUE2R3AOwxWo7VBQKT1lOdwdvorddo2B/lk64+w==}
-    peerDependencies:
-      css-tree: ^3.2.1
-    peerDependenciesMeta:
-      css-tree:
-        optional: true
-
-  '@csstools/css-syntax-patches-for-csstree@1.1.5':
-    resolution: {integrity: sha512-oNjBvzLq2GPZtJphCjLqXow/cHySHSgtxvKZb7OqSZ/xHgw6NWNhfad+6AB9cLeVm6eA9d/qMll3JdEHjy6M+A==}
     peerDependencies:
       css-tree: ^3.2.1
     peerDependenciesMeta:
@@ -2313,12 +2311,6 @@ packages:
     cpu: [ppc64]
     os: [aix]
 
-  '@esbuild/android-arm64@0.18.20':
-    resolution: {integrity: sha512-Nz4rJcchGDtENV0eMKUNa6L12zz2zBDXuhj/Vjh18zGqB44Bi7MBMSXjgunJgjRhCmKOjnPuZp4Mb6OKqtMHLQ==}
-    engines: {node: '>=12'}
-    cpu: [arm64]
-    os: [android]
-
   '@esbuild/android-arm64@0.21.5':
     resolution: {integrity: sha512-c0uX9VAUBQ7dTDCjq+wdyGLowMdtR/GoC2U5IYk/7D1H1JYC0qseD7+11iMP2mRLN9RcCMRcjC4YMclCzGwS/A==}
     engines: {node: '>=12'}
@@ -2329,12 +2321,6 @@ packages:
     resolution: {integrity: sha512-gdLscB7v75wRfu7QSm/zg6Rx29VLdy9eTr2t44sfTW7CxwAtQghZ4ZnqHk3/ogz7xao0QAgrkradbBzcqFPasw==}
     engines: {node: '>=18'}
     cpu: [arm64]
-    os: [android]
-
-  '@esbuild/android-arm@0.18.20':
-    resolution: {integrity: sha512-fyi7TDI/ijKKNZTUJAQqiG5T7YjJXgnzkURqmGj13C6dCqckZBLdl4h7bkhHt/t0WP+zO9/zwroDvANaOqO5Sw==}
-    engines: {node: '>=12'}
-    cpu: [arm]
     os: [android]
 
   '@esbuild/android-arm@0.21.5':
@@ -2349,12 +2335,6 @@ packages:
     cpu: [arm]
     os: [android]
 
-  '@esbuild/android-x64@0.18.20':
-    resolution: {integrity: sha512-8GDdlePJA8D6zlZYJV/jnrRAi6rOiNaCC/JclcXpB+KIuvfBN4owLtgzY2bsxnx666XjJx2kDPUmnTtR8qKQUg==}
-    engines: {node: '>=12'}
-    cpu: [x64]
-    os: [android]
-
   '@esbuild/android-x64@0.21.5':
     resolution: {integrity: sha512-D7aPRUUNHRBwHxzxRvp856rjUHRFW1SdQATKXH2hqA0kAZb1hKmi02OpYRacl0TxIGz/ZmXWlbZgjwWYaCakTA==}
     engines: {node: '>=12'}
@@ -2367,12 +2347,6 @@ packages:
     cpu: [x64]
     os: [android]
 
-  '@esbuild/darwin-arm64@0.18.20':
-    resolution: {integrity: sha512-bxRHW5kHU38zS2lPTPOyuyTm+S+eobPUnTNkdJEfAddYgEcll4xkT8DB9d2008DtTbl7uJag2HuE5NZAZgnNEA==}
-    engines: {node: '>=12'}
-    cpu: [arm64]
-    os: [darwin]
-
   '@esbuild/darwin-arm64@0.21.5':
     resolution: {integrity: sha512-DwqXqZyuk5AiWWf3UfLiRDJ5EDd49zg6O9wclZ7kUMv2WRFr4HKjXp/5t8JZ11QbQfUS6/cRCKGwYhtNAY88kQ==}
     engines: {node: '>=12'}
@@ -2383,12 +2357,6 @@ packages:
     resolution: {integrity: sha512-b7xaGIwdJlht8ZFCvMkpDN6uiSmnxxK56N2GDTMYPr2/gzvfdQN8rTfBsvVKmIVY/X7EM+/hJKEIbbHs9oA4tQ==}
     engines: {node: '>=18'}
     cpu: [arm64]
-    os: [darwin]
-
-  '@esbuild/darwin-x64@0.18.20':
-    resolution: {integrity: sha512-pc5gxlMDxzm513qPGbCbDukOdsGtKhfxD1zJKXjCCcU7ju50O7MeAZ8c4krSJcOIJGFR+qx21yMMVYwiQvyTyQ==}
-    engines: {node: '>=12'}
-    cpu: [x64]
     os: [darwin]
 
   '@esbuild/darwin-x64@0.21.5':
@@ -2403,12 +2371,6 @@ packages:
     cpu: [x64]
     os: [darwin]
 
-  '@esbuild/freebsd-arm64@0.18.20':
-    resolution: {integrity: sha512-yqDQHy4QHevpMAaxhhIwYPMv1NECwOvIpGCZkECn8w2WFHXjEwrBn3CeNIYsibZ/iZEUemj++M26W3cNR5h+Tw==}
-    engines: {node: '>=12'}
-    cpu: [arm64]
-    os: [freebsd]
-
   '@esbuild/freebsd-arm64@0.21.5':
     resolution: {integrity: sha512-5JcRxxRDUJLX8JXp/wcBCy3pENnCgBR9bN6JsY4OmhfUtIHe3ZW0mawA7+RDAcMLrMIZaf03NlQiX9DGyB8h4g==}
     engines: {node: '>=12'}
@@ -2419,12 +2381,6 @@ packages:
     resolution: {integrity: sha512-jnfpKe+p79tCnm4GVav68A7tUFeKQwQyLgESwEAUzyxk/TJr4QdGog9sqWNcUbr/bZt/O/HXouspuQDd9JxFSw==}
     engines: {node: '>=18'}
     cpu: [arm64]
-    os: [freebsd]
-
-  '@esbuild/freebsd-x64@0.18.20':
-    resolution: {integrity: sha512-tgWRPPuQsd3RmBZwarGVHZQvtzfEBOreNuxEMKFcd5DaDn2PbBxfwLcj4+aenoh7ctXcbXmOQIn8HI6mCSw5MQ==}
-    engines: {node: '>=12'}
-    cpu: [x64]
     os: [freebsd]
 
   '@esbuild/freebsd-x64@0.21.5':
@@ -2439,12 +2395,6 @@ packages:
     cpu: [x64]
     os: [freebsd]
 
-  '@esbuild/linux-arm64@0.18.20':
-    resolution: {integrity: sha512-2YbscF+UL7SQAVIpnWvYwM+3LskyDmPhe31pE7/aoTMFKKzIc9lLbyGUpmmb8a8AixOL61sQ/mFh3jEjHYFvdA==}
-    engines: {node: '>=12'}
-    cpu: [arm64]
-    os: [linux]
-
   '@esbuild/linux-arm64@0.21.5':
     resolution: {integrity: sha512-ibKvmyYzKsBeX8d8I7MH/TMfWDXBF3db4qM6sy+7re0YXya+K1cem3on9XgdT2EQGMu4hQyZhan7TeQ8XkGp4Q==}
     engines: {node: '>=12'}
@@ -2455,12 +2405,6 @@ packages:
     resolution: {integrity: sha512-7nQOttdzVGth1iz57kxg9uCz57dxQLHWxopL6mYuYthohPKEK0vU0C3O21CcBK6KDlkYVcnDXY099HcCDXd9dA==}
     engines: {node: '>=18'}
     cpu: [arm64]
-    os: [linux]
-
-  '@esbuild/linux-arm@0.18.20':
-    resolution: {integrity: sha512-/5bHkMWnq1EgKr1V+Ybz3s1hWXok7mDFUMQ4cG10AfW3wL02PSZi5kFpYKrptDsgb2WAJIvRcDm+qIvXf/apvg==}
-    engines: {node: '>=12'}
-    cpu: [arm]
     os: [linux]
 
   '@esbuild/linux-arm@0.21.5':
@@ -2475,12 +2419,6 @@ packages:
     cpu: [arm]
     os: [linux]
 
-  '@esbuild/linux-ia32@0.18.20':
-    resolution: {integrity: sha512-P4etWwq6IsReT0E1KHU40bOnzMHoH73aXp96Fs8TIT6z9Hu8G6+0SHSw9i2isWrD2nbx2qo5yUqACgdfVGx7TA==}
-    engines: {node: '>=12'}
-    cpu: [ia32]
-    os: [linux]
-
   '@esbuild/linux-ia32@0.21.5':
     resolution: {integrity: sha512-YvjXDqLRqPDl2dvRODYmmhz4rPeVKYvppfGYKSNGdyZkA01046pLWyRKKI3ax8fbJoK5QbxblURkwK/MWY18Tg==}
     engines: {node: '>=12'}
@@ -2491,12 +2429,6 @@ packages:
     resolution: {integrity: sha512-oPtixtAIzgvzYcKBQM/qZ3R+9TEUd1aNJQu0HhGyqtx6oS7qTpvjheIWBbes4+qu1bNlo2V4cbkISr8q6gRBFA==}
     engines: {node: '>=18'}
     cpu: [ia32]
-    os: [linux]
-
-  '@esbuild/linux-loong64@0.18.20':
-    resolution: {integrity: sha512-nXW8nqBTrOpDLPgPY9uV+/1DjxoQ7DoB2N8eocyq8I9XuqJ7BiAMDMf9n1xZM9TgW0J8zrquIb/A7s3BJv7rjg==}
-    engines: {node: '>=12'}
-    cpu: [loong64]
     os: [linux]
 
   '@esbuild/linux-loong64@0.21.5':
@@ -2511,12 +2443,6 @@ packages:
     cpu: [loong64]
     os: [linux]
 
-  '@esbuild/linux-mips64el@0.18.20':
-    resolution: {integrity: sha512-d5NeaXZcHp8PzYy5VnXV3VSd2D328Zb+9dEq5HE6bw6+N86JVPExrA6O68OPwobntbNJ0pzCpUFZTo3w0GyetQ==}
-    engines: {node: '>=12'}
-    cpu: [mips64el]
-    os: [linux]
-
   '@esbuild/linux-mips64el@0.21.5':
     resolution: {integrity: sha512-IajOmO+KJK23bj52dFSNCMsz1QP1DqM6cwLUv3W1QwyxkyIWecfafnI555fvSGqEKwjMXVLokcV5ygHW5b3Jbg==}
     engines: {node: '>=12'}
@@ -2527,12 +2453,6 @@ packages:
     resolution: {integrity: sha512-1RdrWFFiiLIW7LQq9Q2NES+HiD4NyT8Itj9AUeCl0IVCA459WnPhREKgwrpaIfTOe+/2rdntisegiPWn/r/aAw==}
     engines: {node: '>=18'}
     cpu: [mips64el]
-    os: [linux]
-
-  '@esbuild/linux-ppc64@0.18.20':
-    resolution: {integrity: sha512-WHPyeScRNcmANnLQkq6AfyXRFr5D6N2sKgkFo2FqguP44Nw2eyDlbTdZwd9GYk98DZG9QItIiTlFLHJHjxP3FA==}
-    engines: {node: '>=12'}
-    cpu: [ppc64]
     os: [linux]
 
   '@esbuild/linux-ppc64@0.21.5':
@@ -2547,12 +2467,6 @@ packages:
     cpu: [ppc64]
     os: [linux]
 
-  '@esbuild/linux-riscv64@0.18.20':
-    resolution: {integrity: sha512-WSxo6h5ecI5XH34KC7w5veNnKkju3zBRLEQNY7mv5mtBmrP/MjNBCAlsM2u5hDBlS3NGcTQpoBvRzqBcRtpq1A==}
-    engines: {node: '>=12'}
-    cpu: [riscv64]
-    os: [linux]
-
   '@esbuild/linux-riscv64@0.21.5':
     resolution: {integrity: sha512-2HdXDMd9GMgTGrPWnJzP2ALSokE/0O5HhTUvWIbD3YdjME8JwvSCnNGBnTThKGEB91OZhzrJ4qIIxk/SBmyDDA==}
     engines: {node: '>=12'}
@@ -2565,12 +2479,6 @@ packages:
     cpu: [riscv64]
     os: [linux]
 
-  '@esbuild/linux-s390x@0.18.20':
-    resolution: {integrity: sha512-+8231GMs3mAEth6Ja1iK0a1sQ3ohfcpzpRLH8uuc5/KVDFneH6jtAJLFGafpzpMRO6DzJ6AvXKze9LfFMrIHVQ==}
-    engines: {node: '>=12'}
-    cpu: [s390x]
-    os: [linux]
-
   '@esbuild/linux-s390x@0.21.5':
     resolution: {integrity: sha512-zus5sxzqBJD3eXxwvjN1yQkRepANgxE9lgOW2qLnmr8ikMTphkjgXu1HR01K4FJg8h1kEEDAqDcZQtbrRnB41A==}
     engines: {node: '>=12'}
@@ -2581,12 +2489,6 @@ packages:
     resolution: {integrity: sha512-+eUqgb/Z7vxVLezG8bVB9SfBie89gMueS+I0xYh2tJdw3vqA/0ImZJ2ROeWwVJN59ihBeZ7Tu92dF/5dy5FttA==}
     engines: {node: '>=18'}
     cpu: [s390x]
-    os: [linux]
-
-  '@esbuild/linux-x64@0.18.20':
-    resolution: {integrity: sha512-UYqiqemphJcNsFEskc73jQ7B9jgwjWrSayxawS6UVFZGWrAAtkzjxSqnoclCXxWtfwLdzU+vTpcNYhpn43uP1w==}
-    engines: {node: '>=12'}
-    cpu: [x64]
     os: [linux]
 
   '@esbuild/linux-x64@0.21.5':
@@ -2607,12 +2509,6 @@ packages:
     cpu: [arm64]
     os: [netbsd]
 
-  '@esbuild/netbsd-x64@0.18.20':
-    resolution: {integrity: sha512-iO1c++VP6xUBUmltHZoMtCUdPlnPGdBom6IrO4gyKPFFVBKioIImVooR5I83nTew5UOYrk3gIJhbZh8X44y06A==}
-    engines: {node: '>=12'}
-    cpu: [x64]
-    os: [netbsd]
-
   '@esbuild/netbsd-x64@0.21.5':
     resolution: {integrity: sha512-Woi2MXzXjMULccIwMnLciyZH4nCIMpWQAs049KEeMvOcNADVxo0UBIQPfSmxB3CWKedngg7sWZdLvLczpe0tLg==}
     engines: {node: '>=12'}
@@ -2629,12 +2525,6 @@ packages:
     resolution: {integrity: sha512-2MyL3IAaTX+1/qP0O1SwskwcwCoOI4kV2IBX1xYnDDqthmq5ArrW94qSIKCAuRraMgPOmG0RDTA74mzYNQA9ow==}
     engines: {node: '>=18'}
     cpu: [arm64]
-    os: [openbsd]
-
-  '@esbuild/openbsd-x64@0.18.20':
-    resolution: {integrity: sha512-e5e4YSsuQfX4cxcygw/UCPIEP6wbIL+se3sxPdCiMbFLBWu0eiZOJ7WoD+ptCLrmjZBK1Wk7I6D/I3NglUGOxg==}
-    engines: {node: '>=12'}
-    cpu: [x64]
     os: [openbsd]
 
   '@esbuild/openbsd-x64@0.21.5':
@@ -2655,12 +2545,6 @@ packages:
     cpu: [arm64]
     os: [openharmony]
 
-  '@esbuild/sunos-x64@0.18.20':
-    resolution: {integrity: sha512-kDbFRFp0YpTQVVrqUd5FTYmWo45zGaXe0X8E1G/LKFC0v8x0vWrhOWSLITcCn63lmZIxfOMXtCfti/RxN/0wnQ==}
-    engines: {node: '>=12'}
-    cpu: [x64]
-    os: [sunos]
-
   '@esbuild/sunos-x64@0.21.5':
     resolution: {integrity: sha512-6+gjmFpfy0BHU5Tpptkuh8+uw3mnrvgs+dSPQXQOv3ekbordwnzTVEb4qnIvQcYXq6gzkyTnoZ9dZG+D4garKg==}
     engines: {node: '>=12'}
@@ -2672,12 +2556,6 @@ packages:
     engines: {node: '>=18'}
     cpu: [x64]
     os: [sunos]
-
-  '@esbuild/win32-arm64@0.18.20':
-    resolution: {integrity: sha512-ddYFR6ItYgoaq4v4JmQQaAI5s7npztfV4Ag6NrhiaW0RrnOXqBkgwZLofVTlq1daVTQNhtI5oieTvkRPfZrePg==}
-    engines: {node: '>=12'}
-    cpu: [arm64]
-    os: [win32]
 
   '@esbuild/win32-arm64@0.21.5':
     resolution: {integrity: sha512-Z0gOTd75VvXqyq7nsl93zwahcTROgqvuAcYDUr+vOv8uHhNSKROyU961kgtCD1e95IqPKSQKH7tBTslnS3tA8A==}
@@ -2691,12 +2569,6 @@ packages:
     cpu: [arm64]
     os: [win32]
 
-  '@esbuild/win32-ia32@0.18.20':
-    resolution: {integrity: sha512-Wv7QBi3ID/rROT08SABTS7eV4hX26sVduqDOTe1MvGMjNd3EjOz4b7zeexIR62GTIEKrfJXKL9LFxTYgkyeu7g==}
-    engines: {node: '>=12'}
-    cpu: [ia32]
-    os: [win32]
-
   '@esbuild/win32-ia32@0.21.5':
     resolution: {integrity: sha512-SWXFF1CL2RVNMaVs+BBClwtfZSvDgtL//G/smwAc5oVK/UPu2Gu9tIaRgFmYFFKrmg3SyAjSrElf0TiJ1v8fYA==}
     engines: {node: '>=12'}
@@ -2707,12 +2579,6 @@ packages:
     resolution: {integrity: sha512-DAyGLS0Jz5G5iixEbMHi5KdiApqHBWMGzTtMiJ72ZOLhbu/bzxgAe8Ue8CTS3n3HbIUHQz/L51yMdGMeoxXNJw==}
     engines: {node: '>=18'}
     cpu: [ia32]
-    os: [win32]
-
-  '@esbuild/win32-x64@0.18.20':
-    resolution: {integrity: sha512-kTdfRcSiDfQca/y9QIkng02avJ+NCaQvrMejlsB3RRv5sE9rRoeBPISaZpKxHELzRxZyLvNts1P27W3wV+8geQ==}
-    engines: {node: '>=12'}
-    cpu: [x64]
     os: [win32]
 
   '@esbuild/win32-x64@0.21.5':
@@ -3945,10 +3811,6 @@ packages:
     resolution: {integrity: sha512-aN97NXWF6AWBTahfVOIrB/NShkzi5H7F9r1s9mD3cDj4Ko5f2qhhVoYMibXF7GlLveb/D2ioWay8lxI97Ven3g==}
     engines: {node: '>=0.12'}
 
-  entities@8.0.0:
-    resolution: {integrity: sha512-zwfzJecQ/Uej6tusMqwAqU/6KL2XaB2VZ2Jg54Je6ahNBGNH6Ek6g3jjNCF0fG9EWQKGZNddNjU5F1ZQn/sBnA==}
-    engines: {node: '>=20.19.0'}
-
   environment@1.1.0:
     resolution: {integrity: sha512-xUtoPkMggbz0MPyPiIWr1Kp4aeWJjDZ6SMvURhimjdZgsRuDplF5/s9hcgGhyXMhs+6vpnuoiZ2kFiu3FMnS8Q==}
     engines: {node: '>=18'}
@@ -3991,11 +3853,6 @@ packages:
   es6-symbol@3.1.4:
     resolution: {integrity: sha512-U9bFFjX8tFiATgtkJ1zg25+KviIXpgRvRHS8sau3GfhVzThRQrOeksPeT0BWW2MNZs1OEWJ1DPXOQMn0KKRkvg==}
     engines: {node: '>=0.12'}
-
-  esbuild@0.18.20:
-    resolution: {integrity: sha512-ceqxoedUrcayh7Y7ZX6NdbbDzGROiyVBgC4PriJThBKSVPWnnFHZAkfI1lJT8QFkOwH4qOS2SJkS4wvpGl8BpA==}
-    engines: {node: '>=12'}
-    hasBin: true
 
   esbuild@0.21.5:
     resolution: {integrity: sha512-mg3OPMV4hXywwpoDxu3Qda5xCKQi+vCTZq8S9J/EpkhB2HzKXq4SNFZE3+NK93JYxc8VMSep+lOUSC/RVKaBqw==}
@@ -4068,6 +3925,7 @@ packages:
   eslint@9.39.4:
     resolution: {integrity: sha512-XoMjdBOwe/esVgEvLmNsD3IRHkm7fbKIUGvrleloJXUZgDHig2IPWNniv+GwjyJXzuNqVjlr5+4yVUZjycJwfQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
     peerDependencies:
       jiti: '*'
@@ -4629,15 +4487,6 @@ packages:
       canvas:
         optional: true
 
-  jsdom@29.1.1:
-    resolution: {integrity: sha512-ECi4Fi2f7BdJtUKTflYRTiaMxIB0O6zfR1fX0GXpUrf6flp8QIYn1UT20YQqdSOfk2dfkCwS8LAFoJDEppNK5Q==}
-    engines: {node: ^20.19.0 || ^22.13.0 || >=24.0.0}
-    peerDependencies:
-      canvas: ^3.0.0
-    peerDependenciesMeta:
-      canvas:
-        optional: true
-
   jsfive@0.4.0:
     resolution: {integrity: sha512-3I3feGAFleVsChR4o4g9McAOa3bLlJ8af3oimjHt4nJNnmnbGROqRghb7m4VXNSZO8UbImN3UPc0uY2EZGIw6Q==}
 
@@ -4726,10 +4575,6 @@ packages:
 
   lru-cache@11.2.7:
     resolution: {integrity: sha512-aY/R+aEsRelme17KGQa/1ZSIpLpNYYrhcrepKTZgE+W3WM16YMCaPwOHLHsmopZHELU0Ojin1lPVxKR0MihncA==}
-    engines: {node: 20 || >=22}
-
-  lru-cache@11.5.1:
-    resolution: {integrity: sha512-RPimw/7aMdv2oqRrxKwvZXcPfwBrn/JZ2xYcY9Hus/6LaS3VOAKVWKWgNLCFSiOm1ESXinjsDlidVU7JlnCN2A==}
     engines: {node: 20 || >=22}
 
   lunr@2.3.9:
@@ -4996,9 +4841,6 @@ packages:
   parse5@8.0.0:
     resolution: {integrity: sha512-9m4m5GSgXjL4AjumKzq1Fgfp3Z8rsvjRNbnkVwfu2ImRqE5D0LnY2QfDen18FSY9C573YU5XxSapdHZTZ2WolA==}
 
-  parse5@8.0.1:
-    resolution: {integrity: sha512-z1e/HMG90obSGeidlli3hj7cbocou0/wa5HacvI3ASx34PecNjNQeaHNo5WIZpWofN9kgkqV1q5YvXe3F0FoPw==}
-
   path-browserify@1.0.1:
     resolution: {integrity: sha512-b7uo2UCUOYZcnF/3ID0lulOJi/bafxa1xPe7ZPsammBSpjSWQkjNxlt635YGS2MiR9GjvuXCtz2emr3jbsz98g==}
 
@@ -5260,11 +5102,6 @@ packages:
 
   rfdc@1.4.1:
     resolution: {integrity: sha512-q1b3N5QkRUWUl7iyylaaj3kOpIT0N2i9MqIEQXP73GVsN9cw3fdx8X63cEmWhJGi2PPCF23Ijp7ktmd39rawIA==}
-
-  rollup@3.30.0:
-    resolution: {integrity: sha512-kQvGasUgN+AlWGliFn2POSajRQEsULVYFGTvOZmK06d7vCD+YhZztt70kGk3qaeAXeWYL5eO7zx+rAubBc55eA==}
-    engines: {node: '>=14.18.0', npm: '>=8.0.0'}
-    hasBin: true
 
   rollup@4.59.0:
     resolution: {integrity: sha512-2oMpl67a3zCH9H79LeMcbDhXW/UmWG/y2zuqnF2jQq5uq9TbM9TVyXvA4+t+ne2IIkBdrLpAaRQAvo7YI/Yyeg==}
@@ -5732,10 +5569,6 @@ packages:
     resolution: {integrity: sha512-BM/JzwwaRXxrLdElV2Uo6cTLEjhSb3WXboncJamZ15NgUURmvlXvxa6xkwIOILIjPNo9i8ku136ZvWV0Uly8+w==}
     engines: {node: '>=20.18.1'}
 
-  undici@7.27.1:
-    resolution: {integrity: sha512-UDdpiex+mzigiyrXrGbiUaF4HzTNhKbh2vRNFaTMzcqmLIPrZxaCtwo/1TMSuWoM1Xz3WiTo9KdgI3kRqYzJGg==}
-    engines: {node: '>=20.18.1'}
-
   unicorn-magic@0.3.0:
     resolution: {integrity: sha512-+QBBXBCvifc56fsbuxZQ6Sic3wqqc3WWaqxs58gvJrcOuN83HGTCwz3oS5phzU9LthRNE9VrJCFCLUgHeeFnfA==}
     engines: {node: '>=18'}
@@ -5768,34 +5601,6 @@ packages:
     resolution: {integrity: sha512-YAXkfvGtuTzwWbDSACdJSg4A4DZiAqckWe90Zapc/sEX3XvHcw1NdurM/6od8J207tSDqNbSsgdCacBgvJKFuA==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
-
-  vite@4.5.14:
-    resolution: {integrity: sha512-+v57oAaoYNnO3hIu5Z/tJRZjq5aHM2zDve9YZ8HngVHbhk66RStobhb1sqPMIPEleV6cNKYK4eGrAbE9Ulbl2g==}
-    engines: {node: ^14.18.0 || >=16.0.0}
-    hasBin: true
-    peerDependencies:
-      '@types/node': '>= 14'
-      less: '*'
-      lightningcss: ^1.21.0
-      sass: '*'
-      stylus: '*'
-      sugarss: '*'
-      terser: ^5.4.0
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-      less:
-        optional: true
-      lightningcss:
-        optional: true
-      sass:
-        optional: true
-      stylus:
-        optional: true
-      sugarss:
-        optional: true
-      terser:
-        optional: true
 
   vite@5.4.11:
     resolution: {integrity: sha512-c7jFQRklXua0mTzneGW9QVyxFjUgwcihC4bXEtujIo2ouWCe1Ajt/amn2PCxYnhYfd5k09JX3SB7OYWFKYqj8Q==}
@@ -6053,15 +5858,6 @@ snapshots:
       '@csstools/css-tokenizer': 4.0.0
       lru-cache: 11.2.7
 
-  '@asamuzakjp/css-color@5.1.11':
-    dependencies:
-      '@asamuzakjp/generational-cache': 1.0.1
-      '@csstools/css-calc': 3.2.1(@csstools/css-parser-algorithms@4.0.0(@csstools/css-tokenizer@4.0.0))(@csstools/css-tokenizer@4.0.0)
-      '@csstools/css-color-parser': 4.1.1(@csstools/css-parser-algorithms@4.0.0(@csstools/css-tokenizer@4.0.0))(@csstools/css-tokenizer@4.0.0)
-      '@csstools/css-parser-algorithms': 4.0.0(@csstools/css-tokenizer@4.0.0)
-      '@csstools/css-tokenizer': 4.0.0
-    optional: true
-
   '@asamuzakjp/dom-selector@7.0.3':
     dependencies:
       '@asamuzakjp/nwsapi': 2.3.9
@@ -6069,18 +5865,6 @@ snapshots:
       css-tree: 3.2.1
       is-potential-custom-element-name: 1.0.1
       lru-cache: 11.2.7
-
-  '@asamuzakjp/dom-selector@7.1.1':
-    dependencies:
-      '@asamuzakjp/generational-cache': 1.0.1
-      '@asamuzakjp/nwsapi': 2.3.9
-      bidi-js: 1.0.3
-      css-tree: 3.2.1
-      is-potential-custom-element-name: 1.0.1
-    optional: true
-
-  '@asamuzakjp/generational-cache@1.0.1':
-    optional: true
 
   '@asamuzakjp/nwsapi@2.3.9': {}
 
@@ -6154,12 +5938,6 @@ snapshots:
       '@csstools/css-parser-algorithms': 4.0.0(@csstools/css-tokenizer@4.0.0)
       '@csstools/css-tokenizer': 4.0.0
 
-  '@csstools/css-calc@3.2.1(@csstools/css-parser-algorithms@4.0.0(@csstools/css-tokenizer@4.0.0))(@csstools/css-tokenizer@4.0.0)':
-    dependencies:
-      '@csstools/css-parser-algorithms': 4.0.0(@csstools/css-tokenizer@4.0.0)
-      '@csstools/css-tokenizer': 4.0.0
-    optional: true
-
   '@csstools/css-color-parser@3.1.0(@csstools/css-parser-algorithms@3.0.5(@csstools/css-tokenizer@3.0.4))(@csstools/css-tokenizer@3.0.4)':
     dependencies:
       '@csstools/color-helpers': 5.1.0
@@ -6174,14 +5952,6 @@ snapshots:
       '@csstools/css-parser-algorithms': 4.0.0(@csstools/css-tokenizer@4.0.0)
       '@csstools/css-tokenizer': 4.0.0
 
-  '@csstools/css-color-parser@4.1.1(@csstools/css-parser-algorithms@4.0.0(@csstools/css-tokenizer@4.0.0))(@csstools/css-tokenizer@4.0.0)':
-    dependencies:
-      '@csstools/color-helpers': 6.0.2
-      '@csstools/css-calc': 3.2.1(@csstools/css-parser-algorithms@4.0.0(@csstools/css-tokenizer@4.0.0))(@csstools/css-tokenizer@4.0.0)
-      '@csstools/css-parser-algorithms': 4.0.0(@csstools/css-tokenizer@4.0.0)
-      '@csstools/css-tokenizer': 4.0.0
-    optional: true
-
   '@csstools/css-parser-algorithms@3.0.5(@csstools/css-tokenizer@3.0.4)':
     dependencies:
       '@csstools/css-tokenizer': 3.0.4
@@ -6194,11 +5964,6 @@ snapshots:
     optionalDependencies:
       css-tree: 3.2.1
 
-  '@csstools/css-syntax-patches-for-csstree@1.1.5(css-tree@3.2.1)':
-    optionalDependencies:
-      css-tree: 3.2.1
-    optional: true
-
   '@csstools/css-tokenizer@3.0.4': {}
 
   '@csstools/css-tokenizer@4.0.0': {}
@@ -6209,16 +5974,10 @@ snapshots:
   '@esbuild/aix-ppc64@0.27.4':
     optional: true
 
-  '@esbuild/android-arm64@0.18.20':
-    optional: true
-
   '@esbuild/android-arm64@0.21.5':
     optional: true
 
   '@esbuild/android-arm64@0.27.4':
-    optional: true
-
-  '@esbuild/android-arm@0.18.20':
     optional: true
 
   '@esbuild/android-arm@0.21.5':
@@ -6227,16 +5986,10 @@ snapshots:
   '@esbuild/android-arm@0.27.4':
     optional: true
 
-  '@esbuild/android-x64@0.18.20':
-    optional: true
-
   '@esbuild/android-x64@0.21.5':
     optional: true
 
   '@esbuild/android-x64@0.27.4':
-    optional: true
-
-  '@esbuild/darwin-arm64@0.18.20':
     optional: true
 
   '@esbuild/darwin-arm64@0.21.5':
@@ -6245,16 +5998,10 @@ snapshots:
   '@esbuild/darwin-arm64@0.27.4':
     optional: true
 
-  '@esbuild/darwin-x64@0.18.20':
-    optional: true
-
   '@esbuild/darwin-x64@0.21.5':
     optional: true
 
   '@esbuild/darwin-x64@0.27.4':
-    optional: true
-
-  '@esbuild/freebsd-arm64@0.18.20':
     optional: true
 
   '@esbuild/freebsd-arm64@0.21.5':
@@ -6263,16 +6010,10 @@ snapshots:
   '@esbuild/freebsd-arm64@0.27.4':
     optional: true
 
-  '@esbuild/freebsd-x64@0.18.20':
-    optional: true
-
   '@esbuild/freebsd-x64@0.21.5':
     optional: true
 
   '@esbuild/freebsd-x64@0.27.4':
-    optional: true
-
-  '@esbuild/linux-arm64@0.18.20':
     optional: true
 
   '@esbuild/linux-arm64@0.21.5':
@@ -6281,16 +6022,10 @@ snapshots:
   '@esbuild/linux-arm64@0.27.4':
     optional: true
 
-  '@esbuild/linux-arm@0.18.20':
-    optional: true
-
   '@esbuild/linux-arm@0.21.5':
     optional: true
 
   '@esbuild/linux-arm@0.27.4':
-    optional: true
-
-  '@esbuild/linux-ia32@0.18.20':
     optional: true
 
   '@esbuild/linux-ia32@0.21.5':
@@ -6299,16 +6034,10 @@ snapshots:
   '@esbuild/linux-ia32@0.27.4':
     optional: true
 
-  '@esbuild/linux-loong64@0.18.20':
-    optional: true
-
   '@esbuild/linux-loong64@0.21.5':
     optional: true
 
   '@esbuild/linux-loong64@0.27.4':
-    optional: true
-
-  '@esbuild/linux-mips64el@0.18.20':
     optional: true
 
   '@esbuild/linux-mips64el@0.21.5':
@@ -6317,16 +6046,10 @@ snapshots:
   '@esbuild/linux-mips64el@0.27.4':
     optional: true
 
-  '@esbuild/linux-ppc64@0.18.20':
-    optional: true
-
   '@esbuild/linux-ppc64@0.21.5':
     optional: true
 
   '@esbuild/linux-ppc64@0.27.4':
-    optional: true
-
-  '@esbuild/linux-riscv64@0.18.20':
     optional: true
 
   '@esbuild/linux-riscv64@0.21.5':
@@ -6335,16 +6058,10 @@ snapshots:
   '@esbuild/linux-riscv64@0.27.4':
     optional: true
 
-  '@esbuild/linux-s390x@0.18.20':
-    optional: true
-
   '@esbuild/linux-s390x@0.21.5':
     optional: true
 
   '@esbuild/linux-s390x@0.27.4':
-    optional: true
-
-  '@esbuild/linux-x64@0.18.20':
     optional: true
 
   '@esbuild/linux-x64@0.21.5':
@@ -6356,9 +6073,6 @@ snapshots:
   '@esbuild/netbsd-arm64@0.27.4':
     optional: true
 
-  '@esbuild/netbsd-x64@0.18.20':
-    optional: true
-
   '@esbuild/netbsd-x64@0.21.5':
     optional: true
 
@@ -6366,9 +6080,6 @@ snapshots:
     optional: true
 
   '@esbuild/openbsd-arm64@0.27.4':
-    optional: true
-
-  '@esbuild/openbsd-x64@0.18.20':
     optional: true
 
   '@esbuild/openbsd-x64@0.21.5':
@@ -6380,16 +6091,10 @@ snapshots:
   '@esbuild/openharmony-arm64@0.27.4':
     optional: true
 
-  '@esbuild/sunos-x64@0.18.20':
-    optional: true
-
   '@esbuild/sunos-x64@0.21.5':
     optional: true
 
   '@esbuild/sunos-x64@0.27.4':
-    optional: true
-
-  '@esbuild/win32-arm64@0.18.20':
     optional: true
 
   '@esbuild/win32-arm64@0.21.5':
@@ -6398,16 +6103,10 @@ snapshots:
   '@esbuild/win32-arm64@0.27.4':
     optional: true
 
-  '@esbuild/win32-ia32@0.18.20':
-    optional: true
-
   '@esbuild/win32-ia32@0.21.5':
     optional: true
 
   '@esbuild/win32-ia32@0.27.4':
-    optional: true
-
-  '@esbuild/win32-x64@0.18.20':
     optional: true
 
   '@esbuild/win32-x64@0.21.5':
@@ -6996,25 +6695,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitest/coverage-v8@1.6.0(vitest@1.6.0(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3)))':
-    dependencies:
-      '@ampproject/remapping': 2.3.0
-      '@bcoe/v8-coverage': 0.2.3
-      debug: 4.4.3
-      istanbul-lib-coverage: 3.2.2
-      istanbul-lib-report: 3.0.1
-      istanbul-lib-source-maps: 5.0.6
-      istanbul-reports: 3.2.0
-      magic-string: 0.30.21
-      magicast: 0.3.5
-      picocolors: 1.1.1
-      std-env: 3.10.0
-      strip-literal: 2.1.1
-      test-exclude: 6.0.0
-      vitest: 1.6.0(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
-    transitivePeerDependencies:
-      - supports-color
-
   '@vitest/coverage-v8@1.6.0(vitest@1.6.1(@types/node@20.19.37)(jsdom@24.1.3(canvas@3.2.3)))':
     dependencies:
       '@ampproject/remapping': 2.3.0
@@ -7034,7 +6714,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitest/coverage-v8@1.6.0(vitest@1.6.1(@types/node@22.19.15)(jsdom@29.1.1(canvas@3.2.3)))':
+  '@vitest/coverage-v8@1.6.0(vitest@1.6.1(@types/node@22.19.15)(jsdom@29.0.0(canvas@3.2.3)))':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 0.2.3
@@ -7049,11 +6729,11 @@ snapshots:
       std-env: 3.10.0
       strip-literal: 2.1.1
       test-exclude: 6.0.0
-      vitest: 1.6.1(@types/node@22.19.15)(jsdom@29.1.1(canvas@3.2.3))
+      vitest: 1.6.1(@types/node@22.19.15)(jsdom@29.0.0(canvas@3.2.3))
     transitivePeerDependencies:
       - supports-color
 
-  '@vitest/coverage-v8@1.6.0(vitest@1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3)))':
+  '@vitest/coverage-v8@1.6.0(vitest@1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3)))':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 0.2.3
@@ -7068,7 +6748,7 @@ snapshots:
       std-env: 3.10.0
       strip-literal: 2.1.1
       test-exclude: 6.0.0
-      vitest: 1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3))
+      vitest: 1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3))
     transitivePeerDependencies:
       - supports-color
 
@@ -7669,9 +7349,6 @@ snapshots:
 
   entities@6.0.1: {}
 
-  entities@8.0.0:
-    optional: true
-
   environment@1.1.0: {}
 
   es-abstract@1.24.1:
@@ -7773,31 +7450,6 @@ snapshots:
     dependencies:
       d: 1.0.2
       ext: 1.7.0
-
-  esbuild@0.18.20:
-    optionalDependencies:
-      '@esbuild/android-arm': 0.18.20
-      '@esbuild/android-arm64': 0.18.20
-      '@esbuild/android-x64': 0.18.20
-      '@esbuild/darwin-arm64': 0.18.20
-      '@esbuild/darwin-x64': 0.18.20
-      '@esbuild/freebsd-arm64': 0.18.20
-      '@esbuild/freebsd-x64': 0.18.20
-      '@esbuild/linux-arm': 0.18.20
-      '@esbuild/linux-arm64': 0.18.20
-      '@esbuild/linux-ia32': 0.18.20
-      '@esbuild/linux-loong64': 0.18.20
-      '@esbuild/linux-mips64el': 0.18.20
-      '@esbuild/linux-ppc64': 0.18.20
-      '@esbuild/linux-riscv64': 0.18.20
-      '@esbuild/linux-s390x': 0.18.20
-      '@esbuild/linux-x64': 0.18.20
-      '@esbuild/netbsd-x64': 0.18.20
-      '@esbuild/openbsd-x64': 0.18.20
-      '@esbuild/sunos-x64': 0.18.20
-      '@esbuild/win32-arm64': 0.18.20
-      '@esbuild/win32-ia32': 0.18.20
-      '@esbuild/win32-x64': 0.18.20
 
   esbuild@0.21.5:
     optionalDependencies:
@@ -8579,35 +8231,6 @@ snapshots:
     transitivePeerDependencies:
       - '@noble/hashes'
 
-  jsdom@29.1.1(canvas@3.2.3):
-    dependencies:
-      '@asamuzakjp/css-color': 5.1.11
-      '@asamuzakjp/dom-selector': 7.1.1
-      '@bramus/specificity': 2.4.2
-      '@csstools/css-syntax-patches-for-csstree': 1.1.5(css-tree@3.2.1)
-      '@exodus/bytes': 1.15.0
-      css-tree: 3.2.1
-      data-urls: 7.0.0
-      decimal.js: 10.6.0
-      html-encoding-sniffer: 6.0.0
-      is-potential-custom-element-name: 1.0.1
-      lru-cache: 11.5.1
-      parse5: 8.0.1
-      saxes: 6.0.0
-      symbol-tree: 3.2.4
-      tough-cookie: 6.0.1
-      undici: 7.27.1
-      w3c-xmlserializer: 5.0.0
-      webidl-conversions: 8.0.1
-      whatwg-mimetype: 5.0.0
-      whatwg-url: 16.0.1
-      xml-name-validator: 5.0.0
-    optionalDependencies:
-      canvas: 3.2.3
-    transitivePeerDependencies:
-      - '@noble/hashes'
-    optional: true
-
   jsfive@0.4.0:
     dependencies:
       pako: 2.1.0
@@ -8712,9 +8335,6 @@ snapshots:
   lru-cache@10.4.3: {}
 
   lru-cache@11.2.7: {}
-
-  lru-cache@11.5.1:
-    optional: true
 
   lunr@2.3.9: {}
 
@@ -8973,11 +8593,6 @@ snapshots:
   parse5@8.0.0:
     dependencies:
       entities: 6.0.1
-
-  parse5@8.0.1:
-    dependencies:
-      entities: 8.0.0
-    optional: true
 
   path-browserify@1.0.1: {}
 
@@ -9246,10 +8861,6 @@ snapshots:
   reusify@1.1.0: {}
 
   rfdc@1.4.1: {}
-
-  rollup@3.30.0:
-    optionalDependencies:
-      fsevents: 2.3.3
 
   rollup@4.59.0:
     dependencies:
@@ -9821,9 +9432,6 @@ snapshots:
 
   undici@7.24.4: {}
 
-  undici@7.27.1:
-    optional: true
-
   unicorn-magic@0.3.0: {}
 
   universalify@0.2.0: {}
@@ -9917,15 +9525,6 @@ snapshots:
       - supports-color
       - terser
 
-  vite@4.5.14(@types/node@25.5.0):
-    dependencies:
-      esbuild: 0.18.20
-      postcss: 8.5.8
-      rollup: 3.30.0
-    optionalDependencies:
-      '@types/node': 25.5.0
-      fsevents: 2.3.3
-
   vite@5.4.11(@types/node@20.19.37):
     dependencies:
       esbuild: 0.21.5
@@ -9997,41 +9596,6 @@ snapshots:
       - supports-color
       - terser
 
-  vitest@1.6.0(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3)):
-    dependencies:
-      '@vitest/expect': 1.6.0
-      '@vitest/runner': 1.6.0
-      '@vitest/snapshot': 1.6.0
-      '@vitest/spy': 1.6.0
-      '@vitest/utils': 1.6.0
-      acorn-walk: 8.3.5
-      chai: 4.5.0
-      debug: 4.4.3
-      execa: 8.0.1
-      local-pkg: 0.5.1
-      magic-string: 0.30.21
-      pathe: 1.1.2
-      picocolors: 1.1.1
-      std-env: 3.10.0
-      strip-literal: 2.1.1
-      tinybench: 2.9.0
-      tinypool: 0.8.4
-      vite: 5.4.11(@types/node@25.5.0)
-      vite-node: 1.6.0(@types/node@25.5.0)
-      why-is-node-running: 2.3.0
-    optionalDependencies:
-      '@types/node': 25.5.0
-      jsdom: 29.1.1(canvas@3.2.3)
-    transitivePeerDependencies:
-      - less
-      - lightningcss
-      - sass
-      - sass-embedded
-      - stylus
-      - sugarss
-      - supports-color
-      - terser
-
   vitest@1.6.1(@types/node@20.19.37)(jsdom@24.1.3(canvas@3.2.3)):
     dependencies:
       '@vitest/expect': 1.6.1
@@ -10067,7 +9631,7 @@ snapshots:
       - supports-color
       - terser
 
-  vitest@1.6.1(@types/node@20.19.37)(jsdom@29.1.1(canvas@3.2.3)):
+  vitest@1.6.1(@types/node@20.19.37)(jsdom@29.0.0(canvas@3.2.3)):
     dependencies:
       '@vitest/expect': 1.6.1
       '@vitest/runner': 1.6.1
@@ -10091,7 +9655,7 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 20.19.37
-      jsdom: 29.1.1(canvas@3.2.3)
+      jsdom: 29.0.0(canvas@3.2.3)
     transitivePeerDependencies:
       - less
       - lightningcss
@@ -10102,7 +9666,7 @@ snapshots:
       - supports-color
       - terser
 
-  vitest@1.6.1(@types/node@22.19.15)(jsdom@29.1.1(canvas@3.2.3)):
+  vitest@1.6.1(@types/node@22.19.15)(jsdom@29.0.0(canvas@3.2.3)):
     dependencies:
       '@vitest/expect': 1.6.1
       '@vitest/runner': 1.6.1
@@ -10126,7 +9690,7 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 22.19.15
-      jsdom: 29.1.1(canvas@3.2.3)
+      jsdom: 29.0.0(canvas@3.2.3)
     transitivePeerDependencies:
       - less
       - lightningcss
@@ -10172,7 +9736,7 @@ snapshots:
       - supports-color
       - terser
 
-  vitest@1.6.1(@types/node@25.5.0)(jsdom@29.1.1(canvas@3.2.3)):
+  vitest@1.6.1(@types/node@25.5.0)(jsdom@29.0.0(canvas@3.2.3)):
     dependencies:
       '@vitest/expect': 1.6.1
       '@vitest/runner': 1.6.1
@@ -10196,7 +9760,7 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 25.5.0
-      jsdom: 29.1.1(canvas@3.2.3)
+      jsdom: 29.0.0(canvas@3.2.3)
     transitivePeerDependencies:
       - less
       - lightningcss

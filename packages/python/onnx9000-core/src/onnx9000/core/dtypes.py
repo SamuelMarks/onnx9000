@@ -1,8 +1,9 @@
-"""Module providing core logic and structural definitions."""
+"""Implementation of dtypes (onnx9000 / core / dtypes.py) providing DType, to_cpp_type, to_emscripten_type."""
 
 import enum
 
 from onnx9000.core import onnx_pb2
+from onnx9000.core.exceptions import Onnx9000Error
 
 
 class DType(enum.Enum):
@@ -33,6 +34,23 @@ class DType(enum.Enum):
     INT4 = getattr(onnx_pb2.TensorProto, "INT4", 21)
     UINT4 = getattr(onnx_pb2.TensorProto, "UINT4", 22)
 
+    @property
+    def itemsize(self) -> int:
+        """Return the byte size of a single element of this data type."""
+        sizes = {
+            DType.FLOAT64: 8,
+            DType.INT64: 8,
+            DType.UINT64: 8,
+            DType.FLOAT32: 4,
+            DType.INT32: 4,
+            DType.UINT32: 4,
+            DType.FLOAT16: 2,
+            DType.BFLOAT16: 2,
+            DType.INT16: 2,
+            DType.UINT16: 2,
+        }
+        return sizes.get(self, 1)
+
 
 def to_cpp_type(dtype: DType) -> str:
     """Convert a DType to its corresponding native C++ type string."""
@@ -53,7 +71,7 @@ def to_cpp_type(dtype: DType) -> str:
         DType.BFLOAT16: "uint16_t",
     }
     if dtype not in mapping:
-        raise ValueError(f"No C++ type mapped for DType: {dtype}")
+        raise Onnx9000Error(f"No C++ type mapped for DType: {dtype}")
     return mapping[dtype]
 
 
@@ -75,5 +93,5 @@ def to_emscripten_type(dtype: DType) -> str:
         DType.BFLOAT16: "Uint16Array",
     }
     if dtype not in mapping:
-        raise ValueError(f"No Emscripten TypedArray mapped for DType: {dtype}")
+        raise Onnx9000Error(f"No Emscripten TypedArray mapped for DType: {dtype}")
     return mapping[dtype]

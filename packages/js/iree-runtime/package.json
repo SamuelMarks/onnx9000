@@ -18,5 +18,8 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "dependencies": {
+    "@onnx9000/core": "workspace:*"
   }
 }

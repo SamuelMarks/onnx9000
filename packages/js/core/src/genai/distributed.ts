@@ -1,3 +1,6 @@
+/**
+ * @fileoverview distributed module for core.
+ */
 /** Placeholder for tensor-level model parallelism. */
 export class TensorParallelism {}
 /** Placeholder for synchronizing execution across multiple devices. */

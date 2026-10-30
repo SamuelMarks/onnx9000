@@ -1,20 +1,23 @@
 /**
+ * @fileoverview node module for core.
+ */
+/**
  * Enumeration of ONNX attribute types.
  */
 export type AttributeType =
-  | "FLOAT"
-  | "INT"
-  | "STRING"
-  | "TENSOR"
-  | "GRAPH"
-  | "FLOATS"
-  | "INTS"
-  | "STRINGS"
-  | "TENSORS"
-  | "GRAPHS"
-  | "SPARSE_TENSOR"
-  | "SPARSE_TENSORS"
-  | "UNKNOWN";
+  | 'FLOAT'
+  | 'INT'
+  | 'STRING'
+  | 'TENSOR'
+  | 'GRAPH'
+  | 'FLOATS'
+  | 'INTS'
+  | 'STRINGS'
+  | 'TENSORS'
+  | 'GRAPHS'
+  | 'SPARSE_TENSOR'
+  | 'SPARSE_TENSORS'
+  | 'UNKNOWN';
 
 /**
  * Union of all possible attribute value types.
@@ -23,11 +26,14 @@ export type AttributeValue =
   | number
   | bigint
   | string
+  | boolean
   | number[]
   | bigint[]
   | string[]
+  | boolean[]
   | object
-  | null;
+  | null
+  | undefined;
 
 /**
  * Represents an attribute in an ONNX node.
@@ -89,12 +95,12 @@ export class Node {
     inputs: string[],
     outputs: string[],
     attributes: Record<string, Attribute> = {},
-    name: string = "",
-    domain: string = "",
-    docString: string = "",
+    name: string = '',
+    domain: string = '',
+    docString: string = '',
   ) {
     this.id =
-      typeof crypto !== "undefined" && crypto.randomUUID
+      typeof crypto !== 'undefined' && crypto.randomUUID
         ? crypto.randomUUID()
         : Math.random().toString(36).substring(2);
     this.opType = opType;

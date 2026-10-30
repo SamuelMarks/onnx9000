@@ -2,30 +2,39 @@
  * @fileoverview converter.ts
  * Provides converter functionality for the coreml package.
  */
-import type {
-  DType,
-  Graph as ONNXGraph,
-  Node as ONNXNode,
-  Shape,
-} from "@onnx9000/core";
-import type { Program, Var } from "./mil/ast.js";
-import { implementDynamicBatching } from "./mil/batching.js";
-import { Builder } from "./mil/builder.js";
-import { DoubleDowncastWarning, UnsupportedOpError } from "./mil/errors.js";
 
-import { detectAndMapGenAITopologies } from "./mil/genai.js";
-import { lintMILProgram } from "./mil/linter.js";
-import { MILDataType, type MILType } from "./mil/types.js";
+import type { DType, Graph as ONNXGraph, Node as ONNXNode, Shape } from '@onnx9000/core';
+import { Onnx9000Error } from '@onnx9000/core';
+import type { Program, Var } from './mil/ast.js';
+import { implementDynamicBatching } from './mil/batching.js';
+import { Builder } from './mil/builder.js';
+import { DoubleDowncastWarning, UnsupportedOpError } from './mil/errors.js';
 
+import { detectAndMapGenAITopologies } from './mil/genai.js';
+import { lintMILProgram } from './mil/linter.js';
+import { MILDataType, type MILType } from './mil/types.js';
+
+/** Represents the `ONNXToMILConverter` class. */
 export class ONNXToMILConverter {
+  /** Property `builder` of `ONNXToMILConverter`. */
   private builder = new Builder();
+  /** Property `varMap` of `ONNXToMILConverter`. */
   private varMap = new Map<string, Var>();
 
+  /**
+   * Initializes a new `ONNXToMILConverter` instance.
+   * @param graph Parameter `graph`.
+   * @param options Parameter `options`.
+   */
   constructor(
     private graph: ONNXGraph,
     private options: { dynamicBatching?: boolean } = {},
   ) {}
 
+  /**
+   * Executes `convert` on `ONNXToMILConverter`.
+   * @returns Result of `convert`.
+   */
   convert(): Program {
     const inputs: Var[] = [];
     const outputs: Var[] = [];
@@ -39,16 +48,17 @@ export class ONNXToMILConverter {
     }
 
     // Create function and main block
-    const fn = this.builder.createFunction("main", inputs, outputs);
-    const block = this.builder.createBlock("block0");
+    const fn = this.builder.createFunction('main', inputs, outputs);
+    const block = this.builder.createBlock('block0');
 
     // Map initializers to const ops
     for (const name of this.graph.initializers) {
-      const tensor = this.graph.tensors[name]!;
+      const tensor = this.graph.tensors[name];
+      if (!tensor) continue;
       const type = this.mapONNXTypeToMILType(tensor.dtype, tensor.shape);
       const outVar = this.builder.createVar(name, type);
       this.varMap.set(name, outVar);
-      this.builder.addOp("const", { val: outVar }, [outVar], {
+      this.builder.addOp('const', { val: outVar }, [outVar], {
         value: tensor.data,
       });
     }
@@ -65,7 +75,7 @@ export class ONNXToMILConverter {
         outputs.push(v);
         block.outputs.push(v);
       } else {
-        throw new Error(`Output ${output.name} not found in MIL graph`);
+        throw new Onnx9000Error(`Output ${output.name} not found in MIL graph`);
       }
     }
 
@@ -84,6 +94,10 @@ export class ONNXToMILConverter {
     return program;
   }
 
+  /**
+   * Executes `translateNode` on `ONNXToMILConverter`.
+   * @param node Parameter `node`.
+   */
   private translateNode(node: ONNXNode): void {
     const inputVars: Record<string, Var | Var[]> = {};
 
@@ -111,7 +125,7 @@ export class ONNXToMILConverter {
       this.recordTelemetryFailure(node.opType);
       throw new UnsupportedOpError(
         node.opType,
-        "Operation is completely unsupported in current MIL translation phase",
+        'Operation is completely unsupported in current MIL translation phase',
       );
     }
 
@@ -121,12 +135,12 @@ export class ONNXToMILConverter {
     }
 
     // Phase 4: Handle Padding modes
-    if (node.opType === "Pad") {
-      attributes.mode = attributes.mode || "constant";
+    if (node.opType === 'Pad') {
+      attributes.mode = attributes.mode || 'constant';
     } else if (
-      node.opType === "Conv" ||
-      node.opType === "MaxPool" ||
-      node.opType === "AveragePool"
+      node.opType === 'Conv' ||
+      node.opType === 'MaxPool' ||
+      node.opType === 'AveragePool'
     ) {
       // Phase 5: Convolutions and Pooling parameters
       if (attributes.group !== undefined) {
@@ -136,29 +150,28 @@ export class ONNXToMILConverter {
       if (attributes.auto_pad) {
         // Map SAME_UPPER, SAME_LOWER, VALID
         const autoPad = attributes.auto_pad as string;
-        if (autoPad === "SAME_UPPER" || autoPad === "SAME_LOWER") {
-          attributes.pad_type = "same";
-        } else if (autoPad === "VALID") {
-          attributes.pad_type = "valid";
+        if (autoPad === 'SAME_UPPER' || autoPad === 'SAME_LOWER') {
+          attributes.pad_type = 'same';
+        } else if (autoPad === 'VALID') {
+          attributes.pad_type = 'valid';
         }
       }
     } else if (
-      node.opType === "BatchNormalization" ||
-      node.opType === "LayerNormalization" ||
-      node.opType === "InstanceNormalization"
+      node.opType === 'BatchNormalization' ||
+      node.opType === 'LayerNormalization' ||
+      node.opType === 'InstanceNormalization'
     ) {
       // Phase 5: Epsilon (already passed verbatim if available)
-    } else if (node.opType === "Resize") {
+    } else if (node.opType === 'Resize') {
       // 125. Parse coordinate transformation modes
-      const mode =
-        (attributes.coordinate_transformation_mode as string) || "half_pixel";
-      const interp = (attributes.mode as string) || "nearest";
+      const mode = (attributes.coordinate_transformation_mode as string) || 'half_pixel';
+      const interp = (attributes.mode as string) || 'nearest';
 
-      attributes.sampling_mode = interp === "linear" ? "bilinear" : "nearest";
+      attributes.sampling_mode = interp === 'linear' ? 'bilinear' : 'nearest';
       // coreml uses different defaults, map ONNX align_corners and half_pixel
-      if (mode === "align_corners") {
+      if (mode === 'align_corners') {
         attributes.align_corners = true;
-      } else if (mode === "half_pixel") {
+      } else if (mode === 'half_pixel') {
         attributes.half_pixel_centers = true;
       }
     }
@@ -178,15 +191,11 @@ export class ONNXToMILConverter {
     }
 
     // Phase 7: RNNs, GRU, LSTM sequence mappings
-    if (
-      node.opType === "LSTM" ||
-      node.opType === "GRU" ||
-      node.opType === "RNN"
-    ) {
+    if (node.opType === 'LSTM' || node.opType === 'GRU' || node.opType === 'RNN') {
       if (attributes.direction) {
         attributes.direction = (attributes.direction as string).toLowerCase();
       } else {
-        attributes.direction = "forward"; // default
+        attributes.direction = 'forward'; // default
       }
 
       if (attributes.layout !== undefined) {
@@ -199,11 +208,7 @@ export class ONNXToMILConverter {
     }
 
     // Phase 7: Handle Nested subgraphs (If, Loop) for acyclic check
-    if (
-      node.opType === "If" ||
-      node.opType === "Loop" ||
-      node.opType === "Scan"
-    ) {
+    if (node.opType === 'If' || node.opType === 'Loop' || node.opType === 'Scan') {
       // 171. Provide warning traces for control flow conversion potentially impacting ANE performance.
       console.warn(
         `Warning: Dynamic control flow (${node.opType}) forces execution back to CPU/GPU on earlier iOS versions, potentially bypassing ANE.`,
@@ -211,7 +216,7 @@ export class ONNXToMILConverter {
 
       // 170. Handle static unrolling of loops
       // 173. Handle ONNX Scan operation by unrolling it dynamically
-      if (node.opType === "Loop" || node.opType === "Scan") {
+      if (node.opType === 'Loop' || node.opType === 'Scan') {
         attributes.statically_unrolled = true; // placeholder for unroll logic
       }
 
@@ -220,8 +225,8 @@ export class ONNXToMILConverter {
 
       // Check acyclic on nested subgraphs if available
       for (const key in node.attributes) {
-        const attr = node.attributes[key]!;
-        if (attr.type === "GRAPH" && attr.value) {
+        const attr = node.attributes[key];
+        if (attr && attr.type === 'GRAPH' && attr.value) {
           // We would build and validate the nested MIL block here.
           // const subgraphConverter = new ONNXToMILConverter(attr.value as ONNXGraph);
           // subgraphConverter.convert();
@@ -238,20 +243,30 @@ export class ONNXToMILConverter {
     this.builder.addOp(milOpType, inputVars, outputVars, attributes);
   }
 
+  /**
+   * Executes `recordTelemetryFailure` on `ONNXToMILConverter`.
+   * @param opType Parameter `opType`.
+   */
   private recordTelemetryFailure(opType: string): void {
     // Basic telemetry stub checking local environments
-    if (typeof process !== "undefined" && process.env.ONNX9000_TELEMETRY) {
+    if (typeof process !== 'undefined' && process.env.ONNX9000_TELEMETRY) {
       console.warn(`[TELEMETRY] Failed to translate operator: ${opType}`);
     }
   }
 
+  /**
+   * Executes `mapONNXTypeToMILType` on `ONNXToMILConverter`.
+   * @param dtype Parameter `dtype`.
+   * @param shape Parameter `shape`.
+   * @returns Result of `mapONNXTypeToMILType`.
+   */
   private mapONNXTypeToMILType(dtype: DType, shape: Shape): MILType {
     let milType = MILDataType.FLOAT32;
-    if (dtype === "float16") milType = MILDataType.FLOAT16;
-    else if (dtype === "int32") milType = MILDataType.INT32;
-    else if (dtype === "int64") milType = MILDataType.INT64;
-    else if (dtype === "bool") milType = MILDataType.BOOL;
-    else if (dtype === "float64") {
+    if (dtype === 'float16') milType = MILDataType.FLOAT16;
+    else if (dtype === 'int32') milType = MILDataType.INT32;
+    else if (dtype === 'int64') milType = MILDataType.INT64;
+    else if (dtype === 'bool') milType = MILDataType.BOOL;
+    else if (dtype === 'float64') {
       console.warn(new DoubleDowncastWarning().message);
       milType = MILDataType.FLOAT32;
     }
@@ -259,117 +274,122 @@ export class ONNXToMILConverter {
     return this.builder.tensor(milType, shape);
   }
 
+  /**
+   * Executes `mapONNXOpToMILOp` on `ONNXToMILConverter`.
+   * @param onnxOpType Parameter `onnxOpType`.
+   * @returns Result of `mapONNXOpToMILOp`.
+   */
   private mapONNXOpToMILOp(onnxOpType: string): string | null {
     const map: Record<string, string> = {
       // Phase 3
-      Add: "add",
-      Sub: "sub",
-      Mul: "mul",
-      Div: "real_div", // Handle floor_div elsewhere based on type if needed
-      Pow: "pow",
-      Abs: "abs",
-      Ceil: "ceil",
-      Floor: "floor",
-      Round: "round",
-      Exp: "exp",
-      Log: "log",
-      Sqrt: "sqrt",
-      Sin: "sin",
-      Identity: "identity",
-      Cos: "cos",
-      Tan: "tan",
-      Asin: "asin",
-      Acos: "acos",
-      Atan: "atan",
-      Sign: "sign",
-      Mod: "mod",
-      Max: "maximum",
-      Min: "minimum",
-      Erf: "erf",
-      IsNaN: "isnan",
-      IsInf: "isinf",
+      Add: 'add',
+      Sub: 'sub',
+      Mul: 'mul',
+      Div: 'real_div', // Handle floor_div elsewhere based on type if needed
+      Pow: 'pow',
+      Abs: 'abs',
+      Ceil: 'ceil',
+      Floor: 'floor',
+      Round: 'round',
+      Exp: 'exp',
+      Log: 'log',
+      Sqrt: 'sqrt',
+      Sin: 'sin',
+      Identity: 'identity',
+      Cos: 'cos',
+      Tan: 'tan',
+      Asin: 'asin',
+      Acos: 'acos',
+      Atan: 'atan',
+      Sign: 'sign',
+      Mod: 'mod',
+      Max: 'maximum',
+      Min: 'minimum',
+      Erf: 'erf',
+      IsNaN: 'isnan',
+      IsInf: 'isinf',
 
       // Phase 4
 
-      Reshape: "reshape",
-      Transpose: "transpose",
-      Concat: "concat",
-      Slice: "slice_by_index", // dynamic slicing is slice_by_size
-      Split: "split",
-      Squeeze: "squeeze",
-      Unsqueeze: "expand_dims",
-      Gather: "gather",
-      GatherElements: "gather_along_axis",
-      GatherND: "gather_nd",
-      Scatter: "scatter",
-      ScatterElements: "scatter_along_axis",
-      ScatterND: "scatter_nd",
-      Tile: "tile",
-      Pad: "pad",
-      Expand: "broadcast_to",
-      Shape: "shape",
-      Size: "size",
-      Cast: "cast",
+      Reshape: 'reshape',
+      Transpose: 'transpose',
+      Concat: 'concat',
+      Slice: 'slice_by_index', // dynamic slicing is slice_by_size
+      Split: 'split',
+      Squeeze: 'squeeze',
+      Unsqueeze: 'expand_dims',
+      Gather: 'gather',
+      GatherElements: 'gather_along_axis',
+      GatherND: 'gather_nd',
+      Scatter: 'scatter',
+      ScatterElements: 'scatter_along_axis',
+      ScatterND: 'scatter_nd',
+      Tile: 'tile',
+      Pad: 'pad',
+      Expand: 'broadcast_to',
+      Shape: 'shape',
+      Size: 'size',
+      Cast: 'cast',
 
       // Phase 5 & 6
-      Conv: "conv",
-      ConvTranspose: "conv_transpose",
-      MaxPool: "max_pool",
-      AveragePool: "avg_pool",
-      GlobalMaxPool: "global_max_pool",
-      GlobalAveragePool: "global_avg_pool",
-      BatchNormalization: "batch_norm",
-      InstanceNormalization: "instance_norm",
-      LayerNormalization: "layer_norm",
-      LocalResponseNormalization: "local_response_norm",
-      MaxUnpool: "max_unpool",
-      DepthToSpace: "pixel_shuffle",
-      SpaceToDepth: "space_to_depth",
-      Dropout: "identity", // inference only
-      MatMul: "matmul",
-      Gemm: "linear",
-      Resize: "resize_bilinear",
-      Relu: "relu",
-      LeakyRelu: "leaky_relu",
-      Sigmoid: "sigmoid",
-      Tanh: "tanh",
-      Softmax: "softmax",
-      LogSoftmax: "log_softmax",
-      Elu: "elu",
-      HardSigmoid: "hard_sigmoid",
-      Softplus: "softplus",
-      Softsign: "softsign",
-      PRelu: "prelu",
-      Gelu: "gelu",
-      Clip: "clip",
-      ReduceMean: "reduce_mean",
-      ReduceSum: "reduce_sum",
-      ReduceMax: "reduce_max",
-      ReduceMin: "reduce_min",
-      ReduceProd: "reduce_prod",
-      ReduceLogSumExp: "reduce_log_sum_exp",
-      ArgMax: "argmax",
-      ArgMin: "argmin",
-      NonMaxSuppression: "nms",
-      TopK: "topk",
-      NonZero: "non_zero",
+      Conv: 'conv',
+      ConvTranspose: 'conv_transpose',
+      MaxPool: 'max_pool',
+      AveragePool: 'avg_pool',
+      GlobalMaxPool: 'global_max_pool',
+      GlobalAveragePool: 'global_avg_pool',
+      BatchNormalization: 'batch_norm',
+      InstanceNormalization: 'instance_norm',
+      LayerNormalization: 'layer_norm',
+      LocalResponseNormalization: 'local_response_norm',
+      MaxUnpool: 'max_unpool',
+      DepthToSpace: 'pixel_shuffle',
+      SpaceToDepth: 'space_to_depth',
+      Dropout: 'identity', // inference only
+      MatMul: 'matmul',
+      Gemm: 'linear',
+      Resize: 'resize_bilinear',
+      Relu: 'relu',
+      LeakyRelu: 'leaky_relu',
+      Sigmoid: 'sigmoid',
+      Tanh: 'tanh',
+      Softmax: 'softmax',
+      LogSoftmax: 'log_softmax',
+      Elu: 'elu',
+      HardSigmoid: 'hard_sigmoid',
+      Softplus: 'softplus',
+      Softsign: 'softsign',
+      PRelu: 'prelu',
+      Gelu: 'gelu',
+      Clip: 'clip',
+      ReduceMean: 'reduce_mean',
+      ReduceSum: 'reduce_sum',
+      ReduceMax: 'reduce_max',
+      ReduceMin: 'reduce_min',
+      ReduceProd: 'reduce_prod',
+      ReduceLogSumExp: 'reduce_log_sum_exp',
+      ArgMax: 'argmax',
+      ArgMin: 'argmin',
+      NonMaxSuppression: 'nms',
+      TopK: 'topk',
+      NonZero: 'non_zero',
 
       // Phase 7
-      Equal: "equal",
-      Greater: "greater",
-      GreaterOrEqual: "greater_equal",
-      Less: "less",
-      LessOrEqual: "less_equal",
-      Not: "logical_not",
-      And: "logical_and",
-      Or: "logical_or",
-      Xor: "logical_xor",
-      Where: "select",
-      If: "cond",
-      Loop: "while_loop",
-      LSTM: "lstm",
-      GRU: "gru",
-      RNN: "rnn",
+      Equal: 'equal',
+      Greater: 'greater',
+      GreaterOrEqual: 'greater_equal',
+      Less: 'less',
+      LessOrEqual: 'less_equal',
+      Not: 'logical_not',
+      And: 'logical_and',
+      Or: 'logical_or',
+      Xor: 'logical_xor',
+      Where: 'select',
+      If: 'cond',
+      Loop: 'while_loop',
+      LSTM: 'lstm',
+      GRU: 'gru',
+      RNN: 'rnn',
     };
     return map[onnxOpType] || null;
   }

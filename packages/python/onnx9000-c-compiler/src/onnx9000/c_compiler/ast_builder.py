@@ -6,7 +6,7 @@ import re
 class C89Builder:
     """C89Builder implementation."""
 
-    def __init__(self, prefix: str = ""):
+    def __init__(self, prefix: str = "") -> None:
         """Perform   init   operation."""
         self.code: list[str] = []
         self.indent_level = 0
@@ -45,8 +45,7 @@ class C89Builder:
     def pop_indent(self) -> None:
         """Perform pop indent operation."""
         self.indent_level -= 1
-        if self.indent_level < 0:
-            self.indent_level = 0
+        self.indent_level = max(self.indent_level, 0)
 
     def get_code(self) -> str:
         """Perform get code operation."""

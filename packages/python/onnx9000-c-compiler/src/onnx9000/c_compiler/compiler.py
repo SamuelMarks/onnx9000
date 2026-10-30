@@ -24,7 +24,7 @@ class C89Compiler:
         debug: bool = False,
         align: int = 0,
         indent: int = 4,
-    ):
+    ) -> None:
         """Initialize the C89 compiler with a graph and configuration options.
 
         Args:
@@ -290,7 +290,7 @@ class C89Compiler:
                 sanitized_name = b._sanitize(name)
                 sanitized_name = b._sanitize(name)
                 unused_attr = " __attribute__((unused, aligned(64)))"
-                if tensor.dtype == DType.STRING:  # pragma: no cover
+                if tensor.dtype == DType.STRING:
                     strings = tensor.data if isinstance(tensor.data, list) else [tensor.data]
                     b.emit(
                         f"static const char* {self.prefix}weights_{sanitized_name}[]{unused_attr} = {{"

@@ -1,3 +1,5 @@
+"""Unit tests and verification suite for sphinx demo functionality."""
+
 from unittest.mock import MagicMock
 
 import pytest
@@ -12,7 +14,8 @@ from onnx9000.sphinx_demo import (
 )
 
 
-def test_interactive_demo_node():
+def test_interactive_demo_node() -> None:
+    """Verify that interactive demo node behaves as expected."""
     node = InteractiveDemoNode()
     assert node is not None
 
@@ -27,7 +30,8 @@ def test_interactive_demo_node():
     depart_interactive_demo_node(mock_self, node)
 
 
-def test_directive():
+def test_directive() -> None:
+    """Verify that directive behaves as expected."""
     from unittest.mock import MagicMock
 
     mock_state_machine = MagicMock()
@@ -49,7 +53,12 @@ def test_directive():
 
 
 @pytest.fixture
-def mock_app():
+def mock_app() -> int | float | str | bool | bytes | list | dict | tuple | None:
+    """Execute mock app operation.
+
+    Returns:
+        Result of mock app.
+    """
     app = MagicMock()
     app.srcdir = "/test/src"
     app.outdir = "/test/out"
@@ -57,7 +66,16 @@ def mock_app():
     return app
 
 
-def test_build_frontend(mock_app, monkeypatch):
+def test_build_frontend(
+    mock_app: int | float | str | bool | bytes | list | dict | tuple | None,
+    monkeypatch: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
+    """Verify that build frontend behaves as expected.
+
+    Args:
+        mock_app: Parameter specifying mock app.
+        monkeypatch: Parameter specifying monkeypatch.
+    """
     import os
     import subprocess
 
@@ -74,7 +92,16 @@ def test_build_frontend(mock_app, monkeypatch):
     subprocess.check_call.assert_called()
 
 
-def test_copy_frontend_assets(mock_app, monkeypatch):
+def test_copy_frontend_assets(
+    mock_app: int | float | str | bool | bytes | list | dict | tuple | None,
+    monkeypatch: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
+    """Verify that copy frontend assets behaves as expected.
+
+    Args:
+        mock_app: Parameter specifying mock app.
+        monkeypatch: Parameter specifying monkeypatch.
+    """
     import os
     import shutil
 
@@ -91,13 +118,18 @@ def test_copy_frontend_assets(mock_app, monkeypatch):
     shutil.copy2.assert_called()
 
     # test skip on exc
-    copy_frontend_assets(mock_app, Exception("Test"))
+    copy_frontend_assets(mock_app, RuntimeError("Test"))
 
     # test skip on format
     mock_app.builder.format = "latex"
     copy_frontend_assets(mock_app, None)
 
 
-def test_setup(mock_app):
+def test_setup(mock_app: int | float | str | bool | bytes | list | dict | tuple | None) -> None:
+    """Verify that setup behaves as expected.
+
+    Args:
+        mock_app: Parameter specifying mock app.
+    """
     res = setup(mock_app)
     assert res["version"] == "0.1"

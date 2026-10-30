@@ -6,4 +6,4 @@ from onnx9000.backends.ffi.core import (
     HardwareContextHandle,
 )
 
-__all__ = ["DynamicLibrary", "HardwareContextHandle", "DynamicLibraryError"]
+__all__ = ["DynamicLibrary", "DynamicLibraryError", "HardwareContextHandle"]

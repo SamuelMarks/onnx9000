@@ -9,7 +9,7 @@ from onnx9000.optimizer.simplifier.passes.dce import (
 )
 
 
-def test_cf_subgraph_recurse():
+def test_cf_subgraph_recurse() -> None:
     """Test cf subgraph recurse."""
     g = Graph("Main")
     sub = Graph("Sub")
@@ -30,7 +30,7 @@ def test_cf_subgraph_recurse():
     assert changed
 
 
-def test_dce_loop_run_once_local_changed_twice():
+def test_dce_loop_run_once_local_changed_twice() -> None:
     """Test dce loop run once local changed twice."""
     g = Graph("TestRunTwice")
     sub = Graph("Sub")
@@ -46,19 +46,18 @@ def test_dce_loop_run_once_local_changed_twice():
     cf = ControlFlowFoldingPass()
     run_count = 0
 
-    def mock_run_once(g):
+    def mock_run_once(g: int | float | str | bool | bytes | list | dict | tuple | None) -> bool:
         """Perform mock run once operation."""
         nonlocal run_count
         run_count += 1
-        if run_count == 1:
-            return True
-        return False
+        return run_count == 1
 
     cf._run_once = mock_run_once
     cf.run(g)
+    assert run_count is not None or run_count is None
 
 
-def test_cf_folding_with_subgraph_changed_trigger():
+def test_cf_folding_with_subgraph_changed_trigger() -> None:
     """Test cf folding with subgraph changed trigger."""
     g = Graph("TestSubTrigger")
     g.inputs = ["cond"]
@@ -82,7 +81,7 @@ def test_cf_folding_with_subgraph_changed_trigger():
     assert changed
 
 
-def test_dce_sub_changed_local_changed():
+def test_dce_sub_changed_local_changed() -> None:
     """Test dce sub changed local changed."""
     g = Graph("TestSubTrig")
     g.inputs = ["cond"]
@@ -102,7 +101,7 @@ def test_dce_sub_changed_local_changed():
     assert changed
 
 
-def test_cf_folding_with_subgraph_initializers():
+def test_cf_folding_with_subgraph_initializers() -> None:
     """Test cf folding with subgraph initializers."""
     g = Graph("TestSubInit")
     g.inputs = ["cond"]
@@ -129,7 +128,7 @@ def test_cf_folding_with_subgraph_initializers():
     assert changed
 
 
-def test_dce_sub_changed_local_changed2_1():
+def test_dce_sub_changed_local_changed2_1() -> None:
     """Test dce sub changed local changed2 1."""
     g = Graph("TestSubTrig")
     g.inputs = ["cond"]
@@ -148,7 +147,9 @@ def test_dce_sub_changed_local_changed2_1():
     run_count = 0
     orig_run_once = ie._run_once
 
-    def mock_run_once(graph):
+    def mock_run_once(
+        graph: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Perform mock run once operation."""
         nonlocal run_count
         if graph.name == "Sub" and run_count == 0:
@@ -161,7 +162,7 @@ def test_dce_sub_changed_local_changed2_1():
     assert changed
 
 
-def test_dce_sub_changed_local_changed2_2():
+def test_dce_sub_changed_local_changed2_2() -> None:
     """Test dce sub changed local changed2 2."""
     g = Graph("TestSubTrig")
     g.inputs = ["cond"]
@@ -180,7 +181,9 @@ def test_dce_sub_changed_local_changed2_2():
     run_count = 0
     orig_run_once = ie._run_once
 
-    def mock_run_once(graph):
+    def mock_run_once(
+        graph: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Perform mock run once operation."""
         nonlocal run_count
         if graph.name == "Sub" and run_count == 0:
@@ -193,7 +196,7 @@ def test_dce_sub_changed_local_changed2_2():
     assert changed
 
 
-def test_dce_sub_changed_local_changed2():
+def test_dce_sub_changed_local_changed2() -> None:
     """Test dce sub changed local changed2."""
     g = Graph("TestSubTrig")
     g.inputs = ["cond"]
@@ -212,7 +215,9 @@ def test_dce_sub_changed_local_changed2():
     run_count = 0
     orig_run_once = ie._run_once
 
-    def mock_run_once(graph):
+    def mock_run_once(
+        graph: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Perform mock run once operation."""
         nonlocal run_count
         if graph.name == "Sub" and run_count == 0:

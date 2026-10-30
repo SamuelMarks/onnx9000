@@ -10,15 +10,24 @@ from onnx9000.core.ir import Graph, Node, Tensor
 class DummyProvider(ExecutionProvider):
     """Represents the Dummy Provider class."""
 
-    def get_supported_nodes(self, graph):
+    def get_supported_nodes(
+        self, graph: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Execute the get supported nodes operation."""
         return [n.name or n.op_type for n in graph.nodes if n.op_type == "Identity"]
 
-    def allocate_tensors(self, tensors) -> None:
+    def allocate_tensors(
+        self, tensors: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> None:
         """Execute the allocate tensors operation."""
         self.allocated = True
 
-    def execute(self, graph, context, inputs):
+    def execute(
+        self,
+        graph: int | float | str | bool | bytes | list | dict | tuple | None,
+        context: int | float | str | bool | bytes | list | dict | tuple | None,
+        inputs: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Execute the execute operation."""
         res = {}
         for node in graph.nodes:
@@ -30,15 +39,24 @@ class DummyProvider(ExecutionProvider):
 class CPUProvider(ExecutionProvider):
     """Represents the C P U Provider class."""
 
-    def get_supported_nodes(self, graph):
+    def get_supported_nodes(
+        self, graph: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Execute the get supported nodes operation."""
         return [n.name or n.op_type for n in graph.nodes if n.op_type in ["Add", "MemcpyToHost"]]
 
-    def allocate_tensors(self, tensors) -> None:
+    def allocate_tensors(
+        self, tensors: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> None:
         """Execute the allocate tensors operation."""
         self.allocated = True
 
-    def execute(self, graph, context, inputs):
+    def execute(
+        self,
+        graph: int | float | str | bool | bytes | list | dict | tuple | None,
+        context: int | float | str | bool | bytes | list | dict | tuple | None,
+        inputs: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Execute the execute operation."""
         res = {}
         for node in graph.nodes:

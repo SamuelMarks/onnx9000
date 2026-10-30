@@ -3,7 +3,9 @@
 import os
 
 
-def bundle_weights_bin(weights_data: bytes, output_dir: str, prefix: str):
+def bundle_weights_bin(
+    weights_data: bytes, output_dir: str, prefix: str
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
     """Bundle external weight binaries into .bin files loaded via fopen."""
     bin_path = os.path.join(output_dir, f"{prefix}weights.bin")
     with open(bin_path, "wb") as f:

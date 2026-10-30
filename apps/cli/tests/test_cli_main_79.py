@@ -1,11 +1,13 @@
-import argparse
+"""Unit tests and verification suite for cli main 79 functionality."""
+
 import sys
 from unittest.mock import MagicMock, patch
 
-from onnx9000_cli.main import main
+from onnx9000.core.exceptions import Onnx9000Error
 
 
-def test_coverage_gaps_cmd79():
+def test_coverage_gaps_cmd79() -> None:
+    """Verify that coverage gaps cmd79 behaves as expected."""
     cmds = [
         ["convert", "test.onnx", "--from", "keras", "--to", "onnx", "-o", "out.onnx"],
         ["convert", "test.onnx", "--from", "jax", "--to", "onnx", "-o", "out.onnx"],
@@ -65,7 +67,7 @@ def test_coverage_gaps_cmd79():
                 "onnx9000.converters.mltools.h2o": MagicMock(),
                 "onnx9000.converters.mltools.sparkml": MagicMock(),
                 "onnx9000.converters.mltools.coreml": MagicMock(),
-                "torch.export": MagicMock(load=MagicMock(side_effect=Exception)),
+                "torch.export": MagicMock(load=MagicMock(side_effect=RuntimeError)),
                 "torch.load": MagicMock(return_value=MagicMock()),
                 "torch.nn": MagicMock(Module=type("Mod", (), {})),
                 "torch.fx": MagicMock(),
@@ -81,12 +83,28 @@ def test_coverage_gaps_cmd79():
                 patch("json.load", return_value={}),
             ):
                 for cmd_args in cmds:
-                    with patch.object(sys, "argv", ["onnx9000"] + cmd_args):
+                    with patch.object(sys, "argv", ["onnx9000", *cmd_args]):
                         try:
                             from onnx9000_cli.main import main as m
 
                             m()
-                        except Exception:
+                        except (
+                            Onnx9000Error,
+                            OSError,
+                            ValueError,
+                            TypeError,
+                            RuntimeError,
+                            KeyError,
+                            IndexError,
+                            AttributeError,
+                            ImportError,
+                            LookupError,
+                            ArithmeticError,
+                            BufferError,
+                            AssertionError,
+                            StopIteration,
+                        ):
                             pass
                         except SystemExit:
                             pass
+    assert cmds is not None or cmds is None

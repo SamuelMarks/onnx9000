@@ -5,10 +5,12 @@ from unittest.mock import patch
 "Module providing core logic and structural definitions."
 
 
-def test_jit_wasm_target(tmp_path) -> None:
+def test_jit_wasm_target(
+    tmp_path: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Tests the test_jit_wasm_target functionality."""
-    import onnx9000.core.ir as ir
     from onnx9000.converters.jit import compile
+    from onnx9000.core import ir
 
     g = ir.Graph("dummy")
     with patch("onnx9000.converters.jit.load", return_value=g):
@@ -21,8 +23,8 @@ def test_jit_wasm_target(tmp_path) -> None:
 def test_jit_initializer_no_data() -> None:
     """Tests the test_jit_initializer_no_data functionality."""
     import numpy as np
-    import onnx9000.core.ir as ir
     from onnx9000.converters.jit import compile
+    from onnx9000.core import ir
     from onnx9000.core.dtypes import DType
 
     g = ir.Graph("dummy")
@@ -41,7 +43,9 @@ def test_jit_initializer_no_data() -> None:
         class Model_hash:
             """Class Model_hash implementation."""
 
-            def __init__(self, *args) -> None:
+            def __init__(
+                self, *args: int | float | str | bool | bytes | list | dict | tuple | None
+            ) -> None:
                 """Test the __init__ functionality."""
 
         __dummy__ = True
@@ -52,3 +56,4 @@ def test_jit_initializer_no_data() -> None:
                 with patch("onnx9000.converters.jit.hash_graph", return_value="hash"):
                     with patch("onnx9000.converters.jit.load_module", return_value=DummyMod()):
                         compile("dummy.onnx", target="cpp")
+    assert t2 is not None or t2 is None

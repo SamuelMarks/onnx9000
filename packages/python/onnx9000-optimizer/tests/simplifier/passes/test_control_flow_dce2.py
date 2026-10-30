@@ -6,7 +6,7 @@ from onnx9000.core.ir import Attribute, Graph, Node, Tensor, ValueInfo
 from onnx9000.optimizer.simplifier.passes.dce import ControlFlowFoldingPass
 
 
-def test_loop_unroll_single_scan_out():
+def test_loop_unroll_single_scan_out() -> None:
     """Test loop unrolling when there is exactly one scan output."""
     g = Graph("TestLoopUnrollSingle")
 

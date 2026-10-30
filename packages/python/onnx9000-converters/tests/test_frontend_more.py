@@ -5,33 +5,29 @@ import unittest
 from pathlib import Path
 
 import numpy as np
-import onnx9000.converters.frontend.builder as builder
-import onnx9000.converters.frontend.exporter as exporter
-import onnx9000.converters.frontend.jit as jit
-import onnx9000.converters.frontend.models as models
-import onnx9000.converters.frontend.nn.containers as containers
-import onnx9000.converters.frontend.nn.conv as conv
-import onnx9000.converters.frontend.nn.dropout as dropout
-import onnx9000.converters.frontend.nn.embedding as embedding
-import onnx9000.converters.frontend.nn.flatten as flatten
-import onnx9000.converters.frontend.nn.functional as functional
-import onnx9000.converters.frontend.nn.identity as identity
-import onnx9000.converters.frontend.nn.init as init
-import onnx9000.converters.frontend.nn.linear as linear
-import onnx9000.converters.frontend.nn.module as module
-import onnx9000.converters.frontend.nn.normalization as normalization
-import onnx9000.converters.frontend.nn.pool as pool
-import onnx9000.converters.frontend.nn.rnn as rnn
-import onnx9000.converters.frontend.tensor as tensor
-import onnx9000.converters.frontend.tracer as tracer
-import onnx9000.converters.frontend.utils as utils
+from onnx9000.converters.frontend import builder, exporter, jit, models, tensor, tracer, utils
+from onnx9000.converters.frontend.nn import (
+    containers,
+    conv,
+    dropout,
+    embedding,
+    flatten,
+    functional,
+    identity,
+    init,
+    linear,
+    module,
+    normalization,
+    pool,
+    rnn,
+)
 
 
 class TestFrontendMore(unittest.TestCase):
-    """Docstring for D101."""
+    """Represents test frontend more inheriting from unittest.TestCase, supporting operations such as test_builder, test_exporter, test_jit, test_models."""
 
-    def test_builder(self):
-        """Docstring for D102."""
+    def test_builder(self) -> None:
+        """Verify that builder behaves as expected."""
         gb = builder.GraphBuilder("test_graph")
         t1 = tensor.Tensor((1, 2), name="t1")
         t2 = tensor.Tensor((2, 1), name="t2")
@@ -44,18 +40,24 @@ class TestFrontendMore(unittest.TestCase):
         graph = gb.to_graph()
         self.assertEqual(graph.name, "test_graph")
 
-    def test_exporter(self):
-        """Docstring for D102."""
+    def test_exporter(self) -> None:
+        """Verify that exporter behaves as expected.
+
+        Returns:
+            Result of test exporter.
+        """
 
         class SimpleModule(module.Module):
             """Simple module."""
 
-            def __init__(self):
-                """Init."""
+            def __init__(self) -> None:
+                """Initialize SimpleModule with configured parameters and state."""
                 super().__init__()
                 self.l = linear.Linear(2, 2)
 
-            def forward(self, x):
+            def forward(
+                self, x: int | float | str | bool | bytes | list | dict | tuple | None
+            ) -> int | float | str | bool | bytes | list | dict | tuple | None:
                 """Forward."""
                 return self.l(x)
 
@@ -75,11 +77,17 @@ class TestFrontendMore(unittest.TestCase):
             )
             self.assertTrue(p.exists())
 
-    def test_jit(self):
-        """Docstring for D102."""
+    def test_jit(self) -> None:
+        """Verify that jit behaves as expected.
+
+        Returns:
+            Result of test jit.
+        """
 
         @jit.jit
-        def my_func(x):
+        def my_func(
+            x: int | float | str | bool | bytes | list | dict | tuple | None,
+        ) -> int | float | str | bool | bytes | list | dict | tuple | None:
             """My func."""
             return functional.relu(x)
 
@@ -87,14 +95,14 @@ class TestFrontendMore(unittest.TestCase):
         res = my_func(t)
         self.assertIsInstance(res, builder.GraphBuilder)
 
-    def test_models(self):
-        """Docstring for D102."""
+    def test_models(self) -> None:
+        """Verify that models behaves as expected."""
         # resnet contains conv, pool, linear, etc.
         resnet = models.ResNet18()
         self.assertIsInstance(resnet, module.Module)
 
-    def test_nn_containers_identity_flatten(self):
-        """Docstring for D102."""
+    def test_nn_containers_identity_flatten(self) -> None:
+        """Verify that nn containers identity flatten behaves as expected."""
         s = containers.Sequential(linear.Linear(2, 2), identity.Identity(), flatten.Flatten())
         t = tensor.Tensor((1, 2))
         # Need to trace it to get output
@@ -102,8 +110,8 @@ class TestFrontendMore(unittest.TestCase):
             out = s(t)
             self.assertIsInstance(out, tensor.Tensor)
 
-    def test_nn_conv_pool_normalization(self):
-        """Docstring for D102."""
+    def test_nn_conv_pool_normalization(self) -> None:
+        """Verify that nn conv pool normalization behaves as expected."""
         c = conv.Conv2d(3, 16, 3)
         mp = pool.MaxPool2d(2)
         bn = normalization.BatchNorm2d(16)
@@ -115,8 +123,8 @@ class TestFrontendMore(unittest.TestCase):
             x = mp(x)
             self.assertIsInstance(x, tensor.Tensor)
 
-    def test_nn_dropout_embedding_rnn(self):
-        """Docstring for D102."""
+    def test_nn_dropout_embedding_rnn(self) -> None:
+        """Verify that nn dropout embedding rnn behaves as expected."""
         d = dropout.Dropout(0.5)
         e = embedding.Embedding(10, 3)
         rn = rnn.RNN(10, 20)
@@ -128,8 +136,8 @@ class TestFrontendMore(unittest.TestCase):
             self.assertIsInstance(e, embedding.Embedding)
             self.assertIsInstance(rn, rnn.RNN)
 
-    def test_init(self):
-        """Docstring for D102."""
+    def test_init(self) -> None:
+        """Verify that init behaves as expected."""
         t = tensor.Tensor((2, 2))
         # Since t.data is None initially, we can just check it doesn't crash,
         # or mock data. Let's provide some numpy data.
@@ -138,17 +146,23 @@ class TestFrontendMore(unittest.TestCase):
         init.zeros_(t)
         self.assertTrue((t.data == 0).all())
 
-    def test_functional(self):
-        """Docstring for D102."""
+    def test_functional(self) -> None:
+        """Verify that functional behaves as expected."""
         t = tensor.Tensor((1, 2))
         with builder.Tracing():
             res = functional.relu(t)
             self.assertIsInstance(res, tensor.Tensor)
 
-    def test_tracer(self):
-        """Docstring for D102."""
+    def test_tracer(self) -> None:
+        """Verify that tracer behaves as expected.
 
-        def simple_func(x):
+        Returns:
+            Result of test tracer.
+        """
+
+        def simple_func(
+            x: int | float | str | bool | bytes | list | dict | tuple | None,
+        ) -> int | float | str | bool | bytes | list | dict | tuple | None:
             """Simple func."""
             return functional.relu(x)
 
@@ -156,8 +170,8 @@ class TestFrontendMore(unittest.TestCase):
         gb = tracer.trace(simple_func, t)
         self.assertTrue(len(gb.nodes) > 0)
 
-    def test_utils(self):
-        """Docstring for D102."""
+    def test_utils(self) -> None:
+        """Verify that utils behaves as expected."""
         res = utils.infer_elementwise_shape((1, 3), (2, 1))
         self.assertEqual(res, (2, 3))
         res_matmul = utils.infer_matmul_shape((2, 3), (3, 4))

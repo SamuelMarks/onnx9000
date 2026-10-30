@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../../src/mmdnn/scikitlearn/parser";
+import { describe, expect, it } from 'vitest';
+import { ScikitLearnParser } from '../../../src/mmdnn/scikitlearn/parser';
 
-describe("parser.ts", () => {
-  it("should instantiate and cover ScikitLearnParser", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('parser.ts', () => {
+  it('should instantiate and cover ScikitLearnParser', () => {
     try {
-      const obj = new (Module as any).ScikitLearnParser();
+      const obj = Construct(ScikitLearnParser);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

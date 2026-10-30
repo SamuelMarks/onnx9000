@@ -1,11 +1,11 @@
 """Provide interoperability functions for loading PyTorch, TensorFlow, and Flax safetensors."""
 
-from typing import Any
-
 from .parser import load_file
 
 
-def load_pytorch_safetensors(filename: str, device: str = "cpu") -> dict[str, Any]:
+def load_pytorch_safetensors(
+    filename: str, device: str = "cpu"
+) -> dict[str, int | float | str | bool | bytes | list | dict | tuple | None]:
     """Load PyTorch safetensors and map correctly to ONNX conventions."""
     tensors = load_file(filename, device=device)
     mapped_tensors = {}
@@ -17,7 +17,9 @@ def load_pytorch_safetensors(filename: str, device: str = "cpu") -> dict[str, An
     return mapped_tensors
 
 
-def load_tensorflow_safetensors(filename: str, device: str = "cpu") -> dict[str, Any]:
+def load_tensorflow_safetensors(
+    filename: str, device: str = "cpu"
+) -> dict[str, int | float | str | bool | bytes | list | dict | tuple | None]:
     """Load TensorFlow safetensors and map correctly to ONNX conventions (e.g. NHWC -> NCHW)."""
     import numpy as np
 
@@ -31,7 +33,9 @@ def load_tensorflow_safetensors(filename: str, device: str = "cpu") -> dict[str,
     return mapped_tensors
 
 
-def load_flax_safetensors(filename: str, device: str = "cpu") -> dict[str, Any]:
+def load_flax_safetensors(
+    filename: str, device: str = "cpu"
+) -> dict[str, int | float | str | bool | bytes | list | dict | tuple | None]:
     """Load Flax/JAX safetensors and natively map to ONNX conventions."""
     tensors = load_file(filename, device=device)
     mapped_tensors = {}

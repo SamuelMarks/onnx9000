@@ -1,17 +1,22 @@
+"""Implementation of tensors (onnx9000 / zoo / tensors.py) providing SafeTensorsMmapParser, GSPMDReconciler, BFloat16Upcaster, MsgPackFlaxDeserializer."""
+
 import json
 import mmap
-import os
 import struct
-from typing import Any, BinaryIO
 
 
 class SafeTensorsMmapParser:
     """Zero-copy mmap streaming parser for safetensors."""
 
-    def __init__(self, file_path: str):
+    def __init__(self, file_path: str) -> None:
+        """Initialize SafeTensorsMmapParser with configured parameters and state.
+
+        Args:
+            file_path: Parameter specifying file path (str).
+        """
         self.file_path = file_path
         self.header_len: int = 0
-        self.header: dict[str, Any] = {}
+        self.header: dict[str, int | float | str | bool | bytes | list | dict | tuple | None] = {}
 
     def parse(self) -> None:
         """Parse the safetensors header to setup chunking."""
@@ -23,7 +28,9 @@ class SafeTensorsMmapParser:
             header_bytes = f.read(self.header_len)
             self.header = json.loads(header_bytes.decode("utf-8"))
 
-    def stream_tensor(self, tensor_name: str) -> Any:
+    def stream_tensor(
+        self, tensor_name: str
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Stream a tensor directly into a chunked block.
 
         Args:
@@ -53,8 +60,8 @@ class GSPMDReconciler:
     def stitch_shards(
         shards: list[bytes],
         axis: int = 0,
-        shard_shape: tuple[int, ...] = None,
-        dtype: str = None,
+        shard_shape: tuple[int, ...] | None = None,
+        dtype: str | None = None,
     ) -> bytes:
         """Stitch multiple bytes objects (representing sharded arrays) into one.
 
@@ -98,7 +105,9 @@ class MsgPackFlaxDeserializer:
     """Unpacks legacy Flax variables without importing `flax` locally."""
 
     @staticmethod
-    def deserialize(data: bytes) -> dict[str, Any]:
+    def deserialize(
+        data: bytes,
+    ) -> dict[str, int | float | str | bool | bytes | list | dict | tuple | None]:
         """Deserialize msgpack encoded Flax variables.
 
         Args:

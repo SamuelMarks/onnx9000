@@ -1,7 +1,5 @@
 """NCNN to ONNX IR Mapper."""
 
-from typing import Any
-
 from onnx9000.converters.ncnn.weights import WeightsReader
 from onnx9000.core.ir import Constant, Graph, Node, Variable
 
@@ -9,7 +7,11 @@ from onnx9000.core.ir import Constant, Graph, Node, Variable
 class NCNNMapper:
     """Mapper to convert NCNN parsed layers and weights to ONNX IR."""
 
-    def __init__(self, param_info: dict[str, Any], weights_reader: WeightsReader):
+    def __init__(
+        self,
+        param_info: dict[str, int | float | str | bool | bytes | list | dict | tuple | None],
+        weights_reader: WeightsReader,
+    ) -> None:
         """Initialize the mapper.
 
         Args:
@@ -34,7 +36,7 @@ class NCNNMapper:
         """Map layers to an ONNX IR graph."""
         layers = self.param_info.get("layers", [])  # pragma: no cover
 
-        for i, layer in enumerate(layers):
+        for _i, layer in enumerate(layers):
             l_type = layer["type"]
             name = layer["name"]
             bottoms = layer["bottoms"]
@@ -50,7 +52,7 @@ class NCNNMapper:
                     t.shape = (1, c, h, w)
                     self.graph.inputs.append(t)
 
-            elif l_type == "Convolution" or l_type == "ConvolutionDepthWise":
+            elif l_type in {"Convolution", "ConvolutionDepthWise"}:
                 num_output = params.get(0, 1)
                 kernel_w = params.get(1, 1)
                 kernel_h = params.get(11, kernel_w)

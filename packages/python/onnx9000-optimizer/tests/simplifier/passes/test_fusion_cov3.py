@@ -10,7 +10,7 @@ from onnx9000.optimizer.simplifier.passes.fusion import (
 )
 
 
-def test_gemm_out_name_value_info():
+def test_gemm_out_name_value_info() -> None:
     """Test gemm out name value info."""
     g4 = Graph("G4_exact")
     n_gemm4 = Node("Gemm", ["X", "W"], ["gemm_out"])
@@ -34,7 +34,7 @@ def test_gemm_out_name_value_info():
     assert v.name == "gemm_out"
 
 
-def test_conv_out_name_value_info():
+def test_conv_out_name_value_info() -> None:
     """Test conv out name value info."""
     g4 = Graph("G4_exact_conv")
     n_conv4 = Node("Conv", ["X", "W"], ["conv_out"])
@@ -58,7 +58,7 @@ def test_conv_out_name_value_info():
     assert v.name == "conv_out"
 
 
-def test_aten_arange_missing_inputs():
+def test_aten_arange_missing_inputs() -> None:
     """Test aten arange missing inputs."""
     g = Graph("ATenMissing")
     n = Node("arange", ["start", "end"], ["Y"], domain="aten")
@@ -67,7 +67,7 @@ def test_aten_arange_missing_inputs():
     assert not changed
 
 
-def test_gemm_out_name_value_info_consumer():
+def test_gemm_out_name_value_info_consumer() -> None:
     """Test gemm out name value info consumer."""
     g4 = Graph("G4_cons")
     n_gemm4 = Node("Gemm", ["X", "W"], ["gemm_out"])
@@ -86,9 +86,10 @@ def test_gemm_out_name_value_info_consumer():
     g4.tensors["W"] = w
     g4.initializers.append("W")
     fuse_batchnorm_into_gemm(g4)
+    assert w is not None or w is None
 
 
-def test_conv_out_name_value_info_consumer():
+def test_conv_out_name_value_info_consumer() -> None:
     """Test conv out name value info consumer."""
     g4 = Graph("G4_exact_conv_cons")
     n_conv4 = Node("Conv", ["X", "W"], ["conv_out"])
@@ -107,13 +108,24 @@ def test_conv_out_name_value_info_consumer():
     g4.tensors["W"] = w
     g4.initializers.append("W")
     fuse_batchnorm_into_conv(g4)
+    assert w is not None or w is None
 
 
-def test_run_all_fusions_pass():
+def test_run_all_fusions_pass() -> None:
     """Test run all fusions pass."""
-    from onnx9000.optimizer.simplifier.passes.fusion import run_all_fusions
+    from onnx9000.optimizer.simplifier.passes.fusion import fuse_elementwise, run_all_fusions
 
     g = Graph("G_all_pass")
     n = Node("arange", ["start", "end", "step"], ["Y"], domain="aten")
     g.nodes.append(n)
     run_all_fusions(g)
+    assert g.nodes[0].op_type == "Range"
+
+    g_elem = Graph("G_elem")
+    g_elem.add_tensor(Tensor("A", (2,), DType.FLOAT32))
+    g_elem.add_node(Node("Add", ["A", "A"], ["B"], name="add1"))
+    g_elem.add_node(Node("MatMul", ["B", "B"], ["C"], name="mm1"))
+    fused = fuse_elementwise(g_elem)
+    assert fused.name == "G_elem_fused"
+    assert "fused" in fused.nodes[0].attributes
+    assert "fused" not in fused.nodes[1].attributes

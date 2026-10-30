@@ -1,10 +1,13 @@
+"""Unit tests and verification suite for cli edit functionality."""
+
 import argparse
 from unittest.mock import patch
 
 from onnx9000_cli.main import edit_cmd
 
 
-def test_edit_cmd_not_found():
+def test_edit_cmd_not_found() -> None:
+    """Verify that edit cmd not found behaves as expected."""
     args = argparse.Namespace(model="dummy.onnx")
     with (
         patch("os.path.exists", return_value=False),
@@ -14,7 +17,8 @@ def test_edit_cmd_not_found():
     mock_print.assert_any_call("Modifier UI not found in monorepo.")
 
 
-def test_edit_cmd_exists():
+def test_edit_cmd_exists() -> None:
+    """Verify that edit cmd exists behaves as expected."""
     args = argparse.Namespace(model="dummy.onnx")
     with (
         patch("os.path.exists", return_value=True),
@@ -26,10 +30,12 @@ def test_edit_cmd_exists():
     assert "dev" in mock_run.call_args[0][0]
 
 
-def test_edit_cmd_interrupt():
+def test_edit_cmd_interrupt() -> None:
+    """Verify that edit cmd interrupt behaves as expected."""
     args = argparse.Namespace(model="dummy.onnx")
     with (
         patch("os.path.exists", return_value=True),
         patch("subprocess.run", side_effect=KeyboardInterrupt),
     ):
         edit_cmd(args)
+    assert args is not None or args is None

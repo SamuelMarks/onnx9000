@@ -22,7 +22,7 @@ class EdgeTPUOptimizer:
     270. Issue detailed "EdgeTPU Compatibility Report" upon TFLite export completion.
     """
 
-    def __init__(self, graph: Graph):
+    def __init__(self, graph: Graph) -> None:
         """Initialize the EdgeTPUOptimizer with a graph."""
         self.graph = graph
 
@@ -64,15 +64,14 @@ class EdgeTPUOptimizer:
         """Inject padding into convolutions to satisfy EdgeTPU dimension requirements."""
         injected = 0
         for node in self.graph.nodes:
-            if node.op_type in ("Conv", "ConvTranspose"):
-                if len(node.inputs) > 1:
-                    w_name = node.inputs[1]
-                    if w_name in self.graph.tensors:
-                        w_tensor = self.graph.tensors[w_name]
-                        if w_tensor.shape and len(w_tensor.shape) >= 4:
-                            channels = w_tensor.shape[1]
-                            if isinstance(channels, int) and channels % 4 != 0:
-                                injected += 1
+            if node.op_type in ("Conv", "ConvTranspose") and len(node.inputs) > 1:
+                w_name = node.inputs[1]
+                if w_name in self.graph.tensors:
+                    w_tensor = self.graph.tensors[w_name]
+                    if w_tensor.shape and len(w_tensor.shape) >= 4:
+                        channels = w_tensor.shape[1]
+                        if isinstance(channels, int) and channels % 4 != 0:
+                            injected += 1
         if injected > 0:
             warnings.append(
                 f"Injected Zero-Padding into {injected} Convolutions to satisfy EdgeTPU dimension multiples (4/8 bytes)."

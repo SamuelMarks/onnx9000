@@ -1,12 +1,11 @@
 """Tests for fusions final."""
 
-import pytest
-from onnx9000.core.ir import Constant, Graph, Node
+from onnx9000.core.ir import Graph, Node
 from onnx9000.optimizer.surgeon.fusions import fuse_horizontal_gemm
 
 
-def test_fuse_horizontal_gemm_single():
-    """Docstring for D103."""
+def test_fuse_horizontal_gemm_single() -> None:
+    """Verify that fuse horizontal gemm single behaves as expected."""
     graph = Graph("test_graph")
 
     # Single Gemm

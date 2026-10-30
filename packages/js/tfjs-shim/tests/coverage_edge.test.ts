@@ -1,34 +1,34 @@
-import { describe, expect, it } from "vitest";
-import tf, { tensor } from "../src/index.js";
+import { describe, expect, it } from 'vitest';
+import tf, { tensor } from '../src/index.js';
 
-describe("Edge cases coverage", () => {
-  it("covers backend functions", async () => {
-    await tf.setBackend("webgl");
-    expect(tf.getBackend()).toBe("webgl");
+describe('Edge cases coverage', () => {
+  it('covers backend functions', async () => {
+    await tf.setBackend('webgl');
+    expect(tf.getBackend()).toBe('webgl');
   });
 
-  it("covers data() and dataSync() with unknown dtype", async () => {
-    const t = tf.tensor([1], [1], "complex64" as any);
+  it('covers data() and dataSync() with unknown dtype', async () => {
+    const t = tf.tensor([1], [1], 'complex64' as Parameters<typeof tf.tensor>[2]);
     expect(t.dataSync()).toBeInstanceOf(Float32Array);
     expect(await t.data()).toBeInstanceOf(Float32Array);
   });
 
-  it("covers tensor() with primitive value", () => {
+  it('covers tensor() with primitive value', () => {
     const t = tensor(42);
     expect(t.shape).toEqual([1]);
   });
 
-  it("covers tidy() with non-tensor return and tensor disposal", () => {
+  it('covers tidy() with non-tensor return and tensor disposal', () => {
     let tToDispose: tf.Tensor;
     const res = tf.tidy(() => {
       tToDispose = tf.tensor(1);
-      return null as any;
+      return null as never as tf.Tensor;
     });
     expect(res).toBeNull();
     expect(tToDispose?.isDisposed).toBe(true);
   });
 
-  it("covers invalid inputs to elementwise op", () => {
-    expect(() => tf.add(undefined as any, 1)).toThrow(/Invalid inputs to add/);
+  it('covers invalid inputs to elementwise op', () => {
+    expect(() => tf.add(undefined as never as tf.Tensor, 1)).toThrow(/Invalid inputs to add/);
   });
 });

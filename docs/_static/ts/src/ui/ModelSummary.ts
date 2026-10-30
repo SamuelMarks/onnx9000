@@ -117,7 +117,7 @@ export class ModelSummary extends BaseComponent {
         <tbody>  
         </tbody>  
       `;
-      const tbody = table.querySelector('tbody')!;
+      const tbody = table.querySelector('tbody');
 
       // limit to 100 for display
       const displayCount = Math.min(100, this.model.initializers.length);

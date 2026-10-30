@@ -38,7 +38,7 @@ from onnx9000.core.parser.core import load
 from onnx9000.core.checker import check_model
 
 graph = load("model.onnx")
-check_model(graph) # Raises ValidationError if invalid
+check_model(graph)  # Raises ValidationError if invalid
 ```
 
 ### UI Integration

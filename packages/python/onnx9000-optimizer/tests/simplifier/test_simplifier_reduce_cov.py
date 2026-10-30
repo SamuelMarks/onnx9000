@@ -3,13 +3,12 @@
 import logging
 
 import numpy as np
-import pytest
 from onnx9000.core.dtypes import DType
-from onnx9000.core.ir import Attribute, Constant, Graph, Node, Tensor
+from onnx9000.core.ir import Constant, Graph, Node
 from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
 
 
-def test_reduce_ops_constant_folding_all():
+def test_reduce_ops_constant_folding_all() -> None:
     """Verify constant folding for all Reduce* operators using initializers."""
     ops = [
         "ReduceSum",
@@ -39,7 +38,7 @@ def test_reduce_ops_constant_folding_all():
         assert any(node.op_type == "Constant" and "output" in node.outputs for node in graph.nodes)
 
 
-def test_reduce_ops_axes_input():
+def test_reduce_ops_axes_input() -> None:
     """Verify constant folding for Reduce* with axes as input using initializers."""
     graph = Graph("test_axes_input")
     data = np.array([[1.0, 2.0], [3.0, 4.0]], dtype=np.float32)
@@ -61,7 +60,9 @@ def test_reduce_ops_axes_input():
     assert any(node.op_type == "Constant" and "output" in node.outputs for node in graph.nodes)
 
 
-def test_constant_folding_logger_gaps(caplog):
+def test_constant_folding_logger_gaps(
+    caplog: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Verify logger warning/info branches in constant_folding.py."""
     with caplog.at_level(logging.INFO):
         graph = Graph("test_logger")
@@ -78,7 +79,9 @@ def test_constant_folding_logger_gaps(caplog):
         assert "Folded node" in caplog.text
 
 
-def test_constant_folding_unsupported_domain(caplog):
+def test_constant_folding_unsupported_domain(
+    caplog: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Verify warning for unsupported CustomOp domain (line 361)."""
     with caplog.at_level(logging.WARNING):
         graph = Graph("test_domain")

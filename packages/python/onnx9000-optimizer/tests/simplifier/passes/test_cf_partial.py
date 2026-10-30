@@ -5,8 +5,8 @@ from onnx9000.core.ir import Node
 from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
 
 
-def test_cf_partial_fold():
-    """Docstring for D103."""
+def test_cf_partial_fold() -> None:
+    """Verify that cf partial fold behaves as expected."""
     cf = ConstantFoldingPass()
 
     # Add
@@ -92,5 +92,5 @@ def test_cf_partial_fold():
 
     # Other
     n7 = Node("Other", ["in1", "in2"], ["out"])
-    n_new7, changed7 = cf._partial_fold(n7, {})
+    _n_new7, changed7 = cf._partial_fold(n7, {})
     assert not changed7

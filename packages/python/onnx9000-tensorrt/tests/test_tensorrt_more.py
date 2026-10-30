@@ -41,10 +41,23 @@ from onnx9000.tensorrt.ops_matmul import trt_matmul
 
 
 class MockNode:
-    """Docstring for D101."""
+    """Represents mock node."""
 
-    def __init__(self, op_type, inputs, outputs, attrs=None):
-        """Docstring for D107."""
+    def __init__(
+        self,
+        op_type: int | float | str | bool | bytes | list | dict | tuple | None,
+        inputs: int | float | str | bool | bytes | list | dict | tuple | None,
+        outputs: int | float | str | bool | bytes | list | dict | tuple | None,
+        attrs: int | float | str | bool | bytes | list | dict | tuple | None = None,
+    ) -> None:
+        """Initialize MockNode with configured parameters and state.
+
+        Args:
+            op_type: Parameter specifying op type.
+            inputs: Parameter specifying inputs.
+            outputs: Parameter specifying outputs.
+            attrs: Parameter specifying attrs.
+        """
         self.op_type = op_type
         self.inputs = inputs
         self.outputs = outputs
@@ -52,23 +65,33 @@ class MockNode:
 
 
 class MockAttr:
-    """Docstring for D101."""
+    """Represents mock attr."""
 
-    def __init__(self, value):
-        """Docstring for D107."""
+    def __init__(
+        self, value: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> None:
+        """Initialize MockAttr with configured parameters and state.
+
+        Args:
+            value: Parameter specifying value.
+        """
         self.value = value
 
-    def __iter__(self):
-        """Docstring for D105."""
+    def __iter__(self) -> int | float | str | bool | bytes | list | dict | tuple | None:
+        """Return an iterator over elements in MockAttr.
+
+        Returns:
+            Result of iter.
+        """
         if isinstance(self.value, list):
             return iter(self.value)
 
 
 class TestOpsMore(unittest.TestCase):
-    """Docstring for D101."""
+    """Represents test ops more inheriting from unittest.TestCase, supporting operations such as setUp, test_elementwise_failures, test_unary_failures, test_activation_failures."""
 
-    def setUp(self):
-        """Docstring for D102."""
+    def setUp(self) -> None:
+        """Execute set up on TestOpsMore."""
         self.mock_lib = MagicMock()
         trt.ffi.lib = self.mock_lib
         self.net = trt_network.INetworkDefinition(111)
@@ -80,8 +103,8 @@ class TestOpsMore(unittest.TestCase):
         t3.ptr = 3
         self.tensors = {"in1": t1, "in2": t2, "in3": t3}
 
-    def test_elementwise_failures(self):
-        """Docstring for D102."""
+    def test_elementwise_failures(self) -> None:
+        """Verify that elementwise failures behaves as expected."""
         node = MockNode("X", ["in1", "in2"], ["out"])
         for fn in [
             trt_add,
@@ -105,8 +128,8 @@ class TestOpsMore(unittest.TestCase):
             with self.assertRaises(RuntimeError):
                 fn(self.net, node, self.tensors)
 
-    def test_unary_failures(self):
-        """Docstring for D102."""
+    def test_unary_failures(self) -> None:
+        """Verify that unary failures behaves as expected."""
         node = MockNode("X", ["in1"], ["out"])
         from onnx9000.tensorrt.ops import (
             trt_abs,
@@ -148,8 +171,8 @@ class TestOpsMore(unittest.TestCase):
             with self.assertRaises(RuntimeError):
                 fn(self.net, node, self.tensors)
 
-    def test_activation_failures(self):
-        """Docstring for D102."""
+    def test_activation_failures(self) -> None:
+        """Verify that activation failures behaves as expected."""
         node = MockNode("X", ["in1"], ["out"], {"alpha": MockAttr(0.1)})
         for fn in [trt_leakyrelu, trt_clip]:
             self.mock_lib.addActivation = None
@@ -159,8 +182,8 @@ class TestOpsMore(unittest.TestCase):
             with self.assertRaises(RuntimeError):
                 fn(self.net, node, self.tensors)
 
-    def test_reduce_failures(self):
-        """Docstring for D102."""
+    def test_reduce_failures(self) -> None:
+        """Verify that reduce failures behaves as expected."""
         node = MockNode("X", ["in1"], ["out"], {"axes": MockAttr([0])})
         for fn in [
             trt_reducesum,
@@ -176,8 +199,8 @@ class TestOpsMore(unittest.TestCase):
             with self.assertRaises(RuntimeError):
                 fn(self.net, node, self.tensors)
 
-    def test_pool_failures(self):
-        """Docstring for D102."""
+    def test_pool_failures(self) -> None:
+        """Verify that pool failures behaves as expected."""
         node = MockNode(
             "X",
             ["in1"],
@@ -196,8 +219,8 @@ class TestOpsMore(unittest.TestCase):
             with self.assertRaises(RuntimeError):
                 fn(self.net, node, self.tensors)
 
-    def test_dim_failures(self):
-        """Docstring for D102."""
+    def test_dim_failures(self) -> None:
+        """Verify that dim failures behaves as expected."""
         self.mock_lib.addShuffle = None
         with self.assertRaises(RuntimeError):
             trt_reshape(self.net, MockNode("X", ["in1"], ["out"]), self.tensors)
@@ -232,14 +255,14 @@ class TestOpsMore(unittest.TestCase):
         self.mock_lib.addShuffle = MagicMock(return_value=0)
         # Doesn't raise on 0 but that's ok for these ones, just need to run it
 
-    def test_matmul_failures(self):
-        """Docstring for D102."""
+    def test_matmul_failures(self) -> None:
+        """Verify that matmul failures behaves as expected."""
         self.mock_lib.addMatrixMultiply = None
         with self.assertRaises(RuntimeError):
             trt_matmul(self.net, MockNode("X", ["in1", "in2"], ["out"]), self.tensors)
 
-    def test_conv_failures(self):
-        """Docstring for D102."""
+    def test_conv_failures(self) -> None:
+        """Verify that conv failures behaves as expected."""
         node = MockNode("X", ["in1", "in2"], ["out"], {"kernel_shape": MockAttr([3, 3])})
         self.mock_lib.addConvolutionNd = None
         with self.assertRaises(RuntimeError):
@@ -248,8 +271,8 @@ class TestOpsMore(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             trt_conv(self.net, node, self.tensors)
 
-    def test_network_failures(self):
-        """Docstring for D102."""
+    def test_network_failures(self) -> None:
+        """Verify that network failures behaves as expected."""
         delattr(self.mock_lib, "addInput")
         with self.assertRaises(RuntimeError):
             self.net.add_input("in", trt.DataType.kFLOAT, trt.Dims([1]))

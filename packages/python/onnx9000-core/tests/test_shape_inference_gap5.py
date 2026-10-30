@@ -5,7 +5,7 @@ from onnx9000.core.ir import Attribute, Graph, Node, Tensor
 from onnx9000.core.shape_inference import infer_shapes_and_types
 
 
-def test_split():
+def test_split() -> None:
     """Tests the split functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (10, 20), DType.FLOAT32))
@@ -16,7 +16,7 @@ def test_split():
     assert list(g.tensors["y2"].shape) == [10, 10]
 
 
-def test_split_with_values():
+def test_split_with_values() -> None:
     """Tests the split with values functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (10, 20), DType.FLOAT32))
@@ -30,7 +30,7 @@ def test_split_with_values():
     assert list(g.tensors["y2"].shape) == [10, 15]
 
 
-def test_tile():
+def test_tile() -> None:
     """Tests the tile functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (10, 20), DType.FLOAT32))
@@ -43,7 +43,7 @@ def test_tile():
     assert list(g.tensors["y"].shape) == [20, 60]
 
 
-def test_expand():
+def test_expand() -> None:
     """Tests the expand functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (10, 1), DType.FLOAT32))
@@ -56,7 +56,7 @@ def test_expand():
     assert list(g.tensors["y"].shape) == [10, 20]
 
 
-def test_expand_exception():
+def test_expand_exception() -> None:
     """Tests the expand exception functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (10, 20), DType.FLOAT32))
@@ -69,7 +69,7 @@ def test_expand_exception():
     assert "expanded_0" in str(g.tensors["y"].shape)
 
 
-def test_pad():
+def test_pad() -> None:
     """Tests the pad functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (10, 20), DType.FLOAT32))

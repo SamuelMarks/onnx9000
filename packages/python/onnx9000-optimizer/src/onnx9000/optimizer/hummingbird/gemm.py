@@ -1,7 +1,6 @@
 """Provides gemm module functionality."""
 
 import logging
-from typing import Any
 
 from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.optimizer.hummingbird.memory import TreeAbstractions
@@ -12,8 +11,17 @@ logger = logging.getLogger(__name__)
 class GemmCompiler:
     """GEMM (Matrix Multiplication) Strategy compiler."""
 
-    def __init__(self, tree: TreeAbstractions, batch_size: Any = "N") -> None:
-        """Initialize the instance."""
+    def __init__(
+        self,
+        tree: TreeAbstractions,
+        batch_size: int | float | str | bool | bytes | list | dict | tuple | None = "N",
+    ) -> None:
+        """Initialize GemmCompiler with configured parameters and state.
+
+        Args:
+            tree: Parameter specifying tree (TreeAbstractions).
+            batch_size: Parameter specifying batch size (Union[int, float, str, bool, bytes, list, dict, tuple, None]).
+        """
         self.tree = tree
         self.batch_size = batch_size
         self._detect_and_eliminate_redundant_thresholds()
@@ -138,7 +146,7 @@ class GemmCompiler:
     def _build_matrix_a(self) -> dict:
         """Execute the build matrix a operation."""
         num_nodes = len(self.tree.features)
-        return {"shape": (num_nodes, max(self.tree.features + [0]) + 1)}
+        return {"shape": (num_nodes, max([*self.tree.features, 0]) + 1)}
 
     def _build_matrix_b(self) -> dict:
         """Execute the build matrix b operation."""
@@ -158,7 +166,11 @@ class GemmCompiler:
         return {"shape": (num_nodes, num_nodes)}
 
 
-def compile_forest_gemm(g: Graph, trees: list[TreeAbstractions], batch_size: Any = "N") -> None:
+def compile_forest_gemm(
+    g: Graph,
+    trees: list[TreeAbstractions],
+    batch_size: int | float | str | bool | bytes | list | dict | tuple | None = "N",
+) -> None:
     """Compile Random Forest into batched 3D MatMul.
 
     Optimize GEMM memory using block-diagonal matrix representations.
@@ -166,7 +178,11 @@ def compile_forest_gemm(g: Graph, trees: list[TreeAbstractions], batch_size: Any
     return None
 
 
-def compile_boosting_gemm(g: Graph, trees: list[TreeAbstractions], batch_size: Any = "N") -> None:
+def compile_boosting_gemm(
+    g: Graph,
+    trees: list[TreeAbstractions],
+    batch_size: int | float | str | bool | bytes | list | dict | tuple | None = "N",
+) -> None:
     """Compile Gradient Boosting into sequential 2D MatMul additions.
 
     Transpile Sum reduction over ensemble outputs natively.

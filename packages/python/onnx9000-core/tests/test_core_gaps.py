@@ -1,6 +1,5 @@
 """Tests to cover remaining gaps in core module."""
 
-import ast
 import struct
 
 import pytest
@@ -11,7 +10,6 @@ from onnx9000.core.ir import (
     DynamicDim,
     Graph,
     Node,
-    Tensor,
     Variable,
 )
 from onnx9000.core.registry import UnsupportedOpError, global_registry, register_op
@@ -20,7 +18,7 @@ from onnx9000.core.surgeon import cleanup, fold_constants_math, reconstruct_sequ
 from onnx9000.core.symbolic import simplify_expression
 
 
-def test_reconstruct_sequences():
+def test_reconstruct_sequences() -> None:
     """Test reconstructing sequences from linear chains of nodes."""
     g = Graph("test")
     v1 = Variable("v1", [1, 10], DType.FLOAT32)
@@ -41,10 +39,10 @@ def test_reconstruct_sequences():
 
     seqs = reconstruct_sequences(g)
     assert len(seqs) == 1
-    assert len(list(seqs.values())[0]) == 3
+    assert len(next(iter(seqs.values()))) == 3
 
 
-def test_shape_inference_gaps():
+def test_shape_inference_gaps() -> None:
     """Test shape inference for ops with coverage gaps."""
     g = Graph("test")
     v1 = Variable("v1", [2, 3, 4], DType.FLOAT32)
@@ -72,19 +70,13 @@ def test_shape_inference_gaps():
     assert get_attr(n_attr, "a") == "raw_val"
 
     # Test get_attr with Attribute object that has name but not in keys
-    class MockAttr:
-        """Mock attr."""
-
-        def __init__(self, name, value):
-            """Init."""
-            self.name = name
-            self.value = value
-
-    n_attr2 = Node("Test", [], [], attributes={"none": MockAttr("real_name", "real_val")})
+    n_attr2 = Node(
+        "Test", [], [], attributes={"none": Attribute("real_name", "STRING", "real_val")}
+    )
     assert get_attr(n_attr2, "real_name") == "real_val"
 
 
-def test_surgeon_fold_math_gaps():
+def test_surgeon_fold_math_gaps() -> None:
     """Test folding math ops with different number of inputs."""
     g = Graph("test")
     c1 = Constant("c1", values=struct.pack("<f", 1.0))
@@ -101,7 +93,7 @@ def test_surgeon_fold_math_gaps():
     assert g.tensors["out_add"].is_initializer
 
 
-def test_cleanup_gaps():
+def test_cleanup_gaps() -> None:
     """Test cleanup with various edge cases."""
     g = Graph("test")
     v_in = Variable("in")
@@ -112,21 +104,22 @@ def test_cleanup_gaps():
     assert n not in g.nodes
 
 
-def test_registry_gaps():
+def test_registry_gaps() -> None:
     """Test registry with domain and errors."""
     with pytest.raises(UnsupportedOpError):
         global_registry.get_op("test_domain", "NonExistentOp")
 
     @register_op("my_domain", "DomainOp")
-    def my_op():
+    def my_op() -> str:
         """My op."""
-        assert True
+        return "domain_op_result"
 
     all_ops = global_registry.get_all_registered()
     assert "my_domain.DomainOp" in all_ops
+    assert my_op() == "domain_op_result"
 
 
-def test_symbolic_simplify():
+def test_symbolic_simplify() -> None:
     """Test symbolic expression simplification."""
     assert simplify_expression("(x * y) / y") == "x"
     assert simplify_expression("(y * x) / y") == "x"

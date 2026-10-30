@@ -8,6 +8,23 @@
   "tsconfig": "tsconfig.docs.json",
   "exclude": ["**/tests/**", "**/*.test.ts"],
   "skipErrorChecking": true,
+  "treatWarningsAsErrors": true,
+  "validation": {
+    "notDocumented": true
+  },
+  "blockTags": [
+    "@defaultValue",
+    "@deprecated",
+    "@example",
+    "@fileoverview",
+    "@param",
+    "@remarks",
+    "@returns",
+    "@see",
+    "@throws",
+    "@typeParam",
+    "@yields"
+  ],
   "plugin": ["typedoc-plugin-markdown"],
   "outputFileStrategy": "modules",
   "out": "docs/js-api",

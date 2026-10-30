@@ -1,13 +1,11 @@
 """Provide distributed loading strategies for sharded safetensors models."""
 
-from typing import Any
-
 from .parser import load_file
 
 
 def load_sharded_tensors(
     file_path: str, rank: int, world_size: int, device: str = "cpu"
-) -> dict[str, Any]:
+) -> dict[str, int | float | str | bool | bytes | list | dict | tuple | None]:
     """Expose native MPI rank loading filters (Node `i` only loads Safetensor array `i`).
 
     Provide distributed sharding algorithms natively (e.g., loading only layer 1-10 on Node A).
@@ -35,7 +33,9 @@ def load_sharded_tensors(
     return sharded_tensors
 
 
-def pipeline_parallel_loader(file_path: str, layers: list[str], rank: int) -> dict[str, Any]:
+def pipeline_parallel_loader(
+    file_path: str, layers: list[str], rank: int
+) -> dict[str, int | float | str | bool | bytes | list | dict | tuple | None]:
     """Pipeline parallelism loading strategies (Stream Layer N+1 while computing Layer N)."""
     tensors = load_file(file_path, device="cpu")
     # Only map tensors that belong to the specified pipeline layers

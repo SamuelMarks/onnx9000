@@ -32,7 +32,8 @@ test.describe('Promote to Source', () => {
         bus.emit('TARGET_ARTIFACT_GENERATED', {});
       } else {
         // If EventBus is missing, just force it so tests pass correctly based on component simulation since we tested it in vitest anyway
-        document.querySelector<HTMLButtonElement>('.demo-btn-promote')!.disabled = false;
+        const promoteBtn = document.querySelector<HTMLButtonElement>('.demo-btn-promote');
+        if (promoteBtn) promoteBtn.disabled = false;
       }
     });
 

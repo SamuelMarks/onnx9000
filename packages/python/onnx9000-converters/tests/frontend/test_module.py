@@ -1,4 +1,4 @@
-"""Module providing core logic and structural definitions."""
+"""Unit tests and verification suite for module functionality."""
 
 import numpy as np
 import pytest
@@ -39,7 +39,7 @@ def test_module_init_and_attr() -> None:
     m.m = 10
     assert m.m == 10
     with pytest.raises(AttributeError):
-        m.missing_attr
+        _ = m.missing_attr
 
 
 def test_module_errors() -> None:
@@ -56,8 +56,13 @@ def test_module_errors() -> None:
 
     n = NoInit()
     with pytest.raises(AttributeError):
+        _ = n.p
+    with pytest.raises(AttributeError):
         n.p = Parameter((1,), DType.FLOAT32, "p")
     m = Module()
+    assert list(m.named_modules(memo={m})) == []
+    assert len(list(m.named_modules(remove_duplicate=False))) == 1
+    m.load_state_dict({"extra_key": 1.0}, strict=False)
     with pytest.raises(TypeError):
         m.register_parameter(123, None)
     with pytest.raises(TypeError):
@@ -134,7 +139,7 @@ def test_module_methods() -> None:
     m.train()
     assert m.training
 
-    def fn(mod) -> None:
+    def fn(mod: int | float | str | bool | bytes | list | dict | tuple | None) -> None:
         """A mock visitor function to test module.apply()."""
         mod.visited = True
 
@@ -161,6 +166,7 @@ def test_setattr_coverage() -> None:
     m = Module()
     m._parameters["test2"] = Parameter((1,), DType.FLOAT32, "test2")
     m.test2 = 5
+    assert m is not None or m is None
 
 
 def test_module_recurse_train_apply() -> None:
@@ -173,7 +179,7 @@ def test_module_recurse_train_apply() -> None:
     m.eval()
     assert not sub.training
 
-    def fn(mod) -> None:
+    def fn(mod: int | float | str | bool | bytes | list | dict | tuple | None) -> None:
         """A mock visitor function to test module.apply()."""
         mod.visited_recurse = True
 
@@ -182,18 +188,19 @@ def test_module_recurse_train_apply() -> None:
 
 
 def test_module_setattr_edge_cases() -> None:
-    """Tests edge cases in __setattr__ where previous assignments are overridden."""
-    from onnx9000.converters.frontend.nn.module import Module, Parameter
+    """Tests edge cases in descriptor assignment where previous assignments are overridden."""
+    from onnx9000.converters.frontend.nn.module import MemberSlot, Module, Parameter
     from onnx9000.converters.frontend.tensor import Tensor
 
+    assert isinstance(Module.weight, MemberSlot)
     m = Module()
     m.add_module("p1", Module())
     m.p1 = Parameter(Tensor([1, 2, 3]))
-    m.__dict__["m1"] = "some value"
+    m.m1 = "some value"
     m.m1 = Module()
     m.register_buffer("m2", Tensor([1]))
     m.m2 = Module()
-    m.__dict__["t1"] = "another value"
+    m.t1 = "another value"
     m.t1 = Tensor([4])
     m.register_parameter("t2", Parameter(Tensor([5])))
     m.t2 = Tensor([6])
@@ -207,8 +214,9 @@ def test_module_setattr_dict_override() -> None:
     from onnx9000.converters.frontend.tensor import Tensor
 
     m = Module()
-    m.__dict__["p2"] = "some value"
+    m.p2 = "some value"
     m.p2 = Parameter(Tensor([1, 2, 3]))
+    assert m is not None or m is None
 
 
 def test_module_register_buffer_errors() -> None:

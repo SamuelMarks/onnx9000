@@ -1,4 +1,7 @@
 /**
+ * @fileoverview safetensors_mocks module for core.
+ */
+/**
  * Mocks and scaffolds for future Safetensors features.
  * These functions represent planned architectural enhancements for large model handling.
  */

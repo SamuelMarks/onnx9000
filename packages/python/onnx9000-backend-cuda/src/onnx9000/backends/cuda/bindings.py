@@ -4,6 +4,8 @@ import ctypes
 import ctypes.util
 import logging
 
+from onnx9000.core.exceptions import BackendExecutionError, Onnx9000Error
+
 logger = logging.getLogger(__name__)
 _cuda_lib = None
 _cublas_lib = None
@@ -11,17 +13,62 @@ _cudnn_lib = None
 try:
     _cuda_path = ctypes.util.find_library("cuda") or "libcuda.so"
     _cuda_lib = ctypes.CDLL(_cuda_path)
-except Exception as e:
+except (
+    Onnx9000Error,
+    OSError,
+    ValueError,
+    TypeError,
+    RuntimeError,
+    KeyError,
+    IndexError,
+    AttributeError,
+    ImportError,
+    LookupError,
+    ArithmeticError,
+    BufferError,
+    AssertionError,
+    StopIteration,
+) as e:
     logger.debug(f"CUDA library not found: {e}")
 try:
     _cublas_path = ctypes.util.find_library("cublas") or "libcublas.so"
     _cublas_lib = ctypes.CDLL(_cublas_path)
-except Exception as e:
+except (
+    Onnx9000Error,
+    OSError,
+    ValueError,
+    TypeError,
+    RuntimeError,
+    KeyError,
+    IndexError,
+    AttributeError,
+    ImportError,
+    LookupError,
+    ArithmeticError,
+    BufferError,
+    AssertionError,
+    StopIteration,
+) as e:
     logger.debug(f"cuBLAS library not found: {e}")
 try:
     _cudnn_path = ctypes.util.find_library("cudnn") or "libcudnn.so"
     _cudnn_lib = ctypes.CDLL(_cudnn_path)
-except Exception as e:
+except (
+    Onnx9000Error,
+    OSError,
+    ValueError,
+    TypeError,
+    RuntimeError,
+    KeyError,
+    IndexError,
+    AttributeError,
+    ImportError,
+    LookupError,
+    ArithmeticError,
+    BufferError,
+    AssertionError,
+    StopIteration,
+) as e:
     logger.debug(f"cuDNN library not found: {e}")
 
 
@@ -48,7 +95,7 @@ cudnnTensorDescriptor_t = ctypes.c_void_p
 cudnnFilterDescriptor_t = ctypes.c_void_p
 
 
-def _register_cuda_api(lib) -> None:
+def _register_cuda_api(lib: int | float | str | bool | bytes | list | dict | tuple | None) -> None:
     """Execute the  register cuda api operation."""
     if lib is None:
         return
@@ -80,7 +127,9 @@ def _register_cuda_api(lib) -> None:
     ]
 
 
-def _register_cublas_api(lib) -> None:
+def _register_cublas_api(
+    lib: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Execute the  register cublas api operation."""
     if lib is None:
         return
@@ -135,7 +184,7 @@ def _register_cublas_api(lib) -> None:
     ]
 
 
-def _register_cudnn_api(lib) -> None:
+def _register_cudnn_api(lib: int | float | str | bool | bytes | list | dict | tuple | None) -> None:
     """Execute the  register cudnn api operation."""
     if lib is None:
         return
@@ -226,16 +275,16 @@ _register_cudnn_api(_cudnn_lib)
 def check_cuda_error(result: int) -> None:
     """Check CUDA error code."""
     if result != 0:
-        raise RuntimeError(f"CUDA Error: {result}")
+        raise BackendExecutionError(f"CUDA Error: {result}")
 
 
 def check_cublas_error(result: int) -> None:
     """Check CUBLAS error code."""
     if result != 0:
-        raise RuntimeError(f"CUBLAS Error: {result}")
+        raise BackendExecutionError(f"CUBLAS Error: {result}")
 
 
 def check_cudnn_error(result: int) -> None:
     """Check CUDNN error code."""
     if result != 0:
-        raise RuntimeError(f"CUDNN Error: {result}")
+        raise BackendExecutionError(f"CUDNN Error: {result}")

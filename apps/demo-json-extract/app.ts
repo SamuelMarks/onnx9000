@@ -1,22 +1,22 @@
-/* v8 ignore start */
-import { load } from "@onnx9000/core";
+/**
+ * @fileoverview JSON Extract Demo UI.
+ */
+import { load } from '@onnx9000/core';
 
 /**
  * Initializes the JSON extract demo UI and sets up drag-and-drop / file handlers.
  */
 export function initJsonExtractDemo(): void {
-  const dropZone = document.getElementById("drop-zone") as HTMLElement;
-  const fileInput = document.getElementById("file-input") as HTMLInputElement;
-  const browseBtn = document.getElementById("browse-btn") as HTMLButtonElement;
-  const statusPanel = document.getElementById("status-panel") as HTMLElement;
-  const resultPanel = document.getElementById("result-panel") as HTMLElement;
-  const statusText = document.getElementById("status-text") as HTMLElement;
-  const progressBar = document.getElementById("progress-bar") as HTMLElement;
-  const errorBox = document.getElementById("error-box") as HTMLElement;
-  const downloadBtn = document.getElementById(
-    "download-btn",
-  ) as HTMLButtonElement;
-  const statsText = document.getElementById("stats-text") as HTMLElement;
+  const dropZone = document.getElementById('drop-zone');
+  const fileInput = document.getElementById('file-input') as HTMLInputElement | null;
+  const browseBtn = document.getElementById('browse-btn') as HTMLButtonElement | null;
+  const statusPanel = document.getElementById('status-panel');
+  const resultPanel = document.getElementById('result-panel');
+  const statusText = document.getElementById('status-text');
+  const progressBar = document.getElementById('progress-bar');
+  const errorBox = document.getElementById('error-box');
+  const downloadBtn = document.getElementById('download-btn') as HTMLButtonElement | null;
+  const statsText = document.getElementById('stats-text');
 
   if (
     !dropZone ||
@@ -33,88 +33,94 @@ export function initJsonExtractDemo(): void {
     return;
   }
 
-  let currentFile: File | null = null;
+  const validStatusPanel = statusPanel;
+  const validResultPanel = resultPanel;
+  const validStatusText = statusText;
+  const validProgressBar = progressBar;
+  const validErrorBox = errorBox;
+  const validStatsText = statsText;
+
   let jsonBlob: Blob | null = null;
-  let originalName: string = "";
+  let originalName = '';
 
-  browseBtn.addEventListener("click", () => fileInput.click());
+  browseBtn.addEventListener('click', () => fileInput.click());
 
-  fileInput.addEventListener("change", (e: Event) => {
+  fileInput.addEventListener('change', (e: Event) => {
     const target = e.target as HTMLInputElement;
-    if (target.files && target.files.length > 0) {
-      processFile(target.files[0]);
+    const firstFile = target.files?.[0];
+    if (firstFile) {
+      void processFile(firstFile);
     }
   });
 
-  dropZone.addEventListener("dragover", (e: DragEvent) => {
+  dropZone.addEventListener('dragover', (e: DragEvent) => {
     e.preventDefault();
-    dropZone.classList.add("dragover");
+    dropZone.classList.add('dragover');
   });
 
-  dropZone.addEventListener("dragleave", () => {
-    dropZone.classList.remove("dragover");
+  dropZone.addEventListener('dragleave', () => {
+    dropZone.classList.remove('dragover');
   });
 
-  dropZone.addEventListener("drop", (e: DragEvent) => {
+  dropZone.addEventListener('drop', (e: DragEvent) => {
     e.preventDefault();
-    dropZone.classList.remove("dragover");
-    if (e.dataTransfer?.files && e.dataTransfer.files.length > 0) {
-      processFile(e.dataTransfer.files[0]);
+    dropZone.classList.remove('dragover');
+    const firstFile = e.dataTransfer?.files?.[0];
+    if (firstFile) {
+      void processFile(firstFile);
     }
   });
 
-  async function processFile(file: File) {
-    if (!file.name.endsWith(".onnx")) {
-      showError("Please provide a valid .onnx file.");
+  async function processFile(file: File): Promise<void> {
+    if (!file.name.endsWith('.onnx')) {
+      showError('Please provide a valid .onnx file.');
       return;
     }
-    currentFile = file;
-    originalName = file.name.replace(".onnx", "");
-    errorBox.classList.add("hidden");
-    resultPanel.classList.add("hidden");
-    statusPanel.classList.remove("hidden");
+    originalName = file.name.replace('.onnx', '');
+    validErrorBox.classList.add('hidden');
+    validResultPanel.classList.add('hidden');
+    validStatusPanel.classList.remove('hidden');
 
     try {
-      await performExtraction();
+      await performExtraction(file);
     } catch (_err) {
       const err = _err instanceof Error ? _err : new Error(String(_err));
-      showError(err.message || err.toString());
+      showError(err.message);
     }
   }
 
-  function updateProgress(msg: string, pct: number) {
-    statusText.textContent = msg;
-    progressBar.style.width = `${pct}%`;
+  function updateProgress(msg: string, pct: number): void {
+    validStatusText.textContent = msg;
+    validProgressBar.style.width = `${pct}%`;
   }
 
-  function showError(msg: string) {
-    errorBox.textContent = msg;
-    errorBox.classList.remove("hidden");
-    updateProgress("Failed", 100);
-    progressBar.style.backgroundColor = "#cc3333";
+  function showError(msg: string): void {
+    validErrorBox.textContent = msg;
+    validErrorBox.classList.remove('hidden');
+    updateProgress('Failed', 100);
+    validProgressBar.style.backgroundColor = '#cc3333';
   }
 
-  async function performExtraction() {
-    if (!currentFile) return;
-    progressBar.style.backgroundColor = "#007acc";
-    updateProgress("Reading file...", 10);
+  async function performExtraction(file: File): Promise<void> {
+    validProgressBar.style.backgroundColor = '#007acc';
+    updateProgress('Reading file...', 10);
 
-    const arrayBuffer = await currentFile.arrayBuffer();
-    updateProgress("Parsing ONNX AST...", 50);
+    const arrayBuffer = await file.arrayBuffer();
+    updateProgress('Parsing ONNX AST...', 50);
     await new Promise((resolve) => setTimeout(resolve, 10));
 
     const t0 = performance.now();
     const graph = await load(arrayBuffer);
-    updateProgress("Extracting JSON...", 80);
+    updateProgress('Extracting JSON...', 80);
     await new Promise((resolve) => setTimeout(resolve, 10));
 
     const jsonString = JSON.stringify(
       graph,
       (key, value) => {
-        if (key === "data" && ArrayBuffer.isView(value)) {
+        if (key === 'data' && ArrayBuffer.isView(value)) {
           return `[Buffer: ${(value as ArrayBufferView).byteLength} bytes]`;
         }
-        if (typeof value === "bigint") {
+        if (typeof value === 'bigint') {
           return `${value.toString()}n`;
         }
         return value;
@@ -122,28 +128,27 @@ export function initJsonExtractDemo(): void {
       2,
     );
     const t1 = performance.now();
-    updateProgress("Done!", 100);
+    updateProgress('Done!', 100);
 
-    jsonBlob = new Blob([jsonString], { type: "application/json" });
+    jsonBlob = new Blob([jsonString], { type: 'application/json' });
     const inputSize = (arrayBuffer.byteLength / 1024 / 1024).toFixed(2);
     const outputSize = (jsonBlob.size / 1024 / 1024).toFixed(2);
     const timeMs = (t1 - t0).toFixed(0);
 
-    statsText.innerHTML = `<strong>File:</strong> ${originalName}.onnx (${inputSize} MB)<br/><strong>JSON Size:</strong> ${outputSize} MB<br/><strong>Nodes:</strong> ${graph.nodes.length}<br/><strong>Extraction Time:</strong> ${timeMs} ms`;
-    statusPanel.classList.add("hidden");
-    resultPanel.classList.remove("hidden");
+    validStatsText.innerHTML = `<strong>File:</strong> ${originalName}.onnx (${inputSize} MB)<br/><strong>JSON Size:</strong> ${outputSize} MB<br/><strong>Nodes:</strong> ${graph.nodes.length}<br/><strong>Extraction Time:</strong> ${timeMs} ms`;
+    validStatusPanel.classList.add('hidden');
+    validResultPanel.classList.remove('hidden');
   }
 
-  downloadBtn.addEventListener("click", () => {
+  downloadBtn.addEventListener('click', () => {
     if (!jsonBlob) return;
     const url = URL.createObjectURL(jsonBlob);
-    const a = document.createElement("a");
+    const a = document.createElement('a');
     a.href = url;
     a.download = `onnx9000-extracted-${originalName}.json`;
     a.click();
     URL.revokeObjectURL(url);
   });
 }
-initJsonExtractDemo();
 
-/* v8 ignore stop */
+initJsonExtractDemo();

@@ -8,8 +8,8 @@ from onnx9000.core.ir import Graph
 class MockSVC:
     """Represents the Mock S V C class."""
 
-    def __init__(self):
-        """Initialize the instance."""
+    def __init__(self) -> None:
+        """Initialize MockSVC with configured parameters and state."""
         self.n_support_ = np.array([1, 1])
         self.support_vectors_ = np.array([[1.0]])
         self.dual_coef_ = np.array([[0.5, -0.5]])
@@ -23,7 +23,7 @@ class MockSVC:
         self.degree = 3
 
 
-def test_svm_classifier_ints():
+def test_svm_classifier_ints() -> None:
     """Tests the svm classifier ints functionality."""
     g = Graph("g")
     _convert_svm_classifier(MockSVC(), ["input"], g)
@@ -33,8 +33,8 @@ def test_svm_classifier_ints():
 class MockSVCStrings:
     """Represents the Mock S V C Strings class."""
 
-    def __init__(self):
-        """Initialize the instance."""
+    def __init__(self) -> None:
+        """Initialize MockSVCStrings with configured parameters and state."""
         self.n_support_ = np.array([1, 1])
         self.support_vectors_ = np.array([[1.0]])
         self.dual_coef_ = np.array([[0.5, -0.5]])
@@ -48,7 +48,7 @@ class MockSVCStrings:
         self.degree = 3
 
 
-def test_svm_classifier_strings():
+def test_svm_classifier_strings() -> None:
     """Tests the svm classifier strings functionality."""
     g = Graph("g")
     _convert_svm_classifier(MockSVCStrings(), ["input"], g)

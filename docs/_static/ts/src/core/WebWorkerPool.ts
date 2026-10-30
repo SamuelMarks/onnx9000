@@ -81,7 +81,7 @@ export class WebWorkerPool {
       }
     }
 
-    const task = this.pendingTasks.shift()!;
+    const task = this.pendingTasks.shift();
     const id = Math.random().toString(36).substring(2, 9);
     this.taskMap.set(id, {
       resolve: task.resolve,

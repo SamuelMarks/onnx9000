@@ -5,7 +5,7 @@ test.describe('sphinx-demo-ui', () => {
     try {
       // The sphinx UI is usually embedded in the index or specific tutorial pages
       await page.goto('/');
-    } catch (_e) {
+    } catch {
       test.skip();
     }
   });

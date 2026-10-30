@@ -17,7 +17,16 @@ class _BatchNormNd(Module):
         track_running_stats: bool,
         dtype: DType,
     ) -> None:
-        """Implement the __init__ method."""
+        """Initialize _BatchNormNd with configured parameters and state.
+
+        Args:
+            num_features: Parameter specifying num features (int).
+            eps: Parameter specifying eps (float).
+            momentum: Parameter specifying momentum (float).
+            affine: Parameter specifying affine (bool).
+            track_running_stats: Parameter specifying track running stats (bool).
+            dtype: Parameter specifying dtype (DType).
+        """
         super().__init__()
         self.num_features = num_features
         self.eps = eps
@@ -38,7 +47,14 @@ class _BatchNormNd(Module):
             self.register_buffer("running_var", None)
 
     def forward(self, input: Tensor) -> Tensor:
-        """Implement the forward method."""
+        """Execute forward on _BatchNormNd.
+
+        Args:
+            input: Parameter specifying input (Tensor).
+
+        Returns:
+            Result of forward (Tensor).
+        """
         from onnx9000.converters.frontend.utils import record_op
 
         attrs = {
@@ -76,7 +92,16 @@ class BatchNorm1d(_BatchNormNd):
         track_running_stats: bool = True,
         dtype: DType = DType.FLOAT32,
     ) -> None:
-        """Implement the __init__ method."""
+        """Initialize BatchNorm1d with configured parameters and state.
+
+        Args:
+            num_features: Parameter specifying num features (int).
+            eps: Parameter specifying eps (float).
+            momentum: Parameter specifying momentum (float).
+            affine: Parameter specifying affine (bool).
+            track_running_stats: Parameter specifying track running stats (bool).
+            dtype: Parameter specifying dtype (DType).
+        """
         super().__init__(num_features, eps, momentum, affine, track_running_stats, dtype)
 
 
@@ -92,7 +117,16 @@ class BatchNorm2d(_BatchNormNd):
         track_running_stats: bool = True,
         dtype: DType = DType.FLOAT32,
     ) -> None:
-        """Implement the __init__ method."""
+        """Initialize BatchNorm2d with configured parameters and state.
+
+        Args:
+            num_features: Parameter specifying num features (int).
+            eps: Parameter specifying eps (float).
+            momentum: Parameter specifying momentum (float).
+            affine: Parameter specifying affine (bool).
+            track_running_stats: Parameter specifying track running stats (bool).
+            dtype: Parameter specifying dtype (DType).
+        """
         super().__init__(num_features, eps, momentum, affine, track_running_stats, dtype)
 
 
@@ -108,7 +142,16 @@ class BatchNorm3d(_BatchNormNd):
         track_running_stats: bool = True,
         dtype: DType = DType.FLOAT32,
     ) -> None:
-        """Implement the __init__ method."""
+        """Initialize BatchNorm3d with configured parameters and state.
+
+        Args:
+            num_features: Parameter specifying num features (int).
+            eps: Parameter specifying eps (float).
+            momentum: Parameter specifying momentum (float).
+            affine: Parameter specifying affine (bool).
+            track_running_stats: Parameter specifying track running stats (bool).
+            dtype: Parameter specifying dtype (DType).
+        """
         super().__init__(num_features, eps, momentum, affine, track_running_stats, dtype)
 
 
@@ -122,7 +165,14 @@ class LayerNorm(Module):
         elementwise_affine: bool = True,
         dtype: DType = DType.FLOAT32,
     ) -> None:
-        """Implement the __init__ method."""
+        """Initialize LayerNorm with configured parameters and state.
+
+        Args:
+            normalized_shape: Parameter specifying normalized shape (int | tuple[int]).
+            eps: Parameter specifying eps (float).
+            elementwise_affine: Parameter specifying elementwise affine (bool).
+            dtype: Parameter specifying dtype (DType).
+        """
         super().__init__()
         if isinstance(normalized_shape, int):
             normalized_shape = (normalized_shape,)
@@ -134,7 +184,14 @@ class LayerNorm(Module):
             self.bias = Parameter(normalized_shape, dtype, "bias")
 
     def forward(self, input: Tensor) -> Tensor:
-        """Implement the forward method."""
+        """Execute forward on LayerNorm.
+
+        Args:
+            input: Parameter specifying input (Tensor).
+
+        Returns:
+            Result of forward (Tensor).
+        """
         from onnx9000.converters.frontend.utils import record_op
 
         attrs = {"axis": -len(self.normalized_shape), "epsilon": self.eps}
@@ -156,7 +213,15 @@ class GroupNorm(Module):
         affine: bool = True,
         dtype: DType = DType.FLOAT32,
     ) -> None:
-        """Implement the __init__ method."""
+        """Initialize GroupNorm with configured parameters and state.
+
+        Args:
+            num_groups: Parameter specifying num groups (int).
+            num_channels: Parameter specifying num channels (int).
+            eps: Parameter specifying eps (float).
+            affine: Parameter specifying affine (bool).
+            dtype: Parameter specifying dtype (DType).
+        """
         super().__init__()
         self.num_groups = num_groups
         self.num_channels = num_channels
@@ -167,7 +232,14 @@ class GroupNorm(Module):
             self.bias = Parameter((num_channels,), dtype, "bias")
 
     def forward(self, input: Tensor) -> Tensor:
-        """Implement the forward method."""
+        """Execute forward on GroupNorm.
+
+        Args:
+            input: Parameter specifying input (Tensor).
+
+        Returns:
+            Result of forward (Tensor).
+        """
         from onnx9000.converters.frontend.utils import record_op
 
         attrs = {"epsilon": self.eps, "num_groups": self.num_groups}
@@ -190,7 +262,16 @@ class _InstanceNormNd(Module):
         track_running_stats: bool,
         dtype: DType,
     ) -> None:
-        """Implement the __init__ method."""
+        """Initialize _InstanceNormNd with configured parameters and state.
+
+        Args:
+            num_features: Parameter specifying num features (int).
+            eps: Parameter specifying eps (float).
+            momentum: Parameter specifying momentum (float).
+            affine: Parameter specifying affine (bool).
+            track_running_stats: Parameter specifying track running stats (bool).
+            dtype: Parameter specifying dtype (DType).
+        """
         super().__init__()
         self.num_features = num_features
         self.eps = eps
@@ -204,7 +285,14 @@ class _InstanceNormNd(Module):
             self.register_parameter("bias", None)
 
     def forward(self, input: Tensor) -> Tensor:
-        """Implement the forward method."""
+        """Execute forward on _InstanceNormNd.
+
+        Args:
+            input: Parameter specifying input (Tensor).
+
+        Returns:
+            Result of forward (Tensor).
+        """
         from onnx9000.converters.frontend.utils import record_op
 
         attrs = {"epsilon": self.eps}
@@ -227,7 +315,16 @@ class InstanceNorm1d(_InstanceNormNd):
         track_running_stats: bool = False,
         dtype: DType = DType.FLOAT32,
     ) -> None:
-        """Implement the __init__ method."""
+        """Initialize InstanceNorm1d with configured parameters and state.
+
+        Args:
+            num_features: Parameter specifying num features (int).
+            eps: Parameter specifying eps (float).
+            momentum: Parameter specifying momentum (float).
+            affine: Parameter specifying affine (bool).
+            track_running_stats: Parameter specifying track running stats (bool).
+            dtype: Parameter specifying dtype (DType).
+        """
         super().__init__(num_features, eps, momentum, affine, track_running_stats, dtype)
 
 
@@ -243,7 +340,16 @@ class InstanceNorm2d(_InstanceNormNd):
         track_running_stats: bool = False,
         dtype: DType = DType.FLOAT32,
     ) -> None:
-        """Implement the __init__ method."""
+        """Initialize InstanceNorm2d with configured parameters and state.
+
+        Args:
+            num_features: Parameter specifying num features (int).
+            eps: Parameter specifying eps (float).
+            momentum: Parameter specifying momentum (float).
+            affine: Parameter specifying affine (bool).
+            track_running_stats: Parameter specifying track running stats (bool).
+            dtype: Parameter specifying dtype (DType).
+        """
         super().__init__(num_features, eps, momentum, affine, track_running_stats, dtype)
 
 
@@ -259,5 +365,14 @@ class InstanceNorm3d(_InstanceNormNd):
         track_running_stats: bool = False,
         dtype: DType = DType.FLOAT32,
     ) -> None:
-        """Implement the __init__ method."""
+        """Initialize InstanceNorm3d with configured parameters and state.
+
+        Args:
+            num_features: Parameter specifying num features (int).
+            eps: Parameter specifying eps (float).
+            momentum: Parameter specifying momentum (float).
+            affine: Parameter specifying affine (bool).
+            track_running_stats: Parameter specifying track running stats (bool).
+            dtype: Parameter specifying dtype (DType).
+        """
         super().__init__(num_features, eps, momentum, affine, track_running_stats, dtype)

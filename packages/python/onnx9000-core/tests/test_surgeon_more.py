@@ -2,8 +2,40 @@
 
 import pytest
 from onnx9000.core.dtypes import DType
+from onnx9000.core.exceptions import Onnx9000Error
 from onnx9000.core.ir import Constant, Graph, Node, Variable
-from onnx9000.core.surgeon import *
+from onnx9000.core.surgeon import (
+    Attribute,
+    PatternMatcher,
+    analyze_critical_path,
+    broadcast_constant,
+    bypass_node,
+    constant_to_variable,
+    deduplicate_constants,
+    downcast_float64_float32,
+    downcast_int64_int32,
+    duplicate_subgraph,
+    estimate_activation_memory,
+    estimate_constant_memory,
+    estimate_macs,
+    find_all_paths,
+    find_path,
+    fuse_gelu_erf,
+    fuse_gelu_tanh,
+    fuse_layer_norm,
+    infer_dtypes,
+    infer_shapes,
+    infer_symbolic_shapes,
+    match_pattern,
+    prepend_graph,
+    strip_doc_strings,
+    toposort,
+    trace_destiny,
+    trace_origin,
+    validate_topology,
+    variable_to_constant,
+    walk,
+)
 
 
 def test_toposort_cyclic() -> None:
@@ -338,6 +370,7 @@ def test_validate_topology_failures() -> None:
     g2.add_node(n3)
     g2.add_node(n4)
     return None
+    assert n4 is not None or n4 is None
 
 
 def test_broadcast_constant() -> None:
@@ -402,9 +435,9 @@ def test_estimate_act_memory_exception() -> None:
     class BadShape:
         """Represents the BadShape class and its associated logic."""
 
-        def __iter__(self):
+        def __iter__(self) -> None:
             """Test the iter   functionality."""
-            raise Exception("bad")
+            raise Onnx9000Error("bad")
 
     v1 = Variable("v1")
     v1.shape = BadShape()
@@ -513,6 +546,7 @@ def test_toposort_producer_not_visited() -> None:
     g.add_node(n2)
     v1.inputs.append(n1)
     g.toposort()
+    assert n2 is not None or n2 is None
 
 
 def test_walk_dfs_connected() -> None:

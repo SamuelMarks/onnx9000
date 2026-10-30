@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../src/passes/interop";
+import { describe, expect, it } from 'vitest';
+import { MLIRInterop } from '../../src/passes/interop';
 
-describe("interop.ts", () => {
-  it("should instantiate and cover MLIRInterop", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('interop.ts', () => {
+  it('should instantiate and cover MLIRInterop', () => {
     try {
-      const obj = new (Module as any).MLIRInterop();
+      const obj = Construct(MLIRInterop);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

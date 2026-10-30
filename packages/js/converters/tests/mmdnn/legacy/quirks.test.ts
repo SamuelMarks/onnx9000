@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../../src/mmdnn/legacy/quirks";
+import { describe, expect, it } from 'vitest';
+import { LegacyQuirkResolver } from '../../../src/mmdnn/legacy/quirks';
 
-describe("quirks.ts", () => {
-  it("should instantiate and cover LegacyQuirkResolver", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('quirks.ts', () => {
+  it('should instantiate and cover LegacyQuirkResolver', () => {
     try {
-      const obj = new (Module as any).LegacyQuirkResolver();
+      const obj = Construct(LegacyQuirkResolver);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

@@ -1,29 +1,25 @@
-"""Tests for tensorrt missing."""
+"""Unit tests for TensorRT operator registry error handling with missing inputs."""
 
 from unittest.mock import MagicMock, patch
 
-import onnx9000.tensorrt.ops
-import onnx9000.tensorrt.ops_conv
-import onnx9000.tensorrt.ops_dim
-import onnx9000.tensorrt.ops_matmul
 import pytest
 from onnx9000.tensorrt.registry import _TRT_OP_REGISTRY
 
 
-def test_missing_inputs_all():
-    """Docstring for D103."""
+def test_missing_inputs_all() -> None:
+    """Verify all registered TensorRT op handlers raise Onnx9000Error or IndexError on empty inputs."""
 
     class MockNode:
         """Mock node."""
 
-        def __init__(self):
-            """Init."""
-            self.inputs = []
+        def __init__(self) -> None:
+            """Initialize MockNode with configured parameters and state."""
+            self.inputs: list[str] = []
             self.op_type = "Mock"
-            self.attributes = {}
+            self.attributes: dict[str, object] = {}
 
     node = MockNode()
-    tensors = {}
+    tensors: dict[str, object] = {}
     network = MagicMock()
 
     mock_ffi = MagicMock()
@@ -36,7 +32,5 @@ def test_missing_inputs_all():
         patch("onnx9000.tensorrt.ops_conv.ffi", mock_ffi),
     ):
         for op_func in _TRT_OP_REGISTRY.values():
-            try:
+            with pytest.raises((ValueError, IndexError, KeyError, RuntimeError, TypeError)):
                 op_func(network, node, tensors)
-            except Exception:
-                assert True

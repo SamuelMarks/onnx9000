@@ -2,18 +2,29 @@
  * @fileoverview memory.ts
  * Provides memory functionality for the backend-web package.
  */
-import { Graph, type Node } from "@onnx9000/core";
+import { Graph, type Node } from '@onnx9000/core';
 
+/** Represents the `WebGPUMemoryManager` class. */
 export class WebGPUMemoryManager {
   // Current typical WebGPU limits: max buffer size 256MB on some, 2GB on others
+  /** Property `maxBufferSize` of `WebGPUMemoryManager`. */
   private maxBufferSize: number = 256 * 1024 * 1024;
 
+  /**
+   * Initializes a new `WebGPUMemoryManager` instance.
+   * @param maxBufferSize Parameter `maxBufferSize`.
+   */
   constructor(maxBufferSize?: number) {
     if (maxBufferSize) {
       this.maxBufferSize = maxBufferSize;
     }
   }
 
+  /**
+   * Executes `checkAndPartition` on `WebGPUMemoryManager`.
+   * @param graph Parameter `graph`.
+   * @returns Result of `checkAndPartition`.
+   */
   checkAndPartition(graph: Graph): Graph[] {
     let currentSize = 0;
     const subgraphs: Graph[] = [];
@@ -44,6 +55,11 @@ export class WebGPUMemoryManager {
     return subgraphs;
   }
 
+  /**
+   * Executes `estimateNodeMemory` on `WebGPUMemoryManager`.
+   * @param _node Parameter `_node`.
+   * @returns Result of `estimateNodeMemory`.
+   */
   private estimateNodeMemory(_node: Node): number {
     // Very rough estimate - in a real engine we'd inspect the tensors attached to node attributes/initializers.
     return 10 * 1024 * 1024; // 10MB per node mock

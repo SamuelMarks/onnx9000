@@ -1,4 +1,7 @@
 /**
+ * @fileoverview types module for core.
+ */
+/**
  * Parameters defining the LLM architecture and limits.
  */
 export interface ModelParams {
@@ -66,11 +69,10 @@ export interface GeneratorParams {
 
 /**
  * Callback for monitoring GenAI operations (e.g., downloads).
+ * @param downloaded Bytes received.
+ * @param total Total bytes.
  */
-export interface GenAIProgressCallback {
-  /** @param downloaded Bytes received. @param total Total bytes. */
-  (downloaded: number, total: number): void;
-}
+export type GenAIProgressCallback = (downloaded: number, total: number) => void;
 
 /**
  * Performance metrics for generation.

@@ -1,10 +1,12 @@
-// @ts-nocheck
 import { describe, expect, it, vi } from 'vitest';
 import { BenchmarkPanel } from '../src/components/BenchmarkPanel.js';
 
 describe('BenchmarkPanel', () => {
   it('should render and handle clicks', async () => {
-    (global as any).window.pyodide = { runPythonAsync: vi.fn().mockResolvedValue('output') };
+    const win = window as Window & {
+      pyodide?: { runPythonAsync: ReturnType<typeof vi.fn> };
+    };
+    win.pyodide = { runPythonAsync: vi.fn().mockResolvedValue('output') };
 
     const panel = new BenchmarkPanel();
     document.body.appendChild(panel.element);
@@ -14,6 +16,6 @@ describe('BenchmarkPanel', () => {
 
     btns[0]?.click();
     await new Promise((r) => setTimeout(r, 10));
-    expect((global as any).window.pyodide.runPythonAsync).toHaveBeenCalled();
+    expect(win.pyodide.runPythonAsync).toHaveBeenCalled();
   });
 });

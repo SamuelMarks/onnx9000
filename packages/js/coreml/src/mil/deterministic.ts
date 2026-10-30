@@ -2,8 +2,12 @@
  * @fileoverview deterministic.ts
  * Provides deterministic functionality for the coreml package.
  */
-import type { Model } from "../schema.js";
+import type { Model } from '../schema.js';
 
+/**
+ * Executes `assertDeterministicBuild`.
+ * @param model Parameter `model`.
+ */
 export function assertDeterministicBuild(model: Model): void {
   // 294. Ensure full deterministic compilation
   // Sort metadata keys, ensure arrays are properly ordered.
@@ -11,7 +15,7 @@ export function assertDeterministicBuild(model: Model): void {
     const keys = Object.keys(model.description.metadata.creatorDefined).sort();
     const sortedCreatorDefined: Record<string, string> = {};
     for (const k of keys) {
-      sortedCreatorDefined[k] = model.description.metadata.creatorDefined[k]!;
+      sortedCreatorDefined[k] = model.description.metadata.creatorDefined[k] as string;
     }
     model.description.metadata.creatorDefined = sortedCreatorDefined;
   }

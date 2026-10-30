@@ -3,6 +3,8 @@
 import mmap
 import os
 
+from onnx9000.core.exceptions import ConversionError
+
 WIRETYPE_VARINT = 0
 WIRETYPE_FIXED64 = 1
 WIRETYPE_LENGTH_DELIMITED = 2
@@ -12,7 +14,18 @@ WIRETYPE_FIXED32 = 5
 
 
 def read_varint(view: memoryview, offset: int) -> tuple[int, int]:
-    """Docstring for D103."""
+    """Execute read varint operation.
+
+    Args:
+        view: Parameter specifying view (memoryview).
+        offset: Parameter specifying offset (int).
+
+    Returns:
+        Result of read varint (tuple[int, int]).
+
+    Raises:
+        EOFError: If an invalid state or argument is encountered during execution.
+    """
     result = 0
     shift = 0
     while True:
@@ -28,7 +41,15 @@ def read_varint(view: memoryview, offset: int) -> tuple[int, int]:
 
 
 def read_tag(view: memoryview, offset: int) -> tuple[int, int, int]:
-    """Docstring for D103."""
+    """Execute read tag operation.
+
+    Args:
+        view: Parameter specifying view (memoryview).
+        offset: Parameter specifying offset (int).
+
+    Returns:
+        Result of read tag (tuple[int, int, int]).
+    """
     tag_val, offset = read_varint(view, offset)
     wire_type = tag_val & 0x7
     field_num = tag_val >> 3
@@ -36,7 +57,19 @@ def read_tag(view: memoryview, offset: int) -> tuple[int, int, int]:
 
 
 def skip_field(view: memoryview, offset: int, wire_type: int) -> int:
-    """Docstring for D103."""
+    """Execute skip field operation.
+
+    Args:
+        view: Parameter specifying view (memoryview).
+        offset: Parameter specifying offset (int).
+        wire_type: Parameter specifying wire type (int).
+
+    Returns:
+        Result of skip field (int).
+
+    Raises:
+        ValueError: If an invalid state or argument is encountered during execution.
+    """
     if wire_type == WIRETYPE_VARINT:
         _, offset = read_varint(view, offset)
     elif wire_type == WIRETYPE_FIXED64:
@@ -47,22 +80,30 @@ def skip_field(view: memoryview, offset: int, wire_type: int) -> int:
     elif wire_type == WIRETYPE_FIXED32:
         offset += 4
     else:
-        raise ValueError(f"Unsupported wire type {wire_type}")
+        raise ConversionError(f"Unsupported wire type {wire_type}")
     return offset
 
 
 class PureOnnxParser:
-    """Docstring for D101."""
+    """Represents pure onnx parser, supporting operations such as parse_model."""
 
-    def __init__(self, filename: str):
-        """Docstring for D107."""
+    def __init__(self, filename: str) -> None:
+        """Initialize PureOnnxParser with configured parameters and state.
+
+        Args:
+            filename: Parameter specifying filename (str).
+        """
         self.filename = filename
         self.fd = os.open(filename, os.O_RDONLY)
         self.mm = mmap.mmap(self.fd, 0, access=mmap.ACCESS_READ)
         self.view = memoryview(self.mm)
 
-    def parse_model(self):
-        """Docstring for D102."""
+    def parse_model(self) -> int | float | str | bool | bytes | list | dict | tuple | None:
+        """Execute parse model on PureOnnxParser.
+
+        Returns:
+            Result of parse model.
+        """
         return self._parse_message(self.view, 0, len(self.view), "ModelProto")
 
     def _parse_message(self, view: memoryview, start: int, end: int, msg_type: str) -> dict:
@@ -189,17 +230,32 @@ class PureOnnxParser:
 
         return result
 
-    def __enter__(self):
-        """Docstring for D105."""
+    def __enter__(self) -> int | float | str | bool | bytes | list | dict | tuple | None:
+        """Enter the runtime context managed by PureOnnxParser.
+
+        Returns:
+            Result of enter.
+        """
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        """Docstring for D105."""
+    def __exit__(
+        self,
+        exc_type: int | float | str | bool | bytes | list | dict | tuple | None,
+        exc_val: int | float | str | bool | bytes | list | dict | tuple | None,
+        exc_tb: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
+        """Exit the runtime context managed by PureOnnxParser and handle exceptions.
+
+        Args:
+            exc_type: Parameter specifying exc type.
+            exc_val: Parameter specifying exc val.
+            exc_tb: Parameter specifying exc tb.
+        """
         if hasattr(self, "mm") and self.mm:
             try:
                 self.mm.close()
             except BufferError:
-                assert True
+                self.mm = None
             self.mm = None
         if hasattr(self, "fd") and self.fd:
             os.close(self.fd)

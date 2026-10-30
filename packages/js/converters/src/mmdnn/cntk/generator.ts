@@ -2,182 +2,177 @@
  * @fileoverview generator.ts
  * Provides generator functionality for the converters package.
  */
-// @ts-nocheck
-import type { Graph } from "@onnx9000/core";
+import type { Graph } from '@onnx9000/core';
 
+/** Represents the `CNTKGenerator` class. */
 export class CNTKGenerator {
+  /** Property `graph` of `CNTKGenerator`. */
   graph: Graph;
 
+  /**
+   * Initializes a new `CNTKGenerator` instance.
+   * @param graph Parameter `graph`.
+   */
   constructor(graph: Graph) {
     this.graph = graph;
   }
 
+  /**
+   * Executes `sanitize` on `CNTKGenerator`.
+   * @param name Parameter `name`.
+   * @returns Result of `sanitize`.
+   */
   private sanitize(name: string): string {
-    if (!name) return "unnamed";
-    let sanitized = name.replace(/[^a-zA-Z0-9_]/g, "_");
+    if (!name) return 'unnamed';
+    let sanitized = name.replace(/[^a-zA-Z0-9_]/g, '_');
     if (/^[0-9]/.test(sanitized)) {
       sanitized = `v_${sanitized}`;
     }
     return sanitized;
   }
 
+  /**
+   * Executes `getShape` on `CNTKGenerator`.
+   * @param name Parameter `name`.
+   * @returns Result of `getShape`.
+   */
   private getShape(name: string): number[] | null {
     if (!name) return null;
     if (this.graph.tensors[name]) {
       return this.graph.tensors[name].shape as number[];
     }
-
-    const val = this.graph.valueInfo.find((v) => v.name === name);
-    if (val) return val.shape as number[];
-    const inp = this.graph.inputs.find((v) => v.name === name);
-    if (inp) return inp.shape as number[];
-    return null;
+    const info =
+      this.graph.valueInfo.find((v) => v.name === name) ||
+      this.graph.inputs.find((v) => v.name === name);
+    return info ? (info.shape as number[]) : null;
   }
 
+  /**
+   * Executes `isInitializer` on `CNTKGenerator`.
+   * @param name Parameter `name`.
+   * @returns Result of `isInitializer`.
+   */
   private isInitializer(name: string): boolean {
     return !!this.graph.tensors[name];
   }
 
+  /**
+   * Executes `generate` on `CNTKGenerator`.
+   * @returns Result of `generate`.
+   */
   generate(): string {
     const lines = [
-      "import cntk as C",
-      "",
-      `def create_${this.sanitize(this.graph.name || "model")}(inputs):`,
+      'import cntk as C',
+      '',
+      `def create_${this.sanitize(this.graph.name || 'model')}(inputs):`,
     ];
 
     const forwardLines: string[] = [];
 
     // Filter out initializers from inputs
-    const trueInputs = this.graph.inputs.filter(
-      (inp) => !this.isInitializer(inp.name),
-    );
-    const inputArgs = trueInputs.map((i) => this.sanitize(i.name)).join(", ");
+    const trueInputs = this.graph.inputs.filter((inp) => !this.isInitializer(inp.name));
+    const inputArgs = trueInputs.map((i) => this.sanitize(i.name)).join(', ');
 
     if (inputArgs) {
       forwardLines.push(`${inputArgs} = inputs`);
     }
 
     for (const node of this.graph.nodes) {
-      const out = this.sanitize(
-        node.outputs[0] || `out_${node.name || "node"}`,
-      );
+      const out = this.sanitize(node.outputs[0] || `out_${node.name || 'node'}`);
 
       switch (node.opType) {
-        case "Conv": {
-          const wShape = this.getShape(node.inputs[1]!);
+        case 'Conv': {
+          const wShape = this.getShape(node.inputs[1] ?? '');
           const outChannels = wShape ? wShape[0] : 32;
           const kernelSize = wShape ? wShape.slice(2) : [3, 3];
-          const strides = (node.attributes.strides?.value as number[]) || [
-            1, 1,
-          ];
-          const pads = (node.attributes.pads?.value as number[]) || [
-            0, 0, 0, 0,
-          ];
-          const pad = (pads as number[]).some((p) => p > 0) ? "True" : "False";
+          const strides = (node.attributes.strides?.value as number[]) || [1, 1];
+          const pads = (node.attributes.pads?.value as number[]) || [0, 0, 0, 0];
+          const pad = (pads as number[]).some((p) => p > 0) ? 'True' : 'False';
 
-          const inp = this.sanitize(node.inputs[0]!);
+          const inp = this.sanitize(node.inputs[0] ?? '');
           forwardLines.push(
-            `${out} = C.layers.Convolution2D(filter_shape=${JSON.stringify(kernelSize.map(Number))}, num_filters=${Number(outChannels)}, strides=${JSON.stringify(strides.map(Number))}, pad=${pad}, bias=${node.inputs.length > 2 ? "True" : "False"})(${inp})`,
+            `${out} = C.layers.Convolution2D(filter_shape=${JSON.stringify(kernelSize.map(Number))}, num_filters=${Number(outChannels)}, strides=${JSON.stringify(strides.map(Number))}, pad=${pad}, bias=${node.inputs.length > 2 ? 'True' : 'False'})(${inp})`,
           );
           break;
         }
-        case "MaxPool":
-        case "AveragePool": {
-          const poolType =
-            node.opType === "MaxPool" ? "MaxPooling" : "AveragePooling";
-          const kernelSize = (node.attributes.kernel_shape
-            ?.value as number[]) || [2, 2];
-          const strides = (node.attributes.strides?.value as number[]) || [
-            2, 2,
-          ];
-          const pads = (node.attributes.pads?.value as number[]) || [
-            0, 0, 0, 0,
-          ];
-          const pad = (pads as number[]).some((p) => p > 0) ? "True" : "False";
+        case 'MaxPool':
+        case 'AveragePool': {
+          const poolType = node.opType === 'MaxPool' ? 'MaxPooling' : 'AveragePooling';
+          const kernelSize = (node.attributes.kernel_shape?.value as number[]) || [2, 2];
+          const strides = (node.attributes.strides?.value as number[]) || [2, 2];
+          const pads = (node.attributes.pads?.value as number[]) || [0, 0, 0, 0];
+          const pad = (pads as number[]).some((p) => p > 0) ? 'True' : 'False';
 
-          const inp = this.sanitize(node.inputs[0]!);
+          const inp = this.sanitize(node.inputs[0] ?? '');
           forwardLines.push(
             `${out} = C.layers.${poolType}(filter_shape=${JSON.stringify(kernelSize.map(Number))}, strides=${JSON.stringify(strides.map(Number))}, pad=${pad})(${inp})`,
           );
           break;
         }
-        case "GlobalAveragePool": {
-          const inp = this.sanitize(node.inputs[0]!);
+        case 'GlobalAveragePool': {
+          const inp = this.sanitize(node.inputs[0] ?? '');
           forwardLines.push(`${out} = C.layers.GlobalAveragePooling()(${inp})`);
           break;
         }
-        case "Relu": {
-          const inp = this.sanitize(node.inputs[0]!);
+        case 'Relu': {
+          const inp = this.sanitize(node.inputs[0] ?? '');
           forwardLines.push(`${out} = C.relu(${inp})`);
           break;
         }
-        case "Flatten": {
-          const inp = this.sanitize(node.inputs[0]!);
+        case 'Flatten': {
+          const inp = this.sanitize(node.inputs[0] ?? '');
           forwardLines.push(`${out} = C.flatten(${inp})`);
           break;
         }
-        case "Gemm":
-        case "MatMul": {
-          const wShape = this.getShape(node.inputs[1]!);
-          const outFeatures = wShape
-            ? node.attributes.transB?.value
-              ? wShape[0]
-              : wShape[1]
-            : 10;
+        case 'Gemm':
+        case 'MatMul': {
+          const wShape = this.getShape(node.inputs[1] ?? '');
+          const outFeatures = wShape ? (node.attributes.transB?.value ? wShape[0] : wShape[1]) : 10;
 
-          const inp = this.sanitize(node.inputs[0]!);
-          forwardLines.push(
-            `${out} = C.layers.Dense(shape=${Number(outFeatures)})(${inp})`,
-          );
+          const inp = this.sanitize(node.inputs[0] ?? '');
+          forwardLines.push(`${out} = C.layers.Dense(shape=${Number(outFeatures)})(${inp})`);
           break;
         }
-        case "Add": {
-          const inp0 = this.sanitize(node.inputs[0]!);
-          const inp1 = this.sanitize(node.inputs[1]!);
+        case 'Add': {
+          const inp0 = this.sanitize(node.inputs[0] ?? '');
+          const inp1 = this.sanitize(node.inputs[1] ?? '');
           forwardLines.push(`${out} = C.plus(${inp0}, ${inp1})`);
           break;
         }
-        case "Softmax": {
-          const inp = this.sanitize(node.inputs[0]!);
-          const axis =
-            node.attributes.axis != null
-              ? Number(node.attributes.axis.value)
-              : -1;
+        case 'Softmax': {
+          const inp = this.sanitize(node.inputs[0] ?? '');
+          const axis = node.attributes.axis != null ? Number(node.attributes.axis.value) : -1;
           forwardLines.push(`${out} = C.softmax(${inp}, axis=${axis})`);
           break;
         }
         default: {
-          const inps = node.inputs.map((i) => this.sanitize(i)).join(", ");
+          const inps = node.inputs.map((i) => this.sanitize(i)).join(', ');
           forwardLines.push(
-            `${out} = ${inps.split(", ")[0]}  # Fallback for ${String(node.opType)}`,
+            `${out} = ${inps.split(', ')[0]}  # Fallback for ${String(node.opType)}`,
           );
         }
       }
     }
 
     if (forwardLines.length === 0) {
-      forwardLines.push("pass");
+      forwardLines.push('pass');
     }
     for (const l of forwardLines) {
       lines.push(`    ${l}`);
     }
 
-    const outputs = this.graph.outputs
-      .map((o) => this.sanitize(o.name))
-      .join(", ");
+    const outputs = this.graph.outputs.map((o) => this.sanitize(o.name)).join(', ');
     if (outputs) {
       lines.push(`    return ${outputs}`);
     } else {
       lines.push(`    return None`);
     }
 
-    lines.push("");
+    lines.push('');
     lines.push('if __name__ == "__main__":');
-    lines.push(
-      `    model = create_${this.sanitize(this.graph.name || "model")}(None)`,
-    );
+    lines.push(`    model = create_${this.sanitize(this.graph.name || 'model')}(None)`);
     lines.push('    print("SUCCESS: CNTK model generated correctly")');
 
-    return `${lines.join("\n")}\n`;
+    return `${lines.join('\n')}\n`;
   }
 }

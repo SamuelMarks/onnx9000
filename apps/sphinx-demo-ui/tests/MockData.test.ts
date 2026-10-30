@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { describe, expect, it } from 'vitest';
 import { LHS_EXAMPLES, LHS_FRAMEWORKS, RHS_TARGETS } from '../src/data/MockData.js';
 

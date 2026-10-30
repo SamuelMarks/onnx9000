@@ -4,8 +4,8 @@ import numpy as np
 from onnx9000_diffusers.models import AutoencoderKL
 
 
-def test_autoencoderkl_wrapper():
-    """Docstring for D103."""
+def test_autoencoderkl_wrapper() -> None:
+    """Verify that autoencoderkl wrapper behaves as expected."""
     vae = AutoencoderKL(scaling_factor=0.18215, channels=4)
     # Test Encoding
     img = np.random.randn(2, 3, 512, 512).astype(np.float32)
@@ -19,8 +19,8 @@ def test_autoencoderkl_wrapper():
     assert np.all(decoded >= 0.0) and np.all(decoded <= 1.0)
 
 
-def test_autoencoderkl_slicing():
-    """Docstring for D103."""
+def test_autoencoderkl_slicing() -> None:
+    """Verify that autoencoderkl slicing behaves as expected."""
     vae = AutoencoderKL(scaling_factor=0.18215, channels=4)
     vae.enable_slicing(slice_size=1)
     latents = np.random.randn(3, 4, 64, 64).astype(np.float32)

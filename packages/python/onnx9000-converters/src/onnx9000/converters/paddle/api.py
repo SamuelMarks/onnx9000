@@ -60,7 +60,7 @@ def _convert_paddle_graph(p_graph: PaddleGraph, name: str = "paddle_to_onnx") ->
     return paddle_optimize_graph(builder.graph)
 
 
-def convert_paddle_to_onnx(model_data: bytes, params_data: bytes = None) -> Graph:
+def convert_paddle_to_onnx(model_data: bytes, params_data: bytes | None = None) -> Graph:
     """Convert a PaddlePaddle model to ONNX IR."""
     p_graph = load_paddle_model(model_data, params_data)
     return _convert_paddle_graph(p_graph, name="paddle_graph")

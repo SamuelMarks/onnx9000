@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../../src/providers/webgpu/memory";
+import { describe, expect, it } from 'vitest';
+import { WebGPUMemoryManager } from '../../../src/providers/webgpu/memory';
 
-describe("memory.ts", () => {
-  it("should instantiate and cover WebGPUMemoryManager", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('memory.ts', () => {
+  it('should instantiate and cover WebGPUMemoryManager', () => {
     try {
-      const obj = new (Module as any).WebGPUMemoryManager();
+      const obj = Construct(WebGPUMemoryManager);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

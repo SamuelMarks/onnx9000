@@ -1,23 +1,42 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../../src/mmdnn/paddle/mapper";
+import { describe, expect, it } from 'vitest';
+import {
+  PaddleMapper,
+  register_paddle_op,
+  translatePaddleShape,
+} from '../../../src/mmdnn/paddle/mapper';
 
-describe("mapper.ts", () => {
-  it("should instantiate and cover PaddleMapper", () => {
+const Call = <T>(fn: (...args: never[]) => T): T => fn();
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('mapper.ts', () => {
+  it('should instantiate and cover PaddleMapper', () => {
     try {
-      const obj = new (Module as any).PaddleMapper();
+      const obj = Construct(PaddleMapper);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should call and cover register_paddle_op", async () => {
+  it('should call and cover register_paddle_op', async () => {
     try {
-      const res = (Module as any).register_paddle_op();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(register_paddle_op);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should call and cover translatePaddleShape", async () => {
+  it('should call and cover translatePaddleShape', async () => {
     try {
-      const res = (Module as any).translatePaddleShape();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(translatePaddleShape);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

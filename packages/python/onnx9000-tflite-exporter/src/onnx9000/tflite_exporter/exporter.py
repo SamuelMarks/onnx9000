@@ -5,6 +5,8 @@ the TFLite flatbuffer, including buffer deduplication, operator code management,
 and metadata injection.
 """
 
+from onnx9000.core.exceptions import CompilationError
+
 from .flatbuffer.builder import FlatBufferBuilder
 from .flatbuffer.schema import (
     Buffer,
@@ -48,7 +50,7 @@ class TFLiteExporter:
             )
         max_elements = 2**30
         if size > max_elements:
-            raise ValueError(
+            raise CompilationError(
                 f"[onnx2tf] Error: Tensor exceeds flatbuffer single array limits (size: {size})."
             )
 
@@ -84,9 +86,7 @@ class TFLiteExporter:
             version = 1
             if builtin_code in (BuiltinOperator.ADD, BuiltinOperator.MUL):
                 version = 2
-            elif builtin_code == BuiltinOperator.TRANSPOSE_CONV:
-                version = 3
-            elif builtin_code in (
+            elif builtin_code == BuiltinOperator.TRANSPOSE_CONV or builtin_code in (
                 BuiltinOperator.RESIZE_BILINEAR,
                 BuiltinOperator.RESIZE_NEAREST_NEIGHBOR,
             ):

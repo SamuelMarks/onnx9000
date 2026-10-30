@@ -3,10 +3,13 @@
 import json
 import urllib.error
 import urllib.request
-from typing import Any
+
+from onnx9000.core.exceptions import Onnx9000Error
 
 
-def fetch_hf_config(repo_id: str, token: str = None) -> tuple[dict[str, Any], str, str]:
+def fetch_hf_config(
+    repo_id: str, token: str | None = None
+) -> tuple[dict[str, int | float | str | bool | bytes | list | dict | tuple | None], str, str]:
     """Fetch hf config."""
     headers = {}
     if token:
@@ -20,7 +23,22 @@ def fetch_hf_config(repo_id: str, token: str = None) -> tuple[dict[str, Any], st
             config = json.loads(res.read().decode("utf-8"))
     except urllib.error.HTTPError as e:
         print(f"Failed to fetch config: {e}")
-    except Exception:
+    except (
+        Onnx9000Error,
+        OSError,
+        ValueError,
+        TypeError,
+        RuntimeError,
+        KeyError,
+        IndexError,
+        AttributeError,
+        ImportError,
+        LookupError,
+        ArithmeticError,
+        BufferError,
+        AssertionError,
+        StopIteration,
+    ):
         return None
     try:
         req = urllib.request.Request(f"{url}/tokenizer.json", headers=headers)
@@ -28,7 +46,22 @@ def fetch_hf_config(repo_id: str, token: str = None) -> tuple[dict[str, Any], st
             tokenizer = res.read().decode("utf-8")
     except urllib.error.HTTPError as e:
         print(f"Failed to fetch tokenizer: {e}")
-    except Exception:
+    except (
+        Onnx9000Error,
+        OSError,
+        ValueError,
+        TypeError,
+        RuntimeError,
+        KeyError,
+        IndexError,
+        AttributeError,
+        ImportError,
+        LookupError,
+        ArithmeticError,
+        BufferError,
+        AssertionError,
+        StopIteration,
+    ):
         return None
     return (config, tokenizer, f"https://huggingface.co/{repo_id}")
 

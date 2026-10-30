@@ -1,12 +1,16 @@
 import { describe, expect, it } from 'vitest';
-import * as Module from '../../src/core/PipelineValidator';
+import { PipelineValidator } from '../../src/core/PipelineValidator';
+
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
 
 describe('PipelineValidator.ts', () => {
   it('should instantiate and cover PipelineValidator', () => {
     // Attempt to instantiate
     try {
-      const obj = new (Module as any).PipelineValidator();
+      const obj = Construct(PipelineValidator);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

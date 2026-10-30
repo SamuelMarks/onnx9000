@@ -2,21 +2,28 @@
  * @fileoverview Breadcrumbs.ts
  * Provides Breadcrumbs functionality for the Sphinx Demo UI.
  */
-// @ts-nocheck
 import { Component } from '../core/Component';
 import { globalEventBus } from '../core/EventBus';
 import { i18n, type Language } from '../core/I18n';
 import type { PipelineNode } from '../core/PipelineNode';
 
+/** Represents the `Breadcrumbs` class. */
 export class Breadcrumbs extends Component<HTMLDivElement> {
+  /** Property `items` of `Breadcrumbs`. */
   private items: PipelineNode[] = [];
+  /** Property `langSelect` of `Breadcrumbs`. */
   private langSelect!: HTMLSelectElement;
 
+  /** Initializes a new `Breadcrumbs` instance. */
   constructor() {
     super();
     this.element = this.render();
   }
 
+  /**
+   * Executes `render` on `Breadcrumbs`.
+   * @returns Result of `render`.
+   */
   protected render(): HTMLDivElement {
     const container = document.createElement('div');
     container.className = 'demo-breadcrumbs-container';
@@ -50,7 +57,7 @@ export class Breadcrumbs extends Component<HTMLDivElement> {
       { code: 'es', label: 'Español' },
       { code: 'fr', label: 'Français' },
       { code: 'de', label: 'Deutsch' },
-      { code: 'ja', label: '日本語' }
+      { code: 'ja', label: '日本語' },
     ];
 
     langs.forEach((lang) => {
@@ -74,6 +81,10 @@ export class Breadcrumbs extends Component<HTMLDivElement> {
     return container;
   }
 
+  /**
+   * Executes `renderItems` on `Breadcrumbs`.
+   * @param container Parameter `container`.
+   */
   public renderItems(container: HTMLDivElement): void {
     container.innerHTML = '';
 
@@ -112,6 +123,7 @@ export class Breadcrumbs extends Component<HTMLDivElement> {
     });
   }
 
+  /** Executes `onMount` on `Breadcrumbs`. */
   protected onMount(): void {
     const crumbsDiv = this.element.querySelector('.demo-breadcrumbs-list') as HTMLDivElement;
 
@@ -119,7 +131,7 @@ export class Breadcrumbs extends Component<HTMLDivElement> {
       globalEventBus.on<PipelineNode>('PIPELINE_STEP_ADDED', (node) => {
         this.items.push(node);
         this.renderItems(crumbsDiv);
-      })
+      }),
     );
 
     this.onCleanup(
@@ -130,7 +142,7 @@ export class Breadcrumbs extends Component<HTMLDivElement> {
           this.items = this.items.slice(0, idx);
           this.renderItems(crumbsDiv);
         }
-      })
+      }),
     );
   }
 }

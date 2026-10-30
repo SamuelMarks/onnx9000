@@ -11,7 +11,7 @@ from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Node
 
 
-def test_codegen_pytorch():
+def test_codegen_pytorch() -> None:
     """Test PyTorch codegen."""
     builder = GraphBuilder(name="MyModel")
     builder.doc_string = "My doc"
@@ -32,8 +32,8 @@ def test_codegen_pytorch():
     assert "def forward(self, x):" in code
 
 
-def test_codegen_pytorch_no_outputs():
-    """Docstring for D103."""
+def test_codegen_pytorch_no_outputs() -> None:
+    """Verify that codegen pytorch no outputs behaves as expected."""
     builder = GraphBuilder(name="MyModel")
     assert "return None" in generate_pytorch(builder)
 
@@ -43,7 +43,7 @@ def test_codegen_pytorch_no_outputs():
     assert "return (o1, o2)" in generate_pytorch(builder)
 
 
-def test_codegen_keras():
+def test_codegen_keras() -> None:
     """Test Keras codegen."""
     builder = GraphBuilder(name="MyKerasModel")
     in1 = Tensor(name="x", shape=(1,), dtype=DType.FLOAT32)
@@ -53,7 +53,7 @@ def test_codegen_keras():
     assert "class Model_MyKerasModel(keras.Model):" in code
 
 
-def test_codegen_jax():
+def test_codegen_jax() -> None:
     """Test JAX codegen."""
     builder = GraphBuilder(name="MyJAXModel")
     in1 = Tensor(name="x", shape=(1,), dtype=DType.FLOAT32)
@@ -74,8 +74,8 @@ def test_codegen_jax():
     assert "class Model_MyJAXModel(nnx.Module):" in code
 
 
-def test_codegen_jax_no_outputs():
-    """Docstring for D103."""
+def test_codegen_jax_no_outputs() -> None:
+    """Verify that codegen jax no outputs behaves as expected."""
     builder = GraphBuilder(name="MyModel")
     assert "return None" in generate_jax(builder)
 

@@ -159,7 +159,7 @@ def test_runner_missing_outputs() -> None:
         ds_dir.mkdir()
         _create_tensor_pb("A", np.array([1.0], dtype=np.float32), str(ds_dir / "input_0.pb"))
         runner = ONNXBackendTestRunner(providers=[CPUExecutionProvider({})])
-        (passed, msg) = runner.run_node_test(base_dir)
+        (passed, _msg) = runner.run_node_test(base_dir)
         assert passed
 
 
@@ -178,7 +178,7 @@ def test_runner_extra_inputs() -> None:
         _create_tensor_pb("B", np.array([1.0], dtype=np.float32), str(ds_dir / "input_1.pb"))
         _create_tensor_pb("C", np.array([2.0], dtype=np.float32), str(ds_dir / "output_0.pb"))
         runner = ONNXBackendTestRunner(providers=[CPUExecutionProvider({})])
-        (passed, msg) = runner.run_node_test(base_dir)
+        (passed, _msg) = runner.run_node_test(base_dir)
         assert passed
 
 
@@ -215,11 +215,18 @@ def test_runner_bool_int() -> None:
         class MockEP(CPUExecutionProvider):
             """Represents the MockEP class and its associated logic."""
 
-            def get_supported_nodes(self, g):
+            def get_supported_nodes(
+                self, g: int | float | str | bool | bytes | list | dict | tuple | None
+            ) -> int | float | str | bool | bytes | list | dict | tuple | None:
                 """Test the get supported nodes functionality."""
                 return ["MockOp"]
 
-            def execute(self, g, ctx, inputs):
+            def execute(
+                self,
+                g: int | float | str | bool | bytes | list | dict | tuple | None,
+                ctx: int | float | str | bool | bytes | list | dict | tuple | None,
+                inputs: int | float | str | bool | bytes | list | dict | tuple | None,
+            ) -> int | float | str | bool | bytes | list | dict | tuple | None:
                 """Test the execute functionality."""
                 return {
                     "C": Tensor(
@@ -248,11 +255,18 @@ def test_runner_bool_int() -> None:
         class MockEP2(CPUExecutionProvider):
             """Represents the MockEP2 class and its associated logic."""
 
-            def get_supported_nodes(self, g):
+            def get_supported_nodes(
+                self, g: int | float | str | bool | bytes | list | dict | tuple | None
+            ) -> int | float | str | bool | bytes | list | dict | tuple | None:
                 """Test the get supported nodes functionality."""
                 return ["MockOp"]
 
-            def execute(self, g, ctx, inputs):
+            def execute(
+                self,
+                g: int | float | str | bool | bytes | list | dict | tuple | None,
+                ctx: int | float | str | bool | bytes | list | dict | tuple | None,
+                inputs: int | float | str | bool | bytes | list | dict | tuple | None,
+            ) -> int | float | str | bool | bytes | list | dict | tuple | None:
                 """Test the execute functionality."""
                 return {
                     "C": Tensor(

@@ -21,5 +21,9 @@ workspace = true
 
 [tool.hatch.build.targets.wheel]
 packages = [
+    "src/onnx9000",
     "src/onnx9000_optimum",
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

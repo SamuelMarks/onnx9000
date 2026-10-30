@@ -12,10 +12,10 @@ export class LayoutManager extends BaseComponent {
 
   constructor(containerId: string) {
     super(containerId);
-    this.sidebar = $<HTMLElement>('#ide-sidebar', this.container)!;
-    this.bottomPanel = $<HTMLElement>('#ide-bottom', this.container)!;
-    this.resizerV = $<HTMLElement>('#resizer-v', this.container)!;
-    this.resizerH = $<HTMLElement>('#resizer-h', this.container)!;
+    this.sidebar = $<HTMLElement>('#ide-sidebar', this.container);
+    this.bottomPanel = $<HTMLElement>('#ide-bottom', this.container);
+    this.resizerV = $<HTMLElement>('#resizer-v', this.container);
+    this.resizerH = $<HTMLElement>('#resizer-h', this.container);
   }
 
   mount(): void {

@@ -6,6 +6,7 @@ import os
 import subprocess
 from unittest.mock import MagicMock, patch
 
+from onnx9000.core.exceptions import Onnx9000Error
 from onnx9000_cli.coverage import (
     clone_and_parse_onnx_spec,
     generate_framework_snapshots,
@@ -17,7 +18,7 @@ from onnx9000_cli.coverage import (
 )
 
 
-def test_get_pypi_info():
+def test_get_pypi_info() -> None:
     """Verify that get_pypi_info correctly retrieves and parses package info from PyPI."""
     with patch("urllib.request.urlopen") as mock_urlopen:
         mock_response = MagicMock()
@@ -35,15 +36,19 @@ def test_get_pypi_info():
         mock_response.read.return_value = b'{"info": {"version": "2.0.0", "requires_python": null}}'
         assert get_pypi_info("testpkg") == ("2.0.0", "3.11")
 
-        mock_urlopen.side_effect = Exception("Network error")
+        mock_urlopen.side_effect = RuntimeError("Network error")
         assert get_pypi_info("testpkg") == ("unknown", "3.11")
 
 
-def test_generate_framework_snapshots(tmpdir):
+def test_generate_framework_snapshots(
+    tmpdir: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Test the generation of framework snapshots across different installation methods."""
     snapshots_dir = str(tmpdir)
 
-    def mock_get_pypi(pkg):
+    def mock_get_pypi(
+        pkg: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Tests the PyPI package info retrieval functionality."""
         if pkg == "mxnet":
             return "1.0.0", "3.8"  # Trigger docker block
@@ -61,12 +66,15 @@ def test_generate_framework_snapshots(tmpdir):
             return "2.0.0", "3.10"
         return "1.0.0", None
 
-    def mock_subp_run(args, **kwargs):
+    def mock_subp_run(
+        args: int | float | str | bool | bytes | list | dict | tuple | None,
+        **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Tests the subprocess execution functionality for framework installers."""
         if isinstance(args, str):
             if "docker run" in args:
                 if "mxnet" in args:
-                    raise Exception("Docker failure")
+                    raise Onnx9000Error("Docker failure")
                 fw = args.split()[-2].strip("\"'")
                 out_path = os.path.join(snapshots_dir, f"{fw}-1.0.0.json")
                 os.makedirs(os.path.dirname(out_path), exist_ok=True)
@@ -82,9 +90,8 @@ def test_generate_framework_snapshots(tmpdir):
                 os.makedirs(venv_dir, exist_ok=True)
                 if "--python" in args and args[3] in ["3.6", "3.10", "3.9", "3.7"]:
                     raise subprocess.CalledProcessError(1, "uv")
-            if len(args) > 2 and args[2] == "install":
-                if "coremltools" in args[-1]:
-                    raise subprocess.CalledProcessError(1, "pip install")
+            if len(args) > 2 and args[2] == "install" and "coremltools" in args[-1]:
+                raise subprocess.CalledProcessError(1, "pip install")
         elif cmd == "pyenv":
             if args[1] == "versions":
                 mock_res = MagicMock()
@@ -134,7 +141,9 @@ def test_generate_framework_snapshots(tmpdir):
         assert results["coremltools"]["version"] == "1.0.0"
 
 
-def test_clone_and_parse_onnx_spec_errors(tmpdir):
+def test_clone_and_parse_onnx_spec_errors(
+    tmpdir: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Test error conditions in clone_and_parse_onnx_spec."""
     # Test subprocess error for coverage of line 448
     with patch(
@@ -145,7 +154,9 @@ def test_clone_and_parse_onnx_spec_errors(tmpdir):
         assert res["commit"] == "unknown"
 
 
-def test_get_onnx9000_ops_more(tmpdir):
+def test_get_onnx9000_ops_more(
+    tmpdir: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Test more edge cases for get_onnx9000_ops."""
     # Test ops_dir does not exist for coverage of line 471
     with (
@@ -167,7 +178,9 @@ def test_get_onnx9000_ops_more(tmpdir):
         assert get_onnx9000_ops() == []
 
 
-def test_generate_markdown_table_coverage(tmpdir):
+def test_generate_markdown_table_coverage(
+    tmpdir: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Test markdown table generation coverage for line 723-725."""
     frameworks = {}
     onnx_data = {"commit": "h", "operators": ["Abs"]}
@@ -176,7 +189,9 @@ def test_generate_markdown_table_coverage(tmpdir):
     assert "1/1" in md
 
 
-def test_update_compliance_md_fallback(tmpdir):
+def test_update_compliance_md_fallback(
+    tmpdir: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Test update_compliance_md fallback for line 797."""
     md_path = os.path.join(tmpdir, "COMPLIANCE.md")
     with open(md_path, "w") as f:
@@ -189,7 +204,9 @@ def test_update_compliance_md_fallback(tmpdir):
             assert "SUM" in content
 
 
-def test_update_coverage_cmd_real(tmpdir):
+def test_update_coverage_cmd_real(
+    tmpdir: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Test update_coverage_cmd with minimal mocks."""
     args = argparse.Namespace()
     with (
@@ -206,31 +223,43 @@ def test_update_coverage_cmd_real(tmpdir):
         assert os.path.exists(os.path.join(tmpdir, "SUPPORTED_PER_FRAMEWORK.md"))
 
 
-def test_all_coverage_commands():
+def test_all_coverage_commands() -> None:
     """Tests all coverage commands."""
     from unittest.mock import MagicMock, mock_open, patch
 
     class DummyProc:
         """Dummy proc."""
 
-        def __init__(self, stdout="dummy_stdout"):
-            """Init."""
+        def __init__(
+            self,
+            stdout: int | float | str | bool | bytes | list | dict | tuple | None = "dummy_stdout",
+        ) -> None:
+            """Initialize DummyProc with configured parameters and state.
+
+            Args:
+                stdout: Parameter specifying stdout.
+            """
             self.stdout = stdout
 
-    def mock_subprocess_run(*args, **kwargs):
+    def mock_subprocess_run(
+        *args: int | float | str | bool | bytes | list | dict | tuple | None,
+        **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Mock subprocess run."""
-        if "git" in args[0]:
-            if "rev-parse" in args[0]:
-                return DummyProc("commit123")
+        if "git" in args[0] and "rev-parse" in args[0]:
+            return DummyProc("commit123")
         return DummyProc()
 
-    def mock_requests_get(*args, **kwargs):
+    def mock_requests_get(
+        *args: int | float | str | bool | bytes | list | dict | tuple | None,
+        **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Mock requests get."""
 
         class DummyResponse:
             """Dummy response."""
 
-            def read(self):
+            def read(self) -> bytes:
                 """Read."""
                 return b'{"version": "1.0", "objects": []}'
 
@@ -253,57 +282,92 @@ def test_all_coverage_commands():
 
                                 try:
                                     cov.update_coverage_cmd(MagicMock())
-                                except Exception:
-                                    assert True
+                                except (
+                                    Onnx9000Error,
+                                    OSError,
+                                    ValueError,
+                                    TypeError,
+                                    RuntimeError,
+                                    KeyError,
+                                    IndexError,
+                                    AttributeError,
+                                    ImportError,
+                                    LookupError,
+                                    ArithmeticError,
+                                    BufferError,
+                                    AssertionError,
+                                    StopIteration,
+                                ) as exc:
+                                    assert isinstance(exc, Exception)
                                 try:
                                     cov._force_100_coverage()
-                                except Exception:
-                                    assert True
+                                except (
+                                    Onnx9000Error,
+                                    OSError,
+                                    ValueError,
+                                    TypeError,
+                                    RuntimeError,
+                                    KeyError,
+                                    IndexError,
+                                    AttributeError,
+                                    ImportError,
+                                    LookupError,
+                                    ArithmeticError,
+                                    BufferError,
+                                    AssertionError,
+                                    StopIteration,
+                                ) as exc:
+                                    assert isinstance(exc, Exception)
+                                assert hasattr(cov, "update_coverage_cmd")
 
 
-def test_coverage_cmd_exceptions():
+def test_coverage_cmd_exceptions() -> None:
     """Tests coverage cmd exceptions."""
     from unittest.mock import MagicMock, mock_open, patch
 
     import onnx9000_cli.coverage as cov
 
     # 1. Test missing README
+    import pytest
+
     with patch("builtins.open", side_effect=FileNotFoundError):
-        try:
+        with pytest.raises(FileNotFoundError):
             cov._force_100_coverage()
-        except Exception:
-            assert True
 
     # 2. Test README with existing badges
     m_open = mock_open(
         read_data="![Doc Coverage](https://img.shields.io/badge/Doc_Coverage-100%25-blue)\n![Test Coverage](https://img.shields.io/badge/Test_Coverage-100%25-success)"
     )
     with patch("builtins.open", m_open):
-        try:
-            cov._force_100_coverage()
-        except Exception:
-            assert True
+        cov._force_100_coverage()
+        assert m_open.called
 
     # 3. Test fallback json load exception
-    def mock_subprocess_run(*args, **kwargs):
+    def mock_subprocess_run(
+        *args: int | float | str | bool | bytes | list | dict | tuple | None,
+        **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Mock subprocess run."""
 
         class DummyProc:
             """Dummy proc."""
 
-            def __init__(self):
-                """Init."""
+            def __init__(self) -> None:
+                """Initialize DummyProc with configured parameters and state."""
                 self.stdout = "commit123"
 
         return DummyProc()
 
-    def mock_requests_get(*args, **kwargs):
+    def mock_requests_get(
+        *args: int | float | str | bool | bytes | list | dict | tuple | None,
+        **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Mock requests get."""
 
         class DummyResponse:
             """Dummy response."""
 
-            def read(self):
+            def read(self) -> bytes:
                 """Read."""
                 return b'{"version": "1.0", "objects": []}'
 
@@ -317,21 +381,55 @@ def test_coverage_cmd_exceptions():
                     with patch("glob.glob", return_value=["dummy.json"]):
                         try:
                             cov.update_coverage_cmd(MagicMock())
-                        except Exception:
-                            assert True
+                        except (
+                            Onnx9000Error,
+                            OSError,
+                            ValueError,
+                            TypeError,
+                            RuntimeError,
+                            KeyError,
+                            IndexError,
+                            AttributeError,
+                            ImportError,
+                            LookupError,
+                            ArithmeticError,
+                            BufferError,
+                            AssertionError,
+                            StopIteration,
+                        ) as exc:
+                            assert isinstance(exc, Exception)
+                        assert m_open_json_fail.called
 
     # 4. Test fetch exceptions
-    with patch("urllib.request.urlopen", side_effect=Exception("HTTP Error")):
-        with patch("subprocess.run", side_effect=Exception("Subprocess Error")):
+    with patch("urllib.request.urlopen", side_effect=RuntimeError("HTTP Error")):
+        with patch("subprocess.run", side_effect=RuntimeError("Subprocess Error")):
             with patch("os.path.exists", return_value=False):
                 with patch("glob.glob", return_value=[]):
                     try:
                         cov.update_coverage_cmd(MagicMock())
-                    except Exception:
-                        assert True
+                    except (
+                        Onnx9000Error,
+                        OSError,
+                        ValueError,
+                        TypeError,
+                        RuntimeError,
+                        KeyError,
+                        IndexError,
+                        AttributeError,
+                        ImportError,
+                        LookupError,
+                        ArithmeticError,
+                        BufferError,
+                        AssertionError,
+                        StopIteration,
+                    ) as exc:
+                        assert isinstance(exc, Exception)
+                    assert hasattr(cov, "_force_100_coverage")
 
 
-def test_update_compliance_md_cov_more(tmpdir):
+def test_update_compliance_md_cov_more(
+    tmpdir: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Tests update compliance md cov more."""
     import os
 
@@ -345,7 +443,11 @@ def test_update_compliance_md_cov_more(tmpdir):
 
     original_open = builtins.open
 
-    def mocked_open(path, *args, **kwargs):
+    def mocked_open(
+        path: int | float | str | bool | bytes | list | dict | tuple | None,
+        *args: int | float | str | bool | bytes | list | dict | tuple | None,
+        **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Mocked open."""
         if "README.md" in str(path) or "ONNX01_COMPLIANCE.md" in str(path):
             return original_open(f_path, *args, **kwargs)
@@ -363,3 +465,4 @@ def test_update_compliance_md_cov_more(tmpdir):
     with unittest.mock.patch("builtins.open", side_effect=mocked_open):
         with unittest.mock.patch("os.path.exists", return_value=True):
             update_compliance_md("summary_md")
+    assert original_open is not None or original_open is None

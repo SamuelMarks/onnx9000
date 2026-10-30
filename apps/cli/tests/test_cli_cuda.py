@@ -1,10 +1,13 @@
+"""Unit tests and verification suite for cli cuda functionality."""
+
 import argparse
 from unittest.mock import patch
 
 from onnx9000_cli.main import cuda_cmd
 
 
-def test_cuda_cmd():
+def test_cuda_cmd() -> None:
+    """Verify that cuda cmd behaves as expected."""
     args = argparse.Namespace(model="dummy.onnx")
     with patch("builtins.print") as mock_print:
         with patch("onnx9000.backends.cuda.executor.Dispatcher") as mock_dispatcher:

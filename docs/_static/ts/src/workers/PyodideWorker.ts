@@ -1,12 +1,16 @@
 /// <reference lib="webworker" />
 import type { IWorkerMessage } from '../core/WebWorkerPool';
 
+interface PyodideInstance {
+  runPythonAsync(code: string): Promise<unknown>;
+}
+
 // We have to declare this to avoid TS errors
 declare const self: WorkerGlobalScope & {
-  loadPyodide: (config: any) => Promise<any>;
+  loadPyodide: (config: { indexURL: string }) => Promise<PyodideInstance>;
 };
 
-let pyodideInstance: any = null;
+let pyodideInstance: PyodideInstance | null = null;
 
 async function initPyodide() {
   if (pyodideInstance) return;
@@ -78,7 +82,7 @@ execute_user_script()
 `;
       const result = await pyodideInstance.runPythonAsync(pythonWrapper);
 
-      if (typeof result === 'object' && result !== null && result.error) {
+      if (typeof result === 'object' && result !== null && 'error' in result && result.error) {
         throw new Error(JSON.stringify(result));
       }
 
@@ -86,7 +90,11 @@ execute_user_script()
     } else {
       throw new Error(`Unsupported pyodide task: ${type}`);
     }
-  } catch (error: any) {
-    self.postMessage({ id, type: 'error', error: error.message || String(error) });
+  } catch (error: unknown) {
+    self.postMessage({
+      id,
+      type: 'error',
+      error: error instanceof Error ? error.message : String(error),
+    });
   }
 };

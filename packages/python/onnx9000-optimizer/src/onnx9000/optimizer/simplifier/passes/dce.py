@@ -1,9 +1,5 @@
 """Eliminate dead code from the ONNX computational graph."""
 
-from __future__ import annotations
-
-"""Provides dce.py module functionality."""
-
 import logging
 
 from onnx9000.core.ir import Graph
@@ -23,21 +19,28 @@ class DCEPass(GraphPass):
         self,
         unused_inputs_to_prune: list[str] | None = None,
         nodes_to_preserve: list[str] | None = None,
-    ):
+    ) -> None:
         """Initialize dead code elimination pass."""
         self.nodes_to_preserve = set(nodes_to_preserve or [])
         super().__init__()
         self.unused_inputs_to_prune = set(unused_inputs_to_prune or [])
 
     def run(self, graph: Graph) -> bool:
-        """Implement the run method or operation."""
+        """Execute run on DCEPass.
+
+        Args:
+            graph: Parameter specifying graph (Graph).
+
+        Returns:
+            Result of run (bool).
+        """
         changed = False
         while True:
             local_changed = self._run_once(graph)
 
             # Recurse into subgraphs
             for node in graph.nodes:
-                for attr_name, attr in node.attributes.items():
+                for _attr_name, attr in node.attributes.items():
                     if hasattr(attr, "attr_type") and attr.attr_type == "GRAPH":
                         sub_changed = self.run(attr.value)
                         if sub_changed:
@@ -49,7 +52,14 @@ class DCEPass(GraphPass):
         return changed
 
     def _run_once(self, graph: Graph) -> bool:
-        """Implement the _run_once method or operation."""
+        """Execute run once on DCEPass.
+
+        Args:
+            graph: Parameter specifying graph (Graph).
+
+        Returns:
+            Result of run once (bool).
+        """
         changed = False
 
         # Identify nodes that produce each tensor
@@ -133,14 +143,21 @@ class IdentityEliminationPass(GraphPass):
     """
 
     def run(self, graph: Graph) -> bool:
-        """Implement the run method or operation."""
+        """Execute run on IdentityEliminationPass.
+
+        Args:
+            graph: Parameter specifying graph (Graph).
+
+        Returns:
+            Result of run (bool).
+        """
         changed = False
         while True:
             local_changed = self._run_once(graph)
 
             # Recurse into subgraphs
             for node in graph.nodes:
-                for attr_name, attr in node.attributes.items():
+                for _attr_name, attr in node.attributes.items():
                     if hasattr(attr, "attr_type") and attr.attr_type == "GRAPH":
                         sub_changed = self.run(attr.value)
                         if sub_changed:
@@ -152,7 +169,14 @@ class IdentityEliminationPass(GraphPass):
         return changed
 
     def _run_once(self, graph: Graph) -> bool:
-        """Implement the _run_once method or operation."""
+        """Execute run once on IdentityEliminationPass.
+
+        Args:
+            graph: Parameter specifying graph (Graph).
+
+        Returns:
+            Result of run once (bool).
+        """
         changed = False
         producers = {}
         for node in graph.nodes:
@@ -178,18 +202,24 @@ class IdentityEliminationPass(GraphPass):
                 eliminated = True
                 changed = True
                 logger.info(f"Eliminated single-input Concat node {node.name}")
-            elif node.op_type in ("Max", "Min", "And", "Or"):
-                if len(node.inputs) == 2 and node.inputs[0] == node.inputs[1]:
-                    self._rewire(graph, node.outputs[0], node.inputs[0])
-                    eliminated = True
-                    changed = True
-                    logger.info(f"Eliminated double {node.op_type} at {node.name}")
-            elif node.op_type == "Where":
-                if len(node.inputs) == 3 and node.inputs[1] == node.inputs[2]:
-                    self._rewire(graph, node.outputs[0], node.inputs[1])
-                    eliminated = True
-                    changed = True
-                    logger.info(f"Eliminated Where(C, X, X) at {node.name}")
+            elif (
+                node.op_type in ("Max", "Min", "And", "Or")
+                and len(node.inputs) == 2
+                and node.inputs[0] == node.inputs[1]
+            ):
+                self._rewire(graph, node.outputs[0], node.inputs[0])
+                eliminated = True
+                changed = True
+                logger.info(f"Eliminated double {node.op_type} at {node.name}")
+            elif (
+                node.op_type == "Where"
+                and len(node.inputs) == 3
+                and node.inputs[1] == node.inputs[2]
+            ):
+                self._rewire(graph, node.outputs[0], node.inputs[1])
+                eliminated = True
+                changed = True
+                logger.info(f"Eliminated Where(C, X, X) at {node.name}")
             elif node.op_type in ("Neg", "Not"):
                 producer = producers.get(node.inputs[0])
                 if producer and producer.op_type == node.op_type:
@@ -198,99 +228,106 @@ class IdentityEliminationPass(GraphPass):
                     changed = True
                     logger.info(f"Eliminated double {node.op_type} at {node.name}")
 
-            elif node.op_type in ("Add", "Mul"):
-                if len(node.inputs) == 2:
-                    c1_name = None
-                    x_name = None
-                    for i in range(2):
-                        t = graph.tensors.get(node.inputs[i])
-                        if t and getattr(t, "is_initializer", False):
-                            c1_name = node.inputs[i]
-                            x_name = node.inputs[1 - i]
-                            break
-                    if c1_name and x_name:
-                        producer = producers.get(x_name)
-                        if producer and producer.op_type == node.op_type:
-                            c2_name = None
-                            inner_x = None
-                            for i in range(2):
-                                t2_cand = graph.tensors.get(producer.inputs[i])
-                                if t2_cand and getattr(t2_cand, "is_initializer", False):
-                                    c2_name = producer.inputs[i]
-                                    inner_x = producer.inputs[1 - i]
-                                    break
-                            if c2_name and inner_x:
-                                import numpy as np
+            elif node.op_type in ("Add", "Mul") and len(node.inputs) == 2:
+                c1_name, x_name = next(
+                    (
+                        (node.inputs[i], node.inputs[1 - i])
+                        for i in range(2)
+                        if getattr(graph.tensors.get(node.inputs[i]), "is_initializer", False)
+                    ),
+                    (None, None),
+                )
+                if c1_name and x_name:
+                    producer = producers.get(x_name)
+                    if producer and producer.op_type == node.op_type and len(producer.inputs) == 2:
+                        c2_name, inner_x = next(
+                            (
+                                (producer.inputs[i], producer.inputs[1 - i])
+                                for i in range(2)
+                                if getattr(
+                                    graph.tensors.get(producer.inputs[i]),
+                                    "is_initializer",
+                                    False,
+                                )
+                            ),
+                            (None, None),
+                        )
+                        if c2_name and inner_x:
+                            import numpy as np
 
-                                t2_data = graph.tensors[c1_name].data
-                                t1_data = graph.tensors[c2_name].data
-                                if isinstance(t1_data, np.ndarray) and isinstance(
-                                    t2_data, np.ndarray
-                                ):
-                                    if node.op_type == "Add":
-                                        new_data = t1_data + t2_data
-                                    else:
-                                        new_data = t1_data * t2_data
+                            t2_data = graph.tensors[c1_name].data
+                            t1_data = graph.tensors[c2_name].data
+                            if isinstance(t1_data, np.ndarray) and isinstance(t2_data, np.ndarray):
+                                new_data = (
+                                    t1_data + t2_data
+                                    if node.op_type == "Add"
+                                    else t1_data * t2_data
+                                )
+                                new_c_name = f"{node.name}_folded_c"
+                                from onnx9000.core.ir import Constant
 
-                                    new_c_name = f"{node.name}_folded_c"
-                                    from onnx9000.core.ir import Constant
+                                new_c = Constant(
+                                    new_c_name,
+                                    values=new_data,
+                                    shape=new_data.shape,
+                                    dtype=graph.tensors[c1_name].dtype,
+                                )
+                                graph.add_tensor(new_c)
+                                graph.initializers.append(new_c_name)
 
-                                    new_c = Constant(
-                                        new_c_name,
-                                        values=new_data,
-                                        shape=new_data.shape,
-                                        dtype=graph.tensors[c1_name].dtype,
-                                    )
-                                    graph.add_tensor(new_c)
-                                    graph.initializers.append(new_c_name)
+                                node.inputs = [inner_x, new_c_name]
+                                changed = True
+                                logger.info(f"Folded sequential {node.op_type} at {node.name}")
+                    elif (
+                        producer
+                        and producer.op_type == "Add"
+                        and node.op_type == "Mul"
+                        and len(producer.inputs) == 2
+                    ):
+                        c1_name_inner, inner_x = next(
+                            (
+                                (producer.inputs[i], producer.inputs[1 - i])
+                                for i in range(2)
+                                if getattr(
+                                    graph.tensors.get(producer.inputs[i]),
+                                    "is_initializer",
+                                    False,
+                                )
+                            ),
+                            (None, None),
+                        )
+                        if c1_name_inner and inner_x:
+                            import numpy as np
 
-                                    node.inputs = [inner_x, new_c_name]
-                                    changed = True
-                                    logger.info(f"Folded sequential {node.op_type} at {node.name}")
-                        elif producer and producer.op_type == "Add" and node.op_type == "Mul":
-                            # Mul(Add(X, C1_inner), C1_outer) -> Add(Mul(X, C1_outer), C1_inner*C1_outer)
-                            c1_name_inner = None
-                            inner_x = None
-                            for i in range(2):
-                                t1_cand = graph.tensors.get(producer.inputs[i])
-                                if t1_cand and getattr(t1_cand, "is_initializer", False):
-                                    c1_name_inner = producer.inputs[i]
-                                    inner_x = producer.inputs[1 - i]
-                                    break
-                            if c1_name_inner and inner_x:
-                                import numpy as np
+                            t2_data = graph.tensors[c1_name].data
+                            t1_data = graph.tensors[c1_name_inner].data
+                            if isinstance(t1_data, np.ndarray) and isinstance(t2_data, np.ndarray):
+                                new_c1_data = t1_data * t2_data
+                                new_c1_name = f"{node.name}_dist_c1"
+                                from onnx9000.core.ir import Constant, Node
 
-                                t2_data = graph.tensors[c1_name].data
-                                t1_data = graph.tensors[c1_name_inner].data
-                                if isinstance(t1_data, np.ndarray) and isinstance(
-                                    t2_data, np.ndarray
-                                ):
-                                    new_c1_data = t1_data * t2_data
-                                    new_c1_name = f"{node.name}_dist_c1"
-                                    from onnx9000.core.ir import Constant, Node
+                                new_c1 = Constant(
+                                    new_c1_name,
+                                    values=new_c1_data,
+                                    shape=new_c1_data.shape,
+                                    dtype=graph.tensors[c1_name].dtype,
+                                )
+                                graph.add_tensor(new_c1)
+                                graph.initializers.append(new_c1_name)
 
-                                    new_c1 = Constant(
-                                        new_c1_name,
-                                        values=new_c1_data,
-                                        shape=new_c1_data.shape,
-                                        dtype=graph.tensors[c1_name].dtype,
-                                    )
-                                    graph.add_tensor(new_c1)
-                                    graph.initializers.append(new_c1_name)
+                                mul_out_name = f"{node.name}_dist_mul_out"
+                                new_mul = Node(
+                                    op_type="Mul",
+                                    inputs=[inner_x, c1_name],
+                                    outputs=[mul_out_name],
+                                    name=f"{node.name}_dist_mul",
+                                )
+                                graph.add_node(new_mul)
 
-                                    mul_out_name = f"{node.name}_dist_mul_out"
-                                    new_mul = Node(
-                                        op_type="Mul",
-                                        inputs=[inner_x, c1_name],
-                                        outputs=[mul_out_name],
-                                        name=f"{node.name}_dist_mul",
-                                    )
-                                    graph.add_node(new_mul)
-
-                                    node.op_type = "Add"
-                                    node.inputs = [mul_out_name, new_c1_name]
-                                    changed = True
-                                    logger.info(f"Distributed Mul(Add(X, C1), C2) at {node.name}")
+                                node.op_type = "Add"
+                                node.inputs = [mul_out_name, new_c1_name]
+                                changed = True
+                                logger.info(f"Distributed Mul(Add(X, C1), C2) at {node.name}")
             elif node.op_type == "Abs":
                 producer = producers.get(node.inputs[0])
                 if producer and producer.op_type == "Abs":
@@ -313,13 +350,12 @@ class IdentityEliminationPass(GraphPass):
                     logger.info(f"Eliminated Log(Exp(X)) at {node.name}")
             elif node.op_type == "Sqrt":
                 producer = producers.get(node.inputs[0])
-                if producer and producer.op_type == "Pow":
-                    if len(producer.inputs) > 1:
-                        node.op_type = "Abs"
-                        node.inputs = [producer.inputs[0]]
-                        changed = True
-                        logger.info(f"Simplified Sqrt(Pow(X, 2)) to Abs(X) at {node.name}")
-                        logger.debug("Handled via replacement implicitly.")
+                if producer and producer.op_type == "Pow" and len(producer.inputs) > 1:
+                    node.op_type = "Abs"
+                    node.inputs = [producer.inputs[0]]
+                    changed = True
+                    logger.info(f"Simplified Sqrt(Pow(X, 2)) to Abs(X) at {node.name}")
+                    logger.debug("Handled via replacement implicitly.")
             elif node.op_type in ("Cast", "CastLike"):
                 producer = producers.get(node.inputs[0])
                 if producer and producer.op_type in ("Cast", "CastLike"):
@@ -327,18 +363,17 @@ class IdentityEliminationPass(GraphPass):
                     changed = True
                     logger.info(f"Simplified chained Cast at {node.name}")
             elif node.op_type == "Reshape":
-                if len(node.inputs) > 1:
-                    shape_producer = producers.get(node.inputs[1])
-                    if (
-                        shape_producer
-                        and shape_producer.op_type == "Shape"
-                        and shape_producer.inputs[0] == node.inputs[0]
-                    ):
-                        self._rewire(graph, node.outputs[0], node.inputs[0])
-                        eliminated = True
-                        changed = True
-                        logger.info(f"Eliminated redundant Reshape(X, Shape(X)) at {node.name}")
-                        continue
+                shape_producer = producers.get(node.inputs[1]) if len(node.inputs) > 1 else None
+                if (
+                    shape_producer
+                    and shape_producer.op_type == "Shape"
+                    and shape_producer.inputs[0] == node.inputs[0]
+                ):
+                    self._rewire(graph, node.outputs[0], node.inputs[0])
+                    eliminated = True
+                    changed = True
+                    logger.info(f"Eliminated redundant Reshape(X, Shape(X)) at {node.name}")
+                    continue
 
                 producer = producers.get(node.inputs[0])
                 if producer and producer.op_type == "Reshape":
@@ -346,86 +381,75 @@ class IdentityEliminationPass(GraphPass):
                     changed = True
                     logger.info(f"Simplified chained Reshape at {node.name}")
             elif node.op_type == "Expand":
-                if len(node.inputs) > 1:
-                    shape_producer = producers.get(node.inputs[1])
-                    if (
-                        shape_producer
-                        and shape_producer.op_type == "Shape"
-                        and shape_producer.inputs[0] == node.inputs[0]
-                    ):
-                        self._rewire(graph, node.outputs[0], node.inputs[0])
-                        eliminated = True
-                        changed = True
-                        logger.info(f"Eliminated redundant Expand(X, Shape(X)) at {node.name}")
+                shape_producer = producers.get(node.inputs[1]) if len(node.inputs) > 1 else None
+                if (
+                    shape_producer
+                    and shape_producer.op_type == "Shape"
+                    and shape_producer.inputs[0] == node.inputs[0]
+                ):
+                    self._rewire(graph, node.outputs[0], node.inputs[0])
+                    eliminated = True
+                    changed = True
+                    logger.info(f"Eliminated redundant Expand(X, Shape(X)) at {node.name}")
                 if not eliminated:
                     producer = producers.get(node.inputs[0])
                     if producer and producer.op_type == "Expand":
-                        # Chained expand: Expand(Expand(X, shape1), shape2) -> Expand(X, shape2)
                         node.inputs[0] = producer.inputs[0]
                         changed = True
                         logger.info(f"Simplified chained Expand at {node.name}")
             elif node.op_type == "Pad":
-                if len(node.inputs) > 1:
-                    pads_tensor = graph.tensors.get(node.inputs[1])
-                    if pads_tensor and pads_tensor.is_initializer:
-                        import numpy as np
+                pads_tensor = graph.tensors.get(node.inputs[1]) if len(node.inputs) > 1 else None
+                if pads_tensor and pads_tensor.is_initializer:
+                    import numpy as np
 
-                        if np.all(pads_tensor.data == 0):
-                            self._rewire(graph, node.outputs[0], node.inputs[0])
-                            eliminated = True
-                            changed = True
-                            logger.info(f"Eliminated zero Pad at {node.name}")
+                    if np.all(pads_tensor.data == 0):
+                        self._rewire(graph, node.outputs[0], node.inputs[0])
+                        eliminated = True
+                        changed = True
+                        logger.info(f"Eliminated zero Pad at {node.name}")
             elif node.op_type == "Tile":
-                if len(node.inputs) > 1:
-                    repeats_tensor = graph.tensors.get(node.inputs[1])
-                    if repeats_tensor and repeats_tensor.is_initializer:
-                        import numpy as np
+                repeats_tensor = graph.tensors.get(node.inputs[1]) if len(node.inputs) > 1 else None
+                if repeats_tensor and repeats_tensor.is_initializer:
+                    import numpy as np
 
-                        if np.all(repeats_tensor.data == 1):
+                    if np.all(repeats_tensor.data == 1):
+                        self._rewire(graph, node.outputs[0], node.inputs[0])
+                        eliminated = True
+                        changed = True
+                        logger.info(f"Eliminated identity Tile at {node.name}")
+            elif node.op_type == "Slice":
+                starts_tensor = graph.tensors.get(node.inputs[1]) if len(node.inputs) > 2 else None
+                ends_tensor = graph.tensors.get(node.inputs[2]) if len(node.inputs) > 2 else None
+                if (
+                    starts_tensor
+                    and ends_tensor
+                    and starts_tensor.is_initializer
+                    and ends_tensor.is_initializer
+                ):
+                    import numpy as np
+
+                    if np.all(starts_tensor.data == 0) and np.all(ends_tensor.data >= 2147483647):
+                        steps_ok = True
+                        if len(node.inputs) > 4:
+                            steps_tensor = graph.tensors.get(node.inputs[4])
+                            if steps_tensor and steps_tensor.is_initializer:
+                                if not np.all(steps_tensor.data == 1):
+                                    steps_ok = False
+                            elif node.inputs[4] != "":
+                                steps_ok = False
+                        if steps_ok:
                             self._rewire(graph, node.outputs[0], node.inputs[0])
                             eliminated = True
                             changed = True
-                            logger.info(f"Eliminated identity Tile at {node.name}")
-            elif node.op_type == "Slice":
-                if len(node.inputs) > 2:
-                    starts_tensor = graph.tensors.get(node.inputs[1])
-                    ends_tensor = graph.tensors.get(node.inputs[2])
-                    if (
-                        starts_tensor
-                        and ends_tensor
-                        and starts_tensor.is_initializer
-                        and ends_tensor.is_initializer
-                    ):
-                        import numpy as np
-
-                        if np.all(starts_tensor.data == 0) and np.all(
-                            ends_tensor.data >= 2147483647
-                        ):
-                            # It's a full slice on all provided axes. Note: could check steps as well.
-                            steps_ok = True
-                            if len(node.inputs) > 4:
-                                steps_tensor = graph.tensors.get(node.inputs[4])
-                                if steps_tensor and steps_tensor.is_initializer:
-                                    if not np.all(steps_tensor.data == 1):
-                                        steps_ok = False
-                                else:
-                                    if node.inputs[4] != "":
-                                        steps_ok = False  # Dynamic steps, can't eliminate
-                            if steps_ok:
-                                self._rewire(graph, node.outputs[0], node.inputs[0])
-                                eliminated = True
-                                changed = True
-                                logger.info(f"Eliminated full Slice at {node.name}")
+                            logger.info(f"Eliminated full Slice at {node.name}")
             elif node.op_type in ("ReduceSum", "ReduceMean"):
                 inp = node.inputs[0]
-                is_scalar = False
-                if inp in graph.tensors and getattr(graph.tensors[inp], "shape", None) == ():
-                    is_scalar = True
-                else:
-                    for vi in graph.inputs + graph.outputs:
-                        if getattr(vi, "name", None) == inp and getattr(vi, "shape", None) == ():
-                            is_scalar = True
-                            break
+                is_scalar = (
+                    inp in graph.tensors and getattr(graph.tensors[inp], "shape", None) == ()
+                ) or any(
+                    getattr(vi, "name", None) == inp and getattr(vi, "shape", None) == ()
+                    for vi in graph.inputs + graph.outputs
+                )
                 if is_scalar:
                     self._rewire(graph, node.outputs[0], node.inputs[0])
                     eliminated = True
@@ -440,19 +464,23 @@ class IdentityEliminationPass(GraphPass):
                     logger.info(f"Eliminated Identity Transpose node {node.name}")
                     continue
                 producer = producers.get(node.inputs[0])
-                if producer and producer.op_type == "Transpose":
-                    perm1 = producer.attributes.get("perm")
-                    perm2 = node.attributes.get("perm")
-                    if perm1 is not None and perm2 is not None:
-                        fused_perm = [perm1[p] for p in perm2]
-                        if fused_perm == list(range(len(fused_perm))):
-                            self._rewire(graph, node.outputs[0], producer.inputs[0])
-                            eliminated = True
-                        else:
-                            node.attributes["perm"] = fused_perm
-                            node.inputs[0] = producer.inputs[0]
-                        changed = True
-                        logger.info(f"Simplified chained Transpose at {node.name}")
+                if (
+                    producer
+                    and producer.op_type == "Transpose"
+                    and producer.attributes.get("perm") is not None
+                    and node.attributes.get("perm") is not None
+                ):
+                    perm1 = producer.attributes["perm"]
+                    perm2 = node.attributes["perm"]
+                    fused_perm = [perm1[p] for p in perm2]
+                    if fused_perm == list(range(len(fused_perm))):
+                        self._rewire(graph, node.outputs[0], producer.inputs[0])
+                        eliminated = True
+                    else:
+                        node.attributes["perm"] = fused_perm
+                        node.inputs[0] = producer.inputs[0]
+                    changed = True
+                    logger.info(f"Simplified chained Transpose at {node.name}")
             elif node.op_type == "Unsqueeze":
                 producer = producers.get(node.inputs[0])
                 if producer and producer.op_type == "Squeeze":
@@ -469,7 +497,13 @@ class IdentityEliminationPass(GraphPass):
         return changed
 
     def _rewire(self, graph: Graph, old_name: str, new_name: str) -> None:
-        """Implement the _rewire method or operation."""
+        """Execute rewire on IdentityEliminationPass.
+
+        Args:
+            graph: Parameter specifying graph (Graph).
+            old_name: Parameter specifying old name (str).
+            new_name: Parameter specifying new name (str).
+        """
         for node in graph.nodes:
             for i, inp in enumerate(node.inputs):
                 if inp == old_name:
@@ -484,7 +518,13 @@ def dead_code_elimination(
     unused_inputs_to_prune: list[str] | None = None,
     nodes_to_preserve: list[str] | None = None,
 ) -> None:
-    """Implement the dead_code_elimination method or operation."""
+    """Execute dead code elimination operation.
+
+    Args:
+        graph: Parameter specifying graph (Graph).
+        unused_inputs_to_prune: Parameter specifying unused inputs to prune (list[str] | None).
+        nodes_to_preserve: Parameter specifying nodes to preserve (list[str] | None).
+    """
     while True:
         dce_changed = DCEPass(unused_inputs_to_prune, nodes_to_preserve).run(graph)
         id_changed = IdentityEliminationPass().run(graph)
@@ -497,14 +537,21 @@ class ControlFlowFoldingPass(GraphPass):
     """Folds 'If' and 'Loop' control flow nodes explicitly when their conditions are statically known constants."""
 
     def run(self, graph: Graph) -> bool:
-        """Implement the run method or operation."""
+        """Execute run on ControlFlowFoldingPass.
+
+        Args:
+            graph: Parameter specifying graph (Graph).
+
+        Returns:
+            Result of run (bool).
+        """
         changed = False
         while True:
             local_changed = self._run_once(graph)
 
             # Recurse into subgraphs
             for node in graph.nodes:
-                for attr_name, attr in node.attributes.items():
+                for _attr_name, attr in node.attributes.items():
                     if hasattr(attr, "attr_type") and attr.attr_type == "GRAPH":
                         sub_changed = self.run(attr.value)
                         if sub_changed:
@@ -516,7 +563,14 @@ class ControlFlowFoldingPass(GraphPass):
         return changed
 
     def _run_once(self, graph: Graph) -> bool:
-        """Implement the _run_once method or operation."""
+        """Execute run once on ControlFlowFoldingPass.
+
+        Args:
+            graph: Parameter specifying graph (Graph).
+
+        Returns:
+            Result of run once (bool).
+        """
         changed = False
         nodes_to_remove = set()
 
@@ -593,30 +647,28 @@ class ControlFlowFoldingPass(GraphPass):
                 cond_name = node.inputs[1] if len(node.inputs) > 1 else None
 
                 trip_val = None
-                if max_trip_count_name:
-                    trip_tensor = graph.tensors.get(max_trip_count_name)
-                    if trip_tensor and trip_tensor.is_initializer:
-                        import numpy as np
+                trip_tensor = (
+                    graph.tensors.get(max_trip_count_name) if max_trip_count_name else None
+                )
+                if trip_tensor and trip_tensor.is_initializer:
+                    import numpy as np
 
-                        trip_val = trip_tensor.data
-                        if isinstance(trip_val, np.ndarray):
-                            trip_val = int(trip_val.item() if trip_val.size == 1 else trip_val[0])
-                        else:
-                            trip_val = int(trip_val)
+                    trip_val = trip_tensor.data
+                    if isinstance(trip_val, np.ndarray):
+                        trip_val = int(trip_val.item() if trip_val.size == 1 else trip_val[0])
+                    else:
+                        trip_val = int(trip_val)
 
                 cond_val = None
-                if cond_name:
-                    cond_tensor = graph.tensors.get(cond_name)
-                    if cond_tensor and cond_tensor.is_initializer:
-                        import numpy as np
+                cond_tensor = graph.tensors.get(cond_name) if cond_name else None
+                if cond_tensor and cond_tensor.is_initializer:
+                    import numpy as np
 
-                        cond_data = cond_tensor.data
-                        if isinstance(cond_data, np.ndarray):
-                            cond_val = bool(
-                                cond_data.item() if cond_data.size == 1 else cond_data[0]
-                            )
-                        else:
-                            cond_val = bool(cond_data)
+                    cond_data = cond_tensor.data
+                    if isinstance(cond_data, np.ndarray):
+                        cond_val = bool(cond_data.item() if cond_data.size == 1 else cond_data[0])
+                    else:
+                        cond_val = bool(cond_data)
 
                 if trip_val == 0 or cond_val is False:
                     # route initial states to outputs
@@ -681,8 +733,7 @@ class ControlFlowFoldingPass(GraphPass):
                         graph.initializers.append(iter_tensor_name)
                         tensor_map[iter_num_name] = iter_tensor_name
 
-                        if current_cond:
-                            tensor_map[cond_in_name] = current_cond
+                        tensor_map[cond_in_name] = current_cond
 
                         for i, v_in in enumerate(v_in_names):
                             tensor_map[v_in] = current_v[i]
@@ -758,7 +809,7 @@ class ControlFlowFoldingPass(GraphPass):
                                 name=f"{prefix}unsqueeze_{i}",
                             )
                             graph.add_node(unsqueeze_node)
-                        elif len(scan_outputs_accum[i]) > 1:
+                        else:
                             # First we sequence construct then concat or sequence insert?
                             # Easiest: Unsqueeze each, then Concat
                             concat_inputs = []
@@ -889,7 +940,13 @@ class ControlFlowFoldingPass(GraphPass):
         return changed
 
     def _rewire(self, graph: Graph, old_name: str, new_name: str) -> None:
-        """Implement the _rewire method or operation."""
+        """Execute rewire on ControlFlowFoldingPass.
+
+        Args:
+            graph: Parameter specifying graph (Graph).
+            old_name: Parameter specifying old name (str).
+            new_name: Parameter specifying new name (str).
+        """
         for node in graph.nodes:
             for i, inp in enumerate(node.inputs):
                 if inp == old_name:

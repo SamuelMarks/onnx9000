@@ -2,24 +2,34 @@
  * @fileoverview partitioner.ts
  * Provides partitioner functionality for the backend-web package.
  */
-import { Graph, type Node } from "@onnx9000/core";
-import type { ExecutionProvider } from "./session.js";
+import { BackendError, Graph, type Node } from '@onnx9000/core';
+import type { ExecutionProvider } from './session.js';
 
+/** Interface `GraphRegion` definition. */
 export interface GraphRegion {
+  /** Property `providerName`. */
   providerName: string;
+  /** Property `subGraph`. */
   subGraph: Graph;
+  /** Property `inputs`. */
   inputs: string[];
+  /** Property `outputs`. */
   outputs: string[];
 }
 
+/** Represents the `GraphPartitioner` class. */
 export class GraphPartitioner {
+  /** Property `providers` of `GraphPartitioner`. */
   private providers: ExecutionProvider[];
+  /** Property `disableWebNNFallback` of `GraphPartitioner`. */
   private disableWebNNFallback: boolean = false;
 
-  constructor(
-    providers: ExecutionProvider[],
-    disableWebNNFallback: boolean = false,
-  ) {
+  /**
+   * Initializes a new `GraphPartitioner` instance.
+   * @param providers Parameter `providers`.
+   * @param disableWebNNFallback Parameter `disableWebNNFallback`.
+   */
+  constructor(providers: ExecutionProvider[], disableWebNNFallback: boolean = false) {
     this.providers = providers;
     this.disableWebNNFallback = disableWebNNFallback;
   }
@@ -27,47 +37,53 @@ export class GraphPartitioner {
   // 181. Implement a WebNN capability checker (simulating a build to check for supported nodes).
   // 221. Implement a hardware-sniffing utility checking user-agent/GPU strings.
   // 222-225. Driver workarounds (Apple Neural Engine, Intel VPU, Snapdragon)
+  /**
+   * Executes `checkNodeSupported` on `GraphPartitioner`.
+   * @param node Parameter `node`.
+   * @param providerName Parameter `providerName`.
+   * @returns Result of `checkNodeSupported`.
+   */
   private checkNodeSupported(node: Node, providerName: string): boolean {
-    if (providerName === "WebNN") {
+    if (providerName === 'WebNN') {
       // Stub check: WebNN v1 doesn't support 'NonZero', 'TopK', 'Loop', 'If' natively yet.
       // 199, 200. MoE routing / If nodes fallback to WASM
       // 211, 212, 213, 214. Emulate GatherElements, ScatterND, NonZero, TopK using fallback
       const unsupported = [
-        "NonZero",
-        "TopK",
-        "Loop",
-        "If",
-        "CustomOp",
-        "GatherElements",
-        "ScatterND",
+        'NonZero',
+        'TopK',
+        'Loop',
+        'If',
+        'CustomOp',
+        'GatherElements',
+        'ScatterND',
       ];
 
       // 192. Translate ONNX Attention to WebNN or fallback
       // Since WebNN lacks FlashAttention, we offload it if not decomposed
-      if (node.opType === "Attention" || node.opType === "FlashAttention") {
+      if (node.opType === 'Attention' || node.opType === 'FlashAttention') {
         unsupported.push(node.opType);
       }
 
       // 195. Emulate RoPE (if it is a single fused op)
-      if (node.opType === "RotaryEmbedding") {
+      if (node.opType === 'RotaryEmbedding') {
         unsupported.push(node.opType);
       }
 
       // 196. Handle dynamic KV cache updates. If WebNN forbids dynamic concat...
-      if (node.opType === "Concat" && this.hasDynamicAxes(node)) {
-        unsupported.push("Concat");
+      if (node.opType === 'Concat' && this.hasDynamicAxes(node)) {
+        unsupported.push('Concat');
       }
 
       // 198. Map NLP vocabulary Gather operations efficiently (or offload to CPU if NPUs struggle)
       // Here we assume if gather is on axis 0 of a massive embedding table (input 0 is > 100k), we offload.
-      if (node.opType === "Gather" && this.isVocabularyGather(node)) {
-        unsupported.push("Gather");
+      if (node.opType === 'Gather' && this.isVocabularyGather(node)) {
+        unsupported.push('Gather');
       }
 
       if (unsupported.includes(node.opType)) {
         if (this.disableWebNNFallback) {
           // 189. Provide CLI flag --disable-webnn-fallback to force strict NPU execution (throwing errors if unsupported).
-          throw new Error(
+          throw new BackendError(
             `Node ${node.opType} is not supported on WebNN, but fallback is disabled.`,
           );
         }
@@ -77,12 +93,22 @@ export class GraphPartitioner {
     return true;
   }
 
+  /**
+   * Executes `hasDynamicAxes` on `GraphPartitioner`.
+   * @param node Parameter `node`.
+   * @returns Result of `hasDynamicAxes`.
+   */
   private hasDynamicAxes(node: Node): boolean {
     // In a real scenario, we'd check if the shape of the Concat inputs contains variables.
     // Stubbed for now to return true if an attribute 'dynamic' exists.
     return !!node.attributes.dynamic;
   }
 
+  /**
+   * Executes `isVocabularyGather` on `GraphPartitioner`.
+   * @param node Parameter `node`.
+   * @returns Result of `isVocabularyGather`.
+   */
   private isVocabularyGather(node: Node): boolean {
     // Assume an embedding gather if axis=0 and it's the first node in a transformer block
     // Stubbed
@@ -91,6 +117,11 @@ export class GraphPartitioner {
 
   // 182. Implement an AST traversal to identify contiguous blocks of WebNN-supported ops.
   // 183. Partition the onnx9000 graph into "WebNN Regions" and "WASM/WebGPU Regions".
+  /**
+   * Executes `partition` on `GraphPartitioner`.
+   * @param graph Parameter `graph`.
+   * @returns Result of `partition`.
+   */
   public partition(graph: Graph): GraphRegion[] {
     const regions: GraphRegion[] = [];
 
@@ -98,7 +129,7 @@ export class GraphPartitioner {
     // Scans through nodes and groups them if they belong to the same provider capabilities.
     // A full AST traversal needs topological grouping and boundary resolution.
 
-    let currentProviderName: string = this.providers[0]?.name || "Unknown";
+    let currentProviderName: string = this.providers[0]?.name || 'Unknown';
     let currentNodes: Node[] = [];
     const currentInputs = new Set<string>();
     const currentOutputs = new Set<string>();
@@ -110,9 +141,7 @@ export class GraphPartitioner {
       if (!supported && this.providers.length > 1) {
         // Fallback required
         const fallbackProvider = this.providers.find(
-          (p) =>
-            p.name !== currentProviderName &&
-            this.checkNodeSupported(node, p.name),
+          (p) => p.name !== currentProviderName && this.checkNodeSupported(node, p.name),
         );
         if (fallbackProvider) {
           bestProvider = fallbackProvider.name;
@@ -126,13 +155,11 @@ export class GraphPartitioner {
           // E.g., if a sub-graph has only 1 trivial node (like Add), it's faster to execute in WASM.
           if (
             currentNodes.length === 1 &&
-            currentProviderName === "WebNN" &&
-            ["Add", "Sub", "Mul", "Div"].includes(
-              currentNodes[0]?.opType as string,
-            )
+            currentProviderName === 'WebNN' &&
+            ['Add', 'Sub', 'Mul', 'Div'].includes(currentNodes[0]?.opType as string)
           ) {
-            const wasmProvider = this.providers.find((p) => p.name === "WASM");
-            if (wasmProvider) currentProviderName = "WASM";
+            const wasmProvider = this.providers.find((p) => p.name === 'WASM');
+            if (wasmProvider) currentProviderName = 'WASM';
           }
 
           const subGraph = new Graph(`${graph.name}_region_${regions.length}`);
@@ -154,10 +181,10 @@ export class GraphPartitioner {
 
       currentNodes.push(node);
       node.inputs.forEach((i) => {
-        if (i !== "") currentInputs.add(i);
+        if (i !== '') currentInputs.add(i);
       });
       node.outputs.forEach((o) => {
-        if (o !== "") currentOutputs.add(o);
+        if (o !== '') currentOutputs.add(o);
       });
     }
 
@@ -166,11 +193,11 @@ export class GraphPartitioner {
       // E.g., if a sub-graph has only 1 trivial node (like Add), it's faster to execute in WASM.
       if (
         currentNodes.length === 1 &&
-        currentProviderName === "WebNN" &&
-        ["Add", "Sub", "Mul", "Div"].includes(currentNodes[0]?.opType as string)
+        currentProviderName === 'WebNN' &&
+        ['Add', 'Sub', 'Mul', 'Div'].includes(currentNodes[0]?.opType as string)
       ) {
-        const wasmProvider = this.providers.find((p) => p.name === "WASM");
-        if (wasmProvider) currentProviderName = "WASM";
+        const wasmProvider = this.providers.find((p) => p.name === 'WASM');
+        if (wasmProvider) currentProviderName = 'WASM';
       }
 
       const subGraph = new Graph(`${graph.name}_region_${regions.length}`);
@@ -186,10 +213,10 @@ export class GraphPartitioner {
     } else if (regions.length === 0) {
       // Empty graph case (e.g. tests)
       regions.push({
-        providerName: this.providers[0]?.name || "Unknown",
+        providerName: this.providers[0]?.name || 'Unknown',
         subGraph: graph,
         inputs: [],
-        outputs: graph.outputs.map((o) => (typeof o === "string" ? o : o.name)),
+        outputs: graph.outputs.map((o) => (typeof o === 'string' ? o : o.name)),
       });
     }
 

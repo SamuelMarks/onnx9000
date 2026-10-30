@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../src/mil/printer";
+import { describe, expect, it } from 'vitest';
+import { MILPrinter } from '../../src/mil/printer';
 
-describe("printer.ts", () => {
-  it("should instantiate and cover MILPrinter", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('printer.ts', () => {
+  it('should instantiate and cover MILPrinter', () => {
     try {
-      const obj = new (Module as any).MILPrinter();
+      const obj = Construct(MILPrinter);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

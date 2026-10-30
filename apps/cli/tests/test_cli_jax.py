@@ -1,10 +1,13 @@
+"""Unit tests and verification suite for cli jax functionality."""
+
 import argparse
 from unittest.mock import patch
 
 from onnx9000_cli.main import jax_cmd
 
 
-def test_jax_cmd():
+def test_jax_cmd() -> None:
+    """Verify that jax cmd behaves as expected."""
     args = argparse.Namespace(model="dummy_model")
     with patch("builtins.print") as mock_print:
         jax_cmd(args)

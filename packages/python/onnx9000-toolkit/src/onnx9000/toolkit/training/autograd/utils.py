@@ -9,8 +9,14 @@ from onnx9000.core.ir import Graph, Node, Tensor
 class GradientProto:
     """Standard ONNX GradientProto definition."""
 
-    def __init__(self, name: str, weight_name: str, gradient_name: str):
-        """Initialize the instance."""
+    def __init__(self, name: str, weight_name: str, gradient_name: str) -> None:
+        """Initialize GradientProto with configured parameters and state.
+
+        Args:
+            name: Parameter specifying name (str).
+            weight_name: Parameter specifying weight name (str).
+            gradient_name: Parameter specifying gradient name (str).
+        """
         self.name = name
         self.weight_name = weight_name
         self.gradient_name = gradient_name
@@ -271,7 +277,7 @@ def flatten_gradients(graph: Graph) -> None:
     graph.outputs.append(all_grads_flat)
 
 
-def reverse_topological_sort(graph: Graph) -> list["onnx9000.core.ir.Node"]:
+def reverse_topological_sort(graph: Graph) -> list["Node"]:
     """Return the nodes of the graph in reverse topological order.
 
     Detects and breaks gradient tracking loops intelligently.
@@ -287,7 +293,7 @@ def reverse_topological_sort(graph: Graph) -> list["onnx9000.core.ir.Node"]:
         for out in node.outputs:
             output_to_node[out] = node
 
-    def dfs(node: "onnx9000.core.ir.Node"):
+    def dfs(node: "Node") -> None:
         """Execute the dfs operation."""
         if node.name in rec_stack:
             # Loop detected, break it intelligently by ignoring this back-edge

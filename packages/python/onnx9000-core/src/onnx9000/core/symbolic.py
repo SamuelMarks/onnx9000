@@ -1,10 +1,9 @@
-"""Symbolic mathematical evaluation module for ONNX shapes."""
+"""Implementation of symbolic (onnx9000 / core / symbolic.py) providing eval_expr, evaluate_symbolic_expression, simplify_expression, broadcast_shapes."""
 
 import ast
 import operator as op
-from typing import Any, Union
 
-from onnx9000.core.exceptions import ShapeInferenceError
+from onnx9000.core.exceptions import Onnx9000Error, ShapeInferenceError
 from onnx9000.core.ir import DynamicDim
 
 # Supported operators
@@ -20,7 +19,9 @@ operators = {
 }
 
 
-def eval_expr(node: Any, context: dict[str, int]) -> int | float | str:
+def eval_expr(
+    node: int | float | str | bool | bytes | list | dict | tuple | None, context: dict[str, int]
+) -> int | float | str:
     """Execute the eval expr operation."""
     if isinstance(node, ast.Name):
         if node.id in context:
@@ -50,7 +51,7 @@ def eval_expr(node: Any, context: dict[str, int]) -> int | float | str:
     elif isinstance(node, ast.Constant):
         return node.value
     else:
-        raise TypeError(node)
+        raise Onnx9000Error(node)
 
 
 def evaluate_symbolic_expression(expr: str, context: dict[str, int]) -> int | str:
@@ -66,7 +67,23 @@ def evaluate_symbolic_expression(expr: str, context: dict[str, int]) -> int | st
         if isinstance(res, float) and res.is_integer():
             return int(res)
         return res
-    except Exception:
+    except (
+        Onnx9000Error,
+        OSError,
+        ValueError,
+        TypeError,
+        RuntimeError,
+        KeyError,
+        IndexError,
+        AttributeError,
+        ImportError,
+        LookupError,
+        ArithmeticError,
+        BufferError,
+        AssertionError,
+        StopIteration,
+        SyntaxError,
+    ):
         return expr
 
 
@@ -76,26 +93,47 @@ def simplify_expression(expr: str) -> str:
         node = ast.parse(expr, mode="eval").body
         simplified = _simplify_ast(node)
         return _ast_to_str(simplified)
-    except Exception:
+    except (
+        Onnx9000Error,
+        OSError,
+        ValueError,
+        TypeError,
+        RuntimeError,
+        KeyError,
+        IndexError,
+        AttributeError,
+        ImportError,
+        LookupError,
+        ArithmeticError,
+        BufferError,
+        AssertionError,
+        StopIteration,
+        SyntaxError,
+    ):
         return expr
 
 
-def _is_same(n1: Any, n2: Any) -> bool:
+def _is_same(
+    n1: int | float | str | bool | bytes | list | dict | tuple | None,
+    n2: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> bool:
     """Check if two AST nodes are structurally identical."""
     return ast.dump(n1) == ast.dump(n2)
 
 
-def _is_zero(node: Any) -> bool:
+def _is_zero(node: int | float | str | bool | bytes | list | dict | tuple | None) -> bool:
     """Check if an AST node is a constant zero."""
     return isinstance(node, ast.Constant) and node.value == 0
 
 
-def _is_one(node: Any) -> bool:
+def _is_one(node: int | float | str | bool | bytes | list | dict | tuple | None) -> bool:
     """Check if an AST node is a constant one."""
     return isinstance(node, ast.Constant) and node.value == 1
 
 
-def _simplify_ast(node: Any) -> Any:
+def _simplify_ast(
+    node: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
     """Recursively simplify an AST node."""
     if isinstance(node, ast.BinOp):
         left = _simplify_ast(node.left)
@@ -127,7 +165,7 @@ def _simplify_ast(node: Any) -> Any:
     return node
 
 
-def _ast_to_str(node: Any) -> str:
+def _ast_to_str(node: int | float | str | bool | bytes | list | dict | tuple | None) -> str:
     """Convert a simplified AST node back to a string."""
     if isinstance(node, ast.Name):
         return node.id
@@ -156,17 +194,14 @@ def broadcast_shapes(
     padded_a = (1,) * (max_len - len(shape_a)) + shape_a
     padded_b = (1,) * (max_len - len(shape_b)) + shape_b
     result = []
-    for a, b in zip(padded_a, padded_b):
+    for a, b in zip(padded_a, padded_b, strict=False):
         a_val = a.value if isinstance(a, DynamicDim) else a
         b_val = b.value if isinstance(b, DynamicDim) else b
 
         # If one of them is 1, broadcast to the other
         if a_val == 1:
             result.append(b)
-        elif b_val == 1:
-            result.append(a)
-        # If they are exactly equal, take either
-        elif a_val == b_val:
+        elif b_val in (1, a_val):
             result.append(a)
         # Handle string symbols
         elif isinstance(a_val, str) or isinstance(b_val, str):

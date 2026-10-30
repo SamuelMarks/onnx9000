@@ -15,7 +15,14 @@ def test_convert_tf_to_onnx_else_branch() -> None:
 
     original_make_node = TFToONNXGraphBuilder.make_node
 
-    def mock_make_node(self, op_type, inputs, attributes, name_prefix, num_outputs=1):
+    def mock_make_node(
+        self: int | float | str | bool | bytes | list | dict | tuple | None,
+        op_type: int | float | str | bool | bytes | list | dict | tuple | None,
+        inputs: int | float | str | bool | bytes | list | dict | tuple | None,
+        attributes: int | float | str | bool | bytes | list | dict | tuple | None,
+        name_prefix: int | float | str | bool | bytes | list | dict | tuple | None,
+        num_outputs: int | float | str | bool | bytes | list | dict | tuple | None = 1,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Test the mock make node functionality."""
         out = original_make_node(self, op_type, inputs, attributes, name_prefix, num_outputs)
         self.graph.tensors.clear()

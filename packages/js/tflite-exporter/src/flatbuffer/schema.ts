@@ -2,8 +2,9 @@
  * @fileoverview schema.ts
  * Provides schema functionality for the tflite-exporter package.
  */
-import type { FlatBufferBuilder } from "./builder";
+import type { FlatBufferBuilder } from './builder';
 
+/** Enumeration `TensorType`. */
 export enum TensorType {
   FLOAT32 = 0,
   FLOAT16 = 1,
@@ -25,11 +26,13 @@ export enum TensorType {
   INT4 = 17,
 }
 
+/** Enumeration `Padding`. */
 export enum Padding {
   SAME = 0,
   VALID = 1,
 }
 
+/** Enumeration `BuiltinOperator`. */
 export enum BuiltinOperator {
   ADD = 0,
   AVERAGE_POOL_2D = 1,
@@ -196,6 +199,7 @@ export enum BuiltinOperator {
   RIGHT_SHIFT = 162,
 }
 
+/** Enumeration `BuiltinOptions`. */
 export enum BuiltinOptions {
   NONE = 0,
   Conv2DOptions = 1,
@@ -315,7 +319,16 @@ export enum BuiltinOptions {
   DynamicUpdateSliceOptions = 115,
 }
 
+/** Represents the `OperatorCode` class. */
 export class OperatorCode {
+  /**
+   * Executes `create` on `OperatorCode`.
+   * @param builder Parameter `builder`.
+   * @param builtinCode Parameter `builtinCode`.
+   * @param customCodeOffset Parameter `customCodeOffset`.
+   * @param version Parameter `version`.
+   * @returns Result of `create`.
+   */
   static create(
     builder: FlatBufferBuilder,
     builtinCode: BuiltinOperator,
@@ -331,7 +344,20 @@ export class OperatorCode {
   }
 }
 
+/** Represents the `QuantizationParameters` class. */
 export class QuantizationParameters {
+  /**
+   * Executes `create` on `QuantizationParameters`.
+   * @param builder Parameter `builder`.
+   * @param minOffset Parameter `minOffset`.
+   * @param maxOffset Parameter `maxOffset`.
+   * @param scaleOffset Parameter `scaleOffset`.
+   * @param zeroPointOffset Parameter `zeroPointOffset`.
+   * @param detailsType Parameter `detailsType`.
+   * @param detailsOffset Parameter `detailsOffset`.
+   * @param quantizedDimension Parameter `quantizedDimension`.
+   * @returns Result of `create`.
+   */
   static create(
     builder: FlatBufferBuilder,
     minOffset: number,
@@ -354,7 +380,22 @@ export class QuantizationParameters {
   }
 }
 
+/** Represents the `Tensor` class. */
 export class Tensor {
+  /**
+   * Executes `create` on `Tensor`.
+   * @param builder Parameter `builder`.
+   * @param shapeOffset Parameter `shapeOffset`.
+   * @param type Parameter `type`.
+   * @param buffer Parameter `buffer`.
+   * @param nameOffset Parameter `nameOffset`.
+   * @param quantizationOffset Parameter `quantizationOffset`.
+   * @param isVariable Parameter `isVariable`.
+   * @param sparsityOffset Parameter `sparsityOffset`.
+   * @param shapeSignatureOffset Parameter `shapeSignatureOffset`.
+   * @param hasRank Parameter `hasRank`.
+   * @returns Result of `create`.
+   */
   static create(
     builder: FlatBufferBuilder,
     shapeOffset: number,
@@ -382,7 +423,22 @@ export class Tensor {
   }
 }
 
+/** Represents the `Operator` class. */
 export class Operator {
+  /**
+   * Executes `create` on `Operator`.
+   * @param builder Parameter `builder`.
+   * @param opcodeIndex Parameter `opcodeIndex`.
+   * @param inputsOffset Parameter `inputsOffset`.
+   * @param outputsOffset Parameter `outputsOffset`.
+   * @param builtinOptionsType Parameter `builtinOptionsType`.
+   * @param builtinOptionsOffset Parameter `builtinOptionsOffset`.
+   * @param customOptionsOffset Parameter `customOptionsOffset`.
+   * @param customOptionsFormat Parameter `customOptionsFormat`.
+   * @param mutatingVariableInputs Parameter `mutatingVariableInputs`.
+   * @param intermediatesOffset Parameter `intermediatesOffset`.
+   * @returns Result of `create`.
+   */
   static create(
     builder: FlatBufferBuilder,
     opcodeIndex: number,
@@ -409,7 +465,18 @@ export class Operator {
   }
 }
 
+/** Represents the `SubGraph` class. */
 export class SubGraph {
+  /**
+   * Executes `create` on `SubGraph`.
+   * @param builder Parameter `builder`.
+   * @param tensorsOffset Parameter `tensorsOffset`.
+   * @param inputsOffset Parameter `inputsOffset`.
+   * @param outputsOffset Parameter `outputsOffset`.
+   * @param operatorsOffset Parameter `operatorsOffset`.
+   * @param nameOffset Parameter `nameOffset`.
+   * @returns Result of `create`.
+   */
   static create(
     builder: FlatBufferBuilder,
     tensorsOffset: number,
@@ -428,7 +495,14 @@ export class SubGraph {
   }
 }
 
+/** Represents the `Buffer` class. */
 export class Buffer {
+  /**
+   * Executes `create` on `Buffer`.
+   * @param builder Parameter `builder`.
+   * @param dataOffset Parameter `dataOffset`.
+   * @returns Result of `create`.
+   */
   static create(builder: FlatBufferBuilder, dataOffset: number): number {
     builder.startObject(1);
     builder.addFieldOffset(0, dataOffset, 0);
@@ -436,12 +510,16 @@ export class Buffer {
   }
 }
 
+/** Represents the `Metadata` class. */
 export class Metadata {
-  static create(
-    builder: FlatBufferBuilder,
-    nameOffset: number,
-    buffer: number,
-  ): number {
+  /**
+   * Executes `create` on `Metadata`.
+   * @param builder Parameter `builder`.
+   * @param nameOffset Parameter `nameOffset`.
+   * @param buffer Parameter `buffer`.
+   * @returns Result of `create`.
+   */
+  static create(builder: FlatBufferBuilder, nameOffset: number, buffer: number): number {
     builder.startObject(2);
     builder.addFieldOffset(0, nameOffset, 0);
     builder.addFieldInt32(1, buffer, 0);
@@ -449,7 +527,21 @@ export class Metadata {
   }
 }
 
+/** Represents the `Model` class. */
 export class Model {
+  /**
+   * Executes `create` on `Model`.
+   * @param builder Parameter `builder`.
+   * @param version Parameter `version`.
+   * @param operatorCodesOffset Parameter `operatorCodesOffset`.
+   * @param subgraphsOffset Parameter `subgraphsOffset`.
+   * @param descriptionOffset Parameter `descriptionOffset`.
+   * @param buffersOffset Parameter `buffersOffset`.
+   * @param metadataBufferOffset Parameter `metadataBufferOffset`.
+   * @param metadataOffset Parameter `metadataOffset`.
+   * @param signatureDefsOffset Parameter `signatureDefsOffset`.
+   * @returns Result of `create`.
+   */
   static create(
     builder: FlatBufferBuilder,
     version: number,

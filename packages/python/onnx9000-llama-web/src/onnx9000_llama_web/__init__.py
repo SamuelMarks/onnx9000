@@ -1,4 +1,5 @@
-def run_model(model_str: str) -> str:
-    if not model_str:
-        raise ValueError("Invalid model string")
-    return f"[LLaMA-Web] processing {model_str}"
+"""Backward-compatible re-export module for `onnx9000_llama_web`."""
+
+from onnx9000.llama_web import LlamaWebConfig, LlamaWebSession, run_model
+
+__all__ = ["LlamaWebConfig", "LlamaWebSession", "run_model"]

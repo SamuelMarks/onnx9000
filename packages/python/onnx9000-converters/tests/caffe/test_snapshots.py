@@ -4,7 +4,7 @@ import json
 import os
 
 
-def test_caffe_snapshot_exists_and_valid():
+def test_caffe_snapshot_exists_and_valid() -> None:
     """Test that the Caffe snapshot is readable and contains expected API objects."""
     snapshot_path = os.path.join(
         os.path.dirname(__file__), "../../../../../snapshots/caffe-0.1.0.json"

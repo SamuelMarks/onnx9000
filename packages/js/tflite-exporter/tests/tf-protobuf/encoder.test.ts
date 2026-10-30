@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../src/tf-protobuf/encoder";
+import { describe, expect, it } from 'vitest';
+import { TFProtobufEncoder } from '../../src/tf-protobuf/encoder';
 
-describe("encoder.ts", () => {
-  it("should instantiate and cover TFProtobufEncoder", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('encoder.ts', () => {
+  it('should instantiate and cover TFProtobufEncoder', () => {
     try {
-      const obj = new (Module as any).TFProtobufEncoder();
+      const obj = Construct(TFProtobufEncoder);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

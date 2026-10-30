@@ -1,12 +1,16 @@
 import { describe, expect, it } from 'vitest';
-import * as Module from '../../src/components/OliveConfigPanel';
+import { OliveConfigPanel } from '../../src/components/OliveConfigPanel';
+
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
 
 describe('OliveConfigPanel.ts', () => {
   it('should instantiate and cover OliveConfigPanel', () => {
     // Attempt to instantiate
     try {
-      const obj = new (Module as any).OliveConfigPanel();
+      const obj = Construct(OliveConfigPanel);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

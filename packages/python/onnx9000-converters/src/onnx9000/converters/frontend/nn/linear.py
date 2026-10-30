@@ -15,7 +15,14 @@ class Linear(Module):
         bias: bool = True,
         dtype: DType = DType.FLOAT32,
     ) -> None:
-        """Implement the __init__ method."""
+        """Initialize Linear with configured parameters and state.
+
+        Args:
+            in_features: Parameter specifying in features (int).
+            out_features: Parameter specifying out features (int).
+            bias: Parameter specifying bias (bool).
+            dtype: Parameter specifying dtype (DType).
+        """
         super().__init__()
         self.in_features = in_features
         self.out_features = out_features
@@ -26,7 +33,14 @@ class Linear(Module):
             self.register_parameter("bias", None)
 
     def forward(self, input: Tensor) -> Tensor:
-        """Implement the forward method."""
+        """Execute forward on Linear.
+
+        Args:
+            input: Parameter specifying input (Tensor).
+
+        Returns:
+            Result of forward (Tensor).
+        """
         res = input @ self.weight.T
         if self.bias is not None:
             res = res + self.bias

@@ -1,9 +1,17 @@
-import * as fs from "node:fs";
-import * as path from "node:path";
+/**
+ * @fileoverview inspect module for cli.
+ */
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 
+/**
+ * Executes `handleInspectCommand`.
+ * @param args Parameter `args`.
+ * @returns Result of `handleInspectCommand`.
+ */
 export async function handleInspectCommand(args: string[]) {
   if (args.length === 0) {
-    console.error("Usage: onnx9000 inspect <model.keras|model.h5>");
+    console.error('Usage: onnx9000 inspect <model.keras|model.h5>');
     process.exit(1);
   }
 
@@ -16,7 +24,7 @@ export async function handleInspectCommand(args: string[]) {
   console.log(`Inspecting ${file}...`);
   const ext = path.extname(file).toLowerCase();
 
-  if (ext === ".keras" || ext === ".h5") {
+  if (ext === '.keras' || ext === '.h5') {
     console.log(` 
 Model Summary: ${path.basename(file)} 
 ================================================================= 
@@ -35,10 +43,8 @@ Trainable params: 4,097,896
 Non-trainable params: 0 
 _________________________________________________________________ 
 `);
-    console.log("Topological analysis completed successfully.");
+    console.log('Topological analysis completed successfully.');
   } else {
-    console.log(
-      "Unsupported format for inspection. Only .keras and .h5 are supported.",
-    );
+    console.log('Unsupported format for inspection. Only .keras and .h5 are supported.');
   }
 }

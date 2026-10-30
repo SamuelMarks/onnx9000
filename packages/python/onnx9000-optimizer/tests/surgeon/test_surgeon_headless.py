@@ -1,11 +1,14 @@
+"""Unit tests and verification suite for surgeon headless functionality."""
+
 import json
 import os
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 from onnx9000.optimizer.surgeon.headless import change_batch, mutate, rename_input
 
 
-def test_rename_input():
+def test_rename_input() -> None:
+    """Verify that rename input behaves as expected."""
     graph = MagicMock()
     inp = MagicMock()
     inp.name = "old"
@@ -20,7 +23,8 @@ def test_rename_input():
     assert graph.nodes[0].inputs == ["new", "other"]
 
 
-def test_change_batch():
+def test_change_batch() -> None:
+    """Verify that change batch behaves as expected."""
     graph = MagicMock()
     inp = MagicMock()
     inp.shape = (1, 3, 224, 224)
@@ -35,7 +39,8 @@ def test_change_batch():
     assert graph.outputs[0].shape == (32, 1000)
 
 
-def test_change_batch_string():
+def test_change_batch_string() -> None:
+    """Verify that change batch string behaves as expected."""
     graph = MagicMock()
     inp = MagicMock()
     inp.shape = (1, 3, 224, 224)
@@ -50,7 +55,12 @@ def test_change_batch_string():
     assert graph.outputs[0].shape == ("dynamic_batch", 1000)
 
 
-def test_mutate(tmp_path):
+def test_mutate(tmp_path: int | float | str | bool | bytes | list | dict | tuple | None) -> None:
+    """Verify that mutate behaves as expected.
+
+    Args:
+        tmp_path: Parameter specifying tmp path.
+    """
     script_path = os.path.join(tmp_path, "mutations.json")
     with open(script_path, "w") as f:
         json.dump([{"action": "remove_node", "node_name": "to_remove"}], f)

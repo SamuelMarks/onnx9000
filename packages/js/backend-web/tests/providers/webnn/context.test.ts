@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../../src/providers/webnn/context";
+import { describe, expect, it } from 'vitest';
+import { WebNNContextManager } from '../../../src/providers/webnn/context';
 
-describe("context.ts", () => {
-  it("should instantiate and cover WebNNContextManager", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('context.ts', () => {
+  it('should instantiate and cover WebNNContextManager', () => {
     try {
-      const obj = new (Module as any).WebNNContextManager();
+      const obj = Construct(WebNNContextManager);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

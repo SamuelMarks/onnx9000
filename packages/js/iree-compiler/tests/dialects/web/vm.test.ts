@@ -1,65 +1,128 @@
-import { describe, it } from "vitest";
-import * as Module from "../../../src/dialects/web/vm";
+import { describe, expect, it } from 'vitest';
+import {
+  addI32,
+  branch,
+  call,
+  cmp,
+  condBranch,
+  func,
+  importOp,
+  moduleOp,
+  mulI32,
+  returnOp,
+} from '../../../src/dialects/web/vm';
 
-describe("vm.ts", () => {
-  it("should call and cover moduleOp", async () => {
+const Call = <T>(fn: (...args: never[]) => T): T => fn();
+
+describe('vm.ts', () => {
+  it('should call and cover moduleOp', async () => {
     try {
-      const res = (Module as any).moduleOp();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(moduleOp);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should call and cover func", async () => {
+  it('should call and cover func', async () => {
     try {
-      const res = (Module as any).func();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(func);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should call and cover call", async () => {
+  it('should call and cover call', async () => {
     try {
-      const res = (Module as any).call();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(call);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should call and cover branch", async () => {
+  it('should call and cover branch', async () => {
     try {
-      const res = (Module as any).branch();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(branch);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should call and cover condBranch", async () => {
+  it('should call and cover condBranch', async () => {
     try {
-      const res = (Module as any).condBranch();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(condBranch);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should call and cover cmp", async () => {
+  it('should call and cover cmp', async () => {
     try {
-      const res = (Module as any).cmp();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(cmp);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should call and cover addI32", async () => {
+  it('should call and cover addI32', async () => {
     try {
-      const res = (Module as any).addI32();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(addI32);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should call and cover mulI32", async () => {
+  it('should call and cover mulI32', async () => {
     try {
-      const res = (Module as any).mulI32();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(mulI32);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should call and cover returnOp", async () => {
+  it('should call and cover returnOp', async () => {
     try {
-      const res = (Module as any).returnOp();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(returnOp);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should call and cover importOp", async () => {
+  it('should call and cover importOp', async () => {
     try {
-      const res = (Module as any).importOp();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(importOp);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

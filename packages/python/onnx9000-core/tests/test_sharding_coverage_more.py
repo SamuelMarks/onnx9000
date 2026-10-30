@@ -1,16 +1,12 @@
 """Tests for sharding coverage more."""
 
 
-def test_sharding_advanced_coverage():
-    """Docstring for D103."""
+def test_sharding_advanced_coverage() -> None:
+    """Verify that sharding advanced coverage behaves as expected."""
     from onnx9000.core.ir import Graph, Node, Tensor
     from onnx9000.core.sharding import (
         PartitionSpec,
         SPMDLoweringPass,
-        all_gather,
-        all_reduce,
-        all_to_all,
-        reduce_scatter,
     )
 
     g = Graph("test")

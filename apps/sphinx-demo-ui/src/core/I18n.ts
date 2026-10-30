@@ -2,7 +2,6 @@
  * @fileoverview I18n.ts
  * Provides I18n functionality for the Sphinx Demo UI.
  */
-// @ts-nocheck
 export type Language = 'en' | 'es' | 'fr' | 'de' | 'ja';
 
 const translations: Record<Language, Record<string, string>> = {
@@ -42,7 +41,7 @@ const translations: Record<Language, Record<string, string>> = {
     'promote.button': 'Promote to Source',
     'promote.tooltip':
       'Use this pipeline step output as the new source file for further conversions.',
-    'console.clear': 'Clear Console'
+    'console.clear': 'Clear Console',
   },
   es: {
     'lhs.title': 'Contenedor Izquierdo',
@@ -80,7 +79,7 @@ const translations: Record<Language, Record<string, string>> = {
     'promote.button': 'Promover a Fuente',
     'promote.tooltip':
       'Usar esta salida del paso de la canalización como el nuevo archivo fuente para conversiones posteriores.',
-    'console.clear': 'Limpiar Consola'
+    'console.clear': 'Limpiar Consola',
   },
   fr: {
     'lhs.title': 'Conteneur Gauche',
@@ -116,7 +115,7 @@ const translations: Record<Language, Record<string, string>> = {
     'olive.quant.int8': 'INT8 Dynamique',
     'promote.button': 'Promouvoir comme Source',
     'promote.tooltip': 'Utilisez la sortie de cette étape comme nouveau fichier source.',
-    'console.clear': 'Effacer la Console'
+    'console.clear': 'Effacer la Console',
   },
   de: {
     'lhs.title': 'Linker Container',
@@ -152,7 +151,7 @@ const translations: Record<Language, Record<string, string>> = {
     'olive.quant.int8': 'Dynamisches INT8',
     'promote.button': 'Zur Quelle Hochstufen',
     'promote.tooltip': 'Verwenden Sie diese Ausgabe als neue Quelldatei.',
-    'console.clear': 'Konsole Leeren'
+    'console.clear': 'Konsole Leeren',
   },
   ja: {
     'lhs.title': '左側コンテナ',
@@ -188,18 +187,26 @@ const translations: Record<Language, Record<string, string>> = {
     'olive.quant.int8': '動的 INT8',
     'promote.button': 'ソースに昇格',
     'promote.tooltip': 'このパイプラインステップの出力を新しいソースファイルとして使用します。',
-    'console.clear': 'コンソールをクリア'
-  }
+    'console.clear': 'コンソールをクリア',
+  },
 };
 
+/** Represents the `I18nManager` class. */
 class I18nManager {
+  /** Property `instance` of `I18nManager`. */
   private static instance: I18nManager;
+  /** Property `currentLang` of `I18nManager`. */
   private currentLang: Language = 'en';
 
+  /** Initializes a new `I18nManager` instance. */
   private constructor() {
     this.detectLanguage();
   }
 
+  /**
+   * Executes `getInstance` on `I18nManager`.
+   * @returns Result of `getInstance`.
+   */
   public static getInstance(): I18nManager {
     if (!I18nManager.instance) {
       I18nManager.instance = new I18nManager();
@@ -207,6 +214,11 @@ class I18nManager {
     return I18nManager.instance;
   }
 
+  /**
+   * Executes `setLanguage` on `I18nManager`.
+   * @param lang Parameter `lang`.
+   * @returns Result of `setLanguage`.
+   */
   public setLanguage(lang: Language) {
     if (translations[lang]) {
       this.currentLang = lang;
@@ -219,12 +231,22 @@ class I18nManager {
     }
   }
 
+  /**
+   * Executes `getLanguage` on `I18nManager`.
+   * @returns Result of `getLanguage`.
+   */
   public getLanguage(): Language {
     return this.currentLang;
   }
 
+  /**
+   * Executes `t` on `I18nManager`.
+   * @param key Parameter `key`.
+   * @param args Parameter `args`.
+   * @returns Result of `t`.
+   */
   public t(key: string, args?: Record<string, string>): string {
-    const langDict = translations[this.currentLang] || translations.en;
+    const langDict = translations[this.currentLang];
     let text = langDict[key] || translations.en[key] || key;
     if (args) {
       for (const [k, v] of Object.entries(args)) {
@@ -234,6 +256,10 @@ class I18nManager {
     return text;
   }
 
+  /**
+   * Executes `detectLanguage` on `I18nManager`.
+   * @returns Result of `detectLanguage`.
+   */
   private detectLanguage() {
     const saved = localStorage.getItem('onnx9000-demo-lang') as Language;
     if (saved && translations[saved]) {

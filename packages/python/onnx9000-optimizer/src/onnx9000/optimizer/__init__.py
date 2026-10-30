@@ -1,4 +1,4 @@
-"""Init."""
+"""Module implementing init utilities and definitions for onnx9000-optimizer / onnx9000 / optimizer."""
 
 from onnx9000.optimizer.pattern_matcher import (
     Pattern,

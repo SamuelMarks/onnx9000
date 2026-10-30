@@ -1,6 +1,12 @@
 """torch.export parser for onnx9000."""
 
-import torch
+import types
+
+try:
+    import torch
+except ImportError:
+    torch = types.SimpleNamespace(export=types.SimpleNamespace(ExportedProgram=object))
+
 from onnx9000.converters.frontend.builder import GraphBuilder
 from onnx9000.converters.torch.fx import FXParser
 

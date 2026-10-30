@@ -2,7 +2,6 @@
  * @fileoverview main.ts
  * Provides main functionality for the Sphinx Demo UI.
  */
-// @ts-nocheck
 import '@onnx9000/webnn-polyfill';
 import * as diffusers from '@onnx9000/diffusers';
 import * as tf from '@onnx9000/tfjs-shim';
@@ -30,6 +29,11 @@ import { WasmManager, WasmState } from './core/WasmManager';
 
 console.log('Sphinx Demo UI loaded successfully');
 
+/**
+ * Executes `initDemoUI`.
+ * @param containerId Parameter `containerId`.
+ * @returns Result of `initDemoUI`.
+ */
 export function initDemoUI(containerId: string) {
   const container = document.getElementById(containerId);
   if (!container) {
@@ -43,7 +47,7 @@ export function initDemoUI(containerId: string) {
   // Setup root wrapper
   const rootElement = document.createElement('div');
   const breadcrumbs = new Breadcrumbs();
-  (window as object).__BREADCRUMBS_INSTANCE__ = breadcrumbs;
+  (window as never as Record<string, unknown>).__BREADCRUMBS_INSTANCE__ = breadcrumbs;
   breadcrumbs.mount(container);
   rootElement.className = 'demo-ui-root demo-layout-container';
   container.appendChild(rootElement);
@@ -54,7 +58,7 @@ export function initDemoUI(containerId: string) {
     orientation: 'horizontal',
     initialSplitRatio: 0.5,
     minSize: 200,
-    storageKey: 'onnx9000-demo-horizontal-split'
+    storageKey: 'onnx9000-demo-horizontal-split',
   });
 
   // 2. Create the Main Split (Vertical: Top Split | Bottom Pane)
@@ -62,7 +66,7 @@ export function initDemoUI(containerId: string) {
     orientation: 'vertical',
     initialSplitRatio: 0.5, // 50% top, 50% bottom
     minSize: 150,
-    storageKey: 'onnx9000-demo-vertical-split'
+    storageKey: 'onnx9000-demo-vertical-split',
   });
 
   // 3. Mount containers
@@ -98,19 +102,22 @@ if (container) {
 }
 
 // Export to window for E2E testing
-(window as object).__EVENT_BUS__ = globalEventBus;
+(window as never as Record<string, unknown>).__EVENT_BUS__ = globalEventBus;
 
 // Expose breadcrumbs directly for E2E testing of this component until Phase 13 integrates it naturally
 
-(window as object).__ADD_BREADCRUMB_TEST__ = (id: string, description: string) => {
+(window as never as Record<string, unknown>).__ADD_BREADCRUMB_TEST__ = (
+  id: string,
+  description: string,
+) => {
   globalEventBus.emit('PIPELINE_STEP_ADDED', { id, description, state: {} });
 };
 
-import { TensorInputModal } from './components/TensorInputModal';
+import { TensorInputModal, type TensorShape } from './components/TensorInputModal';
 
-(window as object).__TensorInputModal__ = TensorInputModal;
+(window as never as Record<string, unknown>).__TensorInputModal__ = TensorInputModal;
 
-(window as object).__OPEN_MODAL__ = (inputs: object[]) => {
+(window as never as Record<string, unknown>).__OPEN_MODAL__ = (inputs: TensorShape[]) => {
   const modal = new TensorInputModal();
   modal.mount(document.body);
   modal.show(inputs);
@@ -134,7 +141,7 @@ const observeTheme = () => {
 
   observer.observe(document.documentElement, {
     attributes: true,
-    attributeFilter: ['data-theme', 'class']
+    attributeFilter: ['data-theme', 'class'],
   });
   observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
 };

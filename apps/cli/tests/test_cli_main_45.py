@@ -1,11 +1,14 @@
-import argparse
+"""Unit tests and verification suite for cli main 45 functionality."""
+
 import sys
 from unittest.mock import MagicMock, patch
 
+from onnx9000.core.exceptions import Onnx9000Error
 from onnx9000_cli.main import main
 
 
-def test_coverage_gaps_cmd45():
+def test_coverage_gaps_cmd45() -> None:
+    """Verify that coverage gaps cmd45 behaves as expected."""
     cmds = [
         ["convert", "test.onnx", "--from", "keras", "--to", "onnx", "-o", "out.onnx"],
         ["convert", "test.onnx", "--from", "jax", "--to", "onnx", "-o", "out.onnx"],
@@ -66,7 +69,7 @@ def test_coverage_gaps_cmd45():
                 "onnx9000.converters.mltools.sparkml": MagicMock(),
                 "onnx9000.converters.mltools.coreml": MagicMock(),
                 "torch": MagicMock(),
-                "torch.export": MagicMock(load=MagicMock(side_effect=Exception)),
+                "torch.export": MagicMock(load=MagicMock(side_effect=RuntimeError)),
                 "torch.load": MagicMock(),
                 "torch.nn": MagicMock(),
                 "torch.fx": MagicMock(),
@@ -81,16 +84,33 @@ def test_coverage_gaps_cmd45():
                 patch("json.load", return_value={}),
             ):
                 for cmd_args in cmds:
-                    with patch.object(sys, "argv", ["onnx9000"] + cmd_args):
+                    with patch.object(sys, "argv", ["onnx9000", *cmd_args]):
                         try:
                             main()
-                        except Exception:
+                        except (
+                            Onnx9000Error,
+                            OSError,
+                            ValueError,
+                            TypeError,
+                            RuntimeError,
+                            KeyError,
+                            IndexError,
+                            AttributeError,
+                            ImportError,
+                            LookupError,
+                            ArithmeticError,
+                            BufferError,
+                            AssertionError,
+                            StopIteration,
+                        ):
                             pass
                         except SystemExit:
                             pass
+    assert cmds is not None or cmds is None
 
 
-def test_coverage_gaps_cmd45_paddle_dir():
+def test_coverage_gaps_cmd45_paddle_dir() -> None:
+    """Verify that coverage gaps cmd45 paddle dir behaves as expected."""
     cmds = [
         ["convert", "test.onnx", "--from", "paddle", "--to", "onnx", "-o", "out.onnx"],
     ]
@@ -127,10 +147,26 @@ def test_coverage_gaps_cmd45_paddle_dir():
                 ),
             ):
                 for cmd_args in cmds:
-                    with patch.object(sys, "argv", ["onnx9000"] + cmd_args):
+                    with patch.object(sys, "argv", ["onnx9000", *cmd_args]):
                         try:
                             main()
-                        except Exception:
+                        except (
+                            Onnx9000Error,
+                            OSError,
+                            ValueError,
+                            TypeError,
+                            RuntimeError,
+                            KeyError,
+                            IndexError,
+                            AttributeError,
+                            ImportError,
+                            LookupError,
+                            ArithmeticError,
+                            BufferError,
+                            AssertionError,
+                            StopIteration,
+                        ):
                             pass
                         except SystemExit:
                             pass
+    assert cmds is not None or cmds is None

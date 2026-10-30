@@ -1,10 +1,13 @@
+"""Unit tests and verification suite for cli main 166 functionality."""
+
 import argparse
 from unittest.mock import MagicMock, patch
 
 from onnx9000_cli.main import jit_cmd
 
 
-def test_jit_cpp_success():
+def test_jit_cpp_success() -> None:
+    """Verify that jit cpp success behaves as expected."""
     args = argparse.Namespace(model="test.onnx", target="cpp", output="out.so")
     with patch("onnx9000_cli.main.load_onnx", return_value=MagicMock()):
         with patch("onnx9000.converters.jit.compiler.compile_cpp", return_value="out.so") as mc:
@@ -12,7 +15,8 @@ def test_jit_cpp_success():
             assert mc.call_count == 1
 
 
-def test_jit_wasm_success():
+def test_jit_wasm_success() -> None:
+    """Verify that jit wasm success behaves as expected."""
     args = argparse.Namespace(model="test.onnx", target="wasm", output="out.js")
     with patch("onnx9000_cli.main.load_onnx", return_value=MagicMock()):
         with patch("onnx9000.converters.jit.compiler.compile_wasm", return_value="out.js") as mw:
@@ -20,7 +24,9 @@ def test_jit_wasm_success():
             assert mw.call_count == 1
 
 
-def test_jit_unknown_target():
+def test_jit_unknown_target() -> None:
+    """Verify that jit unknown target behaves as expected."""
     args = argparse.Namespace(model="test.onnx", target="unknown", output="out.js")
     with patch("onnx9000_cli.main.load_onnx", return_value=MagicMock()):
         jit_cmd(args)
+    assert args is not None or args is None

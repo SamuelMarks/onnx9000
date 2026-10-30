@@ -1,10 +1,10 @@
 """Tests for profiler exhaustive."""
 
 
-def test_exhaustive_profiler():
-    """Docstring for D103."""
+def test_exhaustive_profiler() -> None:
+    """Verify that exhaustive profiler behaves as expected."""
     from onnx9000.core.dtypes import DType
-    from onnx9000.core.ir import Constant, DynamicDim, Graph, Node, Tensor
+    from onnx9000.core.ir import Graph, Node, Tensor
     from onnx9000.core.profiler import ProfilerResult, profile
 
     g = Graph("test")
@@ -105,11 +105,11 @@ def test_exhaustive_profiler():
     r4.print_activation_pie_chart()
 
 
-def test_profiler_dynamic():
-    """Docstring for D103."""
+def test_profiler_dynamic() -> None:
+    """Verify that profiler dynamic behaves as expected."""
     from onnx9000.core.dtypes import DType
-    from onnx9000.core.ir import Constant, DynamicDim, Graph, Node, Tensor
-    from onnx9000.core.profiler import ProfilerResult, profile
+    from onnx9000.core.ir import DynamicDim, Graph, Node, Tensor
+    from onnx9000.core.profiler import profile
 
     g = Graph("test")
     x = Tensor(

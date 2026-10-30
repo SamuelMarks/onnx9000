@@ -4,7 +4,7 @@ test.describe('Native CPU Demo App', () => {
   test.beforeEach(async ({ page }) => {
     try {
       await page.goto('/native');
-    } catch (_e) {
+    } catch {
       test.skip();
     }
   });

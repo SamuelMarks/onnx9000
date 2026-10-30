@@ -20,28 +20,28 @@ from onnx9000.optimizer.olive.passes import (
 from onnx9000.optimizer.olive.target import Target
 
 __all__ = [
-    "OliveModel",
-    "PassContext",
-    "Pass",
-    "QuantizationPass",
+    "AutoOptimizer",
     "DynamicQuantizationPass",
-    "StaticQuantizationPass",
-    "WeightOnlyQuantizationPass",
-    "PruningPass",
+    "Evaluator",
     "GraphFusionPass",
-    "MixedPrecisionPass",
     "LayoutConversionPass",
+    "MixedPrecisionPass",
+    "OliveModel",
     "OrtPerfTuningPass",
     "OrtTransformerOptimizationPass",
-    "AutoOptimizer",
-    "Evaluator",
+    "Pass",
+    "PassContext",
+    "PruningPass",
+    "QuantizationPass",
+    "StaticQuantizationPass",
     "Target",
+    "WeightOnlyQuantizationPass",
 ]
 __all__.extend(
     [
         "ConstantFoldingPass",
+        "ExtractSymbolicShapesPass",
         "StripIdentityPass",
         "StripUnusedInitializersPass",
-        "ExtractSymbolicShapesPass",
     ]
 )

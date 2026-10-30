@@ -1,147 +1,57 @@
-"""Tests for script var."""
+"""Unit tests for symbolic ONNX script Variable operator overloading."""
+
+import pytest
+from onnx9000.toolkit.script.var import Var
 
 
-def test_script_var_ops():
-    """Docstring for D103."""
-    from onnx9000.toolkit.script.var import Var
-
+def test_script_var_ops() -> None:
+    """Verify arithmetic, relational, and indexing operators on Var return new Var instances."""
     v = Var("x")
-    # All ops: add, sub, mul, truediv, pow, matmul, mod, lt, gt, le, ge, eq, ne, call, getitem, getattr
 
-    # Needs to mock op module?
-    # No, we can just use the real op module but without a builder context!
-    # Wait, if we use the real op module without builder context, it will create nodes.
-    # It might fail if there's no context?
-    # Let's see what op.Add does.
-    try:
-        v + 1
-    except Exception:
-        assert True
-    try:
-        1 + v
-    except Exception:
-        assert True
-    try:
-        v - 1
-    except Exception:
-        assert True
-    try:
-        1 - v
-    except Exception:
-        assert True
-    try:
-        v * 1
-    except Exception:
-        assert True
-    try:
-        1 * v
-    except Exception:
-        assert True
-    try:
-        v / 1
-    except Exception:
-        assert True
-    try:
-        1 / v
-    except Exception:
-        assert True
-    try:
-        v**1
-    except Exception:
-        assert True
-    try:
-        v @ 1
-    except Exception:
-        assert True
-    try:
-        v % 1
-    except Exception:
-        assert True
-    try:
-        _ = v < 1
-    except Exception:
-        assert True
-    try:
-        _ = v > 1
-    except Exception:
-        assert True
-    try:
+    assert isinstance(v + 1, Var)
+    assert isinstance(1 + v, Var)
+    assert isinstance(v - 1, Var)
+    assert isinstance(1 - v, Var)
+    assert isinstance(v * 1, Var)
+    assert isinstance(1 * v, Var)
+    assert isinstance(v / 1, Var)
+    assert isinstance(1 / v, Var)
+    assert isinstance(v**1, Var)
+    assert isinstance(v @ 1, Var)
+    assert isinstance(v < 1, Var)
+    assert isinstance(v > 1, Var)
+    assert isinstance(v == 1, Var)
+    assert isinstance(v != 1, Var)
+    assert isinstance(v[1], Var)
+
+    with pytest.raises(TypeError):
+        _ = v % 1
+    with pytest.raises(TypeError):
         _ = v <= 1
-    except Exception:
-        assert True
-    try:
+    with pytest.raises(TypeError):
         _ = v >= 1
-    except Exception:
-        assert True
-    try:
-        _ = v == 1
-    except Exception:
-        assert True
-    try:
-        _ = v != 1
-    except Exception:
-        assert True
-
-    try:
-        v(1)
-    except Exception:
-        assert True
-    try:
-        v[1]
-    except Exception:
-        assert True
-    try:
-        v.test_attr
-    except Exception:
-        assert True
+    with pytest.raises(TypeError):
+        v(1)  # type: ignore[operator]
+    with pytest.raises(AttributeError):
+        _ = v.test_attr
 
 
-def test_script_var_ops_more():
-    """Docstring for D103."""
-    from onnx9000.toolkit.script.var import Var
-
+def test_script_var_ops_more() -> None:
+    """Verify bitwise operators and slice indexing on Var return new Var instances."""
     v = Var("x")
 
-    # Missing: 28-29 (__sub__), 33 (__rsub__), 121-123 (__and__), 127-129 (__or__), 133-135 (__xor__), 139-141 (__invert__), 146-151 (__getitem__ with slice)
-    # Wait! __sub__ and __rsub__ failed? No, my previous try-except just ignored the error. Maybe it failed?
-    # Oh, wait! I tested `v - 1`. The method is `__sub__`. But 28-29 means it WAS NOT HIT?
-    # Oh, wait! In `__sub__`, I might have had a typo in my try-except block, or I didn't actually run it?
-    # Let me just run them properly without try/except so I see if it fails!
-
-    try:
-        v - 1
-    except Exception:
-        assert True
-    try:
-        1 - v
-    except Exception:
-        assert True
-    try:
-        v & 1
-    except Exception:
-        assert True
-    try:
-        v | 1
-    except Exception:
-        assert True
-    try:
-        v ^ 1
-    except Exception:
-        assert True
-    try:
-        ~v
-    except Exception:
-        assert True
-    try:
-        v[1:5:2]
-    except Exception:
-        assert True
+    assert isinstance(v - 1, Var)
+    assert isinstance(1 - v, Var)
+    assert isinstance(v & 1, Var)
+    assert isinstance(v | 1, Var)
+    assert isinstance(v ^ 1, Var)
+    assert isinstance(~v, Var)
+    assert isinstance(v[1:5:2], Var)
 
 
-def test_script_var_rename():
-    """Docstring for D103."""
-    from onnx9000.toolkit.script.var import Var
-
+def test_script_var_rename() -> None:
+    """Verify Var.rename updates variable name in-place and returns self."""
     v = Var("x")
-    v.rename("y")
+    renamed = v.rename("y")
+    assert renamed is v
     assert repr(v) == "Var(y)"

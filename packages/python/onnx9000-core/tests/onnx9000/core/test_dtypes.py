@@ -1,24 +1,16 @@
+"""Unit tests for DType mappings in `onnx9000.core.dtypes`."""
+
 import pytest
-from onnx9000.core.dtypes import *
+from onnx9000.core.dtypes import DType, to_cpp_type, to_emscripten_type
 
 
-def test_DType():
-    try:
-        obj = DType()
-        assert obj is not None
-    except Exception:
-        pass
+def test_dtypes_mappings() -> None:
+    """Verify DType enum, to_cpp_type, and to_emscripten_type."""
+    assert DType.FLOAT32.value == 1
+    assert to_cpp_type(DType.FLOAT32) == "float"
+    assert to_emscripten_type(DType.FLOAT32) == "Float32Array"
 
-
-def test_to_cpp_type():
-    try:
-        to_cpp_type()
-    except Exception:
-        pass
-
-
-def test_to_emscripten_type():
-    try:
-        to_emscripten_type()
-    except Exception:
-        pass
+    with pytest.raises(ValueError):
+        to_cpp_type(DType.UNDEFINED)
+    with pytest.raises(ValueError):
+        to_emscripten_type(DType.UNDEFINED)

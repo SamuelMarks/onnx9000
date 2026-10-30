@@ -2,37 +2,64 @@
  * @fileoverview autotuner.ts
  * Provides autotuner functionality for the iree-compiler package.
  */
-import type { Operation, Region } from "../ir/core.js";
+import type { Operation, Region } from '../ir/core.js';
 
 // 211-220. Target-Specific Autotuning
+/** Represents the `MetaScheduleAutotuner` class. */
 export class MetaScheduleAutotuner {
+  /**
+   * Executes `isAppleMSeries` on `MetaScheduleAutotuner`.
+   * @param gpuName Parameter `gpuName`.
+   * @returns Result of `isAppleMSeries`.
+   */
   public isAppleMSeries(gpuName: string): boolean {
     // 216. Autotune WebGPU workgroup_size for Apple M-Series
-    return gpuName.includes("Apple M");
+    return gpuName.includes('Apple M');
   }
 
+  /**
+   * Executes `isNvidia` on `MetaScheduleAutotuner`.
+   * @param gpuName Parameter `gpuName`.
+   * @returns Result of `isNvidia`.
+   */
   public isNvidia(gpuName: string): boolean {
     // 217. Autotune WebGPU workgroup_size for Nvidia discrete GPUs
-    return gpuName.toLowerCase().includes("nvidia");
+    return gpuName.toLowerCase().includes('nvidia');
   }
 
+  /**
+   * Executes `getHeuristicFallback` on `MetaScheduleAutotuner`.
+   * @param target Parameter `target`.
+   * @returns Result of `getHeuristicFallback`.
+   */
   public getHeuristicFallback(target: string): [number, number, number] {
     // 219. Provide heuristic fallbacks
-    if (target === "wgsl") {
+    if (target === 'wgsl') {
       return [64, 1, 1];
-    } else if (target === "wasm") {
+    } else if (target === 'wasm') {
       return [1, 1, 1]; // 220. WASM unroll factor baseline
     }
     return [1, 1, 1];
   }
 
+  /**
+   * Executes `mutateTilingSizes` on `MetaScheduleAutotuner`.
+   * @param op Parameter `op`.
+   * @param newSizes Parameter `newSizes`.
+   */
   public mutateTilingSizes(op: Operation, newSizes: number[]): void {
     // 212. Mutate linalg.generic tiling sizes iteratively
-    if (op.opcode === "web.linalg.generic") {
+    if (op.opcode === 'web.linalg.generic') {
       op.attributes.tiling_sizes = newSizes;
     }
   }
 
+  /**
+   * Executes `profileWGSL` on `MetaScheduleAutotuner`.
+   * @param _device Parameter `_device`.
+   * @param _shader Parameter `_shader`.
+   * @returns Result of `profileWGSL`.
+   */
   public async profileWGSL(
     _device: ReturnType<typeof JSON.parse>,
     _shader: string,
@@ -42,6 +69,10 @@ export class MetaScheduleAutotuner {
     return Math.random() * 10;
   }
 
+  /**
+   * Executes `generateIreeConfig` on `MetaScheduleAutotuner`.
+   * @returns Result of `generateIreeConfig`.
+   */
   public generateIreeConfig(): string {
     // 214. Record optimal tile sizes and memory access patterns into an iree_config.json
     return JSON.stringify({
@@ -50,23 +81,29 @@ export class MetaScheduleAutotuner {
     });
   }
 
+  /**
+   * Executes `loadIreeConfig` on `MetaScheduleAutotuner`.
+   * @param configJson Parameter `configJson`.
+   * @param region Parameter `region`.
+   */
   public loadIreeConfig(configJson: string, region: Region): void {
     // 215. Feed config back into Linalg-to-HAL pass
     const config = JSON.parse(configJson);
     for (const block of region.blocks) {
       for (const op of block.operations) {
-        if (op.opcode === "web.linalg.generic") {
+        if (op.opcode === 'web.linalg.generic') {
           op.attributes.tiling_sizes = config.optimalTileSizes;
         }
       }
     }
   }
 
+  /** Executes `showDashboard` on `MetaScheduleAutotuner`. */
   public showDashboard(): void {
     // 218. Display a live tuning dashboard
-    console.log("===============================");
-    console.log("   Auto-Tuning Dashboard       ");
-    console.log("   Best time: 1.2ms            ");
-    console.log("===============================");
+    console.log('===============================');
+    console.log('   Auto-Tuning Dashboard       ');
+    console.log('   Best time: 1.2ms            ');
+    console.log('===============================');
   }
 }

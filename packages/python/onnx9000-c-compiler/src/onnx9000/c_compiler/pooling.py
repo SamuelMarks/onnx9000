@@ -14,7 +14,7 @@ def generate_pooling(
     in_name: str,
     out_name: str,
     pool_type: str,
-):
+) -> None:
     """Generate MaxPool and AveragePool loops (1D, 2D)."""
     b.emit(f"/* {node.op_type} */")
     b.emit("{")
@@ -153,7 +153,7 @@ def generate_global_pooling(
     in_name: str,
     out_name: str,
     pool_type: str,
-):
+) -> None:
     """Generate GlobalMaxPool and GlobalAveragePool loops."""
     b.emit(f"/* {node.op_type} */")
     b.emit("{")
@@ -210,7 +210,7 @@ def generate_reduction(
     in_name: str,
     out_name: str,
     reduce_op: str,
-):
+) -> None:
     """Generate ReduceMean, ReduceSum, ReduceMax, ReduceMin, ReduceProd loops."""
     b.emit(f"/* {node.op_type} */")
     b.emit("{")
@@ -243,7 +243,7 @@ def generate_reduction(
             b.emit("if (current > val) val = current;")
         elif reduce_op == "Min":
             b.emit("if (current < val) val = current;")
-        elif reduce_op == "Prod":
+        else:
             b.emit("val *= current;")
         b.pop_indent()
         b.emit("}")
@@ -252,55 +252,54 @@ def generate_reduction(
             b.emit(f"val /= {volume};")
 
         b.emit(f"{out_name}[0] = val;")
+    elif len(axes) != 1:
+        b.emit("/* Multi-axis reduction requires chaining or higher dimensional loop */")
+        b.emit("return -1;")
     else:
-        if len(axes) != 1:
-            b.emit("/* Multi-axis reduction requires chaining or higher dimensional loop */")
-            b.emit("return -1;")
+        axis = axes[0]
+        pre_axis_vol = resolve_volume(in_shape[:axis]) if axis > 0 else 1
+        axis_dim = in_shape[axis]
+        post_axis_vol = resolve_volume(in_shape[axis + 1 :]) if axis < len(in_shape) - 1 else 1
+
+        b.emit("int pre, post, d;")
+        b.emit(f"for (pre = 0; pre < {pre_axis_vol}; ++pre) {{")
+        b.push_indent()
+        b.emit(f"for (post = 0; post < {post_axis_vol}; ++post) {{")
+        b.push_indent()
+
+        init_val = "0.0f"
+        if reduce_op == "Max":
+            init_val = "-1e38f"
+        elif reduce_op == "Min":
+            init_val = "1e38f"
+        elif reduce_op == "Prod":
+            init_val = "1.0f"
+        b.emit(f"float val = {init_val};")
+        b.emit(f"for (d = 0; d < {axis_dim}; ++d) {{")
+        b.push_indent()
+        b.emit(
+            f"float current = {in_name}[pre * {axis_dim * post_axis_vol} + d * {post_axis_vol} + post];"
+        )
+        if reduce_op in ["Sum", "Mean"]:
+            b.emit("val += current;")
+        elif reduce_op == "Max":
+            b.emit("if (current > val) val = current;")
+        elif reduce_op == "Min":
+            b.emit("if (current < val) val = current;")
         else:
-            axis = axes[0]
-            pre_axis_vol = resolve_volume(in_shape[:axis]) if axis > 0 else 1
-            axis_dim = in_shape[axis]
-            post_axis_vol = resolve_volume(in_shape[axis + 1 :]) if axis < len(in_shape) - 1 else 1
+            b.emit("val *= current;")
 
-            b.emit("int pre, post, d;")
-            b.emit(f"for (pre = 0; pre < {pre_axis_vol}; ++pre) {{")
-            b.push_indent()
-            b.emit(f"for (post = 0; post < {post_axis_vol}; ++post) {{")
-            b.push_indent()
+        b.pop_indent()
+        b.emit("}")
 
-            init_val = "0.0f"
-            if reduce_op == "Max":
-                init_val = "-1e38f"
-            elif reduce_op == "Min":
-                init_val = "1e38f"
-            elif reduce_op == "Prod":
-                init_val = "1.0f"
-            b.emit(f"float val = {init_val};")
-            b.emit(f"for (d = 0; d < {axis_dim}; ++d) {{")
-            b.push_indent()
-            b.emit(
-                f"float current = {in_name}[pre * {axis_dim * post_axis_vol} + d * {post_axis_vol} + post];"
-            )
-            if reduce_op in ["Sum", "Mean"]:
-                b.emit("val += current;")
-            elif reduce_op == "Max":
-                b.emit("if (current > val) val = current;")
-            elif reduce_op == "Min":
-                b.emit("if (current < val) val = current;")
-            elif reduce_op == "Prod":
-                b.emit("val *= current;")
+        if reduce_op == "Mean":
+            b.emit(f"val /= {axis_dim};")
 
-            b.pop_indent()
-            b.emit("}")
-
-            if reduce_op == "Mean":
-                b.emit(f"val /= {axis_dim};")
-
-            b.emit(f"{out_name}[pre * {post_axis_vol} + post] = val;")
-            b.pop_indent()
-            b.emit("}")
-            b.pop_indent()
-            b.emit("}")
+        b.emit(f"{out_name}[pre * {post_axis_vol} + post] = val;")
+        b.pop_indent()
+        b.emit("}")
+        b.pop_indent()
+        b.emit("}")
 
     b.pop_indent()
     b.emit("}")
@@ -314,7 +313,7 @@ def generate_arg_reduction(
     in_name: str,
     out_name: str,
     reduce_op: str,
-):
+) -> None:
     """Generate ArgMax, ArgMin loops using int64_t."""
     b.emit(f"/* {node.op_type} */")
     b.emit("{")

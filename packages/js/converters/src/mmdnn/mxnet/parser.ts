@@ -1,44 +1,37 @@
 /**
- * @fileoverview parser.ts
- * Provides parser functionality for the converters package.
+ * @fileoverview MXNet symbol JSON and binary parameter buffer parsers.
  */
-// @ts-nocheck
-// @ts-nocheck
-export interface MxNetSymbol {
-  nodes: MxNetNode[];
-  arg_nodes: number[];
-  heads: [number, number, number][];
-}
+import { ConversionError } from '@onnx9000/core';
+import type { MxNetNode, MxNetParamTensor, MxNetSymbol } from '../types.js';
 
-export interface MxNetNode {
-  op: string;
-  name: string;
-  attrs?: Record<string, string>;
-  inputs: [number, number, number][]; // [node_index, output_index, version]
-}
+export type { MxNetNode, MxNetParamTensor, MxNetSymbol };
 
+/**
+ * Parses an MXNet `-symbol.json` string into a typed `MxNetSymbol` structure.
+ * @param jsonStr Raw JSON string from an MXNet symbol file.
+ * @returns Parsed `MxNetSymbol` graph representation.
+ */
 export function parseMxNetSymbol(jsonStr: string): MxNetSymbol {
   return JSON.parse(jsonStr) as MxNetSymbol;
 }
 
-export function parseMxNetParams(buffer: Uint8Array): Record<string, object> {
-  const view = new DataView(
-    buffer.buffer,
-    buffer.byteOffset,
-    buffer.byteLength,
-  );
+/**
+ * Parses an MXNet `.params` binary buffer into a dictionary of named parameter tensors.
+ * @param buffer Raw binary buffer containing MXNet NDArray parameter blocks.
+ * @returns Map of parameter names to parsed `MxNetParamTensor` entries.
+ * @throws {Error} If magic numbers, dtype codes, or array/name counts are invalid.
+ */
+export function parseMxNetParams(buffer: Uint8Array): Record<string, MxNetParamTensor> {
+  const view = new DataView(buffer.buffer, buffer.byteOffset, buffer.byteLength);
   let offset = 0;
 
-  // 1. Read Global Header
   const magic = view.getBigUint64(offset, true);
   offset += 8;
 
-  // Magic 0x0112 is used for standard lists/maps in dmlc
   if (magic !== 274n && magic !== 0x112n) {
-    throw new Error(`Invalid MXNet params magic: ${magic.toString(16)}`);
+    throw new ConversionError(`Invalid MXNet params magic: ${magic.toString(16)}`);
   }
 
-  // Some formats have a reserved 0 uint64
   let count: bigint;
   const nextUint64 = view.getBigUint64(offset, true);
   if (nextUint64 === 0n) {
@@ -51,22 +44,17 @@ export function parseMxNetParams(buffer: Uint8Array): Record<string, object> {
   }
 
   const numArrays = Number(count);
-  const arrays: object[] = [];
+  const arrays: MxNetParamTensor[] = [];
 
   for (let i = 0; i < numArrays; i++) {
     const tensorMagic = view.getUint32(offset, true);
     offset += 4;
 
-    // v2 magic: 0xF993FAC9 (4187216585)
-    // v1 magic: 0x0112 (274)
     if (tensorMagic !== 0xf993fac9 && tensorMagic !== 0x0112) {
-      throw new Error(
-        `Invalid MXNet NDArray block magic: ${tensorMagic.toString(16)}`,
-      );
+      throw new ConversionError(`Invalid MXNet NDArray block magic: ${tensorMagic.toString(16)}`);
     }
 
     if (tensorMagic === 0xf993fac9) {
-      // read reserved 0
       offset += 4;
     }
 
@@ -91,32 +79,18 @@ export function parseMxNetParams(buffer: Uint8Array): Record<string, object> {
       numElements *= dimSize;
     }
 
-    // type code mapping
-    // 0: float32, 1: float64, 2: float16, 3: uint8, 4: int32, 5: int8, 6: int64
-    let dataView: object;
+    let dataView: Float32Array | Float64Array | Int32Array;
     if (dtypeCode === 0) {
-      dataView = new Float32Array(
-        buffer.buffer,
-        buffer.byteOffset + offset,
-        numElements,
-      );
+      dataView = new Float32Array(buffer.buffer, buffer.byteOffset + offset, numElements);
       offset += numElements * 4;
     } else if (dtypeCode === 1) {
-      dataView = new Float64Array(
-        buffer.buffer,
-        buffer.byteOffset + offset,
-        numElements,
-      );
+      dataView = new Float64Array(buffer.buffer, buffer.byteOffset + offset, numElements);
       offset += numElements * 8;
     } else if (dtypeCode === 4) {
-      dataView = new Int32Array(
-        buffer.buffer,
-        buffer.byteOffset + offset,
-        numElements,
-      );
+      dataView = new Int32Array(buffer.buffer, buffer.byteOffset + offset, numElements);
       offset += numElements * 4;
     } else {
-      throw new Error(`Unsupported MXNet dtype code: ${dtypeCode}`);
+      throw new ConversionError(`Unsupported MXNet dtype code: ${dtypeCode}`);
     }
 
     arrays.push({
@@ -126,29 +100,25 @@ export function parseMxNetParams(buffer: Uint8Array): Record<string, object> {
     });
   }
 
-  // Read names length
   const numNames = Number(view.getBigUint64(offset, true));
   offset += 8;
 
   if (numNames !== numArrays) {
-    throw new Error(
-      `Names count ${numNames} does not match arrays count ${numArrays}`,
-    );
+    throw new ConversionError(`Names count ${numNames} does not match arrays count ${numArrays}`);
   }
 
-  const result: Record<string, object> = {};
+  const result: Record<string, MxNetParamTensor> = {};
   const decoder = new TextDecoder();
   for (let i = 0; i < numNames; i++) {
     const len = Number(view.getBigUint64(offset, true));
     offset += 8;
-    const nameStrBytes = new Uint8Array(
-      buffer.buffer,
-      buffer.byteOffset + offset,
-      len,
-    );
+    const nameStrBytes = new Uint8Array(buffer.buffer, buffer.byteOffset + offset, len);
     offset += len;
     const name = decoder.decode(nameStrBytes);
-    result[name] = arrays[i];
+    const arr = arrays[i];
+    if (arr !== undefined) {
+      result[name] = arr;
+    }
   }
 
   return result;

@@ -1,4 +1,7 @@
-import { Tensor } from "../index.js";
+/**
+ * @fileoverview logit_processors module for core.
+ */
+import { Onnx9000Error, Tensor } from '../index.js';
 
 /**
  * Interface for processors that modify model logits during generation.
@@ -23,7 +26,7 @@ export class TemperatureLogitProcessor implements LogitProcessor {
    */
   constructor(private temperature: number) {
     if (temperature <= 0.0) {
-      throw new Error("Temperature must be strictly positive.");
+      throw new Onnx9000Error('Temperature must be strictly positive.');
     }
   }
 
@@ -34,9 +37,8 @@ export class TemperatureLogitProcessor implements LogitProcessor {
     }
 
     const newData = new Float32Array(logits.data.length);
-    for (let i = 0; i < logits.data.length; i++) {
-      const data = logits.data;
-      newData[i] = data[i]! / this.temperature;
+    for (const [i, v] of logits.data.entries()) {
+      newData[i] = v / this.temperature;
     }
 
     return new Tensor(
@@ -60,7 +62,7 @@ export class TopKLogitProcessor implements LogitProcessor {
    */
   constructor(private topK: number) {
     if (topK <= 0) {
-      throw new Error("topK must be strictly positive.");
+      throw new Onnx9000Error('topK must be strictly positive.');
     }
   }
 
@@ -74,20 +76,19 @@ export class TopKLogitProcessor implements LogitProcessor {
     const offset = logits.data.length - vocabSize;
 
     const vals: { val: number; idx: number }[] = [];
-    for (let i = 0; i < vocabSize; i++) {
-      const data = logits.data;
-      vals.push({ val: data[offset + i]!, idx: i });
+    for (const [i, v] of logits.data.subarray(offset, offset + vocabSize).entries()) {
+      vals.push({ val: v, idx: i });
     }
 
     vals.sort((a, b) => b.val - a.val);
 
     if (vals.length > this.topK) {
-      const threshold = vals[this.topK - 1]?.val ?? -Infinity;
+      const thresholdItem = vals[this.topK - 1] as { val: number; idx: number };
+      const threshold = thresholdItem.val;
       const newData = new Float32Array(logits.data);
 
-      for (let i = 0; i < vocabSize; i++) {
-        const data = logits.data as Float32Array;
-        if (data[offset + i]! < threshold) {
+      for (const [i, v] of logits.data.subarray(offset, offset + vocabSize).entries()) {
+        if (v < threshold) {
           newData[offset + i] = -Infinity;
         }
       }
@@ -115,17 +116,13 @@ export class RepetitionPenaltyLogitProcessor implements LogitProcessor {
    */
   constructor(private penalty: number) {
     if (penalty <= 0.0) {
-      throw new Error("Penalty must be strictly positive.");
+      throw new Onnx9000Error('Penalty must be strictly positive.');
     }
   }
 
   /** Process logits with repetition penalty. */
   process(inputIds: number[], logits: Tensor): Tensor {
-    if (
-      this.penalty === 1.0 ||
-      !(logits.data instanceof Float32Array) ||
-      inputIds.length === 0
-    ) {
+    if (this.penalty === 1.0 || !(logits.data instanceof Float32Array) || inputIds.length === 0) {
       return logits;
     }
 
@@ -137,11 +134,11 @@ export class RepetitionPenaltyLogitProcessor implements LogitProcessor {
     for (const tokenId of uniqueIds) {
       if (tokenId < vocabSize) {
         const idx = offset + tokenId;
-        let val = logits.data[idx];
-        if (val! < 0) {
-          val = val! * this.penalty;
+        let val = logits.data[idx] as number;
+        if (val < 0) {
+          val = val * this.penalty;
         } else {
-          val = val! / this.penalty;
+          val = val / this.penalty;
         }
         newData[idx] = val;
       }
@@ -188,7 +185,7 @@ export class MinPLogitProcessor implements LogitProcessor {
    */
   constructor(private minP: number) {
     if (minP <= 0.0 || minP > 1.0) {
-      throw new Error("minP must be in (0, 1].");
+      throw new Onnx9000Error('minP must be in (0, 1].');
     }
   }
 
@@ -202,12 +199,9 @@ export class MinPLogitProcessor implements LogitProcessor {
     const offset = logits.data.length - vocabSize;
 
     let maxVal = -Infinity;
-    for (let i = 0; i < vocabSize; i++) {
-      const data = logits.data;
-      const val = data[offset + i]!;
-
+    for (const val of logits.data.subarray(offset, offset + vocabSize)) {
       if (val > maxVal) {
-        maxVal = val!;
+        maxVal = val;
       }
     }
 
@@ -218,9 +212,8 @@ export class MinPLogitProcessor implements LogitProcessor {
     const threshold = maxVal + Math.log(this.minP);
     const newData = new Float32Array(logits.data);
 
-    for (let i = 0; i < vocabSize; i++) {
-      const data = logits.data;
-      if (data[offset + i]! < threshold) {
+    for (const [i, v] of logits.data.subarray(offset, offset + vocabSize).entries()) {
+      if (v < threshold) {
         newData[offset + i] = -Infinity;
       }
     }
@@ -248,11 +241,7 @@ export class PresencePenaltyLogitProcessor implements LogitProcessor {
 
   /** Process logits with presence penalty. */
   process(inputIds: number[], logits: Tensor): Tensor {
-    if (
-      this.penalty === 0.0 ||
-      !(logits.data instanceof Float32Array) ||
-      inputIds.length === 0
-    ) {
+    if (this.penalty === 0.0 || !(logits.data instanceof Float32Array) || inputIds.length === 0) {
       return logits;
     }
 
@@ -265,7 +254,7 @@ export class PresencePenaltyLogitProcessor implements LogitProcessor {
       if (tokenId < vocabSize) {
         const idx = offset + tokenId;
         const data = logits.data;
-        newData[idx] = data[idx]! - this.penalty;
+        newData[idx] = (data[idx] as number) - this.penalty;
       }
     }
 
@@ -292,11 +281,7 @@ export class FrequencyPenaltyLogitProcessor implements LogitProcessor {
 
   /** Process logits with frequency penalty. */
   process(inputIds: number[], logits: Tensor): Tensor {
-    if (
-      this.penalty === 0.0 ||
-      !(logits.data instanceof Float32Array) ||
-      inputIds.length === 0
-    ) {
+    if (this.penalty === 0.0 || !(logits.data instanceof Float32Array) || inputIds.length === 0) {
       return logits;
     }
 
@@ -313,7 +298,7 @@ export class FrequencyPenaltyLogitProcessor implements LogitProcessor {
       if (tokenId < vocabSize) {
         const idx = offset + tokenId;
         const data = logits.data;
-        newData[idx] = data[idx]! - this.penalty * count;
+        newData[idx] = (data[idx] as number) - this.penalty * count;
       }
     }
 
@@ -379,10 +364,7 @@ export class ForcedEOSLogitProcessor implements LogitProcessor {
 
   /** Force EOS token at the limit. */
   process(inputIds: number[], logits: Tensor): Tensor {
-    if (
-      inputIds.length === this.maxLength - 1 &&
-      logits.data instanceof Float32Array
-    ) {
+    if (inputIds.length === this.maxLength - 1 && logits.data instanceof Float32Array) {
       const vocabSize = logits.shape[logits.shape.length - 1] as number;
       const offset = logits.data.length - vocabSize;
       const newData = new Float32Array(logits.data);
@@ -427,8 +409,8 @@ export class LogitBiasProcessor implements LogitProcessor {
 
     for (const [tokenId, bias] of this.biasMap.entries()) {
       if (tokenId < vocabSize) {
-        const _data = logits.data;
-        newData[offset + tokenId]! += bias;
+        const idx = offset + tokenId;
+        newData[idx] = (newData[idx] as number) + bias;
       }
     }
 
@@ -453,7 +435,7 @@ export class NoRepeatNGramLogitProcessor implements LogitProcessor {
    */
   constructor(private ngramSize: number) {
     if (ngramSize <= 0) {
-      throw new Error("ngramSize must be strictly positive");
+      throw new Onnx9000Error('ngramSize must be strictly positive');
     }
   }
 
@@ -470,8 +452,7 @@ export class NoRepeatNGramLogitProcessor implements LogitProcessor {
     const vocabSize = logits.shape[logits.shape.length - 1] as number;
     const offset = logits.data.length - vocabSize;
 
-    const prefix =
-      this.ngramSize > 1 ? inputIds.slice(-(this.ngramSize - 1)) : [];
+    const prefix = this.ngramSize > 1 ? inputIds.slice(-(this.ngramSize - 1)) : [];
     const bannedTokens = new Set<number>();
 
     for (let i = 0; i <= inputIds.length - this.ngramSize; i++) {
@@ -483,7 +464,7 @@ export class NoRepeatNGramLogitProcessor implements LogitProcessor {
         }
       }
       if (match) {
-        bannedTokens.add(inputIds[i + this.ngramSize - 1]!);
+        bannedTokens.add(inputIds[i + this.ngramSize - 1] as number);
       }
     }
 
@@ -521,10 +502,7 @@ export class NoBadWordsLogitProcessor implements LogitProcessor {
 
   /** Block forbidden token sequences. */
   process(inputIds: number[], logits: Tensor): Tensor {
-    if (
-      this.badWordsIds.length === 0 ||
-      !(logits.data instanceof Float32Array)
-    ) {
+    if (this.badWordsIds.length === 0 || !(logits.data instanceof Float32Array)) {
       return logits;
     }
 
@@ -534,7 +512,7 @@ export class NoBadWordsLogitProcessor implements LogitProcessor {
 
     for (const badWord of this.badWordsIds) {
       if (badWord.length === 1) {
-        bannedTokens.add(badWord[0]!);
+        bannedTokens.add(badWord[0] as number);
       } else if (badWord.length > 1) {
         const prefix = badWord.slice(0, -1);
         if (inputIds.length >= prefix.length) {
@@ -546,7 +524,7 @@ export class NoBadWordsLogitProcessor implements LogitProcessor {
             }
           }
           if (match) {
-            bannedTokens.add(badWord[badWord.length - 1]!);
+            bannedTokens.add(badWord[badWord.length - 1] as number);
           }
         }
       }
@@ -578,6 +556,7 @@ export class NoBadWordsLogitProcessor implements LogitProcessor {
  * Limits generation to a specific set of allowed tokens.
  */
 export class AllowedWordsLogitProcessor implements LogitProcessor {
+  /** Property `allowedTokens` of `AllowedWordsLogitProcessor`. */
   private allowedTokens: Set<number>;
 
   /**
@@ -590,10 +569,7 @@ export class AllowedWordsLogitProcessor implements LogitProcessor {
 
   /** Limit generation to allowed tokens. */
   process(_inputIds: number[], logits: Tensor): Tensor {
-    if (
-      this.allowedTokens.size === 0 ||
-      !(logits.data instanceof Float32Array)
-    ) {
+    if (this.allowedTokens.size === 0 || !(logits.data instanceof Float32Array)) {
       return logits;
     }
 

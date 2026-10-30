@@ -1,7 +1,9 @@
 """Module providing onnx2gguf functionality."""
 
 import struct
-from typing import Any, BinaryIO
+from typing import BinaryIO
+
+from onnx9000.core.exceptions import GGUFError
 
 from .builder import GGUFTensorType, GGUFValueType
 
@@ -9,7 +11,7 @@ from .builder import GGUFTensorType, GGUFValueType
 class GGUFReader:
     """Provides functionality for G G U F Reader."""
 
-    def __init__(self, f: BinaryIO):
+    def __init__(self, f: BinaryIO) -> None:
         """Initialize a new instance of the class."""
         self.f = f
         self.kvs = {}
@@ -21,7 +23,9 @@ class GGUFReader:
         length = struct.unpack("<Q", self.f.read(8))[0]
         return self.f.read(length).decode("utf-8")
 
-    def _read_val(self, vtype: GGUFValueType) -> Any:
+    def _read_val(
+        self, vtype: GGUFValueType
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Read val."""
         if vtype == GGUFValueType.UINT8:
             return struct.unpack("<B", self.f.read(1))[0]
@@ -56,16 +60,16 @@ class GGUFReader:
                 arr.append(self._read_val(atype))
             return arr
         else:
-            raise ValueError(f"Unknown value type: {vtype}")
+            raise GGUFError(f"Unknown value type: {vtype}")
 
-    def _read_header(self):
+    def _read_header(self) -> None:
         """Read header."""
         magic = self.f.read(4)
         if magic != b"GGUF":
-            raise ValueError("Not a GGUF file")
+            raise GGUFError("Not a GGUF file")
         version = struct.unpack("<I", self.f.read(4))[0]
         if version not in (2, 3):
-            raise ValueError(f"Unsupported GGUF version {version}")
+            raise GGUFError(f"Unsupported GGUF version {version}")
         tensor_count = struct.unpack("<Q", self.f.read(8))[0]
         kv_count = struct.unpack("<Q", self.f.read(8))[0]
         for _ in range(kv_count):
@@ -115,6 +119,6 @@ class GGUFReader:
         elif dtype == GGUFTensorType.Q8_0:
             size = items // 32 * 34
         else:
-            raise ValueError("Unknown type")
+            raise GGUFError("Unknown type")
         self.f.seek(self.data_start + t["offset"])
         return self.f.read(size)

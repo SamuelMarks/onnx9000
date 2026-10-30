@@ -2,20 +2,27 @@
  * @fileoverview Console.ts
  * Provides Console functionality for the Sphinx Demo UI.
  */
-// @ts-nocheck
 import { Component } from '../core/Component';
 import { globalEventBus } from '../core/EventBus';
 import type { LogEntry } from '../core/Logger';
 
+/** Represents the `Console` class. */
 export class Console extends Component<HTMLDivElement> {
+  /** Property `outputDiv` of `Console`. */
   private outputDiv!: HTMLDivElement;
+  /** Property `clearBtn` of `Console`. */
   private clearBtn!: HTMLButtonElement;
 
+  /** Initializes a new `Console` instance. */
   constructor() {
     super();
     this.element = this.render();
   }
 
+  /**
+   * Executes `render` on `Console`.
+   * @returns Result of `render`.
+   */
   protected render(): HTMLDivElement {
     const container = document.createElement('div');
     container.className = 'demo-console-container';
@@ -40,16 +47,21 @@ export class Console extends Component<HTMLDivElement> {
     return container;
   }
 
+  /** Executes `onMount` on `Console`. */
   protected onMount(): void {
     this.addDOMListener(this.clearBtn, 'click', () => this.clear());
 
     this.onCleanup(
       globalEventBus.on<LogEntry>('CONSOLE_LOG', (entry) => {
         this.appendLog(entry);
-      })
+      }),
     );
   }
 
+  /**
+   * Executes `appendLog` on `Console`.
+   * @param entry Parameter `entry`.
+   */
   public appendLog(entry: LogEntry): void {
     const line = document.createElement('div');
     line.className = `demo-console-line demo-console-level-${entry.level}`;
@@ -76,6 +88,7 @@ export class Console extends Component<HTMLDivElement> {
     }
   }
 
+  /** Executes `clear` on `Console`. */
   public clear(): void {
     this.outputDiv.innerHTML = '';
   }

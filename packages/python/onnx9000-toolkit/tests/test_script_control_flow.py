@@ -1,15 +1,14 @@
 """Tests for script control flow."""
 
 
-def test_script_control_flow_all():
-    """Docstring for D103."""
+def test_script_control_flow_all() -> None:
+    """Verify that script control flow all behaves as expected."""
     from onnx9000.toolkit.script.builder import GraphBuilder
     from onnx9000.toolkit.script.control_flow import (
         BranchContext,
         IfContextManager,
         LoopContextManager,
     )
-    from onnx9000.toolkit.script.op import op
     from onnx9000.toolkit.script.var import Var
 
     # 15, 19-20, 24

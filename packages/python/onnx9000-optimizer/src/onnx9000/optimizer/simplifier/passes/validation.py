@@ -2,6 +2,7 @@
 
 import logging
 
+from onnx9000.core.exceptions import OptimizerError
 from onnx9000.core.ir import Graph
 from onnx9000.optimizer.simplifier.passes.base import GraphPass
 
@@ -16,7 +17,14 @@ class ValidationPass(GraphPass):
     """
 
     def run(self, graph: Graph) -> bool:
-        """Implement the run method or operation."""
+        """Execute run on ValidationPass.
+
+        Args:
+            graph: Parameter specifying graph (Graph).
+
+        Returns:
+            Result of run (bool).
+        """
         self.detect_cycles(graph)
         self.detect_dangling(graph)
         return False
@@ -39,7 +47,14 @@ class ValidationPass(GraphPass):
         rec_stack = set()
 
         def is_cyclic(u: str) -> bool:
-            """Implement the is_cyclic method or operation."""
+            """Execute is cyclic operation.
+
+            Args:
+                u: Parameter specifying u (str).
+
+            Returns:
+                Result of is cyclic (bool).
+            """
             visited.add(u)
             rec_stack.add(u)
             for neighbor in adj.get(u, []):
@@ -53,10 +68,14 @@ class ValidationPass(GraphPass):
 
         for node in graph.nodes:
             if node.name not in visited and is_cyclic(node.name):
-                raise RuntimeError(f"Cycle detected in graph starting from node {node.name}")
+                raise OptimizerError(f"Cycle detected in graph starting from node {node.name}")
 
     def detect_dangling(self, graph: Graph) -> None:
-        """Implement the detect_dangling method or operation."""
+        """Execute detect dangling on ValidationPass.
+
+        Args:
+            graph: Parameter specifying graph (Graph).
+        """
         available = set(graph.inputs) | set(graph.initializers)
         for n in graph.nodes:
             for out in n.outputs:
@@ -68,10 +87,18 @@ class ValidationPass(GraphPass):
 
 
 def detect_cycles(graph: Graph) -> None:
-    """Implement the detect_cycles method or operation."""
+    """Execute detect cycles operation.
+
+    Args:
+        graph: Parameter specifying graph (Graph).
+    """
     ValidationPass().detect_cycles(graph)
 
 
 def detect_dangling(graph: Graph) -> None:
-    """Implement the detect_dangling method or operation."""
+    """Execute detect dangling operation.
+
+    Args:
+        graph: Parameter specifying graph (Graph).
+    """
     ValidationPass().detect_dangling(graph)

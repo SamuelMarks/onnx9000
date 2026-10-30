@@ -20,7 +20,7 @@ class LayoutOptimizer:
     and other graph-level optimizations.
     """
 
-    def __init__(self, graph: Graph, keep_nchw: bool = False):
+    def __init__(self, graph: Graph, keep_nchw: bool = False) -> None:
         """Initialize the layout optimizer.
 
         Args:
@@ -98,93 +98,92 @@ class LayoutOptimizer:
         i = 0
         while i < len(self.graph.nodes):
             node = self.graph.nodes[i]
-            if node.op_type in spatial_ops:
-                if node.inputs:
-                    in_name = node.inputs[0]
-                    in_info = next((v for v in self.graph.value_info if v.name == in_name), None)
-                    if not in_info:
-                        in_info = next((v for v in self.graph.inputs if v.name == in_name), None)
-                    if not in_info:
-                        in_info = self.graph.tensors.get(in_name)
+            if node.op_type in spatial_ops and node.inputs:
+                in_name = node.inputs[0]
+                in_info = next((v for v in self.graph.value_info if v.name == in_name), None)
+                if not in_info:
+                    in_info = next((v for v in self.graph.inputs if v.name == in_name), None)
+                if not in_info:
+                    in_info = self.graph.tensors.get(in_name)
 
-                    if in_info and in_info.shape and len(in_info.shape) == 3:
-                        unsqueeze_out = f"{in_name}_expanded_1d"
-                        axes_name = f"{node.name}_unsqueeze_axes"
+                if in_info and in_info.shape and len(in_info.shape) == 3:
+                    unsqueeze_out = f"{in_name}_expanded_1d"
+                    axes_name = f"{node.name}_unsqueeze_axes"
 
-                        import struct
+                    import struct
 
-                        self.graph.tensors[axes_name] = Tensor(
-                            axes_name,
+                    self.graph.tensors[axes_name] = Tensor(
+                        axes_name,
+                        shape=[1],
+                        dtype="int64",
+                        is_initializer=True,
+                        data=struct.pack("<q", 2),
+                    )
+                    unsqueeze_node = Node(
+                        "Unsqueeze",
+                        [in_name, axes_name],
+                        [unsqueeze_out],
+                        name=f"{node.name}_unsqueeze",
+                    )
+                    node.inputs[0] = unsqueeze_out
+
+                    orig_out = node.outputs[0] if node.outputs else None
+                    if orig_out:
+                        squeeze_in = f"{orig_out}_expanded_1d"
+                        node.outputs[0] = squeeze_in
+                        squeeze_axes_name = f"{node.name}_squeeze_axes"
+                        self.graph.tensors[squeeze_axes_name] = Tensor(
+                            squeeze_axes_name,
                             shape=[1],
                             dtype="int64",
                             is_initializer=True,
                             data=struct.pack("<q", 2),
                         )
-                        unsqueeze_node = Node(
-                            "Unsqueeze",
-                            [in_name, axes_name],
-                            [unsqueeze_out],
-                            name=f"{node.name}_unsqueeze",
+                        squeeze_node = Node(
+                            "Squeeze",
+                            [squeeze_in, squeeze_axes_name],
+                            [orig_out],
+                            name=f"{node.name}_squeeze",
                         )
-                        node.inputs[0] = unsqueeze_out
 
-                        orig_out = node.outputs[0] if node.outputs else None
-                        if orig_out:
-                            squeeze_in = f"{orig_out}_expanded_1d"
-                            node.outputs[0] = squeeze_in
-                            squeeze_axes_name = f"{node.name}_squeeze_axes"
-                            self.graph.tensors[squeeze_axes_name] = Tensor(
-                                squeeze_axes_name,
-                                shape=[1],
-                                dtype="int64",
-                                is_initializer=True,
-                                data=struct.pack("<q", 2),
+                        kernel_attr = node.attributes.get("kernel_shape")
+                        if kernel_attr and len(kernel_attr.value) == 1:
+                            node.attributes["kernel_shape"] = Attribute(
+                                "kernel_shape", "INTS", [1, kernel_attr.value[0]]
                             )
-                            squeeze_node = Node(
-                                "Squeeze",
-                                [squeeze_in, squeeze_axes_name],
-                                [orig_out],
-                                name=f"{node.name}_squeeze",
+                        strides_attr = node.attributes.get("strides")
+                        if strides_attr and len(strides_attr.value) == 1:
+                            node.attributes["strides"] = Attribute(
+                                "strides", "INTS", [1, strides_attr.value[0]]
+                            )
+                        dilations_attr = node.attributes.get("dilations")
+                        if dilations_attr and len(dilations_attr.value) == 1:
+                            node.attributes["dilations"] = Attribute(
+                                "dilations", "INTS", [1, dilations_attr.value[0]]
+                            )
+                        pads_attr = node.attributes.get("pads")
+                        if pads_attr and len(pads_attr.value) == 2:
+                            node.attributes["pads"] = Attribute(
+                                "pads",
+                                "INTS",
+                                [0, pads_attr.value[0], 0, pads_attr.value[1]],
                             )
 
-                            kernel_attr = node.attributes.get("kernel_shape")
-                            if kernel_attr and len(kernel_attr.value) == 1:
-                                node.attributes["kernel_shape"] = Attribute(
-                                    "kernel_shape", "INTS", [1, kernel_attr.value[0]]
-                                )
-                            strides_attr = node.attributes.get("strides")
-                            if strides_attr and len(strides_attr.value) == 1:
-                                node.attributes["strides"] = Attribute(
-                                    "strides", "INTS", [1, strides_attr.value[0]]
-                                )
-                            dilations_attr = node.attributes.get("dilations")
-                            if dilations_attr and len(dilations_attr.value) == 1:
-                                node.attributes["dilations"] = Attribute(
-                                    "dilations", "INTS", [1, dilations_attr.value[0]]
-                                )
-                            pads_attr = node.attributes.get("pads")
-                            if pads_attr and len(pads_attr.value) == 2:
-                                node.attributes["pads"] = Attribute(
-                                    "pads",
-                                    "INTS",
-                                    [0, pads_attr.value[0], 0, pads_attr.value[1]],
+                        if len(node.inputs) > 1:
+                            w_name = node.inputs[1]
+                            w_tensor = self.graph.tensors.get(w_name)
+                            if w_tensor and w_tensor.shape and len(w_tensor.shape) == 3:
+                                w_tensor.shape = (
+                                    w_tensor.shape[0],
+                                    w_tensor.shape[1],
+                                    1,
+                                    w_tensor.shape[2],
                                 )
 
-                            if len(node.inputs) > 1:
-                                w_name = node.inputs[1]
-                                w_tensor = self.graph.tensors.get(w_name)
-                                if w_tensor and w_tensor.shape and len(w_tensor.shape) == 3:
-                                    w_tensor.shape = (
-                                        w_tensor.shape[0],
-                                        w_tensor.shape[1],
-                                        1,
-                                        w_tensor.shape[2],
-                                    )
-
-                            self.graph.nodes.insert(i, unsqueeze_node)
-                            i += 1
-                            self.graph.nodes.insert(i + 1, squeeze_node)
-                            i += 1
+                        self.graph.nodes.insert(i, unsqueeze_node)
+                        i += 1
+                        self.graph.nodes.insert(i + 1, squeeze_node)
+                        i += 1
             i += 1
 
     def fuse_conv_batch_normalization(self) -> None:
@@ -212,7 +211,7 @@ class LayoutOptimizer:
                             consumer = n
 
                 if consumer and num_consumers == 1 and len(consumer.inputs) >= 5:
-                    x, scale, b, mean, v = consumer.inputs[:5]
+                    _x, scale, b, mean, v = consumer.inputs[:5]
                     scale_tensor = self.graph.tensors.get(scale)
                     b_tensor = self.graph.tensors.get(b)
                     mean_tensor = self.graph.tensors.get(mean)
@@ -417,22 +416,21 @@ class LayoutOptimizer:
         i = 0
         while i < len(self.graph.nodes):
             node = self.graph.nodes[i]
-            if node.op_type in ops_to_remove:
-                if node.inputs and node.outputs:
-                    input_name = node.inputs[0]
-                    output_name = node.outputs[0]
+            if node.op_type in ops_to_remove and node.inputs and node.outputs:
+                input_name = node.inputs[0]
+                output_name = node.outputs[0]
 
-                    for consumer in self.graph.nodes:
-                        for j in range(len(consumer.inputs)):
-                            if consumer.inputs[j] == output_name:
-                                consumer.inputs[j] = input_name
+                for consumer in self.graph.nodes:
+                    for j in range(len(consumer.inputs)):
+                        if consumer.inputs[j] == output_name:
+                            consumer.inputs[j] = input_name
 
-                    for j in range(len(self.graph.outputs)):
-                        if self.graph.outputs[j].name == output_name:
-                            self.graph.outputs[j].name = input_name
+                for j in range(len(self.graph.outputs)):
+                    if self.graph.outputs[j].name == output_name:
+                        self.graph.outputs[j].name = input_name
 
-                    self.graph.nodes.pop(i)
-                    continue
+                self.graph.nodes.pop(i)
+                continue
             i += 1
 
     def inject_transposes(self) -> None:
@@ -586,7 +584,7 @@ class LayoutOptimizer:
                         break
 
                     perm = producer.attributes.get("perm")
-                    if not perm or (perm.value != [0, 2, 3, 1] and perm.value != [0, 3, 1, 2]):
+                    if not perm or (perm.value not in ([0, 2, 3, 1], [0, 3, 1, 2])):
                         all_transposed = False
                         break
 
@@ -608,11 +606,9 @@ class LayoutOptimizer:
                         )
 
                     if is_axis_op:
-                        axis_mapping = None
-                        if transpose_perm == [0, 2, 3, 1]:
-                            axis_mapping = [0, 3, 1, 2]
-                        elif transpose_perm == [0, 3, 1, 2]:
-                            axis_mapping = [0, 2, 3, 1]
+                        axis_mapping = (
+                            [0, 3, 1, 2] if transpose_perm == [0, 2, 3, 1] else [0, 2, 3, 1]
+                        )
 
                         axis_attr = node.attributes.get("axis")
                         if axis_attr and isinstance(axis_attr.value, int):
@@ -620,7 +616,7 @@ class LayoutOptimizer:
                             if axis < 0:
                                 axis += 4
 
-                            if axis_mapping and 0 <= axis < 4:
+                            if 0 <= axis < 4:
                                 node.attributes["axis"] = Attribute(
                                     "axis", "INT", axis_mapping[axis]
                                 )
@@ -630,7 +626,7 @@ class LayoutOptimizer:
                             new_axes = []
                             for a in axes_attr.value:
                                 a_pos = a if a >= 0 else a + 4
-                                if axis_mapping and 0 <= a_pos < 4:
+                                if 0 <= a_pos < 4:
                                     new_axes.append(axis_mapping[a_pos])
                                 else:
                                     new_axes.append(a)
@@ -648,36 +644,29 @@ class LayoutOptimizer:
 
                     for producer_name in transpose_nodes_to_remove:
                         producer_idx, producer = next(
-                            (
-                                (idx, n)
-                                for idx, n in enumerate(self.graph.nodes)
-                                if n.name == producer_name
-                            ),
-                            (-1, None),
+                            (idx, n)
+                            for idx, n in enumerate(self.graph.nodes)
+                            if n.name == producer_name
                         )
-                        if producer:
-                            original_input = producer.inputs[0]
-                            idx = node.inputs.index(producer.outputs[0])
-                            node.inputs[idx] = original_input
-                            self.graph.nodes.pop(producer_idx)
-                            if producer_idx <= i:
-                                i -= 1
+                        original_input = producer.inputs[0]
+                        idx = node.inputs.index(producer.outputs[0])
+                        node.inputs[idx] = original_input
+                        self.graph.nodes.pop(producer_idx)
+                        if producer_idx <= i:
+                            i -= 1
 
                     for out_idx, output_name in enumerate(node.outputs):
-                        if output_name:
-                            transposed_output = f"{output_name}_pushed_trans"
-                            new_transpose = Node(
-                                op_type="Transpose",
-                                inputs=[transposed_output],
-                                outputs=[output_name],
-                                attributes={
-                                    "perm": Attribute("perm", "INTS", transpose_perm.copy())
-                                },
-                                name=f"{node.name}_pushed_trans_{out_idx}",
-                            )
-                            node.outputs[out_idx] = transposed_output
-                            self.graph.nodes.insert(i + 1, new_transpose)
-                            i += 1
+                        transposed_output = f"{output_name}_pushed_trans"
+                        new_transpose = Node(
+                            op_type="Transpose",
+                            inputs=[transposed_output],
+                            outputs=[output_name],
+                            attributes={"perm": Attribute("perm", "INTS", transpose_perm.copy())},
+                            name=f"{node.name}_pushed_trans_{out_idx}",
+                        )
+                        node.outputs[out_idx] = transposed_output
+                        self.graph.nodes.insert(i + 1, new_transpose)
+                        i += 1
                 i += 1
 
     def cancel_transposes(self) -> None:
@@ -727,73 +716,69 @@ class LayoutOptimizer:
         while i < len(self.graph.nodes):
             node = self.graph.nodes[i]
 
-            if node.op_type == "MatMul":
-                if node.outputs:
-                    y = node.outputs[0]
-                    consumer_idx = -1
-                    consumer = None
-                    num_consumers = 0
-                    for idx, n in enumerate(self.graph.nodes):
-                        if y in n.inputs:
-                            num_consumers += 1
-                            if n.op_type == "Add":
-                                consumer_idx = idx
-                                consumer = n
+            if node.op_type == "MatMul" and node.outputs:
+                y = node.outputs[0]
+                consumer_idx = -1
+                consumer = None
+                num_consumers = 0
+                for idx, n in enumerate(self.graph.nodes):
+                    if y in n.inputs:
+                        num_consumers += 1
+                        if n.op_type == "Add":
+                            consumer_idx = idx
+                            consumer = n
 
-                    if consumer and num_consumers == 1:
-                        add_input = next((inp for inp in consumer.inputs if inp != y), None)
-                        if add_input:
-                            node.inputs.append(add_input)
-                            node.outputs[0] = consumer.outputs[0]
-                            node.op_type = "Gemm"
-                            self.graph.nodes.pop(consumer_idx)
-                            if consumer_idx <= i:
-                                i -= 1
-
-            if node.op_type in ("Conv", "Gemm"):
-                if node.outputs:
-                    y = node.outputs[0]
-                    consumer_idx = -1
-                    consumer = None
-                    num_consumers = 0
-                    for idx, n in enumerate(self.graph.nodes):
-                        if y in n.inputs:
-                            num_consumers += 1
-                            if n.op_type in fused_activations:
-                                consumer_idx = idx
-                                consumer = n
-
-                    if consumer and num_consumers == 1:
-                        node.attributes["fused_activation"] = Attribute(
-                            "fused_activation", "STRING", consumer.op_type
-                        )
+                if consumer and num_consumers == 1:
+                    add_input = next((inp for inp in consumer.inputs if inp != y), None)
+                    if add_input:
+                        node.inputs.append(add_input)
                         node.outputs[0] = consumer.outputs[0]
+                        node.op_type = "Gemm"
                         self.graph.nodes.pop(consumer_idx)
                         if consumer_idx <= i:
                             i -= 1
+
+            if node.op_type in ("Conv", "Gemm") and node.outputs:
+                y = node.outputs[0]
+                consumer_idx = -1
+                consumer = None
+                num_consumers = 0
+                for idx, n in enumerate(self.graph.nodes):
+                    if y in n.inputs:
+                        num_consumers += 1
+                        if n.op_type in fused_activations:
+                            consumer_idx = idx
+                            consumer = n
+
+                if consumer and num_consumers == 1:
+                    node.attributes["fused_activation"] = Attribute(
+                        "fused_activation", "STRING", consumer.op_type
+                    )
+                    node.outputs[0] = consumer.outputs[0]
+                    self.graph.nodes.pop(consumer_idx)
+                    if consumer_idx <= i:
+                        i -= 1
             i += 1
 
     def fold_constants(self) -> None:
         """Perform constant folding and specialized weight transformations."""
         self.fuse_activations_and_matmuls()
         for node in self.graph.nodes:
-            if node.op_type == "Gemm":
-                if len(node.inputs) > 1:
-                    weight_name = node.inputs[1]
-                    weight_tensor = self.graph.tensors.get(weight_name)
-                    transB_attr = node.attributes.get("transB")
-                    transB = transB_attr.value if transB_attr else 0
+            if node.op_type == "Gemm" and len(node.inputs) > 1:
+                weight_name = node.inputs[1]
+                weight_tensor = self.graph.tensors.get(weight_name)
+                transB_attr = node.attributes.get("transB")
+                transB = transB_attr.value if transB_attr else 0
 
-                    if (
-                        weight_tensor
-                        and weight_tensor.is_initializer
-                        and weight_tensor.data
-                        and len(weight_tensor.shape) == 2
-                    ):
-                        if transB == 0:
-                            self._transpose_tensor_data(weight_tensor, [1, 0])
-                            i_dim, o_dim = weight_tensor.shape
-                            weight_tensor.shape = (o_dim, i_dim)
+                if (
+                    weight_tensor
+                    and weight_tensor.is_initializer
+                    and weight_tensor.data
+                    and len(weight_tensor.shape) == 2
+                ) and transB == 0:
+                    self._transpose_tensor_data(weight_tensor, [1, 0])
+                    i_dim, o_dim = weight_tensor.shape
+                    weight_tensor.shape = (o_dim, i_dim)
 
             if node.op_type in (
                 "LSTM",
@@ -894,7 +879,7 @@ class LayoutOptimizer:
                             o, i_chan, h, w = weight_tensor.shape
                             self._transpose_tensor_data(weight_tensor, [0, 2, 3, 1])
                             weight_tensor.shape = (o, h, w, i_chan)
-                        elif node.op_type == "ConvTranspose":
+                        else:
                             i_chan, o, h, w = weight_tensor.shape
                             self._transpose_tensor_data(weight_tensor, [1, 2, 3, 0])
                             weight_tensor.shape = (o, h, w, i_chan)
@@ -931,7 +916,7 @@ class LayoutOptimizer:
                         for i0 in range(d0):
                             src_idx = i3 + d3 * (i2 + d2 * (i1 + d1 * i0))
                             dst_idx = i0 + d0 * (i3 + d3 * (i2 + d2 * i1))
-        elif perm == [1, 0]:
+        else:
             d0, d1 = dims
             for i0 in range(d0):
                 for i1 in range(d1):
@@ -1007,7 +992,7 @@ class LayoutOptimizer:
         for node in self.graph.nodes:
             if node.op_type == "Transpose":
                 perm = node.attributes.get("perm")
-                if perm and (perm.value == [0, 2, 3, 1] or perm.value == [0, 3, 1, 2]):
+                if perm and (perm.value in ([0, 2, 3, 1], [0, 3, 1, 2])):
                     logger.warning(
                         f"[onnx2tf] Warning: Irreducible Transpose node left in graph: {node.name}. This degrades EdgeTPU performance."
                     )

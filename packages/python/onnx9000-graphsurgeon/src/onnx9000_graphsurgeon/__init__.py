@@ -1,6 +1,5 @@
-"""Graphsurgeon Module."""
+"""Backward-compatible re-export module for `onnx9000_graphsurgeon`."""
 
+from onnx9000.graphsurgeon import GraphSurgeon, cleanup, fold_constants, run, toposort
 
-def run() -> str:
-    """Run the graphsurgeon module."""
-    return "[graphsurgeon] processed"
+__all__ = ["GraphSurgeon", "cleanup", "fold_constants", "run", "toposort"]

@@ -5,9 +5,9 @@ from .memory import TreeAbstractions, estimate_memory_footprint, select_optimal_
 from .strategies import Strategy, TargetHardware
 
 __all__ = [
-    "TranspilationEngine",
     "Strategy",
     "TargetHardware",
+    "TranspilationEngine",
     "TreeAbstractions",
     "estimate_memory_footprint",
     "select_optimal_strategy",

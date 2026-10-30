@@ -4,28 +4,32 @@ from onnx9000.core.ir import Attribute, Graph, Node, Tensor
 from onnx9000.core.profiler import ProfilerResult, get_attr, profile, profile_graph
 
 
-def test_profile_graph_decorator(capsys):
+def test_profile_graph_decorator(
+    capsys: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Tests the profile graph decorator functionality."""
 
     @profile_graph
-    def dummy_func(graph):
+    def dummy_func(graph: int | float | str | bool | bytes | list | dict | tuple | None) -> str:
         """Execute the dummy func operation."""
         return "done"
 
     g = Graph("g")
     assert dummy_func(g) == "done"
-    out, err = capsys.readouterr()
+    out, _err = capsys.readouterr()
     assert "Profiler Result" in out
 
 
-def test_get_attr():
+def test_get_attr() -> None:
     """Tests the get attr functionality."""
     n = Node("Test", [], [], {"val": Attribute("val", value=10)})
     assert get_attr(n, "val") == 10
     assert get_attr(n, "missing", default=5) == 5
 
 
-def test_profiler_printing(capsys):
+def test_profiler_printing(
+    capsys: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Tests the profiler printing functionality."""
     res = ProfilerResult()
     res.total_params = 100
@@ -52,7 +56,7 @@ def test_profiler_printing(capsys):
     res.print_bottleneck_analysis()
     res.print_distribution_pie_chart()
 
-    out, err = capsys.readouterr()
+    out, _err = capsys.readouterr()
     assert "Conv: 60.0% (60 Params)" in out
     assert "Relu: 50.0% (0.00 MB)" in out
     assert "1. n1 (Conv) - FLOPs: 300" in out
@@ -63,19 +67,21 @@ def test_profiler_printing(capsys):
     assert res.get_cumulative_flops_up_to("missing") == 500
 
 
-def test_profiler_print_empty(capsys):
+def test_profiler_print_empty(
+    capsys: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Tests the profiler print empty functionality."""
     res = ProfilerResult()
     res.print_parameter_pie_chart()
     res.print_activation_pie_chart()
     res.print_distribution_pie_chart()
-    out, err = capsys.readouterr()
+    out, _err = capsys.readouterr()
     assert "No parameters found." in out
     assert "No activations found." in out
     assert "Cannot compute pie chart" in out
 
 
-def test_profiler_webgpu_limits():
+def test_profiler_webgpu_limits() -> None:
     """Tests the profiler webgpu limits functionality."""
     res = ProfilerResult()
     res.node_profiles = [
@@ -110,7 +116,7 @@ def test_profiler_webgpu_limits():
     assert any("exceeds WebGPU 128MB limit" in s for s in res2.suggestions)
 
 
-def test_profiler_ops_if():
+def test_profiler_ops_if() -> None:
     """Tests the profiler ops if functionality."""
     g = Graph("g")
     then_g = Graph("then")
@@ -142,7 +148,7 @@ def test_profiler_ops_if():
     assert res.total_flops >= 100
 
 
-def test_profiler_ops_loop():
+def test_profiler_ops_loop() -> None:
     """Tests the profiler ops loop functionality."""
     g = Graph("g")
     body_g = Graph("body")
@@ -175,7 +181,7 @@ def test_profiler_ops_loop():
     assert res.total_flops >= 500
 
 
-def test_profiler_ops_attention():
+def test_profiler_ops_attention() -> None:
     """Tests the profiler ops attention functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", [2, 10, 64], "float32"))
@@ -184,7 +190,7 @@ def test_profiler_ops_attention():
     assert res.total_flops > 0
 
 
-def test_profiler_ops_rnn():
+def test_profiler_ops_rnn() -> None:
     """Tests the profiler ops rnn functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", [10, 2, 64], "float32"))  # seq, batch, input_size
@@ -195,7 +201,7 @@ def test_profiler_ops_rnn():
     assert res.total_flops > 0
 
 
-def test_profiler_estimate_latency():
+def test_profiler_estimate_latency() -> None:
     """Tests the profiler estimate latency functionality."""
     res = ProfilerResult()
     res.total_macs = 1e12  # 1 T MAC = 2 T FLOP

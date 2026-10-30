@@ -2,24 +2,39 @@
  * @fileoverview compiler.ts
  * Provides compiler functionality for the backend-web package.
  */
-import type { DType, Graph, Node, Tensor } from "@onnx9000/core";
 
+import type { DType, Graph, Node, Tensor } from '@onnx9000/core';
+import { BackendError } from '@onnx9000/core';
+
+/** Represents the `WebNNCompiler` class. */
 export class WebNNCompiler {
+  /** Property `graph` of `WebNNCompiler`. */
   private graph: Graph;
+  /** Property `builder` of `WebNNCompiler`. */
   private builder: MLGraphBuilder;
+  /** Property `operands` of `WebNNCompiler`. */
   private operands: Map<string, MLOperand> = new Map();
 
+  /**
+   * Initializes a new `WebNNCompiler` instance.
+   * @param graph Parameter `graph`.
+   * @param builder Parameter `builder`.
+   */
   constructor(graph: Graph, builder: MLGraphBuilder) {
     this.graph = graph;
     this.builder = builder;
   }
 
+  /**
+   * Executes `compile` on `WebNNCompiler`.
+   * @returns Result of `compile`.
+   */
   public async compile(): Promise<MLGraph> {
     this.operands.clear();
 
     for (const input of this.graph.inputs) {
       const dimensions = input.shape.map((dim) => {
-        if (typeof dim === "string" || dim === -1) {
+        if (typeof dim === 'string' || dim === -1) {
           return 1;
         }
         return dim;
@@ -51,106 +66,129 @@ export class WebNNCompiler {
       if (op) {
         outputs[output.name] = op;
       } else {
-        throw new Error(`Output ${output.name} not found in WebNN operands.`);
+        throw new BackendError(`Output ${output.name} not found in WebNN operands.`);
       }
     }
 
     return await this.builder.build(outputs);
   }
 
+  /**
+   * Executes `addConstant` on `WebNNCompiler`.
+   * @param tensor Parameter `tensor`.
+   */
   private addConstant(tensor: Tensor): void {
     if (!tensor.data) {
       return;
     }
 
     const dimensions =
-      tensor.shape.length === 0
-        ? [1]
-        : tensor.shape.map((d) => (typeof d === "number" ? d : 1));
+      tensor.shape.length === 0 ? [1] : tensor.shape.map((d) => (typeof d === 'number' ? d : 1));
     const dataType = this.mapDType(tensor.dtype);
 
-    this.operands.set(
-      tensor.name,
-      this.builder.constant({ dataType, dimensions }, tensor.data),
-    );
+    this.operands.set(tensor.name, this.builder.constant({ dataType, dimensions }, tensor.data));
   }
 
-  private mapDType(dtype: DType | "bool"): MLOperandDataType {
+  /**
+   * Executes `mapDType` on `WebNNCompiler`.
+   * @param dtype Parameter `dtype`.
+   * @returns Result of `mapDType`.
+   */
+  private mapDType(dtype: DType | 'bool'): MLOperandDataType {
     switch (dtype) {
-      case "float32":
-        return "float32";
-      case "float16":
-        return "float16";
-      case "float64":
-        return "float32"; // 217. Ensure 64-bit floats are down-casted to float32
-      case "int32":
-        return "int32";
-      case "int8":
-        return "int8";
-      case "uint8":
-        return "uint8";
-      case "bool":
-        return "uint8"; // Boolean maps to uint8
-      case "int64":
-        return "int32"; // 216. Ensure 64-bit integer inputs are down-casted to int32
-      case "uint64":
-        return "uint32";
+      case 'float32':
+        return 'float32';
+      case 'float16':
+        return 'float16';
+      case 'float64':
+        return 'float32'; // 217. Ensure 64-bit floats are down-casted to float32
+      case 'int32':
+        return 'int32';
+      case 'int8':
+        return 'int8';
+      case 'uint8':
+        return 'uint8';
+      case 'bool':
+        return 'uint8'; // Boolean maps to uint8
+      case 'int64':
+        return 'int32'; // 216. Ensure 64-bit integer inputs are down-casted to int32
+      case 'uint64':
+        return 'uint32';
       default:
-        throw new Error(`Unsupported WebNN data type: ${dtype}`);
+        throw new BackendError(`Unsupported WebNN data type: ${dtype}`);
     }
   }
 
-  private getFloatAttribute(
-    node: Node,
-    name: string,
-    defaultValue?: number,
-  ): number | undefined {
+  /**
+   * Executes `getFloatAttribute` on `WebNNCompiler`.
+   * @param node Parameter `node`.
+   * @param name Parameter `name`.
+   * @param defaultValue Parameter `defaultValue`.
+   * @returns Result of `getFloatAttribute`.
+   */
+  private getFloatAttribute(node: Node, name: string, defaultValue?: number): number | undefined {
     const attr = node.attributes[name];
-    if (attr && attr.type === "FLOAT" && typeof attr.value === "number") {
+    if (attr && attr.type === 'FLOAT' && typeof attr.value === 'number') {
       return attr.value;
     }
     return defaultValue;
   }
 
-  private getIntAttribute(
-    node: Node,
-    name: string,
-    defaultValue?: number,
-  ): number | undefined {
+  /**
+   * Executes `getIntAttribute` on `WebNNCompiler`.
+   * @param node Parameter `node`.
+   * @param name Parameter `name`.
+   * @param defaultValue Parameter `defaultValue`.
+   * @returns Result of `getIntAttribute`.
+   */
+  private getIntAttribute(node: Node, name: string, defaultValue?: number): number | undefined {
     const attr = node.attributes[name];
-    if (attr && attr.type === "INT" && typeof attr.value === "number") {
+    if (attr && attr.type === 'INT' && typeof attr.value === 'number') {
       return attr.value;
     }
     return defaultValue;
   }
 
+  /**
+   * Executes `getIntsAttribute` on `WebNNCompiler`.
+   * @param node Parameter `node`.
+   * @param name Parameter `name`.
+   * @param defaultValue Parameter `defaultValue`.
+   * @returns Result of `getIntsAttribute`.
+   */
   private getIntsAttribute(
     node: Node,
     name: string,
     defaultValue?: number[],
   ): number[] | undefined {
     const attr = node.attributes[name];
-    if (attr && attr.type === "INTS" && Array.isArray(attr.value)) {
+    if (attr && attr.type === 'INTS' && Array.isArray(attr.value)) {
       return attr.value as number[];
     }
     return defaultValue;
   }
 
-  private getStringAttribute(
-    node: Node,
-    name: string,
-    defaultValue?: string,
-  ): string | undefined {
+  /**
+   * Executes `getStringAttribute` on `WebNNCompiler`.
+   * @param node Parameter `node`.
+   * @param name Parameter `name`.
+   * @param defaultValue Parameter `defaultValue`.
+   * @returns Result of `getStringAttribute`.
+   */
+  private getStringAttribute(node: Node, name: string, defaultValue?: string): string | undefined {
     const attr = node.attributes[name];
-    if (attr && attr.type === "STRING" && typeof attr.value === "string") {
+    if (attr && attr.type === 'STRING' && typeof attr.value === 'string') {
       return attr.value;
     }
     return defaultValue;
   }
 
-  private extractInt32TensorData(
-    tensorName: string | undefined,
-  ): number[] | null {
+  /**
+   * Executes `extractInt32TensorData` on `WebNNCompiler`.
+   * @param tensorName Parameter `tensorName`.
+   * @returns Result of `extractInt32TensorData`.
+   */
+  private extractInt32TensorData(tensorName: string | undefined): number[] | null {
     if (!tensorName) return null;
     const tensor = this.graph.tensors[tensorName];
     if (!tensor?.data) return null;
@@ -162,9 +200,12 @@ export class WebNNCompiler {
     return Array.from(data);
   }
 
-  private extractFloat32TensorData(
-    tensorName: string | undefined,
-  ): number[] | null {
+  /**
+   * Executes `extractFloat32TensorData` on `WebNNCompiler`.
+   * @param tensorName Parameter `tensorName`.
+   * @returns Result of `extractFloat32TensorData`.
+   */
+  private extractFloat32TensorData(tensorName: string | undefined): number[] | null {
     if (!tensorName) return null;
     const tensor = this.graph.tensors[tensorName];
     if (!tensor) return null;
@@ -177,19 +218,28 @@ export class WebNNCompiler {
     return Array.from(data);
   }
 
+  /**
+   * Executes `compileNode` on `WebNNCompiler`.
+   * @param node Parameter `node`.
+   */
   private compileNode(node: Node): void {
     const inputs = node.inputs.map((name) => {
-      if (name === "") return null;
+      if (name === '') return null;
       const op = this.operands.get(name);
       if (!op) {
-        throw new Error(
+        throw new BackendError(
           `Input operand ${name} not found for node ${node.name || node.opType}`,
         );
       }
       return op;
     });
 
-    let result!: MLOperand | MLOperand[];
+    let result: MLOperand | MLOperand[] = null as never as MLOperand;
+    const in0 = inputs[0] as MLOperand;
+    const in1 = inputs[1] as MLOperand;
+    const in2 = inputs[2] as MLOperand;
+    const in3 = inputs[3] as MLOperand;
+    const in4 = inputs[4] as MLOperand;
 
     // 218. Handle empty tensor evaluations (e.g., shape [0, 10]) without crashing the NPU driver.
     // 219. Manage NaNs and Infs propagation explicitly according to WebNN standard guidelines.
@@ -198,153 +248,150 @@ export class WebNNCompiler {
     for (const op of inputs) {
       if (op?.shape?.some((d) => d === 0)) {
         // Emulate an empty tensor operation or throw to fallback
-        throw new Error(
-          "Fallback triggered: WebNN native ops currently fail on 0-dimension shapes",
+        throw new BackendError(
+          'Fallback triggered: WebNN native ops currently fail on 0-dimension shapes',
         );
       }
     }
 
     switch (node.opType) {
       // Phase 3: Binary Arithmetic
-      case "Add":
-        result = this.builder.add(inputs[0]!, inputs[1]!);
+      case 'Add':
+        result = this.builder.add(in0, in1);
         break;
-      case "Sub":
-        result = this.builder.sub(inputs[0]!, inputs[1]!);
+      case 'Sub':
+        result = this.builder.sub(in0, in1);
         break;
-      case "Mul":
-        result = this.builder.mul(inputs[0]!, inputs[1]!);
+      case 'Mul':
+        result = this.builder.mul(in0, in1);
         break;
-      case "Div":
-        result = this.builder.div(inputs[0]!, inputs[1]!);
+      case 'Div':
+        result = this.builder.div(in0, in1);
         break;
-      case "Max":
-        result = this.builder.max(inputs[0]!, inputs[1]!);
+      case 'Max':
+        result = this.builder.max(in0, in1);
         break;
-      case "Min":
-        result = this.builder.min(inputs[0]!, inputs[1]!);
+      case 'Min':
+        result = this.builder.min(in0, in1);
         break;
-      case "Pow":
-        result = this.builder.pow(inputs[0]!, inputs[1]!);
+      case 'Pow':
+        result = this.builder.pow(in0, in1);
         break;
 
       // Phase 3: Unary Arithmetic
-      case "Abs":
-        result = this.builder.abs(inputs[0]!);
+      case 'Abs':
+        result = this.builder.abs(in0);
         break;
-      case "Ceil":
-        result = this.builder.ceil(inputs[0]!);
+      case 'Ceil':
+        result = this.builder.ceil(in0);
         break;
-      case "Floor":
-        result = this.builder.floor(inputs[0]!);
+      case 'Floor':
+        result = this.builder.floor(in0);
         break;
-      case "Exp":
-        result = this.builder.exp(inputs[0]!);
+      case 'Exp':
+        result = this.builder.exp(in0);
         break;
-      case "Log":
-        result = this.builder.log(inputs[0]!);
+      case 'Log':
+        result = this.builder.log(in0);
         break;
-      case "Cos":
-        result = this.builder.cos(inputs[0]!);
+      case 'Cos':
+        result = this.builder.cos(in0);
         break;
-      case "Sin":
-        result = this.builder.sin(inputs[0]!);
+      case 'Sin':
+        result = this.builder.sin(in0);
         break;
-      case "Tan":
-        result = this.builder.tan(inputs[0]!);
+      case 'Tan':
+        result = this.builder.tan(in0);
         break;
-      case "Acos":
-        result = this.builder.acos(inputs[0]!);
+      case 'Acos':
+        result = this.builder.acos(in0);
         break;
-      case "Asin":
-        result = this.builder.asin(inputs[0]!);
+      case 'Asin':
+        result = this.builder.asin(in0);
         break;
-      case "Atan":
-        result = this.builder.atan(inputs[0]!);
+      case 'Atan':
+        result = this.builder.atan(in0);
         break;
-      case "Sqrt":
-        result = this.builder.sqrt(inputs[0]!);
+      case 'Sqrt':
+        result = this.builder.sqrt(in0);
         break;
-      case "Erf":
-        result = this.builder.erf(inputs[0]!);
+      case 'Erf':
+        result = this.builder.erf(in0);
         break;
-      case "Sign":
-        result = this.builder.sign(inputs[0]!);
+      case 'Sign':
+        result = this.builder.sign(in0);
         break;
-      case "Neg":
-        result = this.builder.neg(inputs[0]!);
+      case 'Neg':
+        result = this.builder.neg(in0);
         break;
 
       // Phase 4: Activation Functions
-      case "Relu":
-        result = this.builder.relu(inputs[0]!);
+      case 'Relu':
+        result = this.builder.relu(in0);
         break;
-      case "Sigmoid":
-        result = this.builder.sigmoid(inputs[0]!);
+      case 'Sigmoid':
+        result = this.builder.sigmoid(in0);
         break;
-      case "Tanh":
-        result = this.builder.tanh(inputs[0]!);
+      case 'Tanh':
+        result = this.builder.tanh(in0);
         break;
-      case "Softmax": {
-        const axis = this.getIntAttribute(node, "axis", -1);
-        result = this.builder.softmax(
-          inputs[0]!,
-          axis !== -1 ? axis : undefined,
-        );
+      case 'Softmax': {
+        const axis = this.getIntAttribute(node, 'axis', -1);
+        result = this.builder.softmax(in0, axis !== -1 ? axis : undefined);
         break;
       }
-      case "LeakyRelu": {
-        const alpha = this.getFloatAttribute(node, "alpha", 0.01);
+      case 'LeakyRelu': {
+        const alpha = this.getFloatAttribute(node, 'alpha', 0.01);
         const opts: MLLeakyReluOptions = {};
         if (alpha !== undefined) opts.alpha = alpha;
-        result = this.builder.leakyRelu(inputs[0]!, opts);
+        result = this.builder.leakyRelu(in0, opts);
         break;
       }
-      case "Elu": {
-        const alpha = this.getFloatAttribute(node, "alpha", 1.0);
+      case 'Elu': {
+        const alpha = this.getFloatAttribute(node, 'alpha', 1.0);
         const opts: MLEluOptions = {};
         if (alpha !== undefined) opts.alpha = alpha;
-        result = this.builder.elu(inputs[0]!, opts);
+        result = this.builder.elu(in0, opts);
         break;
       }
-      case "HardSigmoid": {
-        const alpha = this.getFloatAttribute(node, "alpha", 0.2);
-        const beta = this.getFloatAttribute(node, "beta", 0.5);
+      case 'HardSigmoid': {
+        const alpha = this.getFloatAttribute(node, 'alpha', 0.2);
+        const beta = this.getFloatAttribute(node, 'beta', 0.5);
         const opts: MLHardSigmoidOptions = {};
         if (alpha !== undefined) opts.alpha = alpha;
         if (beta !== undefined) opts.beta = beta;
-        result = this.builder.hardSigmoid(inputs[0]!, opts);
+        result = this.builder.hardSigmoid(in0, opts);
         break;
       }
-      case "Softplus":
-        result = this.builder.softplus(inputs[0]!);
+      case 'Softplus':
+        result = this.builder.softplus(in0);
         break;
-      case "Softsign":
-        result = this.builder.softsign(inputs[0]!);
+      case 'Softsign':
+        result = this.builder.softsign(in0);
         break;
-      case "Gelu":
-        result = this.builder.gelu(inputs[0]!);
+      case 'Gelu':
+        result = this.builder.gelu(in0);
         break;
-      case "PRelu":
-        result = this.builder.prelu(inputs[0]!, inputs[1]!);
+      case 'PRelu':
+        result = this.builder.prelu(in0, in1);
         break;
-      case "Clip": {
+      case 'Clip': {
         const clampOpts: MLClampOptions = {};
         if (inputs[1] != null) clampOpts.minValue = inputs[1];
         if (inputs[2] != null) clampOpts.maxValue = inputs[2];
-        result = this.builder.clamp(inputs[0]!, clampOpts);
+        result = this.builder.clamp(in0, clampOpts);
         break;
       }
 
       // Phase 5: Matrix Multiplication & Linear Algebra
-      case "MatMul":
-        result = this.builder.matmul(inputs[0]!, inputs[1]!);
+      case 'MatMul':
+        result = this.builder.matmul(in0, in1);
         break;
-      case "Gemm": {
-        const alpha = this.getFloatAttribute(node, "alpha", 1.0);
-        const beta = this.getFloatAttribute(node, "beta", 1.0);
-        const transA = this.getIntAttribute(node, "transA", 0) === 1;
-        const transB = this.getIntAttribute(node, "transB", 0) === 1;
+      case 'Gemm': {
+        const alpha = this.getFloatAttribute(node, 'alpha', 1.0);
+        const beta = this.getFloatAttribute(node, 'beta', 1.0);
+        const transA = this.getIntAttribute(node, 'transA', 0) === 1;
+        const transB = this.getIntAttribute(node, 'transB', 0) === 1;
 
         const gemmOpts: MLGemmOptions = {
           aTranspose: transA,
@@ -354,34 +401,32 @@ export class WebNNCompiler {
         if (beta !== undefined) gemmOpts.beta = beta;
         if (inputs[2]) gemmOpts.c = inputs[2];
 
-        result = this.builder.gemm(inputs[0]!, inputs[1]!, gemmOpts);
+        result = this.builder.gemm(in0, in1, gemmOpts);
         break;
       }
 
       // Phase 6: Tensor Manipulation & Routing
-      case "Reshape": {
+      case 'Reshape': {
         const shapeData = this.extractInt32TensorData(node.inputs[1]);
         if (!shapeData)
-          throw new Error(
-            "Reshape requires a constant shape tensor in WebNN v1",
-          );
-        result = this.builder.reshape(inputs[0]!, shapeData);
+          throw new BackendError('Reshape requires a constant shape tensor in WebNN v1');
+        result = this.builder.reshape(in0, shapeData);
         break;
       }
-      case "Transpose": {
-        const perm = this.getIntsAttribute(node, "perm");
+      case 'Transpose': {
+        const perm = this.getIntsAttribute(node, 'perm');
         const opts: MLTransposeOptions = {};
         if (perm) opts.permutation = perm;
-        result = this.builder.transpose(inputs[0]!, opts);
+        result = this.builder.transpose(in0, opts);
         break;
       }
-      case "Concat": {
-        const axis = this.getIntAttribute(node, "axis", 0)!;
+      case 'Concat': {
+        const axis = this.getIntAttribute(node, 'axis', 0) as number;
         result = this.builder.concat(inputs as MLOperand[], axis);
         break;
       }
-      case "Split": {
-        const axis = this.getIntAttribute(node, "axis", 0)!;
+      case 'Split': {
+        const axis = this.getIntAttribute(node, 'axis', 0) as number;
         let splitsVal: number | number[] = 1;
         const splitData = this.extractInt32TensorData(node.inputs[1]);
         if (splitData) {
@@ -389,70 +434,62 @@ export class WebNNCompiler {
         } else {
           splitsVal = node.outputs.length;
         }
-        result = this.builder.split(inputs[0]!, splitsVal, { axis });
+        result = this.builder.split(in0, splitsVal, { axis });
         break;
       }
-      case "Expand": {
+      case 'Expand': {
         const shapeData = this.extractInt32TensorData(node.inputs[1]);
         if (!shapeData)
-          throw new Error(
-            "Expand requires a constant shape tensor in WebNN v1",
-          );
-        result = this.builder.expand(inputs[0]!, shapeData);
+          throw new BackendError('Expand requires a constant shape tensor in WebNN v1');
+        result = this.builder.expand(in0, shapeData);
         break;
       }
-      case "Gather": {
-        const axis = this.getIntAttribute(node, "axis", 0);
+      case 'Gather': {
+        const axis = this.getIntAttribute(node, 'axis', 0);
         const opts: MLGatherOptions = {};
         if (axis !== undefined) opts.axis = axis;
-        result = this.builder.gather(inputs[0]!, inputs[1]!, opts);
+        result = this.builder.gather(in0, in1, opts);
         break;
       }
-      case "Cast": {
-        const to = this.getIntAttribute(node, "to");
+      case 'Cast': {
+        const to = this.getIntAttribute(node, 'to');
         const typeMap: Record<number, MLOperandDataType> = {
-          1: "float32",
-          2: "uint8",
-          3: "int8",
-          6: "int32",
-          7: "int64",
-          10: "float16",
-          12: "uint32",
-          13: "uint64",
+          1: 'float32',
+          2: 'uint8',
+          3: 'int8',
+          6: 'int32',
+          7: 'int64',
+          10: 'float16',
+          12: 'uint32',
+          13: 'uint64',
         };
-        const destType = typeMap[to || 1] || "float32";
-        result = this.builder.cast(inputs[0]!, destType);
+        const destType = typeMap[to || 1] || 'float32';
+        result = this.builder.cast(in0, destType);
         break;
       }
-      case "Slice": {
+      case 'Slice': {
         const starts = this.extractInt32TensorData(node.inputs[1]);
         const ends = this.extractInt32TensorData(node.inputs[2]);
         if (!starts || !ends)
-          throw new Error(
-            "Slice requires constant starts and ends in WebNN v1",
-          );
+          throw new BackendError('Slice requires constant starts and ends in WebNN v1');
 
         const axes = this.extractInt32TensorData(node.inputs[3]) || undefined;
         const steps = this.extractInt32TensorData(node.inputs[4]) || undefined;
 
-        const sizes = starts.map((s, i) => Math.max(0, ends[i]! - s));
+        const sizes = starts.map((s, i) => Math.max(0, (ends[i] as number) - s));
         const sliceOpts: MLSliceOptions = {};
         if (axes) sliceOpts.axes = axes;
         if (steps) sliceOpts.strides = steps;
 
-        result = this.builder.slice(inputs[0]!, starts, sizes, sliceOpts);
+        result = this.builder.slice(in0, starts, sizes, sliceOpts);
         break;
       }
-      case "Pad": {
+      case 'Pad': {
         const pads = this.extractInt32TensorData(node.inputs[1]);
-        if (!pads) throw new Error("Pad requires constant pads tensor");
-        const padModeStr = this.getStringAttribute(node, "mode", "constant");
-        const padMode: MLPadOptions["mode"] =
-          padModeStr === "constant"
-            ? "constant"
-            : padModeStr === "reflect"
-              ? "reflection"
-              : "edge";
+        if (!pads) throw new BackendError('Pad requires constant pads tensor');
+        const padModeStr = this.getStringAttribute(node, 'mode', 'constant');
+        const padMode: MLPadOptions['mode'] =
+          padModeStr === 'constant' ? 'constant' : padModeStr === 'reflect' ? 'reflection' : 'edge';
 
         const valueData = this.extractFloat32TensorData(node.inputs[2]);
         const padValue = valueData ? valueData[0] : undefined;
@@ -460,54 +497,54 @@ export class WebNNCompiler {
         const dims = pads.length / 2;
         const webnnPads: number[] = [];
         for (let i = 0; i < dims; i++) {
-          webnnPads.push(pads[i]!); // begin
-          webnnPads.push(pads[i + dims]!); // end
+          webnnPads.push(pads[i] as number); // begin
+          webnnPads.push(pads[i + dims] as number); // end
         }
 
         const opts: MLPadOptions = { mode: padMode };
         if (padValue !== undefined) opts.value = padValue;
-        result = this.builder.pad(inputs[0]!, webnnPads, opts);
+        result = this.builder.pad(in0, webnnPads, opts);
         break;
       }
-      case "Squeeze": {
+      case 'Squeeze': {
         const _axes = this.extractInt32TensorData(node.inputs[1]);
-        throw new Error(
-          "Squeeze implemented via reshape mapping, requires static shape resolution first.",
+        throw new BackendError(
+          'Squeeze implemented via reshape mapping, requires static shape resolution first.',
         );
       }
-      case "Unsqueeze": {
-        throw new Error(
-          "Unsqueeze implemented via reshape mapping, requires static shape resolution first.",
+      case 'Unsqueeze': {
+        throw new BackendError(
+          'Unsqueeze implemented via reshape mapping, requires static shape resolution first.',
         );
       }
-      case "Tile": {
-        throw new Error(
-          "Tile requires expanding/concatenating which requires static shape info.",
+      case 'Tile': {
+        throw new BackendError(
+          'Tile requires expanding/concatenating which requires static shape info.',
         );
       }
-      case "Shape": {
-        throw new Error(
-          "Shape should be evaluated on CPU statically, not within WebNN compute graph.",
+      case 'Shape': {
+        throw new BackendError(
+          'Shape should be evaluated on CPU statically, not within WebNN compute graph.',
         );
       }
 
       // Phase 7: Convolution & Pooling
-      case "Conv": {
-        const strides = this.getIntsAttribute(node, "strides");
-        const dilations = this.getIntsAttribute(node, "dilations");
-        const groups = this.getIntAttribute(node, "group");
-        const pads = this.getIntsAttribute(node, "pads");
-        const autoPad = this.getStringAttribute(node, "auto_pad", "NOTSET");
+      case 'Conv': {
+        const strides = this.getIntsAttribute(node, 'strides');
+        const dilations = this.getIntsAttribute(node, 'dilations');
+        const groups = this.getIntAttribute(node, 'group');
+        const pads = this.getIntsAttribute(node, 'pads');
+        const autoPad = this.getStringAttribute(node, 'auto_pad', 'NOTSET');
 
         const opts: MLConv2dOptions = {};
         if (strides !== undefined) opts.strides = strides;
         if (dilations !== undefined) opts.dilations = dilations;
         if (groups !== undefined) opts.groups = groups;
 
-        if (autoPad === "SAME_UPPER") opts.autoPad = "same-upper";
-        else if (autoPad === "SAME_LOWER") opts.autoPad = "same-lower";
-        else if (autoPad === "VALID") {
-          opts.autoPad = "explicit";
+        if (autoPad === 'SAME_UPPER') opts.autoPad = 'same-upper';
+        else if (autoPad === 'SAME_LOWER') opts.autoPad = 'same-lower';
+        else if (autoPad === 'VALID') {
+          opts.autoPad = 'explicit';
           opts.padding = [0, 0, 0, 0];
         } else if (pads !== undefined) {
           opts.padding = pads;
@@ -515,15 +552,15 @@ export class WebNNCompiler {
 
         if (inputs[2]) opts.bias = inputs[2];
 
-        result = this.builder.conv2d(inputs[0]!, inputs[1]!, opts);
+        result = this.builder.conv2d(in0, in1, opts);
         break;
       }
-      case "ConvTranspose": {
-        const strides = this.getIntsAttribute(node, "strides");
-        const dilations = this.getIntsAttribute(node, "dilations");
-        const groups = this.getIntAttribute(node, "group");
-        const pads = this.getIntsAttribute(node, "pads");
-        const outputPadding = this.getIntsAttribute(node, "output_padding");
+      case 'ConvTranspose': {
+        const strides = this.getIntsAttribute(node, 'strides');
+        const dilations = this.getIntsAttribute(node, 'dilations');
+        const groups = this.getIntAttribute(node, 'group');
+        const pads = this.getIntsAttribute(node, 'pads');
+        const outputPadding = this.getIntsAttribute(node, 'output_padding');
 
         const opts: MLConvTranspose2dOptions = {};
         if (strides !== undefined) opts.strides = strides;
@@ -533,149 +570,128 @@ export class WebNNCompiler {
         if (outputPadding !== undefined) opts.outputPadding = outputPadding;
         if (inputs[2]) opts.bias = inputs[2];
 
-        result = this.builder.convTranspose2d(inputs[0]!, inputs[1]!, opts);
+        result = this.builder.convTranspose2d(in0, in1, opts);
         break;
       }
-      case "MaxPool":
-      case "AveragePool": {
-        const kernelShape = this.getIntsAttribute(node, "kernel_shape");
-        const strides = this.getIntsAttribute(node, "strides");
-        const dilations = this.getIntsAttribute(node, "dilations");
-        const pads = this.getIntsAttribute(node, "pads");
-        const autoPad = this.getStringAttribute(node, "auto_pad", "NOTSET");
-        const ceilMode = this.getIntAttribute(node, "ceil_mode", 0);
+      case 'MaxPool':
+      case 'AveragePool': {
+        const kernelShape = this.getIntsAttribute(node, 'kernel_shape');
+        const strides = this.getIntsAttribute(node, 'strides');
+        const dilations = this.getIntsAttribute(node, 'dilations');
+        const pads = this.getIntsAttribute(node, 'pads');
+        const autoPad = this.getStringAttribute(node, 'auto_pad', 'NOTSET');
+        const ceilMode = this.getIntAttribute(node, 'ceil_mode', 0);
 
         const opts: MLPool2dOptions = {};
         if (kernelShape !== undefined) opts.windowDimensions = kernelShape;
         if (strides !== undefined) opts.strides = strides;
         if (dilations !== undefined) opts.dilations = dilations;
         if (pads !== undefined) opts.padding = pads;
-        if (ceilMode === 1) opts.roundingType = "ceil";
+        if (ceilMode === 1) opts.roundingType = 'ceil';
 
-        if (autoPad === "SAME_UPPER") opts.autoPad = "same-upper";
-        else if (autoPad === "SAME_LOWER") opts.autoPad = "same-lower";
+        if (autoPad === 'SAME_UPPER') opts.autoPad = 'same-upper';
+        else if (autoPad === 'SAME_LOWER') opts.autoPad = 'same-lower';
 
-        if (node.opType === "MaxPool")
-          result = this.builder.maxPool2d(inputs[0]!, opts);
-        else result = this.builder.averagePool2d(inputs[0]!, opts);
+        if (node.opType === 'MaxPool') result = this.builder.maxPool2d(in0, opts);
+        else result = this.builder.averagePool2d(in0, opts);
         break;
       }
-      case "GlobalAveragePool":
-      case "GlobalMaxPool": {
+      case 'GlobalAveragePool':
+      case 'GlobalMaxPool': {
         const opts: MLPool2dOptions = {};
-        if (node.opType === "GlobalMaxPool")
-          result = this.builder.maxPool2d(inputs[0]!, opts);
-        else result = this.builder.averagePool2d(inputs[0]!, opts);
+        if (node.opType === 'GlobalMaxPool') result = this.builder.maxPool2d(in0, opts);
+        else result = this.builder.averagePool2d(in0, opts);
         break;
       }
 
       // Phase 8: Reduction Operations
-      case "ReduceMean":
-      case "ReduceSum":
-      case "ReduceMax":
-      case "ReduceMin":
-      case "ReduceProd":
-      case "ReduceL1":
-      case "ReduceL2":
-      case "ReduceLogSumExp": {
-        let axes = this.getIntsAttribute(node, "axes");
+      case 'ReduceMean':
+      case 'ReduceSum':
+      case 'ReduceMax':
+      case 'ReduceMin':
+      case 'ReduceProd':
+      case 'ReduceL1':
+      case 'ReduceL2':
+      case 'ReduceLogSumExp': {
+        let axes = this.getIntsAttribute(node, 'axes');
         if (!axes && inputs[1]) {
           const axesData = this.extractInt32TensorData(node.inputs[1]);
           if (axesData) axes = axesData;
         }
-        const keepdims = this.getIntAttribute(node, "keepdims", 1) === 1;
+        const keepdims = this.getIntAttribute(node, 'keepdims', 1) === 1;
         const opts: MLReduceOptions = { keepDimensions: keepdims };
         if (axes !== undefined) opts.axes = axes;
 
-        if (node.opType === "ReduceMean")
-          result = this.builder.reduceMean(inputs[0]!, opts);
-        else if (node.opType === "ReduceSum")
-          result = this.builder.reduceSum(inputs[0]!, opts);
-        else if (node.opType === "ReduceMax")
-          result = this.builder.reduceMax(inputs[0]!, opts);
-        else if (node.opType === "ReduceMin")
-          result = this.builder.reduceMin(inputs[0]!, opts);
-        else if (node.opType === "ReduceProd")
-          result = this.builder.reduceProduct(inputs[0]!, opts);
-        else if (node.opType === "ReduceL1")
-          result = this.builder.reduceL1(inputs[0]!, opts);
-        else if (node.opType === "ReduceL2")
-          result = this.builder.reduceL2(inputs[0]!, opts);
-        else if (node.opType === "ReduceLogSumExp")
-          result = this.builder.reduceLogSumExp(inputs[0]!, opts);
+        if (node.opType === 'ReduceMean') result = this.builder.reduceMean(in0, opts);
+        else if (node.opType === 'ReduceSum') result = this.builder.reduceSum(in0, opts);
+        else if (node.opType === 'ReduceMax') result = this.builder.reduceMax(in0, opts);
+        else if (node.opType === 'ReduceMin') result = this.builder.reduceMin(in0, opts);
+        else if (node.opType === 'ReduceProd') result = this.builder.reduceProduct(in0, opts);
+        else if (node.opType === 'ReduceL1') result = this.builder.reduceL1(in0, opts);
+        else if (node.opType === 'ReduceL2') result = this.builder.reduceL2(in0, opts);
+        else if (node.opType === 'ReduceLogSumExp')
+          result = this.builder.reduceLogSumExp(in0, opts);
 
         break;
       }
-      case "ArgMax":
-      case "ArgMin": {
-        const axis = this.getIntAttribute(node, "axis", 0);
-        const keepdims = this.getIntAttribute(node, "keepdims", 1) === 1;
+      case 'ArgMax':
+      case 'ArgMin': {
+        const axis = this.getIntAttribute(node, 'axis', 0);
+        const keepdims = this.getIntAttribute(node, 'keepdims', 1) === 1;
         const opts: MLReduceOptions = { keepDimensions: keepdims };
         if (axis !== undefined) opts.axes = [axis];
-        if (node.opType === "ArgMax")
-          result = this.builder.argMax(inputs[0]!, opts);
-        else result = this.builder.argMin(inputs[0]!, opts);
+        if (node.opType === 'ArgMax') result = this.builder.argMax(in0, opts);
+        else result = this.builder.argMin(in0, opts);
         break;
       }
 
       // Phase 9: Normalization Operations
-      case "BatchNormalization": {
-        const epsilon = this.getFloatAttribute(node, "epsilon", 1e-5);
+      case 'BatchNormalization': {
+        const epsilon = this.getFloatAttribute(node, 'epsilon', 1e-5);
         const opts: MLBatchNormalizationOptions = {};
         if (epsilon !== undefined) opts.epsilon = epsilon;
-        if (inputs[1]) opts.scale = inputs[1]!;
-        if (inputs[2]) opts.bias = inputs[2]!;
-        result = this.builder.batchNormalization(
-          inputs[0]!,
-          inputs[3]!,
-          inputs[4]!,
-          opts,
-        );
+        if (inputs[1]) opts.scale = in1;
+        if (inputs[2]) opts.bias = in2;
+        result = this.builder.batchNormalization(in0, in3, in4, opts);
         break;
       }
-      case "InstanceNormalization": {
-        const epsilon = this.getFloatAttribute(node, "epsilon", 1e-5);
+      case 'InstanceNormalization': {
+        const epsilon = this.getFloatAttribute(node, 'epsilon', 1e-5);
         const opts: MLInstanceNormalizationOptions = {};
         if (epsilon !== undefined) opts.epsilon = epsilon;
-        if (inputs[1]) opts.scale = inputs[1]!;
-        if (inputs[2]) opts.bias = inputs[2]!;
-        result = this.builder.instanceNormalization(inputs[0]!, opts);
+        if (inputs[1]) opts.scale = in1;
+        if (inputs[2]) opts.bias = in2;
+        result = this.builder.instanceNormalization(in0, opts);
         break;
       }
-      case "LayerNormalization": {
-        const epsilon = this.getFloatAttribute(node, "epsilon", 1e-5);
-        const axis = this.getIntAttribute(node, "axis", -1);
+      case 'LayerNormalization': {
+        const epsilon = this.getFloatAttribute(node, 'epsilon', 1e-5);
+        const axis = this.getIntAttribute(node, 'axis', -1);
         const opts: MLLayerNormalizationOptions = {};
         if (epsilon !== undefined) opts.epsilon = epsilon;
         if (axis !== undefined && axis !== -1) opts.axes = [axis];
-        if (inputs[1]) opts.scale = inputs[1]!;
-        if (inputs[2]) opts.bias = inputs[2]!;
+        if (inputs[1]) opts.scale = in1;
+        if (inputs[2]) opts.bias = in2;
 
         // 194. Fallback: Decompose LayerNorm into ReduceMean, Sub, Pow, Add, Div if builder.layerNormalization fails or lacks spec compliance.
         try {
-          result = this.builder.layerNormalization(inputs[0]!, opts);
-        } catch (_e) {
+          result = this.builder.layerNormalization(in0, opts);
+        } catch {
           // Decompose manually for unsupported platforms
           const reduceOpts: MLReduceOptions = { keepDimensions: true };
           if (opts.axes) reduceOpts.axes = opts.axes;
-          const mean = this.builder.reduceMean(inputs[0]!, reduceOpts);
-          const diff = this.builder.sub(inputs[0]!, mean);
+          const mean = this.builder.reduceMean(in0, reduceOpts);
+          const diff = this.builder.sub(in0, mean);
 
           // create scalar for pow
           const twoBuf = new Float32Array([2.0]);
-          const two = this.builder.constant(
-            { dataType: "float32", dimensions: [1] },
-            twoBuf,
-          );
+          const two = this.builder.constant({ dataType: 'float32', dimensions: [1] }, twoBuf);
           const sq = this.builder.pow(diff, two);
 
           const variance = this.builder.reduceMean(sq, reduceOpts);
 
-          const epsBuf = new Float32Array([epsilon!]);
-          const epsConst = this.builder.constant(
-            { dataType: "float32", dimensions: [1] },
-            epsBuf,
-          );
+          const epsBuf = new Float32Array([epsilon as number]);
+          const epsConst = this.builder.constant({ dataType: 'float32', dimensions: [1] }, epsBuf);
           const varianceEps = this.builder.add(variance, epsConst);
           const std = this.builder.sqrt(varianceEps);
 
@@ -695,128 +711,111 @@ export class WebNNCompiler {
 
       // 192. Translate ONNX Attention or FlashAttention into standard WebNN MatMul+Softmax
       // 193. Check for emerging W3C WebNN Draft ops
-      case "Attention":
-      case "FlashAttention": {
+      case 'Attention':
+      case 'FlashAttention': {
         if (this.builder.scaledDotProductAttention) {
-          result = this.builder.scaledDotProductAttention(
-            inputs[0]!,
-            inputs[1]!,
-            inputs[2]!,
-          );
+          result = this.builder.scaledDotProductAttention(in0, in1, in2);
         } else {
           // Emulate manual decomposition
-          const qk = this.builder.matmul(inputs[0]!, inputs[1]!);
+          const qk = this.builder.matmul(in0, in1);
           // Scale by sqrt d_k omitted in this mock
           const softmax = this.builder.softmax(qk);
-          result = this.builder.matmul(softmax, inputs[2]!);
+          result = this.builder.matmul(softmax, in2);
         }
         break;
       }
 
       // Phase 14: Quantization
       // 201. Support ONNX QuantizeLinear
-      case "QuantizeLinear": {
+      case 'QuantizeLinear': {
         if (this.builder.quantizeLinear) {
           // zero_point is optional in ONNX (defaults to 0), but WebNN usually requires it. We assume inputs[2] exists or default to 0.
           let zp = inputs[2];
           if (!zp) {
             const zeroBuf = new Uint8Array([0]);
-            zp = this.builder.constant(
-              { dataType: "uint8", dimensions: [1] },
-              zeroBuf,
-            );
+            zp = this.builder.constant({ dataType: 'uint8', dimensions: [1] }, zeroBuf);
           }
-          result = this.builder.quantizeLinear(inputs[0]!, inputs[1]!, zp);
+          result = this.builder.quantizeLinear(in0, in1, zp);
         } else {
-          throw new Error(
-            "QuantizeLinear is not supported in this WebNN implementation.",
-          );
+          throw new BackendError('QuantizeLinear is not supported in this WebNN implementation.');
         }
         break;
       }
       // 202. Support ONNX DequantizeLinear
-      case "DequantizeLinear": {
+      case 'DequantizeLinear': {
         if (this.builder.dequantizeLinear) {
           let zp = inputs[2];
           if (!zp) {
             const zeroBuf = new Uint8Array([0]);
-            zp = this.builder.constant(
-              { dataType: "uint8", dimensions: [1] },
-              zeroBuf,
-            );
+            zp = this.builder.constant({ dataType: 'uint8', dimensions: [1] }, zeroBuf);
           }
           // 205. Support zero-point shifting explicitly in WebNN
-          result = this.builder.dequantizeLinear(inputs[0]!, inputs[1]!, zp);
+          result = this.builder.dequantizeLinear(in0, in1, zp);
         } else {
           // Emulate DequantizeLinear: (input - zero_point) * scale
           // Usually requires cast to float first
           let zp = inputs[2];
           if (!zp) {
             const zeroBuf = new Uint8Array([0]);
-            zp = this.builder.constant(
-              { dataType: "uint8", dimensions: [1] },
-              zeroBuf,
-            );
+            zp = this.builder.constant({ dataType: 'uint8', dimensions: [1] }, zeroBuf);
           }
-          const castedInput = this.builder.cast(inputs[0]!, "float32");
-          const castedZp = this.builder.cast(zp, "float32");
+          const castedInput = this.builder.cast(in0, 'float32');
+          const castedZp = this.builder.cast(zp, 'float32');
           const diff = this.builder.sub(castedInput, castedZp);
-          result = this.builder.mul(diff, inputs[1]!);
+          result = this.builder.mul(diff, in1);
         }
         break;
       }
       // 203. Map DynamicQuantizeLinear
-      case "DynamicQuantizeLinear": {
-        throw new Error(
-          "DynamicQuantizeLinear requires fallback emulation via min/max",
-        );
+      case 'DynamicQuantizeLinear': {
+        throw new BackendError('DynamicQuantizeLinear requires fallback emulation via min/max');
       }
 
       // Phase 10: Logical & Relational Operations
-      case "Equal":
-        result = this.builder.equal(inputs[0]!, inputs[1]!);
+      case 'Equal':
+        result = this.builder.equal(in0, in1);
         break;
-      case "Greater":
-        result = this.builder.greater(inputs[0]!, inputs[1]!);
+      case 'Greater':
+        result = this.builder.greater(in0, in1);
         break;
-      case "GreaterOrEqual":
-        result = this.builder.greaterOrEqual(inputs[0]!, inputs[1]!);
+      case 'GreaterOrEqual':
+        result = this.builder.greaterOrEqual(in0, in1);
         break;
-      case "Less":
-        result = this.builder.lesser(inputs[0]!, inputs[1]!);
+      case 'Less':
+        result = this.builder.lesser(in0, in1);
         break;
-      case "LessOrEqual":
-        result = this.builder.lesserOrEqual(inputs[0]!, inputs[1]!);
+      case 'LessOrEqual':
+        result = this.builder.lesserOrEqual(in0, in1);
         break;
-      case "Not":
-        result = this.builder.logicalNot(inputs[0]!);
+      case 'Not':
+        result = this.builder.logicalNot(in0);
         break;
-      case "And":
-        result = this.builder.logicalAnd(inputs[0]!, inputs[1]!);
+      case 'And':
+        result = this.builder.logicalAnd(in0, in1);
         break;
-      case "Or":
-        result = this.builder.logicalOr(inputs[0]!, inputs[1]!);
+      case 'Or':
+        result = this.builder.logicalOr(in0, in1);
         break;
-      case "Xor":
-        result = this.builder.logicalXor(inputs[0]!, inputs[1]!);
+      case 'Xor':
+        result = this.builder.logicalXor(in0, in1);
         break;
-      case "Where":
-        result = this.builder.where(inputs[0]!, inputs[1]!, inputs[2]!);
+      case 'Where':
+        result = this.builder.where(in0, in1, in2);
         break;
 
       default:
-        throw new Error(`Unsupported WebNN node type: ${node.opType}`);
+        throw new BackendError(`Unsupported WebNN node type: ${node.opType}`);
     }
 
     if (Array.isArray(result)) {
       node.outputs.forEach((outName, i) => {
-        if (outName !== "") {
-          this.operands.set(outName, result[i]!);
+        if (outName !== '') {
+          this.operands.set(outName, result[i] as MLOperand);
         }
       });
     } else {
-      if (node.outputs[0] !== "") {
-        this.operands.set(node.outputs[0]!, result);
+      if (node.outputs[0] !== '') {
+        this.operands.set(node.outputs[0] as string, result);
       }
     }
   }

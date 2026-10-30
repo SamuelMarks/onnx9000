@@ -5,7 +5,6 @@ to their corresponding TFLite representations.
 """
 
 import logging
-from typing import Optional
 
 from ..flatbuffer.schema import TensorType
 

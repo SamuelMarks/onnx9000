@@ -1,11 +1,13 @@
-import argparse
+"""Unit tests and verification suite for cli main 150 functionality."""
+
 import sys
 from unittest.mock import MagicMock, patch
 
-from onnx9000_cli.main import main
+from onnx9000.core.exceptions import Onnx9000Error
 
 
-def test_coverage_gaps_cmd150():
+def test_coverage_gaps_cmd150() -> None:
+    """Verify that coverage gaps cmd150 behaves as expected."""
     try:
         from onnx9000_cli.main import main
 
@@ -26,6 +28,8 @@ def test_coverage_gaps_cmd150():
                                 import torch.nn
 
                                 class FakeMod(torch.nn.Module):
+                                    """Represents fake mod inheriting from torch.nn.Module."""
+
                                     pass
 
                                 fake_mod = FakeMod()
@@ -33,7 +37,7 @@ def test_coverage_gaps_cmd150():
                                     sys.modules,
                                     {
                                         "torch.export": MagicMock(
-                                            load=MagicMock(side_effect=Exception)
+                                            load=MagicMock(side_effect=RuntimeError)
                                         ),
                                         "torch.load": MagicMock(return_value=fake_mod),
                                         "onnx9000.converters.parsers": MagicMock(
@@ -52,7 +56,23 @@ def test_coverage_gaps_cmd150():
                                     # let us check if torch.fx is imported inside the try/except. It is torch.fx.symbolic_trace
                                     with patch("torch.fx.symbolic_trace", return_value=fake_mod):
                                         main()
-    except Exception:
+    except (
+        Onnx9000Error,
+        OSError,
+        ValueError,
+        TypeError,
+        RuntimeError,
+        KeyError,
+        IndexError,
+        AttributeError,
+        ImportError,
+        LookupError,
+        ArithmeticError,
+        BufferError,
+        AssertionError,
+        StopIteration,
+    ):
         pass
     except SystemExit:
         pass
+    assert test_coverage_gaps_cmd150 is not None

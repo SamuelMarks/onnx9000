@@ -1,3 +1,5 @@
+"""Unit tests and verification suite for quantization parsers functionality."""
+
 from onnx9000.converters.frontend.quantization import (
     AQTParser,
     AWQParser,
@@ -7,7 +9,8 @@ from onnx9000.converters.frontend.quantization import (
 from onnx9000.core.ir import Graph
 
 
-def test_gguf_mapper():
+def test_gguf_mapper() -> None:
+    """Verify that gguf mapper behaves as expected."""
     g = Graph("test")
     mapper = GGUFQuantizationMapper()
     mapper.map_block(g, "Q4_K_M", "w1", 32)
@@ -17,7 +20,8 @@ def test_gguf_mapper():
     assert g.nodes[0].attributes["gguf_type"].value == "Q4_K_M"
 
 
-def test_awq_parser():
+def test_awq_parser() -> None:
+    """Verify that awq parser behaves as expected."""
     g = Graph("test")
     parser = AWQParser()
     parser.parse_config(g, {"group_size": 64}, "w1")
@@ -26,7 +30,8 @@ def test_awq_parser():
     assert g.nodes[0].attributes["block_size"].value == 64
 
 
-def test_gptq_parser():
+def test_gptq_parser() -> None:
+    """Verify that gptq parser behaves as expected."""
     g = Graph("test")
     parser = GPTQParser()
     parser.parse_state_dict(g, {"w1.g_idx": [1, 0]}, "w1")
@@ -34,7 +39,8 @@ def test_gptq_parser():
     assert g.nodes[0].op_type == "Gather"
 
 
-def test_aqt_parser():
+def test_aqt_parser() -> None:
+    """Verify that aqt parser behaves as expected."""
     g = Graph("test")
     parser = AQTParser()
     parser.parse_aqt(g, "w1", 4)

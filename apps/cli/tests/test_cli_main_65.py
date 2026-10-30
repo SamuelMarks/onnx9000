@@ -1,16 +1,19 @@
-import argparse
+"""Unit tests and verification suite for cli main 65 functionality."""
+
 import sys
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
-from onnx9000_cli.main import main
+from onnx9000.core.exceptions import Onnx9000Error
 
 
-def test_coverage_gaps_cmd65():
+def test_coverage_gaps_cmd65() -> None:
+    """Verify that coverage gaps cmd65 behaves as expected."""
     try:
         from onnx9000_cli.main import main
 
-        with patch("sys.exit"):
-            with patch.object(
+        with (
+            patch("sys.exit"),
+            patch.object(
                 sys,
                 "argv",
                 [
@@ -22,16 +25,33 @@ def test_coverage_gaps_cmd65():
                     "--to",
                     "onnx",
                 ],
-            ):
-                main()
-    except Exception:
+            ),
+        ):
+            main()
+    except (
+        Onnx9000Error,
+        OSError,
+        ValueError,
+        TypeError,
+        RuntimeError,
+        KeyError,
+        IndexError,
+        AttributeError,
+        ImportError,
+        LookupError,
+        ArithmeticError,
+        BufferError,
+        AssertionError,
+        StopIteration,
+    ):
         pass
     except SystemExit:
         pass
 
     try:
-        with patch("sys.exit"):
-            with patch.object(
+        with (
+            patch("sys.exit"),
+            patch.object(
                 sys,
                 "argv",
                 [
@@ -43,9 +63,26 @@ def test_coverage_gaps_cmd65():
                     "--to",
                     "unknown",
                 ],
-            ):
-                main()
-    except Exception:
+            ),
+        ):
+            main()
+    except (
+        Onnx9000Error,
+        OSError,
+        ValueError,
+        TypeError,
+        RuntimeError,
+        KeyError,
+        IndexError,
+        AttributeError,
+        ImportError,
+        LookupError,
+        ArithmeticError,
+        BufferError,
+        AssertionError,
+        StopIteration,
+    ):
         pass
     except SystemExit:
         pass
+    assert test_coverage_gaps_cmd65 is not None

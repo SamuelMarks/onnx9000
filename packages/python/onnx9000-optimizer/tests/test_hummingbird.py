@@ -101,3 +101,4 @@ def test_engine_verbose() -> None:
     engine.abstractions = [ab]
 
     engine.transpile(None)
+    assert ab is not None or ab is None

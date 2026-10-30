@@ -7,36 +7,36 @@ import pytest
 from onnx9000.backends.codegen.compiler import compile_cpp, compile_static_lib
 
 
-def test_compile_cpp_os_branches():
+def test_compile_cpp_os_branches() -> None:
     """Test compile cpp os branches."""
     with (
         patch("sys.platform", "win32"),
         patch("sysconfig.get_path", return_value="/mock/include"),
+        patch("subprocess.run"),
     ):
-        with patch("subprocess.run"):
-            # use_pybind=False, win32 -> .dll
-            so_path = compile_cpp("int main(){}", use_pybind=False)
-            assert so_path.endswith(".dll")
+        # use_pybind=False, win32 -> .dll
+        so_path = compile_cpp("int main(){}", use_pybind=False)
+        assert so_path.endswith(".dll")
 
-            # use_pybind=True, win32 -> .pyd
-            so_path_py = compile_cpp("int main(){}", use_pybind=True)
-            assert so_path_py.endswith(".pyd")
+        # use_pybind=True, win32 -> .pyd
+        so_path_py = compile_cpp("int main(){}", use_pybind=True)
+        assert so_path_py.endswith(".pyd")
 
     with (
         patch("sys.platform", "linux"),
         patch("sysconfig.get_path", return_value="/mock/include"),
+        patch("subprocess.run"),
     ):
-        with patch("subprocess.run"):
-            # use_pybind=False, linux -> .so
-            so_path = compile_cpp("int main(){}", use_pybind=False)
-            assert so_path.endswith(".so")
+        # use_pybind=False, linux -> .so
+        so_path = compile_cpp("int main(){}", use_pybind=False)
+        assert so_path.endswith(".so")
 
-            # use_pybind=True, linux -> .so
-            so_path_py = compile_cpp("int main(){}", use_pybind=True)
-            assert so_path_py.endswith(".so")
+        # use_pybind=True, linux -> .so
+        so_path_py = compile_cpp("int main(){}", use_pybind=True)
+        assert so_path_py.endswith(".so")
 
 
-def test_compile_static_lib():
+def test_compile_static_lib() -> None:
     """Test compile static lib."""
     with patch("subprocess.run"):
         # We need an ar compiler mock
@@ -49,17 +49,21 @@ def test_compile_static_lib():
             assert obj_path.endswith(".a")
 
     # Test compiler failure
-    with patch(
-        "subprocess.run",
-        side_effect=subprocess.CalledProcessError(1, "cmd", stderr="err"),
+    with (
+        patch(
+            "subprocess.run",
+            side_effect=subprocess.CalledProcessError(1, "cmd", stderr="err"),
+        ),
+        pytest.raises(RuntimeError, match="Object compilation failed"),
     ):
-        with pytest.raises(RuntimeError, match="Object compilation failed"):
-            compile_static_lib("invalid")
+        compile_static_lib("invalid")
 
     # Test archiving failure
-    with patch(
-        "subprocess.run",
-        side_effect=[None, subprocess.CalledProcessError(1, "cmd", stderr="err")],
+    with (
+        patch(
+            "subprocess.run",
+            side_effect=[None, subprocess.CalledProcessError(1, "cmd", stderr="err")],
+        ),
+        pytest.raises(RuntimeError, match="Archiving failed"),
     ):
-        with pytest.raises(RuntimeError, match="Archiving failed"):
-            compile_static_lib("invalid")
+        compile_static_lib("invalid")

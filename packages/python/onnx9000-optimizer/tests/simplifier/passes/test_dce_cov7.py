@@ -5,7 +5,7 @@ from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Attribute, Graph, Node, Tensor
 
 
-def test_string_fallback():
+def test_string_fallback() -> None:
     """Test string fallback."""
     from onnx9000.optimizer.simplifier.passes.dce import ControlFlowFoldingPass
 
@@ -16,7 +16,7 @@ def test_string_fallback():
     assert g.outputs[0] == "new"
 
 
-def test_dce_rewire_string_literal_exact():
+def test_dce_rewire_string_literal_exact() -> None:
     """Test dce rewire string literal exact."""
     g = Graph("TestRewireStr")
     g.outputs = ["old_out"]  # Use string instead of ValueInfo object
@@ -29,7 +29,7 @@ def test_dce_rewire_string_literal_exact():
     assert g.outputs[0] == "new_out"
 
 
-def test_cf_folding_with_subgraph_changed_trigger_cf():
+def test_cf_folding_with_subgraph_changed_trigger_cf() -> None:
     """Test that subgraph changes correctly trigger parent graph constant folding."""
     # Force sub_changed = True, to test local_changed = True and changed = True for ControlFlowFoldingPass
     g = Graph("TestSubTrigCF")
@@ -54,7 +54,9 @@ def test_cf_folding_with_subgraph_changed_trigger_cf():
     run_count = 0
     orig_run = cf.run
 
-    def mock_run(graph):
+    def mock_run(
+        graph: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Mocked run method to simulate subgraph changes."""
         nonlocal run_count
         if graph.name == "Sub" and run_count == 0:
@@ -68,7 +70,7 @@ def test_cf_folding_with_subgraph_changed_trigger_cf():
     assert changed
 
 
-def test_cf_rewire_inputs_name():
+def test_cf_rewire_inputs_name() -> None:
     """Provides functional implementation."""
     # Hit line 893: node.inputs[i] = new_name
     """Test cf rewire inputs name."""

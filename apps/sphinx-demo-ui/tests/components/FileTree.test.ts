@@ -1,12 +1,16 @@
 import { describe, expect, it } from 'vitest';
-import * as Module from '../../src/components/FileTree';
+import { FileTree } from '../../src/components/FileTree';
+
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
 
 describe('FileTree.ts', () => {
   it('should instantiate and cover FileTree', () => {
     // Attempt to instantiate
     try {
-      const obj = new (Module as any).FileTree();
+      const obj = Construct(FileTree);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

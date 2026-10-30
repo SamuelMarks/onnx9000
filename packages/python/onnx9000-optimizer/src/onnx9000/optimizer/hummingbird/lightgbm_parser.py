@@ -1,7 +1,6 @@
 """Provides lightgbm parser module functionality."""
 
 import logging
-from typing import Any
 
 from onnx9000.core.ir import Graph, Node
 from onnx9000.optimizer.hummingbird.memory import TreeAbstractions
@@ -59,7 +58,9 @@ def _traverse_lgbm_tree(node_dict: dict, abstractions: TreeAbstractions) -> None
         abstractions.add_node(-1, 0.0, -1, -1, float(node_dict.get("leaf_value", 0.0)))
 
 
-def parse_lgbm_classifier(estimator: Any) -> list[TreeAbstractions]:
+def parse_lgbm_classifier(
+    estimator: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> list[TreeAbstractions]:
     """Parse LGBMClassifier directly from Python memory."""
     if hasattr(estimator, "booster_"):
         dump = estimator.booster_.dump_model()
@@ -67,7 +68,9 @@ def parse_lgbm_classifier(estimator: Any) -> list[TreeAbstractions]:
     return []
 
 
-def parse_lgbm_regressor(estimator: Any) -> list[TreeAbstractions]:
+def parse_lgbm_regressor(
+    estimator: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> list[TreeAbstractions]:
     """Parse LGBMRegressor directly from Python memory."""
     if hasattr(estimator, "booster_"):
         dump = estimator.booster_.dump_model()
@@ -75,7 +78,9 @@ def parse_lgbm_regressor(estimator: Any) -> list[TreeAbstractions]:
     return []
 
 
-def parse_lgbm_ranker(estimator: Any) -> list[TreeAbstractions]:
+def parse_lgbm_ranker(
+    estimator: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> list[TreeAbstractions]:
     """Parse LGBMRanker directly from Python memory."""
     return parse_lgbm_regressor(estimator)
 
@@ -84,7 +89,7 @@ def handle_lgbm_objectives(g: Graph, objective: str) -> None:
     """Map LightGBM objectives (Softmax, Sigmoid, Exp for Poisson/Tweedie) to ONNX."""
     if objective == "multiclass":
         g.nodes.append(Node("Softmax", inputs=["raw_scores"], outputs=["probabilities"]))
-    elif objective == "multiclassova" or objective == "binary":
+    elif objective in {"multiclassova", "binary"}:
         g.nodes.append(Node("Sigmoid", inputs=["raw_scores"], outputs=["probabilities"]))
     elif objective in ["poisson", "tweedie"]:
         g.nodes.append(Node("Exp", inputs=["raw_scores"], outputs=["predictions"]))

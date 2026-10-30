@@ -1,4 +1,6 @@
-// @ts-nocheck
+/**
+ * @fileoverview Store module for sphinx-demo-ui.
+ */
 import { EventBus } from './EventBus';
 
 /**
@@ -8,7 +10,9 @@ import { EventBus } from './EventBus';
  * Provides a highly decoupled, simple, framework-free reactivity model.
  */
 export class Store<T extends object> {
+  /** Property `_state` of `Store`. */
   private _state: T;
+  /** Property `_bus` of `Store`. */
   private _bus: EventBus;
 
   /**
@@ -21,7 +25,7 @@ export class Store<T extends object> {
 
     // Use a proxy to intercept assignment
     this._state = new Proxy<T>(initialState, {
-      set: (target: T, property: string | symbol, value: object) => {
+      set: (target: T, property: string | symbol, value: T[keyof T]) => {
         // Cast property to keyof T safely here since it's an object property
         const propStr = String(property);
 
@@ -34,7 +38,7 @@ export class Store<T extends object> {
           this._bus.emit('change', { property: propStr, value });
         }
         return true;
-      }
+      },
     });
   }
 
@@ -55,7 +59,7 @@ export class Store<T extends object> {
    */
   public onPropertyChange<K extends keyof T>(
     property: K,
-    callback: (value: T[K]) => void
+    callback: (value: T[K]) => void,
   ): () => void {
     return this._bus.on(`change:${String(property)}`, callback as (payload: object) => void);
   }

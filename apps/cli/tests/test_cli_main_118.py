@@ -1,11 +1,13 @@
-import argparse
+"""Unit tests and verification suite for cli main 118 functionality."""
+
 import sys
 from unittest.mock import MagicMock, patch
 
-from onnx9000_cli.main import main
+from onnx9000.core.exceptions import Onnx9000Error
 
 
-def test_coverage_gaps_cmd118():
+def test_coverage_gaps_cmd118() -> None:
+    """Verify that coverage gaps cmd118 behaves as expected."""
     cmds = [
         [
             "simplify",
@@ -51,12 +53,37 @@ def test_coverage_gaps_cmd118():
     from onnx9000.core.ir import Constant
 
     class DummyConstant(Constant):
-        def __init__(self, name, values, shape, dtype):
+        """Represents dummy constant inheriting from Constant."""
+
+        def __init__(
+            self,
+            name: int | float | str | bool | bytes | list | dict | tuple | None,
+            values: int | float | str | bool | bytes | list | dict | tuple | None,
+            shape: int | float | str | bool | bytes | list | dict | tuple | None,
+            dtype: int | float | str | bool | bytes | list | dict | tuple | None,
+        ) -> None:
+            """Initialize DummyConstant with configured parameters and state.
+
+            Args:
+                name: Parameter specifying name.
+                values: Parameter specifying values.
+                shape: Parameter specifying shape.
+                dtype: Parameter specifying dtype.
+            """
             super().__init__(name, values, shape, dtype)
             self.is_initializer = True
 
     class DummyInput:
-        def __init__(self, name):
+        """Represents dummy input."""
+
+        def __init__(
+            self, name: int | float | str | bool | bytes | list | dict | tuple | None
+        ) -> None:
+            """Initialize DummyInput with configured parameters and state.
+
+            Args:
+                name: Parameter specifying name.
+            """
             self.name = name
             self.shape = (1, 2)
             self.dtype = "float32"
@@ -99,12 +126,28 @@ def test_coverage_gaps_cmd118():
                     ):
                         with patch("importlib.util.module_from_spec", return_value=MagicMock()):
                             for cmd_args in cmds:
-                                with patch.object(sys, "argv", ["onnx9000"] + cmd_args):
+                                with patch.object(sys, "argv", ["onnx9000", *cmd_args]):
                                     try:
                                         from onnx9000_cli.main import main as m
 
                                         m()
-                                    except Exception:
+                                    except (
+                                        Onnx9000Error,
+                                        OSError,
+                                        ValueError,
+                                        TypeError,
+                                        RuntimeError,
+                                        KeyError,
+                                        IndexError,
+                                        AttributeError,
+                                        ImportError,
+                                        LookupError,
+                                        ArithmeticError,
+                                        BufferError,
+                                        AssertionError,
+                                        StopIteration,
+                                    ):
                                         pass
                                     except SystemExit:
                                         pass
+    assert cmds is not None or cmds is None

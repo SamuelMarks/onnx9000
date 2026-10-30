@@ -1,64 +1,66 @@
-import { describe, expect, it, vi } from "vitest";
-import { CoreMLImporter } from "../../src/mmdnn/coreml/importer.js";
-import { FileLoader } from "../../src/mmdnn/file-loader.js";
-import { MMDNNReporter } from "../../src/mmdnn/reporter.js";
+import { describe, expect, it, vi } from 'vitest';
+import { CoreMLImporter } from '../../src/mmdnn/coreml/importer.js';
+import { FileLoader } from '../../src/mmdnn/file-loader.js';
+import { MMDNNReporter } from '../../src/mmdnn/reporter.js';
 
-vi.mock("fflate", () => {
+vi.mock('fflate', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('fflate')>();
   return {
-    unzipSync: vi.fn(),
+    ...actual,
+    unzipSync: vi.fn((...args: Parameters<typeof actual.unzipSync>) => actual.unzipSync(...args)),
   };
 });
 
-import * as fflate from "fflate";
+import * as fflate from 'fflate';
 
-describe("MMDNN - CoreML Importer", () => {
-  it("should parse standalone .mlmodel", async () => {
+describe('MMDNN - CoreML Importer', () => {
+  it('should parse standalone .mlmodel', async () => {
     const importer = new CoreMLImporter();
     const reporter = new MMDNNReporter();
-    const fakeFile = new File([""], "model.mlmodel");
+    const fakeFile = new File([''], 'model.mlmodel');
     const loader = new FileLoader([fakeFile]);
     await loader.initialize();
     const graph = await importer.parse(loader, reporter);
-    expect(graph.name).toContain("coreml_imported");
+    expect(graph.name).toContain('coreml_imported');
   });
 
-  it("should parse zipped .mlpackage.zip", async () => {
+  it('should parse zipped .mlpackage.zip', async () => {
     const importer = new CoreMLImporter();
     const reporter = new MMDNNReporter();
-    const fakeFile = new File([""], "model.mlpackage.zip");
+    const fakeFile = new File([''], 'model.mlpackage.zip');
     const loader = new FileLoader([fakeFile]);
     await loader.initialize();
 
-    (fflate.unzipSync as any).mockReturnValue({
-      "model.mlmodel": new Uint8Array([1, 2, 3]),
+    vi.mocked(fflate.unzipSync).mockReturnValueOnce({
+      'model.mlmodel': new Uint8Array([1, 2, 3]),
     });
 
     const graph = await importer.parse(loader, reporter);
-    expect(graph.name).toContain("coreml_imported");
+    expect(graph.name).toContain('coreml_imported');
   });
 
-  it("should throw if missing .mlmodel inside .zip", async () => {
+  it('should throw if missing .mlmodel inside .zip', async () => {
     const importer = new CoreMLImporter();
     const reporter = new MMDNNReporter();
-    const fakeFile = new File([""], "model.zip");
+    const fakeFile = new File([''], 'model.zip');
     const loader = new FileLoader([fakeFile]);
     await loader.initialize();
 
-    (fflate.unzipSync as any).mockReturnValue({
-      "some_other_file.txt": new Uint8Array([1, 2, 3]),
+    vi.mocked(fflate.unzipSync).mockReturnValueOnce({
+      'some_other_file.txt': new Uint8Array([1, 2, 3]),
     });
 
     const graph = await importer.parse(loader, reporter);
-    expect(graph.name).toContain("mock_coreml_graph_fallback");
+    expect(graph.name).toContain('mock_coreml_graph_fallback');
     expect(reporter.warnings.length).toBe(1);
-    expect(reporter.warnings[0]).toContain("CoreML parsing failed");
+    expect(reporter.warnings[0]).toContain('CoreML parsing failed');
   });
 
-  it("should return mock graph if no valid files exist", async () => {
+  it('should return mock graph if no valid files exist', async () => {
     const importer = new CoreMLImporter();
     const reporter = new MMDNNReporter();
     const loader = new FileLoader([]); // valid but empty
     const graph = await importer.parse(loader, reporter);
-    expect(graph.name).toBe("mock_coreml_graph");
+    expect(graph.name).toBe('mock_coreml_graph');
   });
 });

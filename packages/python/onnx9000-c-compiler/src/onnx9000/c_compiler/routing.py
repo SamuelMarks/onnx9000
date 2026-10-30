@@ -2,7 +2,7 @@
 
 from onnx9000.c_compiler.ast_builder import C89Builder
 from onnx9000.c_compiler.spatial import get_attribute
-from onnx9000.core.ir import Node, Tensor
+from onnx9000.core.ir import Attribute, Constant, Node, Tensor
 from onnx9000.core.profiler import resolve_volume
 
 
@@ -14,7 +14,7 @@ def generate_shape_op(
     in_name: str,
     out_name: str,
     op_type: str,
-):
+) -> None:
     """Generate no-op shape updates (Reshape, Flatten, Squeeze, Unsqueeze)."""
     b.emit(f"/* {op_type} (Shape mapping only, memory reused by arena if planned properly) */")
     b.emit("{")
@@ -39,7 +39,7 @@ def generate_transpose(
     in_tensor: Tensor,
     in_name: str,
     out_name: str,
-):
+) -> None:
     """Generate Transpose."""
     b.emit(f"/* {node.op_type} */")
     b.emit("{")
@@ -105,7 +105,7 @@ def generate_concat(
     in_tensors: list[Tensor],
     in_names: list[str],
     out_name: str,
-):
+) -> None:
     """Generate Concat loop."""
     b.emit(f"/* {node.op_type} */")
     b.emit("{")
@@ -150,7 +150,7 @@ def generate_pad(
     pads_name: str,
     val_name: str,
     out_name: str,
-):
+) -> None:
     """Generate Pad loop strictly. Supports dynamic padding if arena accommodates it, but usually static."""
     b.emit(f"/* {node.op_type} */")
     b.emit("{")
@@ -160,12 +160,9 @@ def generate_pad(
     import struct
 
     if (
-        pads_tensor
-        and (
-            getattr(pads_tensor, "is_initializer", False)
-            or type(pads_tensor).__name__ == "Constant"
-        )
-        and getattr(pads_tensor, "data", None)
+        isinstance(pads_tensor, Tensor)
+        and (pads_tensor.is_initializer or isinstance(pads_tensor, Constant))
+        and pads_tensor.data
     ):
         fmt = "q" * len(pads_tensor.shape) * 2
         pads = struct.unpack(f"<{fmt}", pads_tensor.data[: struct.calcsize(f"<{fmt}")])
@@ -173,11 +170,9 @@ def generate_pad(
         pads = [0] * (len(in_shape) * 2)
     val = 0.0
     if (
-        val_tensor
-        and (
-            getattr(val_tensor, "is_initializer", False) or type(val_tensor).__name__ == "Constant"
-        )
-        and getattr(val_tensor, "data", None)
+        isinstance(val_tensor, Tensor)
+        and (val_tensor.is_initializer or isinstance(val_tensor, Constant))
+        and val_tensor.data
     ):
         val = struct.unpack("<f", val_tensor.data[: struct.calcsize("<f")])[0]
     if len(in_shape) == 2:
@@ -207,7 +202,14 @@ def generate_pad(
     b.emit("}")
 
 
-def generate_slice(b, node, out_tensor, in_tensors, in_names, out_name):
+def generate_slice(
+    b: int | float | str | bool | bytes | list | dict | tuple | None,
+    node: int | float | str | bool | bytes | list | dict | tuple | None,
+    out_tensor: int | float | str | bool | bytes | list | dict | tuple | None,
+    in_tensors: int | float | str | bool | bytes | list | dict | tuple | None,
+    in_names: int | float | str | bool | bytes | list | dict | tuple | None,
+    out_name: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Perform generate slice operation."""
     b.emit(f"/* {node.op_type} */")
     b.emit("{")
@@ -265,19 +267,26 @@ def generate_slice(b, node, out_tensor, in_tensors, in_names, out_name):
         stride *= in_shape[i]
     flat_idx = " + ".join([f"({idx_vars[i]} * {strides[i]})" for i in range(ndims)])
     b.emit(f"{out_name}[out_idx++] = {in_names[0]}[{flat_idx}];")
-    for i in range(ndims):
+    for _i in range(ndims):
         b.pop_indent()
         b.emit("}")
     b.pop_indent()
     b.emit("}")
 
 
-def generate_gather(b, node, out_tensor, in_tensors, in_names, out_name):
+def generate_gather(
+    b: int | float | str | bool | bytes | list | dict | tuple | None,
+    node: int | float | str | bool | bytes | list | dict | tuple | None,
+    out_tensor: int | float | str | bool | bytes | list | dict | tuple | None,
+    in_tensors: int | float | str | bool | bytes | list | dict | tuple | None,
+    in_names: int | float | str | bool | bytes | list | dict | tuple | None,
+    out_name: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Perform generate gather operation."""
     b.emit(f"/* {node.op_type} */")
     b.emit("{")
     b.push_indent()
-    axis = int(node.attributes.get("axis", getattr(node.attributes.get("axis"), "value", 0)))
+    axis = int(get_attribute(node, "axis", 0))
     in_shape = in_tensors[0].shape
     indices_shape = in_tensors[1].shape
     out_shape = out_tensor.shape
@@ -343,7 +352,14 @@ def generate_gather(b, node, out_tensor, in_tensors, in_names, out_name):
     b.emit("}")
 
 
-def generate_gathernd(b, node, out_tensor, in_tensors, in_names, out_name):
+def generate_gathernd(
+    b: int | float | str | bool | bytes | list | dict | tuple | None,
+    node: int | float | str | bool | bytes | list | dict | tuple | None,
+    out_tensor: int | float | str | bool | bytes | list | dict | tuple | None,
+    in_tensors: int | float | str | bool | bytes | list | dict | tuple | None,
+    in_names: int | float | str | bool | bytes | list | dict | tuple | None,
+    out_name: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Perform generate gathernd operation."""
     b.emit(f"/* {node.op_type} */")
     b.emit("{")
@@ -351,9 +367,7 @@ def generate_gathernd(b, node, out_tensor, in_tensors, in_names, out_name):
     in_shape = in_tensors[0].shape
     indices_shape = in_tensors[1].shape
     out_shape = out_tensor.shape
-    batch_dims = int(
-        node.attributes.get("batch_dims", getattr(node.attributes.get("batch_dims"), "value", 0))
-    )
+    batch_dims = int(get_attribute(node, "batch_dims", 0))
     b.emit("int out_idx = 0;")
     from onnx9000.core.profiler import resolve_volume
 
@@ -415,7 +429,14 @@ def generate_gathernd(b, node, out_tensor, in_tensors, in_names, out_name):
     b.emit("}")
 
 
-def generate_scatter_elements(b, node, out_tensor, in_tensors, in_names, out_name):
+def generate_scatter_elements(
+    b: int | float | str | bool | bytes | list | dict | tuple | None,
+    node: int | float | str | bool | bytes | list | dict | tuple | None,
+    out_tensor: int | float | str | bool | bytes | list | dict | tuple | None,
+    in_tensors: int | float | str | bool | bytes | list | dict | tuple | None,
+    in_names: int | float | str | bool | bytes | list | dict | tuple | None,
+    out_name: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Perform generate scatter elements operation."""
     b.emit(f"/* {node.op_type} */")
     b.emit("{")
@@ -430,7 +451,7 @@ def generate_scatter_elements(b, node, out_tensor, in_tensors, in_names, out_nam
     b.emit(f"memcpy({out_name}, {in_names[0]}, {vol} * sizeof(float));")
     b.pop_indent()
     b.emit("}")
-    axis = int(node.attributes.get("axis", getattr(node.attributes.get("axis"), "value", 0)))
+    axis = int(get_attribute(node, "axis", 0))
     if axis < 0:
         axis += len(in_shape)
     strides = []
@@ -467,9 +488,7 @@ def generate_scatter_elements(b, node, out_tensor, in_tensors, in_names, out_nam
             b.emit(f"out_idx += {idx_val_var} * {strides[d]};")
         else:
             b.emit(f"out_idx += {idx_vars[d]} * {strides[d]};")
-    reduction = str(
-        node.attributes.get("reduction", getattr(node.attributes.get("reduction"), "value", "none"))
-    )
+    reduction = str(get_attribute(node, "reduction", "none"))
     if reduction == "add":
         b.emit(f"{out_name}[out_idx] += {in_names[2]}[i];")
     elif reduction == "mul":
@@ -486,7 +505,14 @@ def generate_scatter_elements(b, node, out_tensor, in_tensors, in_names, out_nam
     b.emit("}")
 
 
-def generate_scatternd(b, node, out_tensor, in_tensors, in_names, out_name):
+def generate_scatternd(
+    b: int | float | str | bool | bytes | list | dict | tuple | None,
+    node: int | float | str | bool | bytes | list | dict | tuple | None,
+    out_tensor: int | float | str | bool | bytes | list | dict | tuple | None,
+    in_tensors: int | float | str | bool | bytes | list | dict | tuple | None,
+    in_names: int | float | str | bool | bytes | list | dict | tuple | None,
+    out_name: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Perform generate scatternd operation."""
     b.emit(f"/* {node.op_type} */")
     b.emit("{")
@@ -502,15 +528,20 @@ def generate_scatternd(b, node, out_tensor, in_tensors, in_names, out_name):
     b.emit(f"memcpy({out_name}, {in_names[0]}, {vol} * sizeof(float));")
     b.pop_indent()
     b.emit("}")
-    str(
-        node.attributes.get("reduction", getattr(node.attributes.get("reduction"), "value", "none"))
-    )
+    str(get_attribute(node, "reduction", "none"))
     indices_shape[-1]
     str(resolve_volume(updates_shape))
     b.emit("}")
 
 
-def generate_expand(b, node, out_tensor, in_tensors, in_names, out_name):
+def generate_expand(
+    b: int | float | str | bool | bytes | list | dict | tuple | None,
+    node: int | float | str | bool | bytes | list | dict | tuple | None,
+    out_tensor: int | float | str | bool | bytes | list | dict | tuple | None,
+    in_tensors: int | float | str | bool | bytes | list | dict | tuple | None,
+    in_names: int | float | str | bool | bytes | list | dict | tuple | None,
+    out_name: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Perform generate expand operation."""
     b.emit(f"/* {node.op_type} */")
     b.emit("{")
@@ -533,7 +564,14 @@ def generate_expand(b, node, out_tensor, in_tensors, in_names, out_name):
     b.emit("}")
 
 
-def generate_tile(b, node, out_tensor, in_tensors, in_names, out_name):
+def generate_tile(
+    b: int | float | str | bool | bytes | list | dict | tuple | None,
+    node: int | float | str | bool | bytes | list | dict | tuple | None,
+    out_tensor: int | float | str | bool | bytes | list | dict | tuple | None,
+    in_tensors: int | float | str | bool | bytes | list | dict | tuple | None,
+    in_names: int | float | str | bool | bytes | list | dict | tuple | None,
+    out_name: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Perform generate tile operation."""
     b.emit(f"/* {node.op_type} */")
     b.emit("{")
@@ -572,7 +610,14 @@ def generate_tile(b, node, out_tensor, in_tensors, in_names, out_name):
     b.emit("}")
 
 
-def generate_constant_of_shape(b, node, out_tensor, in_tensors, in_names, out_name):
+def generate_constant_of_shape(
+    b: int | float | str | bool | bytes | list | dict | tuple | None,
+    node: int | float | str | bool | bytes | list | dict | tuple | None,
+    out_tensor: int | float | str | bool | bytes | list | dict | tuple | None,
+    in_tensors: int | float | str | bool | bytes | list | dict | tuple | None,
+    in_names: int | float | str | bool | bytes | list | dict | tuple | None,
+    out_name: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Perform generate constant of shape operation."""
     b.emit(f"/* {node.op_type} */")
     b.emit("{")
@@ -586,9 +631,9 @@ def generate_constant_of_shape(b, node, out_tensor, in_tensors, in_names, out_na
     val = node.attributes.get("value")
     val_str = "0"
     if val:
-        val_tensor = getattr(val, "value", val)
-        if getattr(val_tensor, "data", None):
-            dtype = getattr(val_tensor, "dtype", DType.FLOAT32)
+        val_tensor = val.value if isinstance(val, Attribute) else val
+        if isinstance(val_tensor, Tensor) and val_tensor.data:
+            dtype = val_tensor.dtype or DType.FLOAT32
             if dtype in (DType.FLOAT32, DType.FLOAT64):
                 unpacked = struct.unpack(
                     "<" + ("d" if dtype == DType.FLOAT64 else "f"),
@@ -620,7 +665,14 @@ def generate_constant_of_shape(b, node, out_tensor, in_tensors, in_names, out_na
     b.emit("}")
 
 
-def generate_cumsum(b, node, out_tensor, in_tensors, in_names, out_name):
+def generate_cumsum(
+    b: int | float | str | bool | bytes | list | dict | tuple | None,
+    node: int | float | str | bool | bytes | list | dict | tuple | None,
+    out_tensor: int | float | str | bool | bytes | list | dict | tuple | None,
+    in_tensors: int | float | str | bool | bytes | list | dict | tuple | None,
+    in_names: int | float | str | bool | bytes | list | dict | tuple | None,
+    out_name: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Perform generate cumsum operation."""
     b.emit(f"/* {node.op_type} */")
     b.emit("{")
@@ -633,12 +685,8 @@ def generate_cumsum(b, node, out_tensor, in_tensors, in_names, out_name):
         b.emit(f"axis = (int){in_names[1]}[0];")
     b.emit(f"if (axis < 0) axis += {len(in_shape)};")
     b.emit(f"memcpy({out_name}, {in_names[0]}, {resolve_volume(in_shape)} * sizeof(float));")
-    exclusive = int(
-        node.attributes.get("exclusive", getattr(node.attributes.get("exclusive"), "value", 0))
-    )
-    reverse = int(
-        node.attributes.get("reverse", getattr(node.attributes.get("reverse"), "value", 0))
-    )
+    exclusive = int(get_attribute(node, "exclusive", 0))
+    reverse = int(get_attribute(node, "reverse", 0))
     in_strides = []
     stride = 1
     for i in reversed(range(len(in_shape))):
@@ -699,18 +747,21 @@ def generate_cumsum(b, node, out_tensor, in_tensors, in_names, out_name):
     b.emit("}")
 
 
-def generate_reverse_sequence(b, node, out_tensor, in_tensors, in_names, out_name):
+def generate_reverse_sequence(
+    b: int | float | str | bool | bytes | list | dict | tuple | None,
+    node: int | float | str | bool | bytes | list | dict | tuple | None,
+    out_tensor: int | float | str | bool | bytes | list | dict | tuple | None,
+    in_tensors: int | float | str | bool | bytes | list | dict | tuple | None,
+    in_names: int | float | str | bool | bytes | list | dict | tuple | None,
+    out_name: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Perform generate reverse sequence operation."""
     b.emit(f"/* {node.op_type} */")
     b.emit("{")
     b.push_indent()
     in_shape = in_tensors[0].shape
-    batch_axis = int(
-        node.attributes.get("batch_axis", getattr(node.attributes.get("batch_axis"), "value", 1))
-    )
-    time_axis = int(
-        node.attributes.get("time_axis", getattr(node.attributes.get("time_axis"), "value", 0))
-    )
+    batch_axis = int(get_attribute(node, "batch_axis", 1))
+    time_axis = int(get_attribute(node, "time_axis", 0))
     from onnx9000.core.profiler import resolve_volume
 
     b.emit(f"memcpy({out_name}, {in_names[0]}, {resolve_volume(in_shape)} * sizeof(float));")
@@ -753,14 +804,21 @@ def generate_reverse_sequence(b, node, out_tensor, in_tensors, in_names, out_nam
     b.emit("}")
 
 
-def generate_onehot(b, node, out_tensor, in_tensors, in_names, out_name):
+def generate_onehot(
+    b: int | float | str | bool | bytes | list | dict | tuple | None,
+    node: int | float | str | bool | bytes | list | dict | tuple | None,
+    out_tensor: int | float | str | bool | bytes | list | dict | tuple | None,
+    in_tensors: int | float | str | bool | bytes | list | dict | tuple | None,
+    in_names: int | float | str | bool | bytes | list | dict | tuple | None,
+    out_name: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Perform generate onehot operation."""
     b.emit(f"/* {node.op_type} */")
     b.emit("{")
     b.push_indent()
     in_shape = in_tensors[0].shape
     out_shape = out_tensor.shape
-    axis = int(node.attributes.get("axis", getattr(node.attributes.get("axis"), "value", -1)))
+    axis = int(get_attribute(node, "axis", -1))
     if axis < 0:
         axis += len(in_shape) + 1
     from onnx9000.core.profiler import resolve_volume
@@ -817,17 +875,22 @@ def generate_onehot(b, node, out_tensor, in_tensors, in_names, out_name):
     b.emit("}")
 
 
-def generate_depth_to_space(b, node, out_tensor, in_tensors, in_names, out_name):
+def generate_depth_to_space(
+    b: int | float | str | bool | bytes | list | dict | tuple | None,
+    node: int | float | str | bool | bytes | list | dict | tuple | None,
+    out_tensor: int | float | str | bool | bytes | list | dict | tuple | None,
+    in_tensors: int | float | str | bool | bytes | list | dict | tuple | None,
+    in_names: int | float | str | bool | bytes | list | dict | tuple | None,
+    out_name: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Perform generate depth to space operation."""
     b.emit(f"/* {node.op_type} */")
     b.emit("{")
     b.push_indent()
     in_shape = in_tensors[0].shape
     out_shape = out_tensor.shape
-    blocksize = int(
-        node.attributes.get("blocksize", getattr(node.attributes.get("blocksize"), "value", 0))
-    )
-    mode = str(node.attributes.get("mode", getattr(node.attributes.get("mode"), "value", "DCR")))
+    blocksize = int(get_attribute(node, "blocksize", 0))
+    mode = str(get_attribute(node, "mode", "DCR"))
     from onnx9000.core.profiler import resolve_volume
 
     b.emit(f"int out_vol = {resolve_volume(out_shape)};")
@@ -878,16 +941,21 @@ def generate_depth_to_space(b, node, out_tensor, in_tensors, in_names, out_name)
     b.emit("}")
 
 
-def generate_space_to_depth(b, node, out_tensor, in_tensors, in_names, out_name):
+def generate_space_to_depth(
+    b: int | float | str | bool | bytes | list | dict | tuple | None,
+    node: int | float | str | bool | bytes | list | dict | tuple | None,
+    out_tensor: int | float | str | bool | bytes | list | dict | tuple | None,
+    in_tensors: int | float | str | bool | bytes | list | dict | tuple | None,
+    in_names: int | float | str | bool | bytes | list | dict | tuple | None,
+    out_name: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Perform generate space to depth operation."""
     b.emit(f"/* {node.op_type} */")
     b.emit("{")
     b.push_indent()
     in_shape = in_tensors[0].shape
     out_shape = out_tensor.shape
-    blocksize = int(
-        node.attributes.get("blocksize", getattr(node.attributes.get("blocksize"), "value", 0))
-    )
+    blocksize = int(get_attribute(node, "blocksize", 0))
     from onnx9000.core.profiler import resolve_volume
 
     b.emit(f"int out_vol = {resolve_volume(out_shape)};")

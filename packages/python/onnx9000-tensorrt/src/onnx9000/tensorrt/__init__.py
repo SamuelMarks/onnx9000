@@ -1,9 +1,6 @@
-"""Init."""
+"""Module implementing init utilities and definitions for onnx9000-tensorrt / onnx9000 / tensorrt."""
 
-import onnx9000.tensorrt.ops
-import onnx9000.tensorrt.ops_conv
-import onnx9000.tensorrt.ops_dim
-import onnx9000.tensorrt.ops_matmul
+from onnx9000.tensorrt import ops, ops_conv, ops_dim, ops_matmul
 from onnx9000.tensorrt.builder import Builder, BuilderConfig, NetworkDefinition
 from onnx9000.tensorrt.enums import (
     ActivationType,
@@ -25,27 +22,31 @@ from onnx9000.tensorrt.registry import get_op_translator, register_op
 from onnx9000.tensorrt.structs import Dims, Weights
 
 __all__ = [
-    "ffi",
-    "TensorRTFFI",
+    "ActivationType",
     "Builder",
     "BuilderConfig",
-    "NetworkDefinition",
+    "BuilderFlag",
+    "DataType",
+    "Dims",
+    "ElementWiseOperation",
     "INetworkDefinition",
     "ITensor",
-    "Dims",
-    "Weights",
-    "DataType",
-    "ElementWiseOperation",
-    "PoolingType",
-    "ActivationType",
-    "ScaleMode",
-    "UnaryOperation",
-    "ReduceOperation",
     "MatrixOperation",
-    "TopKOperation",
     "MemoryPoolType",
+    "NetworkDefinition",
     "OptProfileSelector",
-    "BuilderFlag",
-    "register_op",
+    "PoolingType",
+    "ReduceOperation",
+    "ScaleMode",
+    "TensorRTFFI",
+    "TopKOperation",
+    "UnaryOperation",
+    "Weights",
+    "ffi",
     "get_op_translator",
+    "ops",
+    "ops_conv",
+    "ops_dim",
+    "ops_matmul",
+    "register_op",
 ]

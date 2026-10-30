@@ -2,23 +2,38 @@
  * @fileoverview reader.ts
  * Provides reader functionality for the onnx2gguf package.
  */
-import { GGUFTensorType, GGUFValueType } from "./builder";
+import { Onnx9000Error } from '@onnx9000/core';
+import { GGUFTensorType, GGUFValueType } from './builder';
 
+/** Represents the `GGUFReader` class. */
 export class GGUFReader {
+  /** Property `kvs` of `GGUFReader`. */
   public kvs: Record<string, ReturnType<typeof JSON.parse>> = {};
+  /** Property `tensors` of `GGUFReader`. */
   public tensors: Record<
     string,
     { name: string; shape: bigint[]; type: GGUFTensorType; offset: bigint }
   > = {};
+  /** Property `dataStart` of `GGUFReader`. */
   public dataStart: number = 0;
+  /** Property `view` of `GGUFReader`. */
   private view: DataView;
+  /** Property `offset` of `GGUFReader`. */
   private offset: number = 0;
 
+  /**
+   * Initializes a new `GGUFReader` instance.
+   * @param buffer Parameter `buffer`.
+   */
   constructor(public buffer: ArrayBuffer) {
     this.view = new DataView(buffer);
     this.readHeader();
   }
 
+  /**
+   * Executes `readString` on `GGUFReader`.
+   * @returns Result of `readString`.
+   */
   private readString(): string {
     const len = Number(this.view.getBigUint64(this.offset, true));
     this.offset += 8;
@@ -28,6 +43,11 @@ export class GGUFReader {
     return str;
   }
 
+  /**
+   * Executes `readVal` on `GGUFReader`.
+   * @param vtype Parameter `vtype`.
+   * @returns Result of `readVal`.
+   */
   private readVal(vtype: GGUFValueType): ReturnType<typeof JSON.parse> {
     switch (vtype) {
       case GGUFValueType.UINT8: {
@@ -99,10 +119,14 @@ export class GGUFReader {
         return arr;
       }
       default:
-        throw new Error(`Unknown value type: ${vtype}`);
+        throw new Onnx9000Error(`Unknown value type: ${vtype}`);
     }
   }
 
+  /**
+   * Executes `readHeader` on `GGUFReader`.
+   * @returns Result of `readHeader`.
+   */
   private readHeader() {
     if (
       this.view.getUint8(0) !== 0x47 ||
@@ -110,14 +134,14 @@ export class GGUFReader {
       this.view.getUint8(2) !== 0x55 ||
       this.view.getUint8(3) !== 0x46
     ) {
-      throw new Error("Not a GGUF file");
+      throw new Onnx9000Error('Not a GGUF file');
     }
     this.offset += 4;
 
     const version = this.view.getUint32(this.offset, true);
     this.offset += 4;
     if (version !== 2 && version !== 3) {
-      throw new Error(`Unsupported GGUF version ${version}`);
+      throw new Onnx9000Error(`Unsupported GGUF version ${version}`);
     }
 
     const tensorCount = Number(this.view.getBigUint64(this.offset, true));
@@ -149,14 +173,19 @@ export class GGUFReader {
       this.tensors[name] = { name, shape, type: ttype, offset };
     }
 
-    const alignment = this.kvs["general.alignment"] || 32;
+    const alignment = this.kvs['general.alignment'] || 32;
     const padding = (alignment - (this.offset % alignment)) % alignment;
     this.offset += padding;
     this.dataStart = this.offset;
   }
 
+  /**
+   * Executes `getTensor` on `GGUFReader`.
+   * @param name Parameter `name`.
+   * @returns Result of `getTensor`.
+   */
   public getTensor(name: string): Uint8Array {
-    if (!this.tensors[name]) throw new Error(`Tensor ${name} not found`);
+    if (!this.tensors[name]) throw new Onnx9000Error(`Tensor ${name} not found`);
     const t = this.tensors[name];
 
     let items = 1n;
@@ -168,7 +197,7 @@ export class GGUFReader {
     else if (t.type === GGUFTensorType.Q4_0) size = (items / 32n) * 18n;
     else if (t.type === GGUFTensorType.Q4_1) size = (items / 32n) * 20n;
     else if (t.type === GGUFTensorType.Q8_0) size = (items / 32n) * 34n;
-    else throw new Error("Unknown type");
+    else throw new Onnx9000Error('Unknown type');
 
     const byteOffset = this.dataStart + Number(t.offset);
     return new Uint8Array(this.buffer, byteOffset, Number(size));

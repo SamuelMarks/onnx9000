@@ -8,14 +8,25 @@ from onnx9000.core.serializer import serialize_model
 class MockValueInfo:
     """Class representing mock value info."""
 
-    def __init__(self, name, shape, dtype):
-        """Initialize the instance."""
+    def __init__(
+        self,
+        name: int | float | str | bool | bytes | list | dict | tuple | None,
+        shape: int | float | str | bool | bytes | list | dict | tuple | None,
+        dtype: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
+        """Initialize MockValueInfo with configured parameters and state.
+
+        Args:
+            name: Parameter specifying name.
+            shape: Parameter specifying shape.
+            dtype: Parameter specifying dtype.
+        """
         self.name = name
         self.shape = shape
         self.dtype = dtype
 
 
-def test_serializer_metadata_and_vinfo():
+def test_serializer_metadata_and_vinfo() -> None:
     """Test serializer metadata and vinfo."""
     g = Graph("TestGraph")
     g.metadata_props["key1"] = "val1"

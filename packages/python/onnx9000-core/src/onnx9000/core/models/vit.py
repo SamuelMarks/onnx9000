@@ -1,9 +1,7 @@
 """Vit."""
 
-from typing import Any
-
 from onnx9000.core.ir import Tensor, Variable
-from onnx9000.core.ops import add, concat, flatten, transpose
+from onnx9000.core.ops import add, concat, transpose
 from onnx9000.core.ops import slice as slice_op
 from onnx9000.core.primitives import (
     ConvND,
@@ -29,8 +27,16 @@ class PatchEmbed:
         in_chans: int = 3,
         embed_dim: int = 768,
         prefix: str = "",
-    ):
-        """Init."""
+    ) -> None:
+        """Initialize PatchEmbed with configured parameters and state.
+
+        Args:
+            img_size: Parameter specifying img size (int).
+            patch_size: Parameter specifying patch size (int).
+            in_chans: Parameter specifying in chans (int).
+            embed_dim: Parameter specifying embed dim (int).
+            prefix: Parameter specifying prefix (str).
+        """
         self.prefix = prefix
         self.img_size = img_size
         self.patch_size = patch_size
@@ -38,7 +44,14 @@ class PatchEmbed:
         self.proj = ConvND(2, in_chans, embed_dim, kernel_size=patch_size, stride=patch_size)
 
     def __call__(self, x: Tensor) -> Tensor:
-        """Call."""
+        """Invoke PatchEmbed with the provided inputs and keyword arguments.
+
+        Args:
+            x: Parameter specifying x (Tensor).
+
+        Returns:
+            Result of call (Tensor).
+        """
         x = self.proj(
             x,
             get_param(
@@ -71,8 +84,16 @@ class Block:
         mlp_ratio: float = 4.0,
         qkv_bias: bool = False,
         prefix: str = "",
-    ):
-        """Init."""
+    ) -> None:
+        """Initialize Block with configured parameters and state.
+
+        Args:
+            dim: Parameter specifying dim (int).
+            num_heads: Parameter specifying num heads (int).
+            mlp_ratio: Parameter specifying mlp ratio (float).
+            qkv_bias: Parameter specifying qkv bias (bool).
+            prefix: Parameter specifying prefix (str).
+        """
         self.prefix = prefix
         self.dim = dim
         self.norm1 = LayerNormalization((dim,), epsilon=1e-6)
@@ -85,7 +106,14 @@ class Block:
         self.mlp_hidden_dim = mlp_hidden_dim
 
     def __call__(self, x: Tensor) -> Tensor:
-        """Call."""
+        """Invoke Block with the provided inputs and keyword arguments.
+
+        Args:
+            x: Parameter specifying x (Tensor).
+
+        Returns:
+            Result of call (Tensor).
+        """
         identity = x
         x = self.norm1(
             x,
@@ -130,8 +158,20 @@ class VisionTransformer:
         num_heads: int = 12,
         mlp_ratio: float = 4.0,
         qkv_bias: bool = True,
-    ):
-        """Init."""
+    ) -> None:
+        """Initialize VisionTransformer with configured parameters and state.
+
+        Args:
+            img_size: Parameter specifying img size (int).
+            patch_size: Parameter specifying patch size (int).
+            in_chans: Parameter specifying in chans (int).
+            num_classes: Parameter specifying num classes (int).
+            embed_dim: Parameter specifying embed dim (int).
+            depth: Parameter specifying depth (int).
+            num_heads: Parameter specifying num heads (int).
+            mlp_ratio: Parameter specifying mlp ratio (float).
+            qkv_bias: Parameter specifying qkv bias (bool).
+        """
         self.embed_dim = embed_dim
         self.num_classes = num_classes
         self.patch_embed = PatchEmbed(
@@ -156,7 +196,14 @@ class VisionTransformer:
         self.num_patches = self.patch_embed.num_patches
 
     def __call__(self, x: Tensor) -> Tensor:
-        """Call."""
+        """Invoke VisionTransformer with the provided inputs and keyword arguments.
+
+        Args:
+            x: Parameter specifying x (Tensor).
+
+        Returns:
+            Result of call (Tensor).
+        """
         x = self.patch_embed(x)
 
         cls_token = get_param("cls_token", [1, 1, self.embed_dim])
@@ -194,6 +241,8 @@ class VisionTransformer:
         return x
 
 
-def vit_base_patch16_224(**kwargs: Any) -> VisionTransformer:
+def vit_base_patch16_224(
+    **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> VisionTransformer:
     """Vit base patch16 224."""
     return VisionTransformer(patch_size=16, embed_dim=768, depth=12, num_heads=12, **kwargs)

@@ -1,31 +1,37 @@
-/* v8 ignore start */
-import * as np from "@onnx9000/array";
+/**
+ * @fileoverview Array API Demo UI.
+ */
+import * as np from '@onnx9000/array';
 
-const runBtn = document.getElementById("run-btn") as HTMLButtonElement;
-const out = document.getElementById("array-output") as HTMLElement;
+/**
+ * Initializes the Array API demo UI.
+ */
+export function initArrayDemo(): void {
+  const runBtn = document.getElementById('run-btn') as HTMLButtonElement | null;
+  const out = document.getElementById('array-output') as HTMLElement | null;
 
-runBtn.addEventListener("click", async () => {
-  out.innerText = "Initializing Web-Native Array API...\n";
-  runBtn.disabled = true;
+  if (!runBtn || !out) return;
 
-  try {
-    // Basic Numpy-like tensor creation
-    out.innerText += "\nCreating EagerTensors (simulated CPU/GPU execution):\n";
+  runBtn.addEventListener('click', () => {
+    out.innerText = `Initializing Array Engine...
+`;
+    runBtn.disabled = true;
 
-    // np.array creates an EagerTensor in eager mode by default.
     const a = np.array([1, 2, 3]);
     const b = np.array([4, 5, 6]);
 
-    out.innerText += `a = [1, 2, 3]\nb = [4, 5, 6]\n`;
-
-    // Mathematical operations
-    out.innerText += "\nPerforming addition: c = np.add(a, b)\n";
+    out.innerText += `Created Tensor a = [1, 2, 3], b = [4, 5, 6]
+`;
+    out.innerText += `
+Performing addition: c = np.add(a, b)
+`;
     const c = np.add(a, b);
+    out.innerText += `Result c = ${JSON.stringify(c.numpy())}
+`;
 
-    // Eager evaluation output
-    out.innerText += `Result c = ${JSON.stringify((c as any).numpy?.() ?? "[5, 7, 9]")}\n`;
-
-    out.innerText += "\nPerforming matrix operations...\n";
+    out.innerText += `
+Performing matrix operations...
+`;
     const mat1 = np.array([
       [1, 2],
       [3, 4],
@@ -35,27 +41,32 @@ runBtn.addEventListener("click", async () => {
       [7, 8],
     ]);
 
-    out.innerText += `mat1 = [[1, 2], [3, 4]]\nmat2 = [[5, 6], [7, 8]]\n`;
+    out.innerText += `mat1 = [[1, 2], [3, 4]]
+mat2 = [[5, 6], [7, 8]]
+`;
     const mat3 = np.matmul(mat1, mat2);
-    out.innerText += `Result mat1 @ mat2 = ${JSON.stringify((mat3 as any).numpy?.() ?? "[[19, 22], [43, 50]")}\n`;
+    out.innerText += `Result mat1 @ mat2 = ${JSON.stringify(mat3.numpy())}
+`;
 
-    // Lazy API demo
-    out.innerText += "\nSwitching to Lazy Mode...\n";
+    out.innerText += `
+Switching to Lazy Mode...
+`;
     np.lazy_mode(true);
 
     const lazyA = np.array([10, 20]);
     const lazyB = np.array([30, 40]);
-    const lazyC = np.add(lazyA, lazyB);
+    const lazyC = np.add(lazyA, lazyB) as np.LazyTensor;
 
-    out.innerText += `Created Lazy Computation Graph.\n`;
-    out.innerText += `Node Type for C: ${(lazyC as any).opType}\n`;
+    out.innerText += `Created Lazy Computation Graph.
+`;
+    out.innerText += `Node Type for C: ${lazyC.opType}
+`;
+    np.lazy_mode(false);
 
-    out.innerText += "\nSuccess! The Array API is fully functional.";
-  } catch (e: any) {
-    out.innerText += `\nError: ${e.message}`;
-  } finally {
+    out.innerText += `
+Success! The Array API is fully functional.`;
     runBtn.disabled = false;
-  }
-});
+  });
+}
 
-/* v8 ignore stop */
+initArrayDemo();

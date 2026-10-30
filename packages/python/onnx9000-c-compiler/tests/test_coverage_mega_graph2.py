@@ -5,7 +5,7 @@ from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Node, Tensor, ValueInfo
 
 
-def test_mega_graph_routing_coverage2():
+def test_mega_graph_routing_coverage2() -> None:
     """Another test for routing coverage for a mega graph with complex operations."""
     tA = Tensor("A", [1, 2, 2], DType.FLOAT32, data=b"\x00" * 16)
     tB = Tensor("B", [1, 2, 2], DType.FLOAT32, data=b"\x00" * 16)

@@ -2,20 +2,22 @@
  * @fileoverview weight-loader.ts
  * Provides weight-loader functionality for the converters package.
  */
-// @ts-nocheck
-import type {
-  DataType,
-  WeightGroup,
-  WeightManifestEntry,
-} from "./tfjs-parser.js";
+import { ConversionError } from '@onnx9000/core';
+import type { DataType, WeightGroup, WeightManifestEntry } from './tfjs-parser.js';
 
+/** Interface `LoadedWeight` definition. */
 export interface LoadedWeight {
+  /** Property `name`. */
   name: string;
+  /** Property `shape`. */
   shape: number[];
+  /** Property `dtype`. */
   dtype: DataType;
+  /** Property `data`. */
   data: ArrayBuffer;
 }
 
+/** Type alias `FetchFunction`. */
 export type FetchFunction = (path: string) => Promise<ArrayBuffer>;
 
 /**
@@ -31,7 +33,7 @@ export async function downloadWeightShards(
     const url = new URL(path, baseUrl).href;
     const res = await fetch(url);
     if (!res.ok) {
-      throw new Error(`Failed to fetch weight shard: ${url}`);
+      throw new ConversionError(`Failed to fetch weight shard: ${url}`);
     }
     return res.arrayBuffer();
   };
@@ -40,9 +42,7 @@ export async function downloadWeightShards(
 
   for (const group of manifest) {
     // Download all shards for this group
-    const shardBuffers = await Promise.all(
-      group.paths.map((path) => doFetch(path)),
-    );
+    const shardBuffers = await Promise.all(group.paths.map((path) => doFetch(path)));
 
     // Combine chunked .bin shards into a contiguous ArrayBuffer
     let totalLength = 0;
@@ -78,34 +78,39 @@ export async function downloadWeightShards(
   return loadedWeights;
 }
 
+/**
+ * Executes `calculateByteLength`.
+ * @param weight Parameter `weight`.
+ * @returns Result of `calculateByteLength`.
+ */
 export function calculateByteLength(weight: WeightManifestEntry): number {
   const numElements = weight.shape.reduce((a, b) => a * b, 1);
   switch (weight.dtype) {
-    case "float32":
-    case "int32":
+    case 'float32':
+    case 'int32':
       return numElements * 4;
-    case "complex64":
+    case 'complex64':
       return numElements * 8;
-    case "float16":
+    case 'float16':
       return numElements * 2;
-    case "int8":
-    case "uint8":
-    case "bool":
+    case 'int8':
+    case 'uint8':
+    case 'bool':
       return numElements;
-    case "int4":
-    case "uint4":
+    case 'int4':
+    case 'uint4':
       // 4-bit quantization packs 2 elements into 1 byte.
       // We must ceiling divide to ensure we allocate enough bytes for odd counts.
       return Math.ceil(numElements / 2);
-    case "string":
+    case 'string':
       // String tensors in TFJS have a specific format in the buffer.
       // A simple size calculation doesn't work out of the box without parsing.
       // For now, let's assume we won't fully extract strings in this naive pass
       // or we throw an error for unsupported format if it happens.
-      throw new Error(
-        "String dtype byte length calculation is not trivially supported yet.",
+      throw new ConversionError(
+        'String dtype byte length calculation is not trivially supported yet.',
       );
     default:
-      throw new Error(`Unsupported dtype: ${String(weight.dtype)}`);
+      throw new ConversionError(`Unsupported dtype: ${String(weight.dtype)}`);
   }
 }

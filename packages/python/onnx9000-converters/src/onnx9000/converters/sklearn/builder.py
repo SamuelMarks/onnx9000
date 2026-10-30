@@ -1,5 +1,9 @@
 """Provide builder module functionality."""
 
+from onnx9000.converters.sklearn.protocols import (
+    CompositeEstimatorProtocol,
+    SKLearnEstimatorProtocol,
+)
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Attribute, Graph, Node, Tensor, ValueInfo
 
@@ -9,16 +13,22 @@ class SKLearnParser:
 
     def __init__(
         self,
-        model: object,
+        model: CompositeEstimatorProtocol,
         name: str = "sklearn_model",
         initial_types: list[tuple] | None = None,
     ) -> None:
-        """Initialize the instance."""
+        """Initialize SKLearnParser with configured parameters and state.
+
+        Args:
+            model: Parameter specifying model (CompositeEstimatorProtocol).
+            name: Parameter specifying name (str).
+            initial_types: Parameter specifying initial types (list[tuple] | None).
+        """
         self.model = model
         self.graph = Graph(name)
         self.initial_types = initial_types or [("input", DType.FLOAT32, ("N", "C"))]
 
-    def _is_type(self, obj: object, type_name: str) -> bool:
+    def _is_type(self, obj: SKLearnEstimatorProtocol, type_name: str) -> bool:
         """Zero dependency duck typing/class name checking."""
         return type(obj).__name__ == type_name
 
@@ -33,7 +43,9 @@ class SKLearnParser:
             self.graph.outputs.append(ValueInfo(out_name, DType.FLOAT32, ("N", "C")))
         return self.graph
 
-    def _parse_estimator(self, estimator: object, input_names: list[str]) -> list[str]:
+    def _parse_estimator(
+        self, estimator: CompositeEstimatorProtocol, input_names: list[str]
+    ) -> list[str]:
         """Pars an estimator and returns its output names."""
         est_type = type(estimator).__name__
         if est_type in ("GridSearchCV", "RandomizedSearchCV"):

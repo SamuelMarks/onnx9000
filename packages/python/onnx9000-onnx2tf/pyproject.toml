@@ -1,10 +1,19 @@
 [project]
 name = "onnx9000-onnx2tf"
 version = "1.0.0"
+description = "ONNX to TensorFlow/TFLite NCHW-to-NHWC layout transposition and export pipeline"
+dependencies = ["onnx9000-core", "onnx9000-tflite-exporter"]
+
+[tool.uv.sources]
+onnx9000-core = { workspace = true }
+onnx9000-tflite-exporter = { workspace = true }
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
 [tool.hatch.build.targets.wheel]
-packages = ["src/onnx9000_onnx2tf"]
+packages = ["src/onnx9000", "src/onnx9000_onnx2tf"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]

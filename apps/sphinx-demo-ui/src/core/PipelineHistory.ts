@@ -1,5 +1,6 @@
-// @ts-nocheck
-
+/**
+ * @fileoverview PipelineHistory module for sphinx-demo-ui.
+ */
 import { globalEventBus } from './EventBus';
 import { PipelineNode, type PipelineState } from './PipelineNode';
 
@@ -8,7 +9,9 @@ import { PipelineNode, type PipelineState } from './PipelineNode';
  * Implements undo/redo mechanics.
  */
 export class PipelineHistory {
+  /** Property `history` of `PipelineHistory`. */
   private history: PipelineNode[] = [];
+  /** Property `currentIndex` of `PipelineHistory`. */
   private currentIndex: number = -1;
 
   /**
@@ -56,18 +59,31 @@ export class PipelineHistory {
     return null;
   }
 
+  /**
+   * Executes `canUndo` on `PipelineHistory`.
+   * @returns Result of `canUndo`.
+   */
   public canUndo(): boolean {
     return this.currentIndex > 0;
   }
 
+  /**
+   * Executes `canRedo` on `PipelineHistory`.
+   * @returns Result of `canRedo`.
+   */
   public canRedo(): boolean {
     return this.currentIndex < this.history.length - 1;
   }
 
+  /**
+   * Executes `getHistory` on `PipelineHistory`.
+   * @returns Result of `getHistory`.
+   */
   public getHistory(): PipelineNode[] {
     return this.history.slice(0, this.currentIndex + 1);
   }
 
+  /** Executes `clear` on `PipelineHistory`. */
   public clear(): void {
     this.history = [];
     this.currentIndex = -1;

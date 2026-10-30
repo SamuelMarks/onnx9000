@@ -1,20 +1,32 @@
 """Pooling layers."""
 
-from typing import Any
-
 from onnx9000.converters.frontend.nn.module import Module
 from onnx9000.converters.frontend.tensor import Tensor
 
 
 def _pair(x: int | tuple[int, int]) -> tuple[int, int]:
-    """Implement the _pair method."""
+    """Execute pair operation.
+
+    Args:
+        x: Parameter specifying x (int | tuple[int, int]).
+
+    Returns:
+        Result of pair (tuple[int, int]).
+    """
     if isinstance(x, int):
         return (x, x)
     return x
 
 
 def _single(x: int | tuple[int]) -> tuple[int]:
-    """Implement the _single method."""
+    """Execute single operation.
+
+    Args:
+        x: Parameter specifying x (int | tuple[int]).
+
+    Returns:
+        Result of single (tuple[int]).
+    """
     if isinstance(x, int):
         return (x,)
     return x
@@ -25,13 +37,21 @@ class _MaxPoolNd(Module):
 
     def __init__(
         self,
-        kernel_size: Any,
-        stride: Any,
-        padding: Any,
-        dilation: Any,
+        kernel_size: int | float | str | bool | bytes | list | dict | tuple | None,
+        stride: int | float | str | bool | bytes | list | dict | tuple | None,
+        padding: int | float | str | bool | bytes | list | dict | tuple | None,
+        dilation: int | float | str | bool | bytes | list | dict | tuple | None,
         ceil_mode: bool,
     ) -> None:
-        """Implement the __init__ method."""
+        """Initialize _MaxPoolNd with configured parameters and state.
+
+        Args:
+            kernel_size: Parameter specifying kernel size (Union[int, float, str, bool, bytes, list, dict, tuple, None]).
+            stride: Parameter specifying stride (Union[int, float, str, bool, bytes, list, dict, tuple, None]).
+            padding: Parameter specifying padding (Union[int, float, str, bool, bytes, list, dict, tuple, None]).
+            dilation: Parameter specifying dilation (Union[int, float, str, bool, bytes, list, dict, tuple, None]).
+            ceil_mode: Parameter specifying ceil mode (bool).
+        """
         super().__init__()
         self.kernel_size = kernel_size
         self.stride = stride
@@ -40,7 +60,14 @@ class _MaxPoolNd(Module):
         self.ceil_mode = ceil_mode
 
     def forward(self, input: Tensor) -> Tensor:
-        """Implement the forward method."""
+        """Execute forward on _MaxPoolNd.
+
+        Args:
+            input: Parameter specifying input (Tensor).
+
+        Returns:
+            Result of forward (Tensor).
+        """
         from onnx9000.converters.frontend.utils import record_op
 
         attrs = {
@@ -59,12 +86,20 @@ class MaxPool1d(_MaxPoolNd):
     def __init__(
         self,
         kernel_size: int | tuple[int],
-        stride: int | tuple[int] = None,
+        stride: int | tuple[int] | None = None,
         padding: int | tuple[int] = 0,
         dilation: int | tuple[int] = 1,
         ceil_mode: bool = False,
     ) -> None:
-        """Implement the __init__ method."""
+        """Initialize MaxPool1d with configured parameters and state.
+
+        Args:
+            kernel_size: Parameter specifying kernel size (int | tuple[int]).
+            stride: Parameter specifying stride (int | tuple[int]).
+            padding: Parameter specifying padding (int | tuple[int]).
+            dilation: Parameter specifying dilation (int | tuple[int]).
+            ceil_mode: Parameter specifying ceil mode (bool).
+        """
         kernel_size_ = _single(kernel_size)
         stride_ = _single(stride) if stride is not None else kernel_size_
         padding_ = _single(padding)
@@ -78,12 +113,20 @@ class MaxPool2d(_MaxPoolNd):
     def __init__(
         self,
         kernel_size: int | tuple[int, int],
-        stride: int | tuple[int, int] = None,
+        stride: int | tuple[int, int] | None = None,
         padding: int | tuple[int, int] = 0,
         dilation: int | tuple[int, int] = 1,
         ceil_mode: bool = False,
     ) -> None:
-        """Implement the __init__ method."""
+        """Initialize MaxPool2d with configured parameters and state.
+
+        Args:
+            kernel_size: Parameter specifying kernel size (int | tuple[int, int]).
+            stride: Parameter specifying stride (int | tuple[int, int]).
+            padding: Parameter specifying padding (int | tuple[int, int]).
+            dilation: Parameter specifying dilation (int | tuple[int, int]).
+            ceil_mode: Parameter specifying ceil mode (bool).
+        """
         kernel_size_ = _pair(kernel_size)
         stride_ = _pair(stride) if stride is not None else kernel_size_
         padding_ = _pair(padding)
@@ -96,13 +139,21 @@ class _AvgPoolNd(Module):
 
     def __init__(
         self,
-        kernel_size: Any,
-        stride: Any,
-        padding: Any,
+        kernel_size: int | float | str | bool | bytes | list | dict | tuple | None,
+        stride: int | float | str | bool | bytes | list | dict | tuple | None,
+        padding: int | float | str | bool | bytes | list | dict | tuple | None,
         ceil_mode: bool,
         count_include_pad: bool,
     ) -> None:
-        """Implement the __init__ method."""
+        """Initialize _AvgPoolNd with configured parameters and state.
+
+        Args:
+            kernel_size: Parameter specifying kernel size (Union[int, float, str, bool, bytes, list, dict, tuple, None]).
+            stride: Parameter specifying stride (Union[int, float, str, bool, bytes, list, dict, tuple, None]).
+            padding: Parameter specifying padding (Union[int, float, str, bool, bytes, list, dict, tuple, None]).
+            ceil_mode: Parameter specifying ceil mode (bool).
+            count_include_pad: Parameter specifying count include pad (bool).
+        """
         super().__init__()
         self.kernel_size = kernel_size
         self.stride = stride
@@ -111,7 +162,14 @@ class _AvgPoolNd(Module):
         self.count_include_pad = count_include_pad
 
     def forward(self, input: Tensor) -> Tensor:
-        """Implement the forward method."""
+        """Execute forward on _AvgPoolNd.
+
+        Args:
+            input: Parameter specifying input (Tensor).
+
+        Returns:
+            Result of forward (Tensor).
+        """
         from onnx9000.converters.frontend.utils import record_op
 
         attrs = {
@@ -130,12 +188,20 @@ class AvgPool1d(_AvgPoolNd):
     def __init__(
         self,
         kernel_size: int | tuple[int],
-        stride: int | tuple[int] = None,
+        stride: int | tuple[int] | None = None,
         padding: int | tuple[int] = 0,
         ceil_mode: bool = False,
         count_include_pad: bool = True,
     ) -> None:
-        """Implement the __init__ method."""
+        """Initialize AvgPool1d with configured parameters and state.
+
+        Args:
+            kernel_size: Parameter specifying kernel size (int | tuple[int]).
+            stride: Parameter specifying stride (int | tuple[int]).
+            padding: Parameter specifying padding (int | tuple[int]).
+            ceil_mode: Parameter specifying ceil mode (bool).
+            count_include_pad: Parameter specifying count include pad (bool).
+        """
         kernel_size_ = _single(kernel_size)
         stride_ = _single(stride) if stride is not None else kernel_size_
         padding_ = _single(padding)
@@ -148,12 +214,20 @@ class AvgPool2d(_AvgPoolNd):
     def __init__(
         self,
         kernel_size: int | tuple[int, int],
-        stride: int | tuple[int, int] = None,
+        stride: int | tuple[int, int] | None = None,
         padding: int | tuple[int, int] = 0,
         ceil_mode: bool = False,
         count_include_pad: bool = True,
     ) -> None:
-        """Implement the __init__ method."""
+        """Initialize AvgPool2d with configured parameters and state.
+
+        Args:
+            kernel_size: Parameter specifying kernel size (int | tuple[int, int]).
+            stride: Parameter specifying stride (int | tuple[int, int]).
+            padding: Parameter specifying padding (int | tuple[int, int]).
+            ceil_mode: Parameter specifying ceil mode (bool).
+            count_include_pad: Parameter specifying count include pad (bool).
+        """
         kernel_size_ = _pair(kernel_size)
         stride_ = _pair(stride) if stride is not None else kernel_size_
         padding_ = _pair(padding)
@@ -163,13 +237,26 @@ class AvgPool2d(_AvgPoolNd):
 class _AdaptiveAvgPoolNd(Module):
     """Class _AdaptiveAvgPoolNd implementation."""
 
-    def __init__(self, output_size: Any) -> None:
-        """Implement the __init__ method."""
+    def __init__(
+        self, output_size: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> None:
+        """Initialize _AdaptiveAvgPoolNd with configured parameters and state.
+
+        Args:
+            output_size: Parameter specifying output size (Union[int, float, str, bool, bytes, list, dict, tuple, None]).
+        """
         super().__init__()
         self.output_size = output_size
 
     def forward(self, input: Tensor) -> Tensor:
-        """Implement the forward method."""
+        """Execute forward on _AdaptiveAvgPoolNd.
+
+        Args:
+            input: Parameter specifying input (Tensor).
+
+        Returns:
+            Result of forward (Tensor).
+        """
         from onnx9000.converters.frontend.utils import record_op
 
         return record_op("GlobalAveragePool", [input])
@@ -179,5 +266,9 @@ class AdaptiveAvgPool2d(_AdaptiveAvgPoolNd):
     """AdaptiveAvgPool2d."""
 
     def __init__(self, output_size: int | tuple[int, int]) -> None:
-        """Implement the __init__ method."""
+        """Initialize AdaptiveAvgPool2d with configured parameters and state.
+
+        Args:
+            output_size: Parameter specifying output size (int | tuple[int, int]).
+        """
         super().__init__(output_size)

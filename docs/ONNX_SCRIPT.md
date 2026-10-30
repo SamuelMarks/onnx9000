@@ -18,10 +18,12 @@
 from onnx9000.toolkit.script import script, op
 from onnx9000.core.dtypes import DType
 
+
 @script
 def my_model(x):
     # Arithmetic is automatically converted to ONNX ops
     return op.Relu(x + 1.0)
+
 
 # Compiles the Python AST into a zero-dependency onnx9000-core Graph
 model = my_model.to_graph()

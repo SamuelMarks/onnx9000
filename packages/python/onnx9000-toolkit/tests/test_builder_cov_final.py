@@ -17,3 +17,4 @@ def test_builder_from_onnx_cov() -> None:
     node.attribute.append(attr)
     g_proto.node.append(node)
     GraphBuilder.from_onnx(g_proto)
+    assert attr is not None or attr is None

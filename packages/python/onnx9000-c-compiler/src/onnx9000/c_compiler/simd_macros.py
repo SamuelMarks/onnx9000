@@ -3,7 +3,7 @@
 from onnx9000.c_compiler.ast_builder import C89Builder
 
 
-def emit_simd_macros(b: C89Builder):
+def emit_simd_macros(b: C89Builder) -> None:
     """Emit SIMD macros and block-quantized dot product functions."""
     b.emit("/* SIMD Macros */")
     b.emit("#if defined(__ARM_NEON)")

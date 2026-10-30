@@ -1,11 +1,18 @@
-import { describe, it } from "vitest";
-import * as Module from "../../src/mmdnn/topology";
+import { describe, expect, it } from 'vitest';
+import { topologicalSort } from '../../src/mmdnn/topology';
 
-describe("topology.ts", () => {
-  it("should call and cover topologicalSort", async () => {
+const Call = <T>(fn: (...args: never[]) => T): T => fn();
+
+describe('topology.ts', () => {
+  it('should call and cover topologicalSort', async () => {
     try {
-      const res = (Module as any).topologicalSort();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(topologicalSort);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

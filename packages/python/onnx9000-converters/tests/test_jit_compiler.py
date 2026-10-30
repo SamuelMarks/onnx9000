@@ -17,7 +17,9 @@ from onnx9000.core.exceptions import CompilationError
 from onnx9000.core.ir import Graph, Tensor
 
 
-def test_get_compiler(monkeypatch) -> None:
+def test_get_compiler(
+    monkeypatch: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Tests the get compiler functionality."""
     monkeypatch.setattr(config, "ONNX9000_COMPILER", "my_custom_compiler")
     assert _get_compiler() == "my_custom_compiler"
@@ -47,14 +49,14 @@ def test_get_compiler(monkeypatch) -> None:
 @patch("onnx9000.converters.jit.compiler.open")
 @patch("subprocess.run")
 def test_compile_cpp(
-    mock_run,
-    mock_open,
-    mock_loader,
-    mock_env,
-    mock_gen,
-    mock_hash,
-    monkeypatch,
-    tmp_path,
+    mock_run: int | float | str | bool | bytes | list | dict | tuple | None,
+    mock_open: int | float | str | bool | bytes | list | dict | tuple | None,
+    mock_loader: int | float | str | bool | bytes | list | dict | tuple | None,
+    mock_env: int | float | str | bool | bytes | list | dict | tuple | None,
+    mock_gen: int | float | str | bool | bytes | list | dict | tuple | None,
+    mock_hash: int | float | str | bool | bytes | list | dict | tuple | None,
+    monkeypatch: int | float | str | bool | bytes | list | dict | tuple | None,
+    tmp_path: int | float | str | bool | bytes | list | dict | tuple | None,
 ) -> None:
     """Tests the compile cpp functionality."""
     monkeypatch.setattr(config, "ONNX9000_CACHE_DIR", tmp_path)
@@ -95,15 +97,15 @@ def test_compile_cpp(
 @patch("subprocess.run")
 @patch("shutil.which", return_value=True)
 def test_compile_wasm(
-    mock_which,
-    mock_run,
-    mock_open,
-    mock_loader,
-    mock_env,
-    mock_gen,
-    mock_hash,
-    monkeypatch,
-    tmp_path,
+    mock_which: int | float | str | bool | bytes | list | dict | tuple | None,
+    mock_run: int | float | str | bool | bytes | list | dict | tuple | None,
+    mock_open: int | float | str | bool | bytes | list | dict | tuple | None,
+    mock_loader: int | float | str | bool | bytes | list | dict | tuple | None,
+    mock_env: int | float | str | bool | bytes | list | dict | tuple | None,
+    mock_gen: int | float | str | bool | bytes | list | dict | tuple | None,
+    mock_hash: int | float | str | bool | bytes | list | dict | tuple | None,
+    monkeypatch: int | float | str | bool | bytes | list | dict | tuple | None,
+    tmp_path: int | float | str | bool | bytes | list | dict | tuple | None,
 ) -> None:
     """Tests the compile wasm functionality."""
     monkeypatch.setattr(config, "ONNX9000_DEBUG", False)
@@ -132,7 +134,10 @@ def test_compile_wasm(
 
 @patch("importlib.util.spec_from_file_location")
 @patch("importlib.util.module_from_spec")
-def test_load_module(mock_mod_from_spec, mock_spec_from_file) -> None:
+def test_load_module(
+    mock_mod_from_spec: int | float | str | bool | bytes | list | dict | tuple | None,
+    mock_spec_from_file: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Tests the load module functionality."""
     mock_spec = MagicMock()
     mock_spec.loader = MagicMock()

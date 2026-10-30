@@ -5,7 +5,7 @@ from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.optimizer.simplifier.passes.dce import IdentityEliminationPass
 
 
-def test_chained_expand():
+def test_chained_expand() -> None:
     """Test chained expand."""
     g = Graph("TestChainedExpand")
     g.inputs = ["X"]
@@ -26,7 +26,7 @@ def test_chained_expand():
     assert changed
 
 
-def test_reduce_scalar():
+def test_reduce_scalar() -> None:
     """Test reduce scalar."""
     g = Graph("TestReduceScalar")
     g.inputs = ["X"]
@@ -42,7 +42,7 @@ def test_reduce_scalar():
     assert changed
 
 
-def test_rewire_out_string():
+def test_rewire_out_string() -> None:
     """Test rewire out string."""
     g = Graph("TestRewireStr")
     g.inputs = ["X"]

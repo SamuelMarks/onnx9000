@@ -1,13 +1,10 @@
 """Mobilevit."""
 
-from typing import Any, Optional
-
 from onnx9000.core.ir import Tensor, Variable
-from onnx9000.core.ops import add, flatten, global_average_pool, reshape
+from onnx9000.core.ops import add, flatten, global_average_pool
 from onnx9000.core.primitives import (
     BatchNormalization,
     ConvND,
-    DepthwiseConv,
     Gemm,
     LayerNormalization,
     MultiHeadAttention,
@@ -16,15 +13,34 @@ from onnx9000.core.primitives import (
 
 
 def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:
-    """Docstring for D103."""
+    """Execute get param operation.
+
+    Args:
+        name: Parameter specifying name (str).
+        shape: Parameter specifying shape (list[int]).
+        dtype: Parameter specifying dtype (int).
+
+    Returns:
+        Result of get param (Variable).
+    """
     return Variable(name=name, shape=shape, dtype=dtype)
 
 
 class MobileViTBlock:
     """MobileViT block combining Convolutions and Transformers."""
 
-    def __init__(self, dim: int, out_dim: int, num_heads: int, mlp_dim: int, prefix: str = ""):
-        """Docstring for D107."""
+    def __init__(
+        self, dim: int, out_dim: int, num_heads: int, mlp_dim: int, prefix: str = ""
+    ) -> None:
+        """Initialize MobileViTBlock with configured parameters and state.
+
+        Args:
+            dim: Parameter specifying dim (int).
+            out_dim: Parameter specifying out dim (int).
+            num_heads: Parameter specifying num heads (int).
+            mlp_dim: Parameter specifying mlp dim (int).
+            prefix: Parameter specifying prefix (str).
+        """
         self.prefix = prefix
         self.dim = dim
         self.out_dim = out_dim
@@ -56,7 +72,14 @@ class MobileViTBlock:
         self.fusion_act2 = Silu()
 
     def __call__(self, x: Tensor) -> Tensor:
-        """Docstring for D102."""
+        """Invoke MobileViTBlock with the provided inputs and keyword arguments.
+
+        Args:
+            x: Parameter specifying x (Tensor).
+
+        Returns:
+            Result of call (Tensor).
+        """
         identity = x
 
         # Local
@@ -158,8 +181,12 @@ class MobileViTBlock:
 class MobileViT:
     """MobileViT implementation."""
 
-    def __init__(self, num_classes: int = 1000):
-        """Docstring for D107."""
+    def __init__(self, num_classes: int = 1000) -> None:
+        """Initialize MobileViT with configured parameters and state.
+
+        Args:
+            num_classes: Parameter specifying num classes (int).
+        """
         self.num_classes = num_classes
         self.stem_conv = ConvND(2, 3, 16, kernel_size=3, stride=2, padding=1, bias=False)
         self.stem_bn = BatchNormalization(16)
@@ -174,7 +201,14 @@ class MobileViT:
         self.classifier = Gemm(trans_b=1)
 
     def __call__(self, x: Tensor) -> Tensor:
-        """Docstring for D102."""
+        """Invoke MobileViT with the provided inputs and keyword arguments.
+
+        Args:
+            x: Parameter specifying x (Tensor).
+
+        Returns:
+            Result of call (Tensor).
+        """
         x = self.stem_conv(x, get_param("stem_conv.weight", [16, 3, 3, 3]))
         x = self.stem_bn(
             x,
@@ -208,6 +242,15 @@ class MobileViT:
         return x
 
 
-def mobilevit_s(**kwargs: Any) -> MobileViT:
-    """Docstring for D103."""
+def mobilevit_s(
+    **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> MobileViT:
+    """Execute mobilevit s operation.
+
+    Args:
+        **kwargs: Variadic keyword arguments for kwargs.
+
+    Returns:
+        Result of mobilevit s (MobileViT).
+    """
     return MobileViT(**kwargs)

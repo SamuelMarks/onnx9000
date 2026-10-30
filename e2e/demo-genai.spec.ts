@@ -4,7 +4,7 @@ test.describe('GenAI Demo App', () => {
   test.beforeEach(async ({ page }) => {
     try {
       await page.goto('/genai');
-    } catch (_e) {
+    } catch {
       test.skip();
     }
   });

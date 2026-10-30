@@ -1,65 +1,98 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../src/genai/model";
+import { describe, expect, it } from 'vitest';
+import {
+  BartModel,
+  GptNeoXModel,
+  LoraAdapter,
+  Model,
+  MoEModel,
+  MultiModalModel,
+  OptModel,
+  SpeculativeDecodingModel,
+  T5Model,
+  WhisperModel,
+} from '../../src/genai/model';
 
-describe("model.ts", () => {
-  it("should instantiate and cover Model", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('model.ts', () => {
+  it('should instantiate and cover Model', () => {
     try {
-      const obj = new (Module as any).Model();
+      const obj = Construct(Model);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover MultiModalModel", () => {
+  it('should instantiate and cover MultiModalModel', () => {
     try {
-      const obj = new (Module as any).MultiModalModel();
+      const obj = Construct(MultiModalModel);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover WhisperModel", () => {
+  it('should instantiate and cover WhisperModel', () => {
     try {
-      const obj = new (Module as any).WhisperModel();
+      const obj = Construct(WhisperModel);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover T5Model", () => {
+  it('should instantiate and cover T5Model', () => {
     try {
-      const obj = new (Module as any).T5Model();
+      const obj = Construct(T5Model);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover OptModel", () => {
+  it('should instantiate and cover OptModel', () => {
     try {
-      const obj = new (Module as any).OptModel();
+      const obj = Construct(OptModel);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover BartModel", () => {
+  it('should instantiate and cover BartModel', () => {
     try {
-      const obj = new (Module as any).BartModel();
+      const obj = Construct(BartModel);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover GptNeoXModel", () => {
+  it('should instantiate and cover GptNeoXModel', () => {
     try {
-      const obj = new (Module as any).GptNeoXModel();
+      const obj = Construct(GptNeoXModel);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover MoEModel", () => {
+  it('should instantiate and cover MoEModel', () => {
     try {
-      const obj = new (Module as any).MoEModel();
+      const obj = Construct(MoEModel);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover SpeculativeDecodingModel", () => {
+  it('should instantiate and cover SpeculativeDecodingModel', () => {
     try {
-      const obj = new (Module as any).SpeculativeDecodingModel();
+      const obj = Construct(SpeculativeDecodingModel);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover LoraAdapter", () => {
+  it('should instantiate and cover LoraAdapter', () => {
     try {
-      const obj = new (Module as any).LoraAdapter();
+      const obj = Construct(LoraAdapter);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

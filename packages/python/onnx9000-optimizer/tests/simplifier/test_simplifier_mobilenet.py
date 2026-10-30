@@ -5,7 +5,7 @@ from onnx9000.core.ir import Constant, Graph, Node, ValueInfo, Variable
 from onnx9000.optimizer.simplifier.api import simplify
 
 
-def test_fold_batch_normalization_natively_on_standard_mobilenet():
+def test_fold_batch_normalization_natively_on_standard_mobilenet() -> None:
     """Test that BatchNormalization is correctly folded when all its inputs are constants."""
     graph = Graph("MobileNet_Simulated")
 

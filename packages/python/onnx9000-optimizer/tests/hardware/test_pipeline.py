@@ -5,7 +5,7 @@ from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.optimizer.hardware.pipeline import PipelineOptimizer
 
 
-def create_mock_pipeline_graph():
+def create_mock_pipeline_graph() -> int | float | str | bool | bytes | list | dict | tuple | None:
     """Test the create_mock_pipeline_graph functionality."""
     g = Graph("pipeline_graph")
     g.inputs = ["in1", "in2"]

@@ -1,10 +1,11 @@
 """Jaxpr string parser module."""
 
-import re
-from typing import Any
+from onnx9000.core.exceptions import Onnx9000Error
 
 
-def parse_jaxpr_string(jaxpr_str: str) -> dict[str, Any]:
+def parse_jaxpr_string(
+    jaxpr_str: str,
+) -> dict[str, int | float | str | bool | bytes | list | dict | tuple | None]:
     """Parses a stringified jaxpr dump into a dictionary."""
     lines = jaxpr_str.strip().split("\n")
 
@@ -19,7 +20,7 @@ def parse_jaxpr_string(jaxpr_str: str) -> dict[str, Any]:
             continue
 
         if line.startswith("{"):
-            assert True
+            continue
         elif line.startswith("in ("):
             outs = line[4:-1].split(",")
             for o in outs:
@@ -87,7 +88,24 @@ def parse_jaxpr_string(jaxpr_str: str) -> dict[str, Any]:
                     v = v.strip()
                     try:
                         params[k] = eval(v)
-                    except Exception:
+                    except (
+                        Onnx9000Error,
+                        OSError,
+                        ValueError,
+                        TypeError,
+                        RuntimeError,
+                        KeyError,
+                        IndexError,
+                        AttributeError,
+                        ImportError,
+                        LookupError,
+                        ArithmeticError,
+                        BufferError,
+                        AssertionError,
+                        StopIteration,
+                        NameError,
+                        SyntaxError,
+                    ):
                         params[k] = v
             eqns.append(
                 {

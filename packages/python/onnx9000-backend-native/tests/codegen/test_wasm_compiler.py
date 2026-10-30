@@ -11,7 +11,7 @@ from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Node, Tensor
 
 
-def test_compile_add_graph_wasm():
+def test_compile_add_graph_wasm() -> None:
     """Test compilation of a graph to WASM."""
     g = Graph("AddGraph")
     g.inputs = ["A", "B"]
@@ -56,17 +56,19 @@ def test_compile_add_graph_wasm():
         assert os.path.exists(wasm_path_node.replace(".js", ".d.ts"))
 
 
-def test_compile_wasm_failed():
+def test_compile_wasm_failed() -> None:
     """Test WASM compilation failure handling."""
-    with patch(
-        "subprocess.run",
-        side_effect=subprocess.CalledProcessError(1, "emcc", stderr="error"),
+    with (
+        patch(
+            "subprocess.run",
+            side_effect=subprocess.CalledProcessError(1, "emcc", stderr="error"),
+        ),
+        pytest.raises(RuntimeError, match="WASM Compilation failed"),
     ):
-        with pytest.raises(RuntimeError, match="WASM Compilation failed"):
-            compile_wasm("int main() { return 0; }")
+        compile_wasm("int main() { return 0; }")
 
 
-def test_compile_wasm_not_found():
+def test_compile_wasm_not_found() -> None:
     """Test WASM compilation failure when emcc is not found."""
     with patch("subprocess.run", side_effect=FileNotFoundError):
         with pytest.raises(RuntimeError, match="emcc not found"):

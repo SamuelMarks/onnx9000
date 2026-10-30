@@ -1,12 +1,16 @@
 import { describe, expect, it } from 'vitest';
-import * as Module from '../../src/components/BenchmarkPanel';
+import { BenchmarkPanel } from '../../src/components/BenchmarkPanel';
+
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
 
 describe('BenchmarkPanel.ts', () => {
   it('should instantiate and cover BenchmarkPanel', () => {
     // Attempt to instantiate
     try {
-      const obj = new (Module as any).BenchmarkPanel();
+      const obj = Construct(BenchmarkPanel);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

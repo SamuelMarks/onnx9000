@@ -7,10 +7,11 @@ name = "onnx9000-custom-ops"
 version = "1.0.0"
 description = "Custom operations registration for ONNX9000"
 readme = "README.md"
-requires-python = ">=3.8"
-dependencies = [
-    "onnx>=1.14.0",
-]
+requires-python = ">=3.10"
+dependencies = []
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/onnx9000_custom_ops"]
+packages = ["src/onnx9000", "src/onnx9000_custom_ops"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

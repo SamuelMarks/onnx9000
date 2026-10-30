@@ -1,7 +1,6 @@
 """Memory mapping and tensor file reading utilities."""
 
 from pathlib import Path
-from typing import Union
 
 from onnx9000.core.exceptions import Onnx9000Error
 
@@ -37,7 +36,22 @@ def mmap_tensor_data(file_path: str | Path, offset: int, length: int) -> memoryv
         view = memoryview(mm)
         sliced_view = view[relative_offset : relative_offset + length]
         return sliced_view
-    except Exception as e:
+    except (
+        Onnx9000Error,
+        OSError,
+        ValueError,
+        TypeError,
+        RuntimeError,
+        KeyError,
+        IndexError,
+        AttributeError,
+        ImportError,
+        LookupError,
+        ArithmeticError,
+        BufferError,
+        AssertionError,
+        StopIteration,
+    ) as e:
         f.close()
         raise MemoryMapError(f"Failed to mmap {path}: {e}") from e
     finally:

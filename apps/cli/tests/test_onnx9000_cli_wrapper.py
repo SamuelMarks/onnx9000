@@ -1,20 +1,22 @@
 """Tests for the ONNX9000 CLI wrapper."""
 
-import os
 import sys
 from unittest import mock
-
-import pytest
 
 import onnx9000.__main__
 import onnx9000.cli
 
 
-def test_cli_wrapper_success(monkeypatch):
+def test_cli_wrapper_success(
+    monkeypatch: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Test successful import and execution."""
     called = False
 
-    def mock_main(*args, **kwargs):
+    def mock_main(
+        *args: int | float | str | bool | bytes | list | dict | tuple | None,
+        **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
         """Mock main."""
         nonlocal called
         called = True
@@ -31,14 +33,19 @@ def test_cli_wrapper_success(monkeypatch):
     assert called
 
 
-def test_cli_wrapper_fallback_success(monkeypatch):
+def test_cli_wrapper_fallback_success(
+    monkeypatch: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Test fallback logic when first import fails but second succeeds."""
     if "onnx9000_cli.main" in sys.modules:
         monkeypatch.delitem(sys.modules, "onnx9000_cli.main", raising=False)
 
     called = False
 
-    def mock_main(*args, **kwargs):
+    def mock_main(
+        *args: int | float | str | bool | bytes | list | dict | tuple | None,
+        **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
         """Mock main."""
         nonlocal called
         called = True
@@ -47,7 +54,13 @@ def test_cli_wrapper_fallback_success(monkeypatch):
 
     import_calls = 0
 
-    def side_effect_import(name, globals=None, locals=None, fromlist=(), level=0):
+    def side_effect_import(
+        name: int | float | str | bool | bytes | list | dict | tuple | None,
+        globals: int | float | str | bool | bytes | list | dict | tuple | None = None,
+        locals: int | float | str | bool | bytes | list | dict | tuple | None = None,
+        fromlist: int | float | str | bool | bytes | list | dict | tuple | None = (),
+        level: int | float | str | bool | bytes | list | dict | tuple | None = 0,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Side effect import."""
         nonlocal import_calls
         if name == "onnx9000_cli.main" and fromlist:
@@ -67,14 +80,22 @@ def test_cli_wrapper_fallback_success(monkeypatch):
     assert import_calls == 2
 
 
-def test_cli_wrapper_fallback_failure(monkeypatch):
+def test_cli_wrapper_fallback_failure(
+    monkeypatch: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Test fallback logic when both imports fail."""
     if "onnx9000_cli.main" in sys.modules:
         monkeypatch.delitem(sys.modules, "onnx9000_cli.main", raising=False)
 
     original_import = __import__
 
-    def side_effect_import(name, globals=None, locals=None, fromlist=(), level=0):
+    def side_effect_import(
+        name: int | float | str | bool | bytes | list | dict | tuple | None,
+        globals: int | float | str | bool | bytes | list | dict | tuple | None = None,
+        locals: int | float | str | bool | bytes | list | dict | tuple | None = None,
+        fromlist: int | float | str | bool | bytes | list | dict | tuple | None = (),
+        level: int | float | str | bool | bytes | list | dict | tuple | None = 0,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Side effect import."""
         if name == "onnx9000_cli.main" and fromlist:
             raise ImportError("Always fails")
@@ -87,25 +108,23 @@ def test_cli_wrapper_fallback_failure(monkeypatch):
                 mock_exit.assert_called_once_with(1)
 
 
-def test_main_block():
+def test_main_block() -> None:
     """Test the __main__ block logic in cli.py."""
-    with mock.patch("sys.argv", ["onnx9000"]):
-        with mock.patch("sys.exit"):
-            with mock.patch("onnx9000_cli.main.main") as mock_real_main:
-                with open(onnx9000.cli.__file__) as f:
-                    code = compile(f.read(), onnx9000.cli.__file__, "exec")
-                    exec(code, {"__name__": "__main__"})
-                mock_real_main.assert_called_once()
+    with mock.patch("sys.argv", ["onnx9000"]), mock.patch("sys.exit"):
+        with mock.patch("onnx9000_cli.main.main") as mock_real_main:
+            with open(onnx9000.cli.__file__) as f:
+                code = compile(f.read(), onnx9000.cli.__file__, "exec")
+                exec(code, {"__name__": "__main__"})
+            mock_real_main.assert_called_once()
 
 
-def test_dunder_main_block():
+def test_dunder_main_block() -> None:
     """Test the __main__ block logic in __main__.py."""
-    with mock.patch("onnx9000.cli.main") as mock_main:
-        with mock.patch("sys.argv", ["onnx9000"]):
-            with open(onnx9000.__main__.__file__) as f:
-                code = compile(f.read(), onnx9000.__main__.__file__, "exec")
-                exec(
-                    code,
-                    {"__name__": "__main__", "__file__": onnx9000.__main__.__file__},
-                )
-            mock_main.assert_called_once()
+    with mock.patch("onnx9000.cli.main") as mock_main, mock.patch("sys.argv", ["onnx9000"]):
+        with open(onnx9000.__main__.__file__) as f:
+            code = compile(f.read(), onnx9000.__main__.__file__, "exec")
+            exec(
+                code,
+                {"__name__": "__main__", "__file__": onnx9000.__main__.__file__},
+            )
+        mock_main.assert_called_once()

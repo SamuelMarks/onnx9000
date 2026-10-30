@@ -1,7 +1,5 @@
 """Functional interface."""
 
-from typing import Any
-
 from onnx9000.converters.frontend.tensor import Tensor
 
 
@@ -87,10 +85,10 @@ def log_softmax(input: Tensor, dim: int = -1) -> Tensor:
 
 def max_pool2d(
     input: Tensor,
-    kernel_size: Any,
-    stride: Any = None,
-    padding: Any = 0,
-    dilation: Any = 1,
+    kernel_size: int | float | str | bool | bytes | list | dict | tuple | None,
+    stride: int | float | str | bool | bytes | list | dict | tuple | None = None,
+    padding: int | float | str | bool | bytes | list | dict | tuple | None = 0,
+    dilation: int | float | str | bool | bytes | list | dict | tuple | None = 1,
     ceil_mode: bool = False,
     return_indices: bool = False,
 ) -> Tensor:
@@ -111,7 +109,9 @@ def max_pool2d(
     """
     from onnx9000.converters.frontend.utils import record_op
 
-    def _pair(x):
+    def _pair(
+        x: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Convert int or tuple to (int, int)."""
         return (x, x) if isinstance(x, int) else x
 
@@ -152,9 +152,9 @@ def conv2d(
     input: Tensor,
     weight: Tensor,
     bias: Tensor | None = None,
-    stride: Any = 1,
-    padding: Any = 0,
-    dilation: Any = 1,
+    stride: int | float | str | bool | bytes | list | dict | tuple | None = 1,
+    padding: int | float | str | bool | bytes | list | dict | tuple | None = 0,
+    dilation: int | float | str | bool | bytes | list | dict | tuple | None = 1,
     groups: int = 1,
 ) -> Tensor:
     """Apply a 2D convolution over an input image composed of several input planes.
@@ -174,7 +174,9 @@ def conv2d(
     """
     from onnx9000.converters.frontend.utils import record_op
 
-    def _pair(x):
+    def _pair(
+        x: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Convert int or tuple to (int, int)."""
         return (x, x) if isinstance(x, int) else x
 
@@ -230,8 +232,8 @@ def pad(input: Tensor, pad: tuple[int], mode: str = "constant", value: float = 0
 
 def interpolate(
     input: Tensor,
-    size: Any | None = None,
-    scale_factor: Any | None = None,
+    size: int | float | str | bool | bytes | list | dict | tuple | None | None = None,
+    scale_factor: int | float | str | bool | bytes | list | dict | tuple | None | None = None,
     mode: str = "nearest",
     align_corners: bool | None = None,
 ) -> Tensor:

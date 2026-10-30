@@ -4,6 +4,8 @@ import ctypes
 import ctypes.util
 import logging
 
+from onnx9000.core.exceptions import BackendExecutionError, Onnx9000Error
+
 logger = logging.getLogger(__name__)
 _hip_lib = None
 _rocblas_lib = None
@@ -11,17 +13,62 @@ _miopen_lib = None
 try:
     _hip_path = ctypes.util.find_library("amdhip64") or "libamdhip64.so"
     _hip_lib = ctypes.CDLL(_hip_path)
-except Exception as e:
+except (
+    Onnx9000Error,
+    OSError,
+    ValueError,
+    TypeError,
+    RuntimeError,
+    KeyError,
+    IndexError,
+    AttributeError,
+    ImportError,
+    LookupError,
+    ArithmeticError,
+    BufferError,
+    AssertionError,
+    StopIteration,
+) as e:
     logger.debug(f"HIP library not found: {e}")
 try:
     _rocblas_path = ctypes.util.find_library("rocblas") or "librocblas.so"
     _rocblas_lib = ctypes.CDLL(_rocblas_path)
-except Exception as e:
+except (
+    Onnx9000Error,
+    OSError,
+    ValueError,
+    TypeError,
+    RuntimeError,
+    KeyError,
+    IndexError,
+    AttributeError,
+    ImportError,
+    LookupError,
+    ArithmeticError,
+    BufferError,
+    AssertionError,
+    StopIteration,
+) as e:
     logger.debug(f"rocBLAS library not found: {e}")
 try:
     _miopen_path = ctypes.util.find_library("MIOpen") or "libMIOpen.so"
     _miopen_lib = ctypes.CDLL(_miopen_path)
-except Exception as e:
+except (
+    Onnx9000Error,
+    OSError,
+    ValueError,
+    TypeError,
+    RuntimeError,
+    KeyError,
+    IndexError,
+    AttributeError,
+    ImportError,
+    LookupError,
+    ArithmeticError,
+    BufferError,
+    AssertionError,
+    StopIteration,
+) as e:
     logger.debug(f"MIOpen library not found: {e}")
 
 
@@ -47,7 +94,7 @@ miopenHandle_t = ctypes.c_void_p
 miopenTensorDescriptor_t = ctypes.c_void_p
 
 
-def _register_hip_api(lib) -> None:
+def _register_hip_api(lib: int | float | str | bool | bytes | list | dict | tuple | None) -> None:
     """Execute the  register hip api operation."""
     if lib is None:
         return
@@ -78,7 +125,9 @@ def _register_hip_api(lib) -> None:
     ]
 
 
-def _register_rocblas_api(lib) -> None:
+def _register_rocblas_api(
+    lib: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Execute the  register rocblas api operation."""
     if lib is None:
         return
@@ -119,7 +168,9 @@ def _register_rocblas_api(lib) -> None:
     ]
 
 
-def _register_miopen_api(lib) -> None:
+def _register_miopen_api(
+    lib: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Execute the  register miopen api operation."""
     if lib is None:
         return
@@ -184,16 +235,16 @@ _register_miopen_api(_miopen_lib)
 def check_hip_error(result: int) -> None:
     """Execute the check hip error operation."""
     if result != 0:
-        raise RuntimeError(f"HIP Error: {result}")
+        raise BackendExecutionError(f"HIP Error: {result}")
 
 
 def check_rocblas_error(result: int) -> None:
     """Execute the check rocblas error operation."""
     if result != 0:
-        raise RuntimeError(f"rocBLAS Error: {result}")
+        raise BackendExecutionError(f"rocBLAS Error: {result}")
 
 
 def check_miopen_error(result: int) -> None:
     """Execute the check miopen error operation."""
     if result != 0:
-        raise RuntimeError(f"MIOpen Error: {result}")
+        raise BackendExecutionError(f"MIOpen Error: {result}")

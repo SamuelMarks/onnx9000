@@ -1,6 +1,6 @@
 """Layout optimization for onnx9000."""
 
-from onnx9000.core.ir import Graph, Tensor
+from onnx9000.core.ir import Graph
 
 
 def optimize_layouts(graph: Graph, target_layout: str = "NHWC") -> Graph:

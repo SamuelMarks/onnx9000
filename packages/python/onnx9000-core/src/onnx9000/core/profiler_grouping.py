@@ -1,7 +1,6 @@
 """Advanced namespace and layer-by-layer grouping for ONNX profiling."""
 
 import json
-from typing import Any
 
 
 def extract_namespace(name: str, delimiter: str = ".") -> list[str]:
@@ -19,8 +18,12 @@ def extract_namespace(name: str, delimiter: str = ".") -> list[str]:
 class HierarchicalProfileNode:
     """Represents the Hierarchical Profile Node class."""
 
-    def __init__(self, name: str):
-        """Initialize the instance."""
+    def __init__(self, name: str) -> None:
+        """Initialize HierarchicalProfileNode with configured parameters and state.
+
+        Args:
+            name: Parameter specifying name (str).
+        """
         self.name = name
         self.macs = 0
         self.flops = 0
@@ -28,7 +31,7 @@ class HierarchicalProfileNode:
         self.activation_bytes = 0
         self.children: dict[str, HierarchicalProfileNode] = {}
 
-    def add_stats(self, macs: int, flops: int, params: int, activation_bytes: int):
+    def add_stats(self, macs: int, flops: int, params: int, activation_bytes: int) -> None:
         """Execute the add stats operation."""
         if isinstance(macs, int):
             self.macs += macs
@@ -39,7 +42,7 @@ class HierarchicalProfileNode:
         if isinstance(activation_bytes, int):
             self.activation_bytes += activation_bytes
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self) -> dict[str, int | float | str | bool | bytes | list | dict | tuple | None]:
         """Execute the to dict operation."""
         d = {
             "name": self.name,
@@ -52,7 +55,7 @@ class HierarchicalProfileNode:
             d["children"] = [c.to_dict() for c in self.children.values()]
         return d
 
-    def print_tree(self, indent: int = 0):
+    def print_tree(self, indent: int = 0) -> None:
         """Execute the print tree operation."""
         pad = "  " * indent
         print(
@@ -62,7 +65,9 @@ class HierarchicalProfileNode:
             c.print_tree(indent + 1)
 
 
-def group_by_namespace(profiler_result) -> HierarchicalProfileNode:
+def group_by_namespace(
+    profiler_result: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> HierarchicalProfileNode:
     """Take a ProfilerResult and groups its flat node_profiles into a hierarchical tree."""
     root = HierarchicalProfileNode("root")
 
@@ -92,14 +97,18 @@ def group_by_namespace(profiler_result) -> HierarchicalProfileNode:
     return root
 
 
-def export_hierarchical_json(profiler_result, filepath: str):
+def export_hierarchical_json(
+    profiler_result: int | float | str | bool | bytes | list | dict | tuple | None, filepath: str
+) -> None:
     """Execute the export hierarchical json operation."""
     tree = group_by_namespace(profiler_result)
     with open(filepath, "w") as f:
         json.dump(tree.to_dict(), f, indent=2)
 
 
-def to_pandas_dataframe(profiler_result) -> list[dict[str, Any]]:
+def to_pandas_dataframe(
+    profiler_result: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> list[dict[str, int | float | str | bool | bytes | list | dict | tuple | None]]:
     """Return a list of dictionaries ready to be ingested by Pandas DataFrame."""
     df_data = []
     for n in profiler_result.node_profiles:
@@ -119,7 +128,9 @@ def to_pandas_dataframe(profiler_result) -> list[dict[str, Any]]:
     return df_data
 
 
-def export_csv(profiler_result, filepath: str):
+def export_csv(
+    profiler_result: int | float | str | bool | bytes | list | dict | tuple | None, filepath: str
+) -> None:
     """Execute the export csv operation."""
     df_data = to_pandas_dataframe(profiler_result)
     if not df_data:

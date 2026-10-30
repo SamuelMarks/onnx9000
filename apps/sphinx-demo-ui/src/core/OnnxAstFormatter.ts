@@ -1,4 +1,6 @@
-// @ts-nocheck
+/**
+ * @fileoverview OnnxAstFormatter module for sphinx-demo-ui.
+ */
 import type { VizGraph } from './OnnxAdapter';
 
 /**

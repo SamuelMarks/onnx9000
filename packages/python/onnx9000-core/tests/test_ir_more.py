@@ -1,6 +1,6 @@
 """Tests the ir more module functionality."""
 
-from onnx9000.core.ir import *
+from onnx9000.core.ir import Attribute, Constant, Graph, Node, Tensor, Variable
 
 
 def test_ir_more() -> None:
@@ -80,8 +80,8 @@ def test_ir_edge_cases() -> None:
     assert g_other_nodes != g_other_nodes2
 
 
-def test_sparse_ir():
-    """Docstring for D103."""
+def test_sparse_ir() -> None:
+    """Verify that sparse ir behaves as expected."""
     from onnx9000.core.ir import Attribute, Graph, SparseTensor, Tensor
 
     st = SparseTensor("sp")

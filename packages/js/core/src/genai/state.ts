@@ -1,5 +1,9 @@
-import type { Graph } from "../ir/graph.js";
-import { Tensor } from "../ir/tensor.js";
+/**
+ * @fileoverview state module for core.
+ */
+import { ShapeInferenceError } from '../exceptions.js';
+import type { Graph } from '../ir/graph.js';
+import { Tensor } from '../ir/tensor.js';
 
 /**
  * KV Cache abstraction for self-attention layers.
@@ -28,6 +32,7 @@ export interface KVCache {
  * Stores a single concatenated tensor of all past keys/values per layer.
  */
 export class ContinuousKVCache implements KVCache {
+  /** Property `cache` of `ContinuousKVCache`. */
   private cache: Map<number, { keys: Tensor; values: Tensor }> = new Map();
 
   /** Clear the continuous cache. */
@@ -62,6 +67,7 @@ export class ContinuousKVCache implements KVCache {
 export class PagedKVCache implements KVCache {
   /** Mapping of layer index to block pointers */
   public blockTables: Map<number, number[]> = new Map();
+  /** Property `pages` of `PagedKVCache`. */
   private pages: Map<number, { keys: Tensor; values: Tensor }[]> = new Map();
 
   /** Clear all pages. */
@@ -91,7 +97,7 @@ export class PagedKVCache implements KVCache {
     if (!blocks || blocks.length === 0) {
       return null;
     }
-    return blocks[blocks.length - 1]!;
+    return blocks[blocks.length - 1] as { keys: Tensor; values: Tensor };
   }
 }
 
@@ -99,6 +105,7 @@ export class PagedKVCache implements KVCache {
  * Synchronizes and manages KV caches across multiple transformer layers.
  */
 export class CrossLayerKVCache implements KVCache {
+  /** Property `caches` of `CrossLayerKVCache`. */
   private caches: Map<number, KVCache> = new Map();
 
   /**
@@ -144,8 +151,11 @@ export class CrossLayerKVCache implements KVCache {
  * Implements memory reuse across multiple generation requests using a pool.
  */
 export class MemoryReuseKVCache implements KVCache {
+  /** Property `poolSize` of `MemoryReuseKVCache`. */
   private poolSize: number;
+  /** Property `pool` of `MemoryReuseKVCache`. */
   private pool: { keys: Tensor; values: Tensor }[] = [];
+  /** Property `active` of `MemoryReuseKVCache`. */
   private active: Map<number, { keys: Tensor; values: Tensor }> = new Map();
 
   /**
@@ -222,7 +232,9 @@ export class State {
  * Implementation of KV Cache for standard Multi-Head Attention.
  */
 export class MultiHeadAttentionCache implements KVCache {
+  /** Property `cache` of `MultiHeadAttentionCache`. */
   private cache: Map<number, { keys: Tensor; values: Tensor }> = new Map();
+  /** Property `numHeads` of `MultiHeadAttentionCache`. */
   private numHeads: number;
 
   /**
@@ -249,7 +261,7 @@ export class MultiHeadAttentionCache implements KVCache {
     const keysHeads = keys.shape[1] as number;
     const valuesHeads = values.shape[1] as number;
     if (keysHeads !== this.numHeads || valuesHeads !== this.numHeads) {
-      throw new Error(
+      throw new ShapeInferenceError(
         `Expected ${this.numHeads} heads, got keys: ${keysHeads}, values: ${valuesHeads}`,
       );
     }
@@ -266,7 +278,9 @@ export class MultiHeadAttentionCache implements KVCache {
  * Implementation of KV Cache for Grouped-Query Attention (GQA).
  */
 export class GroupedQueryAttentionCache implements KVCache {
+  /** Property `cache` of `GroupedQueryAttentionCache`. */
   private cache: Map<number, { keys: Tensor; values: Tensor }> = new Map();
+  /** Property `numKVHeads` of `GroupedQueryAttentionCache`. */
   private numKVHeads: number;
 
   /**
@@ -293,7 +307,7 @@ export class GroupedQueryAttentionCache implements KVCache {
     const keysHeads = keys.shape[1] as number;
     const valuesHeads = values.shape[1] as number;
     if (keysHeads !== this.numKVHeads || valuesHeads !== this.numKVHeads) {
-      throw new Error(
+      throw new ShapeInferenceError(
         `Expected ${this.numKVHeads} KV heads, got keys: ${keysHeads}, values: ${valuesHeads}`,
       );
     }
@@ -310,7 +324,9 @@ export class GroupedQueryAttentionCache implements KVCache {
  * Implementation of KV Cache for Multi-Query Attention (MQA).
  */
 export class MultiQueryAttentionCache implements KVCache {
+  /** Property `cache` of `MultiQueryAttentionCache`. */
   private cache: Map<number, { keys: Tensor; values: Tensor }> = new Map();
+  /** Property `numKVHeads` of `MultiQueryAttentionCache`. */
   private numKVHeads: number = 1;
 
   /** Clear all layer caches. */
@@ -328,7 +344,7 @@ export class MultiQueryAttentionCache implements KVCache {
     const keysHeads = keys.shape[1] as number;
     const valuesHeads = values.shape[1] as number;
     if (keysHeads !== this.numKVHeads || valuesHeads !== this.numKVHeads) {
-      throw new Error(
+      throw new ShapeInferenceError(
         `Expected ${this.numKVHeads} KV heads, got keys: ${keysHeads}, values: ${valuesHeads}`,
       );
     }
@@ -345,6 +361,7 @@ export class MultiQueryAttentionCache implements KVCache {
  * KV Cache that supports batching multiple sequences simultaneously.
  */
 export class SequenceBatchingKVCache implements KVCache {
+  /** Property `cache` of `SequenceBatchingKVCache`. */
   private cache: Map<number, { keys: Tensor; values: Tensor }[]> = new Map();
 
   /** Clear all batch caches. */
@@ -371,7 +388,7 @@ export class SequenceBatchingKVCache implements KVCache {
     if (!batches || batches.length === 0) {
       return null;
     }
-    return batches[batches.length - 1]!;
+    return batches[batches.length - 1] as { keys: Tensor; values: Tensor };
   }
 }
 
@@ -379,6 +396,7 @@ export class SequenceBatchingKVCache implements KVCache {
  * Cache implementation for encoder-decoder Cross-Attention.
  */
 export class CrossAttentionCache implements KVCache {
+  /** Property `cache` of `CrossAttentionCache`. */
   private cache: Map<number, { keys: Tensor; values: Tensor }> = new Map();
 
   /** Clear all cross-attention caches. */
@@ -406,7 +424,9 @@ export class CrossAttentionCache implements KVCache {
  * Implements a sliding window KV cache to limit memory usage for long sequences.
  */
 export class SlidingWindowKVCache implements KVCache {
+  /** Property `cache` of `SlidingWindowKVCache`. */
   private cache: Map<number, { keys: Tensor; values: Tensor }> = new Map();
+  /** Property `windowSize` of `SlidingWindowKVCache`. */
   private windowSize: number;
 
   /**
@@ -429,10 +449,7 @@ export class SlidingWindowKVCache implements KVCache {
    * @param layerIdx Layer index
    */
   update(keys: Tensor, values: Tensor, layerIdx: number): void {
-    const seqLen =
-      keys.shape.length > 2
-        ? (keys.shape[2] as number)
-        : (keys.shape[1] as number);
+    const seqLen = keys.shape.length > 2 ? (keys.shape[2] as number) : (keys.shape[1] as number);
     if (seqLen > this.windowSize) {
       // Implement sliding window truncation here via view logic
     }
@@ -465,10 +482,7 @@ export class PositionalEmbeddingUtils {
     ropeScale: number = 1.0,
     ropeTheta: number = 10000.0,
   ): [Tensor, Tensor] {
-    if (
-      !(query.data instanceof Float32Array) ||
-      !(key.data instanceof Float32Array)
-    ) {
+    if (!(query.data instanceof Float32Array) || !(key.data instanceof Float32Array)) {
       return [query, key];
     }
 
@@ -485,25 +499,18 @@ export class PositionalEmbeddingUtils {
 
           const offset = pos * headDim + i;
           if (offset + 1 < data.length) {
-            const x0 = data[offset];
-            const x1 = data[offset + 1];
+            const x0 = data[offset] as number;
+            const x1 = data[offset + 1] as number;
 
-            const rx0 = x0! * cosVal - x1! * sinVal;
-            const rx1 = x0! * sinVal + x1! * cosVal;
+            const rx0 = x0 * cosVal - x1 * sinVal;
+            const rx1 = x0 * sinVal + x1 * cosVal;
 
             newData[offset] = rx0;
             newData[offset + 1] = rx1;
           }
         }
       }
-      return new Tensor(
-        t.name,
-        t.shape,
-        t.dtype,
-        t.isInitializer,
-        t.requiresGrad,
-        newData,
-      );
+      return new Tensor(t.name, t.shape, t.dtype, t.isInitializer, t.requiresGrad, newData);
     };
 
     return [applyToTensor(query), applyToTensor(key)];
@@ -522,9 +529,7 @@ export class PositionalEmbeddingUtils {
 
     const data = attentionScores.data;
     const newData = new Float32Array(data);
-    const seqLen = attentionScores.shape[
-      attentionScores.shape.length - 1
-    ] as number;
+    const seqLen = attentionScores.shape[attentionScores.shape.length - 1] as number;
 
     const slopes: number[] = [];
     for (let i = 1; i <= numHeads; i++) {
@@ -532,15 +537,15 @@ export class PositionalEmbeddingUtils {
     }
 
     for (let headIdx = 0; headIdx < numHeads; headIdx++) {
-      const slope = slopes[headIdx];
+      const slope = slopes[headIdx] as number;
       for (let posQ = 0; posQ < seqLen; posQ++) {
         for (let posK = 0; posK < seqLen; posK++) {
           const distance = posK - posQ;
           if (distance <= 0) {
-            const bias = distance * slope!;
+            const bias = distance * slope;
             const offset = headIdx * seqLen * seqLen + posQ * seqLen + posK;
             if (offset < data.length) {
-              newData[offset] = data[offset]! + bias;
+              newData[offset] = (data[offset] as number) + bias;
             }
           }
         }

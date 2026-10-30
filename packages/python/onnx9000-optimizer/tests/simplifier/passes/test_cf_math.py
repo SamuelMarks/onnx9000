@@ -4,8 +4,8 @@ import numpy as np
 from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
 
 
-def test_cf_math_ops():
-    """Docstring for D103."""
+def test_cf_math_ops() -> None:
+    """Verify that cf math ops behaves as expected."""
     cf = ConstantFoldingPass()
     a = np.array([2.0], dtype=np.float32)
     b = np.array([3.0], dtype=np.float32)

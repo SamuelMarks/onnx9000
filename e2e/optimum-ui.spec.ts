@@ -4,7 +4,7 @@ test.describe('optimum-ui', () => {
   test.beforeEach(async ({ page }) => {
     try {
       await page.goto('/optimum-ui.html');
-    } catch (_e) {
+    } catch {
       test.skip();
     }
   });

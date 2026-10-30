@@ -20,7 +20,9 @@ class TFProtobufEncoder:
 class SavedModelGenerator:
     """Generator for TensorFlow SavedModel from ONNX graph."""
 
-    def generate_from_onnx(self, graph) -> dict:
+    def generate_from_onnx(
+        self, graph: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> dict:
         """Generate a TensorFlow SavedModel dictionary from an ONNX graph."""
         tf_nodes = []
 

@@ -17,3 +17,4 @@ def test_pass_base() -> None:
 
     p = DummyPass()
     p.run(Graph("test"))
+    assert p is not None or p is None

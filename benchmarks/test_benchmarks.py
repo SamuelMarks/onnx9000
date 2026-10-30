@@ -4,33 +4,36 @@ import sys
 from unittest.mock import patch
 
 from .memory_profiler import profile_memory
-from .safetensors_benchmark import run_benchmark as bench_safetensors
 from .tps_benchmark import bench_tps
 from .ttft_benchmark import bench_ttft
 
 
-def test_profile_memory(capsys):
+def test_profile_memory(
+    capsys: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Test memory profiling output."""
     profile_memory()
     captured = capsys.readouterr()
     assert "Profiling memory usage..." in captured.out
 
 
-def test_bench_ttft(capsys):
+def test_bench_ttft(capsys: int | float | str | bool | bytes | list | dict | tuple | None) -> None:
     """Test TTFT output."""
     bench_ttft()
     captured = capsys.readouterr()
     assert "Benchmarking TTFT..." in captured.out
 
 
-def test_bench_tps(capsys):
+def test_bench_tps(capsys: int | float | str | bool | bytes | list | dict | tuple | None) -> None:
     """Test TPS output."""
     bench_tps()
     captured = capsys.readouterr()
     assert "Benchmarking TPS..." in captured.out
 
 
-def test_bench_safetensors(capsys):
+def test_bench_safetensors(
+    capsys: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Test safetensors benchmark."""
     # Mock rust safetensors
     import types
@@ -40,10 +43,25 @@ def test_bench_safetensors(capsys):
     st_mock = types.ModuleType("safetensors")
     st_numpy_mock = types.ModuleType("safetensors.numpy")
 
-    def mock_save(*args):
+    def mock_save(*args: int | float | str | bool | bytes | list | dict | tuple | None) -> None:
+        """Execute mock save operation.
+
+        Args:
+            *args: Variadic positional arguments for args.
+        """
         pass
 
-    def mock_load(*args):
+    def mock_load(
+        *args: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
+        """Execute mock load operation.
+
+        Args:
+            *args: Variadic positional arguments for args.
+
+        Returns:
+            Result of mock load.
+        """
         return {}
 
     st_numpy_mock.save_file = mock_save

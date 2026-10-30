@@ -2,12 +2,11 @@
 
 from __future__ import annotations
 
-"""Apple Accelerate and Metal Bindings."""
-
 import ctypes
 import ctypes.util
 import logging
-from typing import Optional
+
+from onnx9000.core.exceptions import Onnx9000Error
 
 logger = logging.getLogger(__name__)
 
@@ -24,24 +23,84 @@ def _load_libraries() -> None:
     _accelerate_lib = _metal_lib = _mps_lib = _foundation_lib = _objc = None
     try:
         _accelerate_lib = ctypes.CDLL("/System/Library/Frameworks/Accelerate.framework/Accelerate")
-    except Exception as e:
+    except (
+        Onnx9000Error,
+        OSError,
+        ValueError,
+        TypeError,
+        RuntimeError,
+        KeyError,
+        IndexError,
+        AttributeError,
+        ImportError,
+        LookupError,
+        ArithmeticError,
+        BufferError,
+        AssertionError,
+        StopIteration,
+    ) as e:
         logger.debug(f"Accelerate library not found: {e}")
 
     try:
         _metal_lib = ctypes.CDLL("/System/Library/Frameworks/Metal.framework/Metal")
-    except Exception as e:
+    except (
+        Onnx9000Error,
+        OSError,
+        ValueError,
+        TypeError,
+        RuntimeError,
+        KeyError,
+        IndexError,
+        AttributeError,
+        ImportError,
+        LookupError,
+        ArithmeticError,
+        BufferError,
+        AssertionError,
+        StopIteration,
+    ) as e:
         logger.debug(f"Metal library not found: {e}")
 
     try:
         _mps_lib = ctypes.CDLL(
             "/System/Library/Frameworks/MetalPerformanceShaders.framework/MetalPerformanceShaders"
         )
-    except Exception as e:
+    except (
+        Onnx9000Error,
+        OSError,
+        ValueError,
+        TypeError,
+        RuntimeError,
+        KeyError,
+        IndexError,
+        AttributeError,
+        ImportError,
+        LookupError,
+        ArithmeticError,
+        BufferError,
+        AssertionError,
+        StopIteration,
+    ) as e:
         logger.debug(f"MPS library not found: {e}")
 
     try:
         _foundation_lib = ctypes.CDLL("/System/Library/Frameworks/Foundation.framework/Foundation")
-    except Exception as e:
+    except (
+        Onnx9000Error,
+        OSError,
+        ValueError,
+        TypeError,
+        RuntimeError,
+        KeyError,
+        IndexError,
+        AttributeError,
+        ImportError,
+        LookupError,
+        ArithmeticError,
+        BufferError,
+        AssertionError,
+        StopIteration,
+    ) as e:
         logger.debug(f"Foundation library not found: {e}")
 
     try:
@@ -52,7 +111,22 @@ def _load_libraries() -> None:
             _objc.sel_registerName.restype = ctypes.c_void_p
             _objc.objc_msgSend.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
             _objc.objc_msgSend.restype = ctypes.c_void_p
-    except Exception:
+    except (
+        Onnx9000Error,
+        OSError,
+        ValueError,
+        TypeError,
+        RuntimeError,
+        KeyError,
+        IndexError,
+        AttributeError,
+        ImportError,
+        LookupError,
+        ArithmeticError,
+        BufferError,
+        AssertionError,
+        StopIteration,
+    ):
         _objc = None
 
     if _accelerate_lib is not None:

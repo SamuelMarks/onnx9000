@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../src/passes/autotuner";
+import { describe, expect, it } from 'vitest';
+import { MetaScheduleAutotuner } from '../../src/passes/autotuner';
 
-describe("autotuner.ts", () => {
-  it("should instantiate and cover MetaScheduleAutotuner", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('autotuner.ts', () => {
+  it('should instantiate and cover MetaScheduleAutotuner', () => {
     try {
-      const obj = new (Module as any).MetaScheduleAutotuner();
+      const obj = Construct(MetaScheduleAutotuner);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

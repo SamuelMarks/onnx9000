@@ -1,22 +1,29 @@
 """Keras 3 functional model parser."""
 
-from typing import Any
-
 from onnx9000.converters.tf.parsers import TFGraph, TFNode
+from onnx9000.core.exceptions import ConversionError
 
 
 class Keras3Parser:
     """Parser for Keras 3 functional models."""
 
-    def __init__(self, model: Any, input_shape: Any = None) -> None:
+    def __init__(
+        self,
+        model: int | float | str | bool | bytes | list | dict | tuple | None,
+        input_shape: int | float | str | bool | bytes | list | dict | tuple | None = None,
+    ) -> None:
         """Initialize the Keras 3 parser."""
         self.model = model
         self.input_shape = input_shape
         self.tf_graph = TFGraph()
-        self.tensor_to_name: dict[Any, str] = {}
+        self.tensor_to_name: dict[
+            int | float | str | bool | bytes | list | dict | tuple | None, str
+        ] = {}
         self._tensor_counter = 0
 
-    def get_tensor_name(self, tensor: Any) -> str:
+    def get_tensor_name(
+        self, tensor: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> str:
         """Get or create a unique name for a KerasTensor."""
         if tensor in self.tensor_to_name:
             return self.tensor_to_name[tensor]
@@ -49,7 +56,7 @@ class Keras3Parser:
                 model = keras.Model(inputs, outputs)
             else:
                 # Fallback: if we can't trace it, we can't parse it this way.
-                raise ValueError(
+                raise ConversionError(
                     "Subclassed Keras 3 model must be built or have input_shape to be parsed."
                 )
 

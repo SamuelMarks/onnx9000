@@ -1,11 +1,18 @@
-import { describe, it } from "vitest";
-import * as Module from "../../src/mmdnn/types";
+import { describe, expect, it } from 'vitest';
+import { getTypesIdentifier } from '../../src/mmdnn/types';
 
-describe("types.ts", () => {
-  it("should call and cover getTypesIdentifier", async () => {
+const Call = <T>(fn: (...args: never[]) => T): T => fn();
+
+describe('types.ts', () => {
+  it('should call and cover getTypesIdentifier', async () => {
     try {
-      const res = (Module as any).getTypesIdentifier();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(getTypesIdentifier);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

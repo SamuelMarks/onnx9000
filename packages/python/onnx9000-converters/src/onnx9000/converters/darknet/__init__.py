@@ -1,7 +1,6 @@
 """Darknet converter module."""
 
 import os  # pragma: no cover
-from typing import Any  # pragma: no cover
 
 from onnx9000.converters.darknet.mapper import DarknetMapper  # pragma: no cover
 from onnx9000.converters.darknet.parser import parse_cfg  # pragma: no cover
@@ -13,7 +12,7 @@ from onnx9000.core.ir import Graph  # pragma: no cover
 class DarknetConverter(BaseParser):
     """Converter for Darknet models."""
 
-    def __init__(self, weights_path: str):
+    def __init__(self, weights_path: str) -> None:
         """Initialize the converter.
 
         Args:  # pragma: no cover
@@ -49,8 +48,8 @@ class DarknetConverter(BaseParser):
 
 
 __all__ = [
-    "parse_cfg",
-    "load_weights",
-    "DarknetMapper",
     "DarknetConverter",
+    "DarknetMapper",
+    "load_weights",
+    "parse_cfg",
 ]  # pragma: no cover

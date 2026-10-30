@@ -1,59 +1,56 @@
-import pytest
-from onnx9000.core.serializer import *
+"""Unit tests for ONNX protobuf serialization in `onnx9000.core.serializer`."""
+
+import tempfile
+
+from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Constant, DynamicDim, Graph, Node, ValueInfo
+from onnx9000.core.serializer import (
+    SerializationError,
+    _sanitize_string,
+    _serialize_shape,
+    _serialize_sparse_tensor,
+    _serialize_tensor,
+    save,
+    serialize_model,
+    to_bytes,
+)
+from onnx9000.core.sparse import dense_to_coo
 
 
-def test_SerializationError():
-    try:
-        obj = SerializationError()
-        assert obj is not None
-    except Exception:
-        pass
+def test_serializer_functions() -> None:
+    """Verify SerializationError, _serialize_shape, _serialize_tensor, _serialize_sparse_tensor, serialize_model, save, and to_bytes."""
+    err = SerializationError("failed")
+    assert "failed" in str(err)
 
+    sp = _serialize_shape((4, "N", DynamicDim("B"), -1))
+    assert len(sp.dim) == 4
+    assert sp.dim[0].dim_value == 4
+    assert sp.dim[1].dim_param == "N"
 
-def test__serialize_shape():
-    try:
-        _serialize_shape()
-    except Exception:
-        pass
+    c = Constant("w", values=b"\x00" * 8, shape=(2,), dtype=DType.FLOAT32)
+    tp, off = _serialize_tensor(c)
+    assert tp.name == "w"
+    assert off == 0
 
+    st = dense_to_coo(c)
+    stp, _ = _serialize_sparse_tensor(st)
+    assert list(stp.dims) == [2]
 
-def test__serialize_tensor():
-    try:
-        _serialize_tensor()
-    except Exception:
-        pass
+    assert _sanitize_string("hello\x00world") == "helloworld"
 
+    g = Graph("ser_graph")
+    g.inputs.append(ValueInfo("x", (2,), DType.FLOAT32))
+    g.outputs.append(ValueInfo("y", (2,), DType.FLOAT32))
+    g.add_tensor(c)
+    g.initializers.append("w")
+    g.add_node(Node("Add", ["x", "w"], ["y"], name="add_0"))
 
-def test__serialize_sparse_tensor():
-    try:
-        _serialize_sparse_tensor()
-    except Exception:
-        pass
+    mp = serialize_model(g)
+    assert mp.graph.name == "ser_graph"
 
+    raw = to_bytes(g)
+    assert len(raw) > 0
 
-def test__sanitize_string():
-    try:
-        _sanitize_string()
-    except Exception:
-        pass
-
-
-def test_serialize_model():
-    try:
-        serialize_model()
-    except Exception:
-        pass
-
-
-def test_save():
-    try:
-        save()
-    except Exception:
-        pass
-
-
-def test_to_bytes():
-    try:
-        to_bytes()
-    except Exception:
-        pass
+    with tempfile.NamedTemporaryFile(suffix=".onnx") as tf:
+        save(g, tf.name)
+        assert tf.tell() >= 0

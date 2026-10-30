@@ -3,7 +3,8 @@
 import logging
 import struct
 from dataclasses import dataclass, field
-from typing import Any
+
+from onnx9000.core.exceptions import ConversionError
 
 PADDLE_TO_ONNX_VERSION = {
     "2.0.0": 11,
@@ -38,7 +39,9 @@ class PaddleNode:
     op_type: str
     inputs: dict[str, list[str]] = field(default_factory=dict)
     outputs: dict[str, list[str]] = field(default_factory=dict)
-    attrs: dict[str, Any] = field(default_factory=dict)
+    attrs: dict[str, int | float | str | bool | bytes | list | dict | tuple | None] = field(
+        default_factory=dict
+    )
     is_target: bool = False
 
 
@@ -132,7 +135,11 @@ class PaddleProtobufParser:
     """A lightweight, pure-Python parser for Paddle framework.pb."""
 
     def __init__(self, data: bytes) -> None:
-        """Initialize."""
+        """Initialize PaddleProtobufParser with configured parameters and state.
+
+        Args:
+            data: Parameter specifying data (bytes).
+        """
         self.data = data
         self.offset = 0
 
@@ -165,7 +172,7 @@ class PaddleProtobufParser:
         op_type = ""
         inputs: dict[str, list[str]] = {}
         outputs: dict[str, list[str]] = {}
-        attrs: dict[str, Any] = {}
+        attrs: dict[str, int | float | str | bool | bytes | list | dict | tuple | None] = {}
         is_target = False
         while self.offset < limit:
             tag = self.read_varint()
@@ -227,8 +234,6 @@ class PaddleProtobufParser:
                         a_val = self.read_string()
                     elif s_field == 10:
                         a_val = bool(self.read_varint())
-                    elif s_field in [6, 7, 8, 9, 11]:
-                        self.skip_field(s_wire)
                     else:
                         self.skip_field(s_wire)
                 attrs[a_name] = a_val
@@ -355,10 +360,6 @@ class PaddleProtobufParser:
 
     def parse_framework(self) -> PaddleGraph:
         """parse_framework implementation."""
-        while self.offset < len(self.data):
-            tag = self.read_varint()
-            tag >> 3
-            tag & 7
         self.offset = 0
         return self.parse_program_desc(len(self.data))
 
@@ -374,7 +375,7 @@ class PaddleProtobufParser:
         elif wire_type == 5:
             self.offset += 4
         else:
-            raise ValueError(f"Unknown wire type: {wire_type}")
+            raise ConversionError(f"Unknown wire type: {wire_type}")
 
 
 def load_paddle_model(model_data: bytes, params_data: bytes | None = None) -> PaddleGraph:

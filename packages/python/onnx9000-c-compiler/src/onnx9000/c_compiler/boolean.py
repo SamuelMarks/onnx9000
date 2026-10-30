@@ -16,7 +16,7 @@ def generate_boolean_binary(
     in1: str,
     in2: str,
     out: str,
-):
+) -> None:
     """Generate Equal, Less, Greater, And, Or, etc."""
     b.emit(f"/* Boolean {node.op_type} */")
     b.emit("{")
@@ -55,7 +55,7 @@ def generate_boolean_unary(
     in1_tensor: Tensor,
     in1: str,
     out: str,
-):
+) -> None:
     """Generate Not."""
     b.emit(f"/* Boolean {node.op_type} */")
     b.emit("{")
@@ -84,7 +84,7 @@ def generate_where(
     x: str,
     y: str,
     out: str,
-):
+) -> None:
     """Generate Where."""
     b.emit(f"/* {node.op_type} */")
     b.emit("{")

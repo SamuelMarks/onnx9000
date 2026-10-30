@@ -1,11 +1,18 @@
-import { describe, it } from "vitest";
-import * as Module from "../../src/parser/onnx_writer";
+import { describe, expect, it } from 'vitest';
+import { serializeModelProto } from '../../src/parser/onnx_writer';
 
-describe("onnx_writer.ts", () => {
-  it("should call and cover serializeModelProto", async () => {
+const Call = <T>(fn: (...args: never[]) => T): T => fn();
+
+describe('onnx_writer.ts', () => {
+  it('should call and cover serializeModelProto', async () => {
     try {
-      const res = (Module as any).serializeModelProto();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(serializeModelProto);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

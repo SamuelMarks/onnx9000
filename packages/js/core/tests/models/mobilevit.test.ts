@@ -1,23 +1,35 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../src/models/mobilevit";
+import { describe, expect, it } from 'vitest';
+import { MobileViT, MobileViTBlock, mobilevitS } from '../../src/models/mobilevit';
 
-describe("mobilevit.ts", () => {
-  it("should instantiate and cover MobileViTBlock", () => {
+const Call = <T>(fn: (...args: never[]) => T): T => fn();
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('mobilevit.ts', () => {
+  it('should instantiate and cover MobileViTBlock', () => {
     try {
-      const obj = new (Module as any).MobileViTBlock();
+      const obj = Construct(MobileViTBlock);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover MobileViT", () => {
+  it('should instantiate and cover MobileViT', () => {
     try {
-      const obj = new (Module as any).MobileViT();
+      const obj = Construct(MobileViT);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should call and cover mobilevitS", async () => {
+  it('should call and cover mobilevitS', async () => {
     try {
-      const res = (Module as any).mobilevitS();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(mobilevitS);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

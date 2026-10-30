@@ -5,8 +5,8 @@ from onnx9000.jax.flax_parser import parse_msgpack
 from onnx9000.jax.jaxpr_string_parser import parse_jaxpr_string
 
 
-def test_flax_parser_gaps():
-    """Docstring for D103."""
+def test_flax_parser_gaps() -> None:
+    """Verify that flax parser gaps behaves as expected."""
     with pytest.raises(ValueError, match="Unexpected end of data"):
         parse_msgpack(bytes([0xD9]))
 
@@ -14,8 +14,8 @@ def test_flax_parser_gaps():
         parse_msgpack(bytes([0xC7]))
 
 
-def test_jaxpr_string_parser_gap():
-    """Docstring for D103."""
+def test_jaxpr_string_parser_gap() -> None:
+    """Verify that jaxpr string parser gap behaves as expected."""
     jaxpr = """{ lambda ; a:f32[]. let
 
     b:f32[] = test_op[param=foo,] a

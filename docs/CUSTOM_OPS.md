@@ -16,8 +16,10 @@ npm run dev
 ```python
 from onnx9000_custom_ops import registry
 
+
 def my_activation():
     return "activated!"
+
 
 registry.register("MyActivation", my_activation)
 print(registry.list_ops())

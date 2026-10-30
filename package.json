@@ -48,7 +48,8 @@
   },
   "pnpm": {
     "neverBuiltDependencies": [
-      "ffi-napi"
+      "ffi-napi",
+      "ref-napi"
     ]
   }
 }

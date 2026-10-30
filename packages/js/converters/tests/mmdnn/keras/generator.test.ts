@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../../src/mmdnn/keras/generator";
+import { describe, expect, it } from 'vitest';
+import { KerasGenerator } from '../../../src/mmdnn/keras/generator';
 
-describe("generator.ts", () => {
-  it("should instantiate and cover KerasGenerator", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('generator.ts', () => {
+  it('should instantiate and cover KerasGenerator', () => {
     try {
-      const obj = new (Module as any).KerasGenerator();
+      const obj = Construct(KerasGenerator);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

@@ -1,7 +1,7 @@
-"""Module providing core logic and structural definitions."""
+"""Unit tests and verification suite for losses vjp functionality."""
 
-import onnx9000.toolkit.training.autograd.losses as losses
 from onnx9000.core.ir import Graph
+from onnx9000.toolkit.training.autograd import losses
 
 
 def test_mse_loss() -> None:

@@ -9,7 +9,7 @@ from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Node, Tensor
 
 
-def test_compile_add_graph():
+def test_compile_add_graph() -> None:
     """Test end-to-end compilation of a graph."""
     g = Graph("AddGraph")
     g.inputs = ["A", "B"]

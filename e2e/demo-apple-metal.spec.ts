@@ -4,7 +4,7 @@ test.describe('Apple Metal Demo App', () => {
   test.beforeEach(async ({ page }) => {
     try {
       await page.goto('/demo-apple-metal');
-    } catch (_e) {
+    } catch {
       test.skip();
     }
   });

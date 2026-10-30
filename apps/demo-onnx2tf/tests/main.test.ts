@@ -1,32 +1,36 @@
-import { beforeEach, describe, expect, it } from "vitest";
+// @vitest-environment jsdom
+import { beforeEach, describe, expect, it } from 'vitest';
+import { initOnnx2TfDemo } from '../src/main.js';
 
-describe("demo", () => {
+describe('demo-onnx2tf', () => {
   beforeEach(() => {
-    document.body.innerHTML = `
-      <textarea id="prompt"></textarea>
-      <button id="runBtn"></button>
-      <div id="output"></div>
-    `;
+    document.body.innerHTML =
+      '<input id="modelPath"/><input id="outputPath"/><input type="checkbox" id="int8Quant"/><button id="convertBtn"></button><button id="resetBtn"></button><div id="output"></div>';
   });
 
-  it("should run flow", async () => {
-    // import to execute module top-level
-    try {
-      await import("../src/main.js");
-    } catch (_e) {}
+  it('should convert with and without INT8 quantization and reset', async () => {
+    document.body.innerHTML = '';
+    initOnnx2TfDemo();
 
-    const btn = document.getElementById("runBtn");
-    const prompt = document.getElementById("prompt");
-    const _out = document.getElementById("output");
+    document.body.innerHTML =
+      '<input id="modelPath"/><input id="outputPath"/><input type="checkbox" id="int8Quant"/><button id="convertBtn"></button><button id="resetBtn"></button><div id="output"></div>';
+    initOnnx2TfDemo();
 
-    if (btn) btn.click();
-    if (prompt && btn) {
-      prompt.value = "test";
-      btn.click();
-    }
+    const convertBtn = document.getElementById('convertBtn') as HTMLButtonElement;
+    const resetBtn = document.getElementById('resetBtn') as HTMLButtonElement;
+    const int8Quant = document.getElementById('int8Quant') as HTMLInputElement;
+    const out = document.getElementById('output') as HTMLDivElement;
 
-    // allow some async code to run
-    await new Promise((r) => setTimeout(r, 100));
-    expect(true).toBe(true);
+    convertBtn.click();
+    await new Promise((r) => setTimeout(r, 180));
+    expect(out.textContent).toContain('onnx2tf conversion complete.');
+
+    resetBtn.click();
+    expect(out.textContent).toContain('Waiting to convert...');
+
+    int8Quant.checked = true;
+    convertBtn.click();
+    await new Promise((r) => setTimeout(r, 180));
+    expect(out.textContent).toContain('with INT8 quantization');
   });
 });

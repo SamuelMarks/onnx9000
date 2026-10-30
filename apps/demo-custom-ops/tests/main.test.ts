@@ -1,32 +1,38 @@
-import { beforeEach, describe, expect, it } from "vitest";
+// @vitest-environment jsdom
+import { beforeEach, describe, expect, it } from 'vitest';
+import { initCustomOpsDemo } from '../src/main.js';
 
-describe("demo", () => {
+describe('demo-custom-ops', () => {
   beforeEach(() => {
-    document.body.innerHTML = `
-      <textarea id="prompt"></textarea>
-      <button id="runBtn"></button>
-      <div id="output"></div>
-    `;
+    document.body.innerHTML =
+      '<input id="op-name"/><button id="register-op"></button><div id="registry"></div>';
   });
 
-  it("should run flow", async () => {
-    // import to execute module top-level
-    try {
-      await import("../src/main.js");
-    } catch (_e) {}
+  it('should register custom ops and append to registry DOM', () => {
+    document.body.innerHTML = '';
+    initCustomOpsDemo();
 
-    const btn = document.getElementById("runBtn");
-    const prompt = document.getElementById("prompt");
-    const _out = document.getElementById("output");
+    document.body.innerHTML =
+      '<input id="op-name" value="NoRegistryOp"/><button id="register-op"></button>';
+    initCustomOpsDemo();
+    document.getElementById('register-op')?.click();
 
-    if (btn) btn.click();
-    if (prompt && btn) {
-      prompt.value = "test";
-      btn.click();
-    }
+    document.body.innerHTML =
+      '<input id="op-name"/><button id="register-op"></button><div id="registry"></div>';
+    initCustomOpsDemo();
 
-    // allow some async code to run
-    await new Promise((r) => setTimeout(r, 100));
-    expect(true).toBe(true);
+    const input = document.getElementById('op-name') as HTMLInputElement;
+    const btn = document.getElementById('register-op') as HTMLButtonElement;
+    const registry = document.getElementById('registry') as HTMLElement;
+
+    btn.click();
+    expect(registry.children).toHaveLength(0);
+
+    input.value = 'CustomGelu';
+    btn.click();
+
+    expect(registry.children).toHaveLength(1);
+    expect(registry.children[0]?.textContent).toBe('CustomGelu');
+    expect(input.value).toBe('');
   });
 });

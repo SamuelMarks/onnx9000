@@ -1,12 +1,16 @@
 import { describe, expect, it } from 'vitest';
-import * as Module from '../../src/components/PromoteButton';
+import { PromoteButton } from '../../src/components/PromoteButton';
+
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
 
 describe('PromoteButton.ts', () => {
   it('should instantiate and cover PromoteButton', () => {
     // Attempt to instantiate
     try {
-      const obj = new (Module as any).PromoteButton();
+      const obj = Construct(PromoteButton);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

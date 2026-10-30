@@ -1,7 +1,5 @@
 """Terminal User Interface chat application."""
 
-import sys
-
 
 def start_chat_tui() -> bool:
     """Start the interactive terminal chat session.

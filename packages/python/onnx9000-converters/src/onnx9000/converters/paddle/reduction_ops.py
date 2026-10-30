@@ -8,12 +8,8 @@ from onnx9000.converters.paddle.parsers import PaddleNode
 
 def _map_allclose(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
     """Execute the  map allclose operation."""
-    inputs = node.inputs.get("Input", [])
-    if not inputs:
-        inputs = node.inputs.get("X", [])
-    other = node.inputs.get("Other", [])
-    if not other:
-        other = node.inputs.get("Y", [])
+    inputs = node.inputs.get("Input") or node.inputs.get("X", [])
+    other = node.inputs.get("Other") or node.inputs.get("Y", [])
     rtol = builder.extract_attr(node, "rtol", 1e-05)
     atol = builder.extract_attr(node, "atol", 1e-08)
     a = inputs[0]
@@ -37,11 +33,7 @@ def _map_logical_binary(op_type: str) -> Callable:
 
     def _impl(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
         """Execute the  impl operation."""
-        inputs = []
-        if "X" in node.inputs:
-            inputs.extend(node.inputs["X"])
-        if "Y" in node.inputs:
-            inputs.extend(node.inputs["Y"])
+        inputs = node.inputs.get("X", []) + node.inputs.get("Y", [])
         return builder.make_node(op_type, inputs, {}, node.name)
 
     return _impl
@@ -60,11 +52,7 @@ def _map_logical_unary(op_type: str) -> Callable:
 
 def _map_not_equal(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
     """Execute the  map not equal operation."""
-    inputs = []
-    if "X" in node.inputs:
-        inputs.extend(node.inputs["X"])
-    if "Y" in node.inputs:
-        inputs.extend(node.inputs["Y"])
+    inputs = node.inputs.get("X", []) + node.inputs.get("Y", [])
     eq_out = builder.make_node("Equal", inputs, {}, f"{node.name}_eq")[0]
     return builder.make_node("Not", [eq_out], {}, node.name)
 
@@ -113,10 +101,13 @@ def _map_cumsum(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str
     return builder.make_node("CumSum", inputs, attrs, node.name)
 
 
-def _map_custom(op_name: str):
+def _map_custom(op_name: str) -> int | float | str | bool | bytes | list | dict | tuple | None:
     """Execute the map custom operation."""
 
-    def _impl(builder, node):
+    def _impl(
+        builder: int | float | str | bool | bytes | list | dict | tuple | None,
+        node: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Execute the impl operation."""
         inputs = node.inputs.get("X", [])
         return builder.make_node(op_name, inputs, {}, node.name)

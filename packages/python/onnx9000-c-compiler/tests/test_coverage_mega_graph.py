@@ -2,10 +2,11 @@
 
 from onnx9000.c_compiler.compiler import C89Compiler
 from onnx9000.core.dtypes import DType
+from onnx9000.core.exceptions import Onnx9000Error
 from onnx9000.core.ir import Graph, Node, Tensor, ValueInfo
 
 
-def test_mega_graph_routing_coverage():
+def test_mega_graph_routing_coverage() -> None:
     """Test routing coverage for a mega graph with various operations."""
     tensors = {
         "X": Tensor("X", [1, 2, 2], DType.FLOAT32, data=b"\x00" * 16),
@@ -79,7 +80,22 @@ def test_mega_graph_routing_coverage():
 
     try:
         infer_shapes_and_types(graph)
-    except Exception as e:
+    except (
+        Onnx9000Error,
+        OSError,
+        ValueError,
+        TypeError,
+        RuntimeError,
+        KeyError,
+        IndexError,
+        AttributeError,
+        ImportError,
+        LookupError,
+        ArithmeticError,
+        BufferError,
+        AssertionError,
+        StopIteration,
+    ) as e:
         print("Infer failed:", e)
 
     compiler = C89Compiler(graph=graph)

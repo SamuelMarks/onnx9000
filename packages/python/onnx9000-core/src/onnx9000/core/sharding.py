@@ -5,38 +5,59 @@ from onnx9000.core.ops import record_op
 
 
 class PartitionSpec(tuple):
-    """Docstring for D101."""
+    """Represents partition spec inheriting from tuple."""
 
-    def __new__(cls, *args):
-        """Docstring for D102."""
+    def __new__(
+        cls, *args: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
+        """Execute new on PartitionSpec.
+
+        Args:
+            *args: Variadic positional arguments for args.
+
+        Returns:
+            Result of new.
+        """
         return super().__new__(cls, args)
 
 
 class AutoShardingPass:
-    """Docstring for D101."""
+    """Represents auto sharding pass, supporting operations such as apply."""
 
     def apply(self, graph: Graph) -> Graph:
-        """Docstring for D102."""
+        """Execute apply on AutoShardingPass.
+
+        Args:
+            graph: Parameter specifying graph (Graph).
+
+        Returns:
+            Result of apply (Graph).
+        """
         for node in graph.nodes:
-            if node.op_type == "MatMul":
-                if len(node.inputs) >= 2:
-                    sharding_a = getattr(node.inputs[0], "sharding", None)
-                    sharding_b = getattr(node.inputs[1], "sharding", None)
-                    if sharding_a or sharding_b:
-                        if len(node.outputs) > 0:
-                            node.outputs[0].sharding = (
-                                tuple([None] * len(node.outputs[0].shape))
-                                if node.outputs[0].shape
-                                else (None,)
-                            )
+            if node.op_type == "MatMul" and len(node.inputs) >= 2:
+                sharding_a = getattr(node.inputs[0], "sharding", None)
+                sharding_b = getattr(node.inputs[1], "sharding", None)
+                if (sharding_a or sharding_b) and len(node.outputs) > 0:
+                    node.outputs[0].sharding = (
+                        tuple([None] * len(node.outputs[0].shape))
+                        if node.outputs[0].shape
+                        else (None,)
+                    )
         return graph
 
 
 class SPMDLoweringPass:
-    """Docstring for D101."""
+    """Represents spmdlowering pass, supporting operations such as apply."""
 
     def apply(self, graph: Graph) -> Graph:
-        """Docstring for D102."""
+        """Execute apply on SPMDLoweringPass.
+
+        Args:
+            graph: Parameter specifying graph (Graph).
+
+        Returns:
+            Result of apply (Graph).
+        """
         new_nodes = []
         for node in graph.nodes:
             inserted_before = []
@@ -64,7 +85,7 @@ class SPMDLoweringPass:
                 # TP requirement
                 if len(node.inputs) >= 2:
                     weight = node.inputs[1]
-                    if hasattr(weight, "sharding"):
+                    if isinstance(weight, Tensor):
                         if weight.sharding == PartitionSpec(None, "tp"):
                             if node.outputs:
                                 node.outputs[0].sharding = PartitionSpec(None, "tp")
@@ -159,20 +180,52 @@ class SPMDLoweringPass:
 
 
 def all_reduce(x: Tensor, group: str = "world") -> Tensor:
-    """Docstring for D103."""
+    """Execute all reduce operation.
+
+    Args:
+        x: Parameter specifying x (Tensor).
+        group: Parameter specifying group (str).
+
+    Returns:
+        Result of all reduce (Tensor).
+    """
     return record_op("AllReduce", [x], {"group": group})
 
 
 def all_gather(x: Tensor, group: str = "world") -> Tensor:
-    """Docstring for D103."""
+    """Execute all gather operation.
+
+    Args:
+        x: Parameter specifying x (Tensor).
+        group: Parameter specifying group (str).
+
+    Returns:
+        Result of all gather (Tensor).
+    """
     return record_op("AllGather", [x], {"group": group})
 
 
 def reduce_scatter(x: Tensor, group: str = "world") -> Tensor:
-    """Docstring for D103."""
+    """Execute reduce scatter operation.
+
+    Args:
+        x: Parameter specifying x (Tensor).
+        group: Parameter specifying group (str).
+
+    Returns:
+        Result of reduce scatter (Tensor).
+    """
     return record_op("ReduceScatter", [x], {"group": group})
 
 
 def all_to_all(x: Tensor, group: str = "world") -> Tensor:
-    """Docstring for D103."""
+    """Execute all to all operation.
+
+    Args:
+        x: Parameter specifying x (Tensor).
+        group: Parameter specifying group (str).
+
+    Returns:
+        Result of all to all (Tensor).
+    """
     return record_op("AllToAll", [x], {"group": group})

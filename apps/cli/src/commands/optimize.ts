@@ -1,5 +1,8 @@
+/**
+ * @fileoverview optimize module for cli.
+ */
 export function handleOptimizeCommand(args: string[]) {
-  if (args.length === 0 || args.includes("-h") || args.includes("--help")) {
+  if (args.length === 0 || args.includes('-h') || args.includes('--help')) {
     console.log(`Usage: onnx9000 optimize <model.onnx> [options] 
  
 Optimize ONNX graph. 
@@ -10,22 +13,22 @@ Optimize ONNX graph.
     return;
   }
 
-  const model = args[0] || "";
+  const model = args[0] as string;
 
-  let output = model.replace(".onnx", "_opt.onnx");
-  const oIndex = args.indexOf("-o");
+  let output = model.replace('.onnx', '_opt.onnx');
+  const oIndex = args.indexOf('-o');
   if (oIndex !== -1 && oIndex + 1 < args.length) {
-    output = args[oIndex + 1];
+    output = args[oIndex + 1] as string;
   }
 
-  let passes = "default";
-  const pIndex = args.indexOf("--passes");
+  let passes = 'default';
+  const pIndex = args.indexOf('--passes');
   if (pIndex !== -1 && pIndex + 1 < args.length) {
-    passes = args[pIndex + 1];
+    passes = args[pIndex + 1] as string;
   }
 
-  console.log(`Loading ONNX model ${model || ""}...`);
+  console.log(`Loading ONNX model ${model}...`);
   console.log(`Running optimization passes: ${passes}`);
   console.log(`Saving optimized model to ${output}...`);
-  console.log("Graph optimization complete.");
+  console.log('Graph optimization complete.');
 }

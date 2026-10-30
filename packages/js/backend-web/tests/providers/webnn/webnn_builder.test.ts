@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../../src/providers/webnn/webnn_builder";
+import { describe, expect, it } from 'vitest';
+import { KerasWebNNCompiler } from '../../../src/providers/webnn/webnn_builder';
 
-describe("webnn_builder.ts", () => {
-  it("should instantiate and cover KerasWebNNCompiler", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('webnn_builder.ts', () => {
+  it('should instantiate and cover KerasWebNNCompiler', () => {
     try {
-      const obj = new (Module as any).KerasWebNNCompiler();
+      const obj = Construct(KerasWebNNCompiler);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

@@ -2,25 +2,37 @@
  * @fileoverview MetricsDashboard.ts
  * Provides MetricsDashboard functionality for the Sphinx Demo UI.
  */
-// @ts-nocheck
 import { Component } from '../core/Component';
 
+/** Interface `MetricsData` definition. */
 export interface MetricsData {
+  /** Property `ttftMs`. */
   ttftMs: number; // Time to First Token
+  /** Property `tps`. */
   tps: number; // Tokens per second
+  /** Property `totalLatencyMs`. */
   totalLatencyMs: number;
 }
 
+/** Represents the `MetricsDashboard` class. */
 export class MetricsDashboard extends Component<HTMLDivElement> {
+  /** Property `ttftValue` of `MetricsDashboard`. */
   private ttftValue!: HTMLSpanElement;
+  /** Property `tpsValue` of `MetricsDashboard`. */
   private tpsValue!: HTMLSpanElement;
+  /** Property `totalValue` of `MetricsDashboard`. */
   private totalValue!: HTMLSpanElement;
 
+  /** Initializes a new `MetricsDashboard` instance. */
   constructor() {
     super();
     this.element = this.render();
   }
 
+  /**
+   * Executes `render` on `MetricsDashboard`.
+   * @returns Result of `render`.
+   */
   protected render(): HTMLDivElement {
     const container = document.createElement('div');
     container.className = 'demo-metrics-dashboard';
@@ -48,6 +60,12 @@ export class MetricsDashboard extends Component<HTMLDivElement> {
     return container;
   }
 
+  /**
+   * Executes `createMetricCard` on `MetricsDashboard`.
+   * @param label Parameter `label`.
+   * @param className Parameter `className`.
+   * @returns Result of `createMetricCard`.
+   */
   private createMetricCard(label: string, className: string): HTMLDivElement {
     const card = document.createElement('div');
     card.className = `demo-metric-card ${className}`;
@@ -79,6 +97,10 @@ export class MetricsDashboard extends Component<HTMLDivElement> {
     return card;
   }
 
+  /**
+   * Executes `updateMetrics` on `MetricsDashboard`.
+   * @param data Parameter `data`.
+   */
   public updateMetrics(data: MetricsData): void {
     this.ttftValue.textContent = data.ttftMs > 0 ? `${data.ttftMs.toFixed(2)} ms` : '--';
     this.tpsValue.textContent = data.tps > 0 ? `${data.tps.toFixed(2)}` : '--';

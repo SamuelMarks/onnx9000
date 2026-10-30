@@ -6,12 +6,16 @@ from onnx9000.core.ir import Constant, Graph
 class OptimizationAnalyzer:
     """Represents the Optimization Analyzer class."""
 
-    def __init__(self, graph: Graph):
-        """Initialize the instance."""
+    def __init__(self, graph: Graph) -> None:
+        """Initialize OptimizationAnalyzer with configured parameters and state.
+
+        Args:
+            graph: Parameter specifying graph (Graph).
+        """
         self.graph = graph
         self.opportunities = []
 
-    def analyze(self):
+    def analyze(self) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Execute the analyze operation."""
         self._check_redundant_casts()
         self._check_unused_initializers()
@@ -21,14 +25,14 @@ class OptimizationAnalyzer:
         self._check_unsupported_webgpu()
         return self.opportunities
 
-    def _check_redundant_casts(self):
+    def _check_redundant_casts(self) -> None:
         """Execute the check redundant casts operation."""
         for n in self.graph.nodes:
             if n.op_type == "Cast":
                 # if input dtype == output dtype
                 continue
 
-    def _check_unused_initializers(self):
+    def _check_unused_initializers(self) -> None:
         """Execute the check unused initializers operation."""
         used_inputs = set()
         for n in self.graph.nodes:
@@ -49,7 +53,7 @@ class OptimizationAnalyzer:
                 f"Found {len(unused)} completely unused initializers/constants. They can be safely removed."
             )
 
-    def _check_fusion_matmul_add(self):
+    def _check_fusion_matmul_add(self) -> None:
         # MatMul -> Add
         """Execute the check fusion matmul add operation."""
         count = 0
@@ -64,21 +68,20 @@ class OptimizationAnalyzer:
                 f"Found {count} un-fused MatMul + Add structures. Consider fusing them into Gemm."
             )
 
-    def _check_fusion_conv_bn(self):
+    def _check_fusion_conv_bn(self) -> None:
         """Execute the check fusion conv bn operation."""
         count = 0
         for n in self.graph.nodes:
-            if n.op_type == "Conv":
-                if n.outputs and n.outputs[0] in self.graph.tensors:
-                    consumers = [c for c in self.graph.nodes if n.outputs[0] in c.inputs]
-                    if len(consumers) == 1 and consumers[0].op_type == "BatchNormalization":
-                        count += 1
+            if n.op_type == "Conv" and n.outputs and n.outputs[0] in self.graph.tensors:
+                consumers = [c for c in self.graph.nodes if n.outputs[0] in c.inputs]
+                if len(consumers) == 1 and consumers[0].op_type == "BatchNormalization":
+                    count += 1
         if count > 0:
             self.opportunities.append(
                 f"Found {count} missing Conv + BatchNorm fusion opportunities."
             )
 
-    def _check_identity_chains(self):
+    def _check_identity_chains(self) -> None:
         """Execute the check identity chains operation."""
         count = 0
         for n in self.graph.nodes:
@@ -89,7 +92,7 @@ class OptimizationAnalyzer:
                 f"Found {count} Identity operations. These can usually be eliminated."
             )
 
-    def _check_unsupported_webgpu(self):
+    def _check_unsupported_webgpu(self) -> None:
         """Execute the check unsupported webgpu operation."""
         unsupported = ["Loop", "Scan", "SequenceConstruct", "Complex", "NonZero"]
         found = set()

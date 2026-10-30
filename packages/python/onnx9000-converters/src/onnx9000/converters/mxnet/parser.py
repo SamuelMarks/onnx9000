@@ -1,10 +1,11 @@
 """MXNet symbol parser."""
 
 import json
-from typing import Any
 
 
-def parse_symbol(content: str) -> dict[str, Any]:
+def parse_symbol(
+    content: str,
+) -> dict[str, int | float | str | bool | bytes | list | dict | tuple | None]:
     """Parse MXNet -symbol.json.
 
     Args:

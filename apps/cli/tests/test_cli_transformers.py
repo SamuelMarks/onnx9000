@@ -1,12 +1,20 @@
+"""Unit tests and verification suite for cli transformers functionality."""
+
 import argparse
-import os
-import sys
-from unittest.mock import MagicMock, patch
+import contextlib
+from unittest.mock import patch
 
 from onnx9000_cli.main import main, transformers_cmd
 
 
-def test_transformers_cmd_success(tmp_path):
+def test_transformers_cmd_success(
+    tmp_path: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
+    """Verify that transformers cmd success behaves as expected.
+
+    Args:
+        tmp_path: Parameter specifying tmp path.
+    """
     base_dir = tmp_path / "apps" / "cli"
     dist_dir = base_dir / "dist"
     dist_dir.mkdir(parents=True)
@@ -16,24 +24,30 @@ def test_transformers_cmd_success(tmp_path):
     # Mock __file__ inside transformers_cmd
     mock_file = str(base_dir / "src" / "onnx9000_cli" / "main.py")
 
-    with patch("onnx9000_cli.main.__file__", mock_file):
-        with patch("subprocess.run") as mock_run:
-            args = argparse.Namespace(task="text-classification", inputs=["hello", "world"])
-            transformers_cmd(args)
-            mock_run.assert_called_once_with(
-                [
-                    "node",
-                    str(index_js),
-                    "transformers",
-                    "text-classification",
-                    "hello",
-                    "world",
-                ],
-                check=True,
-            )
+    with patch("onnx9000_cli.main.__file__", mock_file), patch("subprocess.run") as mock_run:
+        args = argparse.Namespace(task="text-classification", inputs=["hello", "world"])
+        transformers_cmd(args)
+        mock_run.assert_called_once_with(
+            [
+                "node",
+                str(index_js),
+                "transformers",
+                "text-classification",
+                "hello",
+                "world",
+            ],
+            check=True,
+        )
 
 
-def test_transformers_cmd_no_inputs(tmp_path):
+def test_transformers_cmd_no_inputs(
+    tmp_path: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
+    """Verify that transformers cmd no inputs behaves as expected.
+
+    Args:
+        tmp_path: Parameter specifying tmp path.
+    """
     base_dir = tmp_path / "apps" / "cli"
     dist_dir = base_dir / "dist"
     dist_dir.mkdir(parents=True)
@@ -42,28 +56,40 @@ def test_transformers_cmd_no_inputs(tmp_path):
 
     mock_file = str(base_dir / "src" / "onnx9000_cli" / "main.py")
 
-    with patch("onnx9000_cli.main.__file__", mock_file):
-        with patch("subprocess.run") as mock_run:
-            args = argparse.Namespace(task="text-generation", inputs=[])
-            transformers_cmd(args)
-            mock_run.assert_called_once_with(
-                ["node", str(index_js), "transformers", "text-generation"],
-                check=True,
-            )
+    with patch("onnx9000_cli.main.__file__", mock_file), patch("subprocess.run") as mock_run:
+        args = argparse.Namespace(task="text-generation", inputs=[])
+        transformers_cmd(args)
+        mock_run.assert_called_once_with(
+            ["node", str(index_js), "transformers", "text-generation"],
+            check=True,
+        )
 
 
-def test_transformers_cmd_missing_js(tmp_path):
+def test_transformers_cmd_missing_js(
+    tmp_path: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
+    """Verify that transformers cmd missing js behaves as expected.
+
+    Args:
+        tmp_path: Parameter specifying tmp path.
+    """
     base_dir = tmp_path / "apps" / "cli"
     mock_file = str(base_dir / "src" / "onnx9000_cli" / "main.py")
 
-    with patch("onnx9000_cli.main.__file__", mock_file):
-        with patch("sys.exit") as mock_exit:
-            args = argparse.Namespace(task="text-generation", inputs=[])
-            transformers_cmd(args)
-            mock_exit.assert_any_call(1)
+    with patch("onnx9000_cli.main.__file__", mock_file), patch("sys.exit") as mock_exit:
+        args = argparse.Namespace(task="text-generation", inputs=[])
+        transformers_cmd(args)
+        mock_exit.assert_any_call(1)
 
 
-def test_transformers_cmd_subprocess_error(tmp_path):
+def test_transformers_cmd_subprocess_error(
+    tmp_path: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
+    """Verify that transformers cmd subprocess error behaves as expected.
+
+    Args:
+        tmp_path: Parameter specifying tmp path.
+    """
     import subprocess
 
     base_dir = tmp_path / "apps" / "cli"
@@ -82,11 +108,10 @@ def test_transformers_cmd_subprocess_error(tmp_path):
                 mock_exit.assert_called_once_with(2)
 
 
-def test_main_cli_routing_transformers():
+def test_main_cli_routing_transformers() -> None:
+    """Verify that main cli routing transformers behaves as expected."""
     with patch("sys.argv", ["onnx9000", "transformers", "text-classification", "hello"]):
         with patch("onnx9000_cli.main.transformers_cmd") as mock_cmd:
-            try:
+            with contextlib.suppress(SystemExit):
                 main()
-            except SystemExit:
-                pass
             mock_cmd.assert_called_once()

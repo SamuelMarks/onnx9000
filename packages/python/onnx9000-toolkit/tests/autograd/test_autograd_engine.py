@@ -1,4 +1,4 @@
-"""Module providing core logic and structural definitions."""
+"""Unit tests and verification suite for autograd engine functionality."""
 
 from onnx9000.core.ir import Graph
 from onnx9000.toolkit.training.autograd.compiler import AutogradEngine
@@ -21,7 +21,7 @@ def test_negative_indices() -> None:
     # We assert our Gather/Slice VJPs handle negative axes logic implicitly by delegating to ScatterND
     rule = get_vjp_rule("Gather")
     node = Node("Gather", ["data", "indices"], ["out"], {"axis": -1}, name="gather")
-    nodes, grads = rule.build_backward_nodes(node, ["grad_out"])
+    nodes, _grads = rule.build_backward_nodes(node, ["grad_out"])
     assert any(
         n.op_type in ("GatherND", "ScatterND", "ScatterElements", "GatherGrad") for n in nodes
     )

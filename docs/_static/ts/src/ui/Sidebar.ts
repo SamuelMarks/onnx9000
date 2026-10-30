@@ -224,7 +224,7 @@ export class Sidebar extends BaseComponent {
     });
 
     const tuneHistory: { step: number; score: number }[] = [];
-    globalEvents.on('tuningProgress', (data: any) => {
+    globalEvents.on('tuningProgress', (data: { step: number; score: number }) => {
       tuneHistory.push({ step: data.step, score: data.score });
       if (tuneHistory.length > 100) tuneHistory.shift();
 
@@ -251,7 +251,7 @@ export class Sidebar extends BaseComponent {
     });
 
     let activeNodeId: string | null = null;
-    globalEvents.on('nodeSelected', (node: any) => {
+    globalEvents.on('nodeSelected', (node: { name: string } | null) => {
       activeNodeId = node ? node.name : null;
     });
 
@@ -465,7 +465,7 @@ export class Sidebar extends BaseComponent {
     });
 
     let isTraining = false;
-    let epochTimer: any;
+    let epochTimer: ReturnType<typeof setInterval> | undefined;
     runEpochBtn.addEventListener('click', () => {
       if (isTraining) {
         clearInterval(epochTimer);
@@ -706,31 +706,34 @@ export class Sidebar extends BaseComponent {
     benchSection.appendChild(benchCanvas);
     this.container.appendChild(benchSection);
 
-    globalEvents.on('benchmarkResults', (data: any) => {
-      const ctx = benchCanvas.getContext('2d');
-      if (ctx) {
-        ctx.clearRect(0, 0, 200, 100);
-        const barW = 50;
+    globalEvents.on(
+      'benchmarkResults',
+      (data: { wasm?: number; webgpu?: number; webnn?: number }) => {
+        const ctx = benchCanvas.getContext('2d');
+        if (ctx) {
+          ctx.clearRect(0, 0, 200, 100);
+          const barW = 50;
 
-        // WASM (Blue)
-        ctx.fillStyle = '#0d6efd';
-        ctx.fillRect(20, 100 - (data.wasm || 10), barW, data.wasm || 10);
+          // WASM (Blue)
+          ctx.fillStyle = '#0d6efd';
+          ctx.fillRect(20, 100 - (data.wasm || 10), barW, data.wasm || 10);
 
-        // WebGPU (Green)
-        ctx.fillStyle = '#198754';
-        ctx.fillRect(80, 100 - (data.webgpu || 50), barW, data.webgpu || 50);
+          // WebGPU (Green)
+          ctx.fillStyle = '#198754';
+          ctx.fillRect(80, 100 - (data.webgpu || 50), barW, data.webgpu || 50);
 
-        // WebNN (Purple)
-        ctx.fillStyle = '#6f42c1';
-        ctx.fillRect(140, 100 - (data.webnn || 90), barW, data.webnn || 90);
+          // WebNN (Purple)
+          ctx.fillStyle = '#6f42c1';
+          ctx.fillRect(140, 100 - (data.webnn || 90), barW, data.webnn || 90);
 
-        ctx.fillStyle = 'var(--color-foreground-muted)';
-        ctx.font = '10px sans-serif';
-        ctx.fillText('CPU', 30, 15);
-        ctx.fillText('GPU', 90, 15);
-        ctx.fillText('NPU', 150, 15);
-      }
-    });
+          ctx.fillStyle = 'var(--color-foreground-muted)';
+          ctx.font = '10px sans-serif';
+          ctx.fillText('CPU', 30, 15);
+          ctx.fillText('GPU', 90, 15);
+          ctx.fillText('NPU', 150, 15);
+        }
+      },
+    );
 
     runBenchBtn.addEventListener('click', () => {
       globalEvents.emit('runBenchmark');

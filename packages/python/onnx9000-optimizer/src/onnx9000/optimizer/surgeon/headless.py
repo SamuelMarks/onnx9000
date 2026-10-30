@@ -1,10 +1,13 @@
 """Headless Graph Modifiers for ONNX models."""
 
 import json
-from typing import Union
 
 
-def rename_input(graph, old_name: str, new_name: str):
+def rename_input(
+    graph: int | float | str | bool | bytes | list | dict | tuple | None,
+    old_name: str,
+    new_name: str,
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
     """Rename a graph input and update all node references."""
     for inp in graph.inputs:
         if inp.name == old_name:
@@ -16,7 +19,9 @@ def rename_input(graph, old_name: str, new_name: str):
     return graph
 
 
-def change_batch(graph, new_size: int | str):
+def change_batch(
+    graph: int | float | str | bool | bytes | list | dict | tuple | None, new_size: int | str
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
     """Change the batch size (first dimension) of all inputs and outputs."""
     try:
         new_size_val = int(new_size)
@@ -38,7 +43,9 @@ def change_batch(graph, new_size: int | str):
     return graph
 
 
-def mutate(graph, script_path: str):
+def mutate(
+    graph: int | float | str | bool | bytes | list | dict | tuple | None, script_path: str
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
     """Apply generic mutations from a JSON script."""
     with open(script_path) as f:
         mutations = json.load(f)

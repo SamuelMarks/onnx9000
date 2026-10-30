@@ -1,4 +1,4 @@
-"""Module providing core logic and structural definitions."""
+"""Module implementing config utilities and definitions for onnx9000 / core / config.py."""
 
 import os
 from pathlib import Path

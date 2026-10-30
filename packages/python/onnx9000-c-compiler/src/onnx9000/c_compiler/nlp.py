@@ -12,7 +12,7 @@ def generate_topk(
     k_name: str,
     out_val_name: str,
     out_idx_name: str,
-):
+) -> None:
     """Generate C code for the TopK operation.
 
     Args:
@@ -34,7 +34,9 @@ def generate_topk(
     b.emit("}")
 
 
-def generate_unique(b: C89Builder, node: Node, out_tensor: Tensor, in_name: str, out_val_name: str):
+def generate_unique(
+    b: C89Builder, node: Node, out_tensor: Tensor, in_name: str, out_val_name: str
+) -> None:
     """Generate C code for the Unique operation.
 
     Args:
@@ -53,7 +55,7 @@ def generate_unique(b: C89Builder, node: Node, out_tensor: Tensor, in_name: str,
     b.emit("}")
 
 
-def emit_bpe_tokenizer(b: C89Builder, vocab: dict):
+def emit_bpe_tokenizer(b: C89Builder, vocab: dict) -> None:
     """Emit C code for a BPE tokenizer using a given vocabulary.
 
     Args:

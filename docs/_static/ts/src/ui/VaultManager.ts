@@ -103,7 +103,7 @@ export class VaultManager extends BaseComponent {
       } else {
         this.quotaDisplay.textContent = 'Storage estimation not supported in this browser.';
       }
-    } catch (_e) {
+    } catch {
       this.quotaDisplay.textContent = 'Failed to calculate quota.';
     }
   }
@@ -191,7 +191,7 @@ export class VaultManager extends BaseComponent {
         li.appendChild(tags);
         this.fileList.appendChild(li);
       }
-    } catch (_e) {
+    } catch {
       this.fileList.innerHTML = "<p class='danger'>Failed to read IndexedDB.</p>";
     }
   }

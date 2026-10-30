@@ -7,8 +7,8 @@ from onnx9000.core.ir import Graph
 class MockEstimator:
     """Represents the Mock Estimator class."""
 
-    def __init__(self):
-        """Initialize the instance."""
+    def __init__(self) -> None:
+        """Initialize MockEstimator with configured parameters and state."""
         import numpy as np
 
         self.coef_ = np.array([[1.0, 2.0]])
@@ -16,7 +16,7 @@ class MockEstimator:
         self.classes_ = ["A", "B"]
 
 
-def test_linear_classifier_strings():
+def test_linear_classifier_strings() -> None:
     """Tests the linear classifier strings functionality."""
     g = Graph("g")
     _convert_linear_classifier(MockEstimator(), ["input"], g)
@@ -26,8 +26,8 @@ def test_linear_classifier_strings():
 class MockEstimatorInts:
     """Represents the Mock Estimator Ints class."""
 
-    def __init__(self):
-        """Initialize the instance."""
+    def __init__(self) -> None:
+        """Initialize MockEstimatorInts with configured parameters and state."""
         import numpy as np
 
         self.coef_ = np.array([[1.0, 2.0]])
@@ -35,7 +35,7 @@ class MockEstimatorInts:
         self.classes_ = [0, 1]
 
 
-def test_linear_classifier_ints():
+def test_linear_classifier_ints() -> None:
     """Tests the linear classifier ints functionality."""
     g = Graph("g")
     _convert_linear_classifier(MockEstimatorInts(), ["input"], g)

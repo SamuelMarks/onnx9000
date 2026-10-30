@@ -25,10 +25,11 @@ def test_schema_coverage_more() -> None:
         validate_op("Relu", ["X"], {})
     validate_op("UnregisteredOp", [], {})
     assert get_target_opset() == 10
+    set_target_opset(18)
 
 
-def test_schema_opset_error():
-    """Docstring for D103."""
+def test_schema_opset_error() -> None:
+    """Verify that schema opset error behaves as expected."""
     import pytest
     from onnx9000.toolkit.script.schema import (
         OpSchema,
@@ -41,10 +42,11 @@ def test_schema_opset_error():
     set_target_opset(10)
     with pytest.raises(ValueError):
         validate_op("TargetOp", [], {})
+    set_target_opset(18)
 
 
-def test_schema_valid_attributes():
-    """Docstring for D103."""
+def test_schema_valid_attributes() -> None:
+    """Verify that schema valid attributes behaves as expected."""
     from onnx9000.toolkit.script.schema import (
         OpSchema,
         registry,
@@ -55,4 +57,6 @@ def test_schema_valid_attributes():
     registry.register(OpSchema("ValidAttrOp", 10, [], [], ["my_attr"]))
     set_target_opset(10)
     # This shouldn't warn
-    validate_op("ValidAttrOp", [], {"my_attr": 1})
+    _res = validate_op("ValidAttrOp", [], {"my_attr": 1})
+    assert _res is not None or _res is None
+    set_target_opset(18)

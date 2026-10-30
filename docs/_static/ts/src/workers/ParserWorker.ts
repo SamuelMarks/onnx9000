@@ -38,8 +38,12 @@ self.onmessage = async (e: MessageEvent<IWorkerMessage>) => {
     }
 
     self.postMessage({ id, type: 'success', payload: result });
-  } catch (error: any) {
-    self.postMessage({ id, type: 'error', error: error.message || String(error) });
+  } catch (error: unknown) {
+    self.postMessage({
+      id,
+      type: 'error',
+      error: error instanceof Error ? error.message : String(error),
+    });
   }
 };
 

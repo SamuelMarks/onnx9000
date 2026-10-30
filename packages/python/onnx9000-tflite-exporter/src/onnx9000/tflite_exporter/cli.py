@@ -4,7 +4,7 @@ import argparse
 import sys
 
 
-def main(args=None):
+def main(args: int | float | str | bool | bytes | list | dict | tuple | None = None) -> None:
     """Execute main entry point for the onnx2tf CLI.
 
     Parses command-line arguments and triggers the ONNX to TFLite conversion.
@@ -84,18 +84,3 @@ def main(args=None):
     print(
         f"[onnx2tf] Compiling to TFLite... (keep_nchw={parsed.keep_nchw}, quant_mode={quant_mode})"
     )
-
-    # exporter = TFLiteExporter()
-    # subgraphs_offset = compile_graph_to_tflite(graph, exporter, keep_nchw=parsed.keep_nchw, quant_mode=quant_mode)
-    # exporter.builder.start_vector(4, 1, 4)
-    # exporter.builder.add_offset(subgraphs_offset)
-    # subgraphs_vec_offset = exporter.builder.end_vector(1)
-    # tflite_buf = exporter.finish(subgraphs_vec_offset, "onnx2tf converted")
-
-    # with open(parsed.output, "wb") as f:
-    #     f.write(tflite_buf)
-    # print(f"[onnx2tf] Successfully exported to {parsed.output}")
-
-
-if __name__ == "__main__":
-    main()  # pragma: no cover

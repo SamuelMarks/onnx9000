@@ -1,3 +1,5 @@
-// @ts-nocheck
+/**
+ * @fileoverview index module for converters.
+ */
 /** legacy MMDNN submodule. */
-export * from "./quirks.js";
+export * from './quirks.js';

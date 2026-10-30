@@ -17,7 +17,7 @@ export interface TFNode {
   name: string;
   op: string;
   input: string[];
-  attr?: Record<string, any>;
+  attr?: Record<string, string | number[]>;
 }
 
 export interface TFLiteJSON {
@@ -91,15 +91,15 @@ export class ONNX2TF {
 
     // NCHW to NHWC attribute transformations
     if (node.opType === 'Conv') {
-      tfNode.attr!.data_format = 'NHWC'; // Enforce TF standard
+      tfNode.attr.data_format = 'NHWC'; // Enforce TF standard
       if (this.options.edgeTpuOptimization) {
-        tfNode.attr!.edge_tpu_padding = 'SAME'; // Specific edge optimization mock
+        tfNode.attr.edge_tpu_padding = 'SAME'; // Specific edge optimization mock
       }
     } else if (node.opType === 'MaxPool' || node.opType === 'AveragePool') {
-      tfNode.attr!.data_format = 'NHWC';
+      tfNode.attr.data_format = 'NHWC';
     } else if (node.opType === 'Transpose') {
       // Catch explicit transposes
-      tfNode.attr!.perm = node.attributes.perm?.ints || [];
+      tfNode.attr.perm = node.attributes.perm?.ints || [];
     }
 
     return tfNode;

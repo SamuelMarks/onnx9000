@@ -1,19 +1,19 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import { CanvasRenderer } from "../../src/render/canvas.ts";
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { CanvasRenderer } from '../../src/render/canvas.ts';
 
 // polyfill Path2D for JSDOM
-(global as any).Path2D = class Path2D {
+(global as typeof globalThis & { Path2D: unknown }).Path2D = class Path2D {
   moveTo() {}
   bezierCurveTo() {}
   lineTo() {}
 };
 
-describe("CanvasRenderer", () => {
+describe('CanvasRenderer', () => {
   let canvas: HTMLCanvasElement;
   let ctx: CanvasRenderingContext2D;
 
   beforeEach(() => {
-    canvas = document.createElement("canvas");
+    canvas = document.createElement('canvas');
     ctx = {
       clearRect: vi.fn(),
       save: vi.fn(),
@@ -31,11 +31,11 @@ describe("CanvasRenderer", () => {
       measureText: vi.fn().mockReturnValue({ width: 10 }),
       bezierCurveTo: vi.fn(),
       isPointInStroke: vi.fn().mockReturnValue(false),
-    } as unknown as CanvasRenderingContext2D;
-    vi.spyOn(canvas, "getContext").mockReturnValue(ctx);
+    } as never as CanvasRenderingContext2D;
+    vi.spyOn(canvas, 'getContext').mockReturnValue(ctx);
   });
 
-  it("should initialize correctly", () => {
+  it('should initialize correctly', () => {
     const renderer = new CanvasRenderer(canvas);
     expect(renderer).toBeDefined();
   });

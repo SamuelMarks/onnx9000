@@ -1,13 +1,14 @@
 """SparkML JSON/Parquet parser for pure-Python ONNX conversion."""
 
 import json
-from typing import Any
 
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Attribute, Graph, Node, ValueInfo
 
 
-def parse_sparkml_pipeline(pipeline_data: Any) -> Graph:
+def parse_sparkml_pipeline(
+    pipeline_data: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> Graph:
     """Parse a SparkML Pipeline model and return an ONNX Graph."""
     graph = Graph("SparkML_Pipeline")
     graph.opset_imports = {"": 14, "ai.onnx.ml": 3}

@@ -25,18 +25,71 @@ dev = [
     "pytest-cov>=7.0.0",
     "scipy>=1.13.1",
     "hypothesis>=6.151.11",
-    
-    "h5py>=3.10.0"
+    "protobuf>=4.25.0",
+    "numpy>=1.26.0",
+    "h5py>=3.10.0",
+    "mypy>=1.11.0",
+    "ruff>=0.6.0",
 ]
 
 [tool.ruff]
 line-length = 100
 target-version = "py310"
-exclude = [".git", ".mypy_cache", ".ruff_cache", ".venv", "node_modules", "dist", "pycdc"]
+exclude = [".git", ".mypy_cache", ".ruff_cache", ".venv", "node_modules", "dist", "pycdc", "**/onnx_pb2.py"]
 
 [tool.ruff.lint]
-select = ["E", "F", "B", "I", "UP", "C4"]
-ignore = ["E501", "E741", "E721", "E402", "F403", "F405", "F811", "F401", "F821", "B017", "B018", "B904", "B007", "B905"]
+select = [
+    "E",
+    "W",
+    "F",
+    "I",
+    "UP",
+    "B",
+    "D100",
+    "D101",
+    "D102",
+    "D103",
+    "D104",
+    "D105",
+    "D106",
+    "D107",
+    "D417",
+    "ANN",
+    "C4",
+    "PL",
+    "RUF",
+    "SIM",
+    "TC",
+    "C90",
+]
+ignore = [
+    "E501",
+    "C901",
+    "PLC0415",
+    "PLR0124",
+    "PLR0133",
+    "PLR0911",
+    "PLR0912",
+    "PLR0913",
+    "PLR0915",
+    "PLR0917",
+    "PLR2004",
+    "PLW0603",
+    "PLW1510",
+    "PLW1641",
+    "PLW2901",
+    "RUF012",
+    "SIM102",
+    "SIM105",
+    "SIM108",
+    "SIM113",
+    "SIM115",
+    "SIM116",
+    "SIM117",
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
 
 [tool.ruff.format]
 quote-style = "double"
@@ -46,9 +99,74 @@ indent-style = "space"
 addopts = "--import-mode=importlib"
 norecursedirs = ["pycdc", "node_modules", ".venv"]
 testpaths = ["packages/python", "apps/cli"]
+pythonpath = [
+    "apps/cli/src",
+    "packages/python/onnx9000-agent/src",
+    "packages/python/onnx9000-arena/src",
+    "packages/python/onnx9000-array/src",
+    "packages/python/onnx9000-backend-apple/src",
+    "packages/python/onnx9000-backend-cuda/src",
+    "packages/python/onnx9000-backend-native/src",
+    "packages/python/onnx9000-backend-rocm/src",
+    "packages/python/onnx9000-backend-webgpu/src",
+    "packages/python/onnx9000-c-compiler/src",
+    "packages/python/onnx9000-compile/src",
+    "packages/python/onnx9000-converters/src",
+    "packages/python/onnx9000-core/src",
+    "packages/python/onnx9000-custom-ops/src",
+    "packages/python/onnx9000-diffusers/src",
+    "packages/python/onnx9000-genai/src",
+    "packages/python/onnx9000-gguf/src",
+    "packages/python/onnx9000-graphsurgeon/src",
+    "packages/python/onnx9000-hummingbird/src",
+    "packages/python/onnx9000-jax/src",
+    "packages/python/onnx9000-json-extract/src",
+    "packages/python/onnx9000-keras2onnx/src",
+    "packages/python/onnx9000-llama-web/src",
+    "packages/python/onnx9000-mlir-lowering/src",
+    "packages/python/onnx9000-mlir/src",
+    "packages/python/onnx9000-mmdnn/src",
+    "packages/python/onnx9000-mobile-memory/src",
+    "packages/python/onnx9000-new-model-arch/src",
+    "packages/python/onnx9000-olive-optimizer/src",
+    "packages/python/onnx9000-onnx-checker/src",
+    "packages/python/onnx9000-onnx-script/src",
+    "packages/python/onnx9000-onnx-tool/src",
+    "packages/python/onnx9000-onnx2c/src",
+    "packages/python/onnx9000-onnx2gguf/src",
+    "packages/python/onnx9000-onnx2tf/src",
+    "packages/python/onnx9000-openvino/src",
+    "packages/python/onnx9000-optimizer/src",
+    "packages/python/onnx9000-optimum/src",
+    "packages/python/onnx9000-ort-training/src",
+    "packages/python/onnx9000-paddle2onnx/src",
+    "packages/python/onnx9000-profiler/src",
+    "packages/python/onnx9000-progressive-loading/src",
+    "packages/python/onnx9000-pytorch-codegen/src",
+    "packages/python/onnx9000-simplify/src",
+    "packages/python/onnx9000-skl2onnx/src",
+    "packages/python/onnx9000-sparse/src",
+    "packages/python/onnx9000-sphinx-demo/src",
+    "packages/python/onnx9000-tensorrt/src",
+    "packages/python/onnx9000-tflite-converter/src",
+    "packages/python/onnx9000-tflite-exporter/src",
+    "packages/python/onnx9000-toolkit/src",
+    "packages/python/onnx9000-triton-server/src",
+    "packages/python/onnx9000-tvm/src",
+    "packages/python/onnx9000-whisper-llm/src",
+    "packages/python/onnx9000-zero-dep-classifier/src",
+    "packages/python/onnx9000-zoo/src",
+]
 
 [tool.hatch.build.targets.wheel]
 packages = ["onnx9000_workspace"]
 
 [tool.coverage.run]
-omit = ["*/onnx_pb2.py"]
+branch = true
+source = ["packages/python", "apps/cli/src"]
+omit = ["*/onnx_pb2.py", "*/tests/*", "tests/*"]
+
+[tool.coverage.report]
+fail_under = 100
+show_missing = true
+exclude_lines = []

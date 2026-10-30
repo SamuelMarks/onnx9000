@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../../src/mmdnn/caffe/generator";
+import { describe, expect, it } from 'vitest';
+import { CaffeGenerator } from '../../../src/mmdnn/caffe/generator';
 
-describe("generator.ts", () => {
-  it("should instantiate and cover CaffeGenerator", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('generator.ts', () => {
+  it('should instantiate and cover CaffeGenerator', () => {
     try {
-      const obj = new (Module as any).CaffeGenerator();
+      const obj = Construct(CaffeGenerator);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

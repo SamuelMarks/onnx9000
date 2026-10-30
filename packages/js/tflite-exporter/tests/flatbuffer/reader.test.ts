@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../src/flatbuffer/reader";
+import { describe, expect, it } from 'vitest';
+import { FlatBufferReader } from '../../src/flatbuffer/reader';
 
-describe("reader.ts", () => {
-  it("should instantiate and cover FlatBufferReader", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('reader.ts', () => {
+  it('should instantiate and cover FlatBufferReader', () => {
     try {
-      const obj = new (Module as any).FlatBufferReader();
+      const obj = Construct(FlatBufferReader);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

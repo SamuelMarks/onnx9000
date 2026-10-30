@@ -2,7 +2,6 @@
 
 import json
 import logging
-from typing import Any
 
 from onnx9000.core.ir import Graph, Node
 from onnx9000.optimizer.hummingbird.memory import TreeAbstractions
@@ -53,7 +52,9 @@ def _traverse_xgb_tree(node_dict: dict, abstractions: TreeAbstractions) -> None:
         abstractions.add_node(-1, 0.0, -1, -1, float(node_dict.get("leaf", 0.0)))
 
 
-def parse_xgb_classifier(estimator: Any) -> list[TreeAbstractions]:
+def parse_xgb_classifier(
+    estimator: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> list[TreeAbstractions]:
     """Parse XGBClassifier directly from Python memory."""
     if hasattr(estimator, "get_booster"):
         dump = estimator.get_booster().get_dump(dump_format="json")
@@ -61,7 +62,9 @@ def parse_xgb_classifier(estimator: Any) -> list[TreeAbstractions]:
     return []
 
 
-def parse_xgb_regressor(estimator: Any) -> list[TreeAbstractions]:
+def parse_xgb_regressor(
+    estimator: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> list[TreeAbstractions]:
     """Parse XGBRegressor directly from Python memory."""
     if hasattr(estimator, "get_booster"):
         dump = estimator.get_booster().get_dump(dump_format="json")
@@ -69,7 +72,9 @@ def parse_xgb_regressor(estimator: Any) -> list[TreeAbstractions]:
     return []
 
 
-def parse_xgb_ranker(estimator: Any) -> list[TreeAbstractions]:
+def parse_xgb_ranker(
+    estimator: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> list[TreeAbstractions]:
     """Parse XGBRanker directly from Python memory."""
     return parse_xgb_regressor(estimator)
 
@@ -86,7 +91,9 @@ def handle_xgb_objectives(g: Graph, objective: str) -> None:
         g.nodes.append(Node("Exp", inputs=["raw_scores"], outputs=["predictions"]))
 
 
-def parse_catboost_classifier(estimator: Any) -> list[TreeAbstractions]:
+def parse_catboost_classifier(
+    estimator: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> list[TreeAbstractions]:
     """Parse CatBoostClassifier directly from Python memory.
 
     Leverage CatBoost Oblivious Trees natively mapping to PerfectTree Strategy.
@@ -94,7 +101,9 @@ def parse_catboost_classifier(estimator: Any) -> list[TreeAbstractions]:
     return []
 
 
-def parse_catboost_regressor(estimator: Any) -> list[TreeAbstractions]:
+def parse_catboost_regressor(
+    estimator: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> list[TreeAbstractions]:
     """Parse CatBoostRegressor directly."""
     return []
 

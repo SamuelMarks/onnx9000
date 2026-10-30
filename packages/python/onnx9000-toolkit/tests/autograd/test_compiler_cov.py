@@ -1,4 +1,4 @@
-"""Module providing core logic and structural definitions."""
+"""Unit tests and verification suite for compiler cov functionality."""
 
 
 def test_compile_partial_graph() -> None:

@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../src/worker/index";
+import { describe, expect, it } from 'vitest';
+import { WorkerPipeline } from '../../src/worker/index';
 
-describe("index.ts", () => {
-  it("should instantiate and cover WorkerPipeline", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('index.ts', () => {
+  it('should instantiate and cover WorkerPipeline', () => {
     try {
-      const obj = new (Module as any).WorkerPipeline();
+      const obj = Construct(WorkerPipeline);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

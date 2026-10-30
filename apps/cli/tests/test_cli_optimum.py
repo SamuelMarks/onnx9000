@@ -20,7 +20,9 @@ from onnx9000_cli.main import (
 
 
 @patch("onnx9000_optimum.export.export_model")
-def test_optimum_export_cmd(mock_export):
+def test_optimum_export_cmd(
+    mock_export: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Test the Optimum export command execution behavior.
 
     Verifies that the `optimum_export_cmd` parses basic arguments related to
@@ -40,7 +42,9 @@ def test_optimum_export_cmd(mock_export):
 
 
 @patch("onnx9000_optimum.optimize.optimize_model")
-def test_optimum_optimize_cmd(mock_optimize):
+def test_optimum_optimize_cmd(
+    mock_optimize: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Ensure that the Optimum optimization command correctly delegates optimization passes.
 
     This test checks whether flags such as `level`, `disable_fusion`, and `optimize_size`
@@ -55,7 +59,9 @@ def test_optimum_optimize_cmd(mock_optimize):
 
 
 @patch("onnx9000_optimum.quantize.quantize_model")
-def test_optimum_quantize_cmd(mock_quantize):
+def test_optimum_quantize_cmd(
+    mock_quantize: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Verify the Optimum quantization command routes correctly to the underlying APIs.
 
     By mocking the Optimum quantization function, this asserts that flags like
@@ -69,7 +75,9 @@ def test_optimum_quantize_cmd(mock_quantize):
     mock_quantize.assert_called_once()
 
 
-def test_optimum_cmd_missing_subcmd(capsys):
+def test_optimum_cmd_missing_subcmd(
+    capsys: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Validate error handling when the base Optimum command lacks a subcommand.
 
     Ensures that calling `optimum_cmd` without specifying a specific functionality
@@ -83,14 +91,14 @@ def test_optimum_cmd_missing_subcmd(capsys):
     assert "Missing optimum subcommand" in captured.out
 
 
-def test_optimum_cmd_has_subcmd():
+def test_optimum_cmd_has_subcmd() -> None:
     """Verify that the base Optimum command delegates to subcommands smoothly.
 
     It creates a dummy sub-function simulating a dispatched CLI subcommand,
     confirming that the core dispatcher triggers it properly.
     """
 
-    def dummy_func(a):
+    def dummy_func(a: int | float | str | bool | bytes | list | dict | tuple | None) -> None:
         """Tests the optimum command dispatcher functionality."""
         a.called = True
 

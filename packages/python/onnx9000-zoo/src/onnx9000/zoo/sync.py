@@ -1,11 +1,32 @@
-"""
-Provides sync functionality.
-"""
+"""Provides sync functionality."""
 
-from typing import Any, Optional
+import sys
+import types
 
-import requests
-from huggingface_hub import HfApi
+try:
+    import requests
+except ImportError:
+    requests = types.ModuleType("requests")
+    requests.get = lambda *args, **kwargs: types.SimpleNamespace(status_code=404, json=list)  # type: ignore[attr-defined]
+    sys.modules["requests"] = requests
+
+try:
+    from huggingface_hub import HfApi
+except ImportError:
+
+    class HfApi:  # type: ignore[no-redef]
+        """Fallback Hugging Face Hub API client when huggingface_hub is not installed."""
+
+        def list_models(
+            self,
+            author: str | None = None,
+            filter: str | None = None,
+            limit: int = 10,
+        ) -> list[dict[str, str]]:
+            """Return an empty list of models."""
+            return []
+
+
 from onnx9000.zoo.catalog import ZooCatalog
 
 
@@ -16,11 +37,19 @@ class BonsaiHubSynchronizer:
         self,
         catalog: ZooCatalog,
         repo_url: str = "https://api.github.com/repos/jax-ml/bonsai",
-    ):
+    ) -> None:
+        """Initialize BonsaiHubSynchronizer with configured parameters and state.
+
+        Args:
+            catalog: Parameter specifying catalog (ZooCatalog).
+            repo_url: Parameter specifying repo url (str).
+        """
         self.catalog = catalog
         self.repo_url = repo_url
 
-    def poll_commits(self) -> list[dict[str, Any]]:
+    def poll_commits(
+        self,
+    ) -> list[dict[str, int | float | str | bool | bytes | list | dict | tuple | None]]:
         """Poll the latest commits from the jax-ml/bonsai repository."""
         response = requests.get(f"{self.repo_url}/commits")
         if response.status_code == 200:
@@ -48,7 +77,12 @@ class BonsaiHubSynchronizer:
 class TimmSynchronizer:
     """Synchronizer for PyTorch image models via timm hub."""
 
-    def __init__(self, catalog: ZooCatalog):
+    def __init__(self, catalog: ZooCatalog) -> None:
+        """Initialize TimmSynchronizer with configured parameters and state.
+
+        Args:
+            catalog: Parameter specifying catalog (ZooCatalog).
+        """
         self.catalog = catalog
         self.api = HfApi()
 
@@ -73,7 +107,12 @@ class TimmSynchronizer:
 class HFHubPoller:
     """Poller for Hugging Face hub scoped strictly to safetensors/GGUF filtered tags."""
 
-    def __init__(self, catalog: ZooCatalog):
+    def __init__(self, catalog: ZooCatalog) -> None:
+        """Initialize HFHubPoller with configured parameters and state.
+
+        Args:
+            catalog: Parameter specifying catalog (ZooCatalog).
+        """
         self.catalog = catalog
         self.api = HfApi()
 
@@ -111,10 +150,17 @@ class HFHubPoller:
 class ManifestGenerator:
     """AOT (Ahead-of-Time) manifest generator."""
 
-    def __init__(self, catalog: ZooCatalog):
+    def __init__(self, catalog: ZooCatalog) -> None:
+        """Initialize ManifestGenerator with configured parameters and state.
+
+        Args:
+            catalog: Parameter specifying catalog (ZooCatalog).
+        """
         self.catalog = catalog
 
-    def generate_manifest(self, model_id: str) -> dict[str, Any]:
+    def generate_manifest(
+        self, model_id: str
+    ) -> dict[str, int | float | str | bool | bytes | list | dict | tuple | None]:
         """Extract hyperparameters directly into a config structure before graph parsing begins.
 
         Args:

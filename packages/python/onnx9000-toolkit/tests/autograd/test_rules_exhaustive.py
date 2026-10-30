@@ -1,7 +1,8 @@
-"""Tests the rules exhaustive module functionality."""
+"""Exhaustive unit tests for VJP differentiation rules."""
 
 from onnx9000.core.ir import Node
 from onnx9000.toolkit.training.autograd.rules import (
+    _VJP_REGISTRY,
     BinaryCrossEntropyLossVJP,
     RecurrentVJP,
     ResizeVJP,
@@ -12,45 +13,50 @@ from onnx9000.toolkit.training.autograd.rules import (
 )
 
 
-def test_silu_vjp():
-    """Tests the silu vjp functionality."""
+def test_silu_vjp() -> None:
+    """Tests the SiluVJP backward node construction."""
     node = Node("Silu", ["x"], ["y"], {}, name="silu_1")
     vjp = SiluVJP()
-    vjp.build_backward_nodes(node, ["dy"])
-    assert True
-    assert True
+    nodes, grads = vjp.build_backward_nodes(node, ["dy"])
+    assert len(nodes) > 0
+    assert len(grads) == 1
 
 
-def test_resize_vjp():
-    """Tests the resize vjp functionality."""
+def test_resize_vjp() -> None:
+    """Tests the ResizeVJP backward node construction."""
     node = Node("Resize", ["x", "roi", "scales", "sizes"], ["y"], {}, name="resize_1")
     vjp = ResizeVJP()
-    vjp.build_backward_nodes(node, ["dy"])
-    assert True
-    assert True
+    assert vjp.build_backward_nodes(node, ["dy"]) is None
+
+    node_cubic = Node(
+        "Resize", ["x", "roi", "scales", "sizes"], ["y"], {"mode": "cubic"}, name="resize_c"
+    )
+    nodes, grads = vjp.build_backward_nodes(node_cubic, ["dy"])
+    assert len(nodes) == 1
+    assert len(grads) == 4
 
 
-def test_split_to_sequence_vjp():
-    """Tests the split to sequence vjp functionality."""
+def test_split_to_sequence_vjp() -> None:
+    """Tests the SplitToSequenceVJP backward node construction with split input."""
     node = Node("SplitToSequence", ["seq", "split"], ["y"], {"axis": 1}, name="sts_1")
     vjp = SplitToSequenceVJP()
-    vjp.build_backward_nodes(node, ["dy"])
-    assert True
-    assert True
-    assert True
+    nodes, grads = vjp.build_backward_nodes(node, ["dy"])
+    assert len(nodes) == 2
+    assert nodes[0].op_type == "ConcatFromSequence"
+    assert len(grads) == 2
 
 
-def test_split_to_sequence_vjp_no_split():
-    """Tests the split to sequence vjp no split functionality."""
+def test_split_to_sequence_vjp_no_split() -> None:
+    """Tests the SplitToSequenceVJP backward node construction without split input."""
     node = Node("SplitToSequence", ["seq"], ["y"], {"axis": 1}, name="sts_1")
     vjp = SplitToSequenceVJP()
-    vjp.build_backward_nodes(node, ["dy"])
-    assert True
-    assert True
+    nodes, grads = vjp.build_backward_nodes(node, ["dy"])
+    assert len(nodes) == 1
+    assert len(grads) == 1
 
 
-def test_binary_cross_entropy_loss_vjp():
-    """Tests the binary cross entropy loss vjp functionality."""
+def test_binary_cross_entropy_loss_vjp() -> None:
+    """Tests the BinaryCrossEntropyLossVJP backward node construction."""
     node = Node(
         "BinaryCrossEntropyLoss",
         ["pred", "target", "weight"],
@@ -60,49 +66,49 @@ def test_binary_cross_entropy_loss_vjp():
     )
     vjp = BinaryCrossEntropyLossVJP()
     nodes, grads = vjp.build_backward_nodes(node, ["dloss"])
-    assert True
-    assert True
-    assert True
+    assert len(nodes) > 0
+    assert len(grads) == 2
 
 
-def test_sequence_construct_vjp():
-    """Tests the sequence construct vjp functionality."""
+def test_sequence_construct_vjp() -> None:
+    """Tests the SequenceConstructVJP backward node construction."""
     node = Node("SequenceConstruct", ["a", "b", "c"], ["seq"], {}, name="sc_1")
     vjp = SequenceConstructVJP()
     nodes, grads = vjp.build_backward_nodes(node, ["dseq"])
-    assert True
-    assert True
+    assert len(nodes) == 6
+    assert len(grads) == 3
 
 
-def test_recurrent_vjp():
-    """Tests the recurrent vjp functionality."""
+def test_recurrent_vjp() -> None:
+    """Tests the RecurrentVJP backward node construction."""
     node = Node("Recurrent", ["M", "cond", "v_initial"], ["v_final"], {}, name="loop_1")
     vjp = RecurrentVJP()
     nodes, grads = vjp.build_backward_nodes(node, ["dv_final"])
-    assert True
-    assert True
+    assert len(nodes) == 1
+    assert len(grads) == 3
 
 
-def test_register_custom_vjp():
-    """Tests the custom vjp registration functionality."""
+def test_register_custom_vjp() -> None:
+    """Tests custom VJP registration."""
 
-    def custom_vjp_function(fwd_node: Node, grad_outputs: list[str]):
+    def custom_vjp_function(
+        fwd_node: Node, grad_outputs: list[str]
+    ) -> tuple[list[Node], list[str]]:
         """Execute the custom vjp function operation."""
         return [], ["grad_x"]
 
     register_vjp("MyCustomOp", custom_vjp_function)
 
-    from onnx9000.toolkit.training.autograd.rules import _VJP_REGISTRY
-
     assert "MyCustomOp" in _VJP_REGISTRY
     vjp_inst = _VJP_REGISTRY["MyCustomOp"]
     node = Node("MyCustomOp", ["x"], ["y"])
     nodes, grads = vjp_inst.build_backward_nodes(node, ["dy"])
+    assert nodes == []
     assert grads == ["grad_x"]
 
 
-def test_resize_vjp_bilinear():
-    """Tests the resize vjp bilinear functionality."""
+def test_resize_vjp_bilinear() -> None:
+    """Tests the ResizeVJP bilinear mode backward node construction."""
     node = Node(
         "Resize",
         ["x", "roi", "scales", "sizes"],
@@ -111,5 +117,4 @@ def test_resize_vjp_bilinear():
         name="resize_2",
     )
     vjp = ResizeVJP()
-    vjp.build_backward_nodes(node, ["dy"])
-    assert True
+    assert vjp.build_backward_nodes(node, ["dy"]) is None

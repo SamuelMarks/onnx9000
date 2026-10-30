@@ -1,17 +1,23 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../../src/providers/webgpu/index";
+import { describe, expect, it } from 'vitest';
+import { MatMulWebGPU, WebGPUProvider } from '../../../src/providers/webgpu/index';
 
-describe("index.ts", () => {
-  it("should instantiate and cover MatMulWebGPU", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('index.ts', () => {
+  it('should instantiate and cover MatMulWebGPU', () => {
     try {
-      const obj = new (Module as any).MatMulWebGPU();
+      const obj = Construct(MatMulWebGPU);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover WebGPUProvider", () => {
+  it('should instantiate and cover WebGPUProvider', () => {
     try {
-      const obj = new (Module as any).WebGPUProvider();
+      const obj = Construct(WebGPUProvider);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

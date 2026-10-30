@@ -4,7 +4,7 @@ test.describe('demo-tflite-converter', () => {
   test.beforeEach(async ({ page }) => {
     try {
       await page.goto('/demo-tflite-converter.html');
-    } catch (_e) {
+    } catch {
       test.skip();
     }
   });

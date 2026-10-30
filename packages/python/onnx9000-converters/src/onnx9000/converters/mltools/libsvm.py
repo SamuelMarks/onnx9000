@@ -21,15 +21,14 @@ def parse_libsvm(model_text: str) -> Graph:
         if sv_mode:
             parts = line.split()
             coefs.append(float(parts[0]))
-        else:
-            if line.startswith("svm_type"):
-                svm_type = line.split()[1]
-            elif line.startswith("kernel_type"):
-                kernel_type = line.split()[1]
-            elif line.startswith("rho"):
-                rho = float(line.split()[1])
-            elif line == "SV":
-                sv_mode = True
+        elif line.startswith("svm_type"):
+            svm_type = line.split()[1]
+        elif line.startswith("kernel_type"):
+            kernel_type = line.split()[1]
+        elif line.startswith("rho"):
+            rho = float(line.split()[1])
+        elif line == "SV":
+            sv_mode = True
 
     graph = Graph("LibSVM_Model")
     graph.opset_imports = {"": 14, "ai.onnx.ml": 3}

@@ -4,7 +4,7 @@ import { GraphSurgeon } from '../surgeon/GraphSurgeon';
 export interface IMutationAction {
   type: 'swap_op' | 'change_attr' | 'prune';
   targetNode: string;
-  payload: any;
+  payload: unknown;
 }
 
 /**

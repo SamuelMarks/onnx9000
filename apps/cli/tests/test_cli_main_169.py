@@ -1,10 +1,19 @@
+"""Unit tests and verification suite for cli main 169 functionality."""
+
 import argparse
 import os
 
 from onnx9000_cli.main import convert_cmd
 
 
-def test_convert_flax_msgpack(tmp_path):
+def test_convert_flax_msgpack(
+    tmp_path: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
+    """Verify that convert flax msgpack behaves as expected.
+
+    Args:
+        tmp_path: Parameter specifying tmp path.
+    """
     model_path = tmp_path / "model.msgpack"
     out_path = tmp_path / "model_out.onnx"
 
@@ -23,7 +32,14 @@ def test_convert_flax_msgpack(tmp_path):
     assert os.path.exists(out_path)
 
 
-def test_convert_flax_json(tmp_path):
+def test_convert_flax_json(
+    tmp_path: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
+    """Verify that convert flax json behaves as expected.
+
+    Args:
+        tmp_path: Parameter specifying tmp path.
+    """
     model_path = tmp_path / "model.json"
     out_path = tmp_path / "model_out.onnx"
 

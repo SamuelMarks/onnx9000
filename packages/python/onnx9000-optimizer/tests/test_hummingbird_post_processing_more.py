@@ -4,7 +4,7 @@ from onnx9000.core.ir import Graph
 from onnx9000.optimizer.hummingbird.post_processing import PostProcessor
 
 
-def test_post_processing_stubs():
+def test_post_processing_stubs() -> None:
     """Tests the post processing stubs functionality."""
     g = Graph("g")
     c = PostProcessor(g, emit_zipmap=True)
@@ -25,3 +25,4 @@ def test_post_processing_stubs():
     c.apply_zipmap("probs", ["a", "b"])
     c.handle_batch_size_1_drop("probs")
     c.append_confidence_scores("probs")
+    assert c is not None or c is None

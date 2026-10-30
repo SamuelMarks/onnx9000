@@ -1,10 +1,13 @@
+"""Unit tests and verification suite for cli hummingbird functionality."""
+
 import argparse
 from unittest.mock import MagicMock, patch
 
 from onnx9000_cli.main import hummingbird_cmd
 
 
-def test_hummingbird_cmd_default_output():
+def test_hummingbird_cmd_default_output() -> None:
+    """Verify that hummingbird cmd default output behaves as expected."""
     args = argparse.Namespace(model="dummy.onnx", output=None)
     with (
         patch("builtins.print"),

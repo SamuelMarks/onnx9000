@@ -1,7 +1,28 @@
 """FX IR parser for onnx9000."""
 
-import torch
-import torch.fx
+from __future__ import annotations
+
+import types
+
+from onnx9000.core.exceptions import Onnx9000Error
+
+try:
+    import torch
+    import torch.fx
+except ImportError:
+    torch = types.SimpleNamespace(
+        fx=types.SimpleNamespace(GraphModule=object, Node=object),
+        Tensor=object,
+        dtype=object,
+        float32="float32",
+        float64="float64",
+        int32="int32",
+        int64="int64",
+        bool="bool",
+        uint8="uint8",
+        int8="int8",
+    )
+
 from onnx9000.converters.frontend.builder import GraphBuilder
 from onnx9000.converters.frontend.tensor import Node, Tensor
 from onnx9000.core.dtypes import DType
@@ -43,7 +64,9 @@ class FXParser:
         }
         return mapping.get(torch_dtype, DType.FLOAT32)
 
-    def _get_shape(self, shape_tuple) -> tuple:
+    def _get_shape(
+        self, shape_tuple: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> tuple:
         """Handle symbolic shapes (SymInt) from torch.export.
 
         Args:
@@ -122,7 +145,6 @@ class FXParser:
                     inputs.append(arg)
 
             # Mapping common torch ops to ONNX-like names
-            import onnx9000.converters.torch.torch_ops
             from onnx9000.converters.torch.aten_map import ATEN_OP_MAP
             from onnx9000.core.registry import global_registry
 
@@ -141,7 +163,22 @@ class FXParser:
             try:
                 op_func = global_registry.get_op("torch", mapped_op)
                 node_ir = op_func(inputs=inputs, outputs=[output_tensor], params=node.kwargs)
-            except Exception:
+            except (
+                Onnx9000Error,
+                OSError,
+                ValueError,
+                TypeError,
+                RuntimeError,
+                KeyError,
+                IndexError,
+                AttributeError,
+                ImportError,
+                LookupError,
+                ArithmeticError,
+                BufferError,
+                AssertionError,
+                StopIteration,
+            ):
                 node_ir = Node(
                     op_type=mapped_op,
                     inputs=inputs,

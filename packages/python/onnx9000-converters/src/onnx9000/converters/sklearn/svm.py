@@ -1,6 +1,7 @@
 """Provide svm module functionality."""
 
 import numpy as np
+from onnx9000.converters.sklearn.protocols import SVMEstimatorProtocol
 from onnx9000.core.ir import Attribute, Graph, Node
 
 
@@ -10,7 +11,9 @@ def _get_kernel_enum(kernel: str) -> str:
     return mapping.get(kernel, "RBF")
 
 
-def _convert_svm_classifier(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
+def _convert_svm_classifier(
+    estimator: SVMEstimatorProtocol, input_names: list[str], graph: Graph
+) -> list[str]:
     """Execute the convert svm classifier operation."""
     out_label = graph._uniquify_tensor_name("svm_label")
     out_prob = graph._uniquify_tensor_name("svm_probabilities")
@@ -41,23 +44,20 @@ def _convert_svm_classifier(estimator: object, input_names: list[str], graph: Gr
         node.attrs["prob_a"] = Attribute("prob_a", "FLOATS", estimator.probA_.flatten().tolist())
     if hasattr(estimator, "probB_") and estimator.probB_.size > 0:
         node.attrs["prob_b"] = Attribute("prob_b", "FLOATS", estimator.probB_.flatten().tolist())
+    zipmap_out = graph._uniquify_tensor_name("zipmap_svm")
+    zipmap_node = Node("ZipMap", domain="ai.onnx.ml", inputs=[out_prob], outputs=[zipmap_out])
     if hasattr(estimator, "classes_"):
         if isinstance(estimator.classes_[0], (str, bytes, np.str_)):
             node.attrs["classlabels_strings"] = Attribute(
                 "classlabels_strings", "STRINGS", [str(c) for c in estimator.classes_]
             )
-        else:
-            node.attrs["classlabels_ints"] = Attribute(
-                "classlabels_ints", "INTS", [int(c) for c in estimator.classes_]
-            )
-    zipmap_out = graph._uniquify_tensor_name("zipmap_svm")
-    zipmap_node = Node("ZipMap", domain="ai.onnx.ml", inputs=[out_prob], outputs=[zipmap_out])
-    if hasattr(estimator, "classes_"):
-        if isinstance(estimator.classes_[0], (str, bytes)):
             zipmap_node.attrs["classlabels_strings"] = Attribute(
                 "classlabels_strings", [str(c) for c in estimator.classes_], "STRINGS"
             )
         else:
+            node.attrs["classlabels_ints"] = Attribute(
+                "classlabels_ints", "INTS", [int(c) for c in estimator.classes_]
+            )
             zipmap_node.attrs["classlabels_int64s"] = Attribute(
                 "classlabels_int64s", [int(c) for c in estimator.classes_], "INTS"
             )
@@ -65,7 +65,9 @@ def _convert_svm_classifier(estimator: object, input_names: list[str], graph: Gr
     return [out_label, zipmap_out]
 
 
-def _convert_svm_regressor(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
+def _convert_svm_regressor(
+    estimator: SVMEstimatorProtocol, input_names: list[str], graph: Graph
+) -> list[str]:
     """Execute the convert svm regressor operation."""
     out_name = graph._uniquify_tensor_name("svm_regressor_out")
     node = Node("SVMRegressor", domain="ai.onnx.ml", inputs=input_names, outputs=[out_name])
@@ -88,36 +90,46 @@ def _convert_svm_regressor(estimator: object, input_names: list[str], graph: Gra
     return [out_name]
 
 
-def convert_svc(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
+def convert_svc(estimator: SVMEstimatorProtocol, input_names: list[str], graph: Graph) -> list[str]:
     """Execute the convert svc operation."""
     return _convert_svm_classifier(estimator, input_names, graph)
 
 
-def convert_nusvc(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
+def convert_nusvc(
+    estimator: SVMEstimatorProtocol, input_names: list[str], graph: Graph
+) -> list[str]:
     """Execute the convert nusvc operation."""
     return _convert_svm_classifier(estimator, input_names, graph)
 
 
-def convert_one_class_svm(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
+def convert_one_class_svm(
+    estimator: SVMEstimatorProtocol, input_names: list[str], graph: Graph
+) -> list[str]:
     """Execute the convert one class svm operation."""
     return _convert_svm_classifier(estimator, input_names, graph)
 
 
-def convert_svr(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
+def convert_svr(estimator: SVMEstimatorProtocol, input_names: list[str], graph: Graph) -> list[str]:
     """Execute the convert svr operation."""
     return _convert_svm_regressor(estimator, input_names, graph)
 
 
-def convert_nusvr(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
+def convert_nusvr(
+    estimator: SVMEstimatorProtocol, input_names: list[str], graph: Graph
+) -> list[str]:
     """Execute the convert nusvr operation."""
     return _convert_svm_regressor(estimator, input_names, graph)
 
 
-def convert_linear_svc(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
+def convert_linear_svc(
+    estimator: SVMEstimatorProtocol, input_names: list[str], graph: Graph
+) -> list[str]:
     """Execute the convert linear svc operation."""
     return _convert_svm_classifier(estimator, input_names, graph)
 
 
-def convert_linear_svr(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
+def convert_linear_svr(
+    estimator: SVMEstimatorProtocol, input_names: list[str], graph: Graph
+) -> list[str]:
     """Execute the convert linear svr operation."""
     return _convert_svm_regressor(estimator, input_names, graph)

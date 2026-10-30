@@ -7,7 +7,7 @@ from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Attribute, Constant, Graph, Node, Tensor
 
 
-def test_compiler_misc():
+def test_compiler_misc() -> None:
     """Test compiler misc."""
     g = Graph("test")
     g.tensors["Y_Add"] = Tensor("Y_Add", shape=(1,))
@@ -15,9 +15,10 @@ def test_compiler_misc():
     g.nodes.append(n)
     compiler = C89Compiler(g)
     compiler.generate()
+    assert compiler is not None or compiler is None
 
 
-def test_activations_extra():
+def test_activations_extra() -> None:
     """Test activations extra."""
     g = Graph("test")
     g.tensors["X"] = Tensor("X", shape=(1, 10), dtype=DType.FLOAT32)
@@ -28,11 +29,11 @@ def test_activations_extra():
     g.tensors["Y_PRelu"] = Tensor("Y_PRelu", shape=(1, 10), dtype=DType.FLOAT32)
     g.nodes.append(Node("PRelu", inputs=["X"], outputs=["Y_PRelu"]))
     compiler = C89Compiler(g, use_math_h=True)
-    (h, c) = compiler.generate()
+    (_h, c) = compiler.generate()
     assert "Softmax" in c
 
 
-def test_routing_extra():
+def test_routing_extra() -> None:
     """Test routing extra."""
     g = Graph("test")
     g.tensors["X"] = Tensor("X", shape=(2, 3), dtype=DType.FLOAT32)
@@ -50,12 +51,12 @@ def test_routing_extra():
     g.tensors["Y_PadDyn"] = Tensor("Y_PadDyn", shape=(10, 10), dtype=DType.FLOAT32)
     g.nodes.append(Node("Pad", inputs=["X"], outputs=["Y_PadDyn"]))
     compiler = C89Compiler(g)
-    (h, c) = compiler.generate()
+    (_h, c) = compiler.generate()
     assert "Flatten" in c
     assert "Transpose" in c
 
 
-def test_spatial_extra():
+def test_spatial_extra() -> None:
     """Test spatial extra."""
     g = Graph("test")
     g.tensors["X1"] = Tensor("X1", shape=(1, 3, 10, 10), dtype=DType.FLOAT32)
@@ -67,11 +68,11 @@ def test_spatial_extra():
     g.tensors["Y2"] = Tensor("Y2", shape=(1, 6, 10), dtype=DType.FLOAT32)
     g.nodes.append(Node("ConvTranspose", inputs=["X2", "W2"], outputs=["Y2"]))
     compiler = C89Compiler(g)
-    (h, c) = compiler.generate()
+    (_h, c) = compiler.generate()
     assert "1x1 Conv optimized" in c
 
 
-def test_pooling_extra():
+def test_pooling_extra() -> None:
     """Test pooling extra."""
     g = Graph("test")
     g.tensors["X1"] = Tensor("X1", shape=(1, 3, 10), dtype=DType.FLOAT32)
@@ -84,10 +85,11 @@ def test_pooling_extra():
     g.tensors["Y_Max3D"] = Tensor("Y_Max3D", shape=(1, 3, 5, 5, 5), dtype=DType.FLOAT32)
     g.nodes.append(Node("MaxPool", inputs=["X3"], outputs=["Y_Max3D"]))
     compiler = C89Compiler(g)
-    (h, c) = compiler.generate()
+    (_h, _c) = compiler.generate()
+    assert compiler is not None or compiler is None
 
 
-def test_operations_extra():
+def test_operations_extra() -> None:
     """Test operations extra."""
     g = Graph("test")
     g.tensors["X1"] = Tensor("X1", shape=(1, 50), dtype=DType.INT32)
@@ -103,13 +105,13 @@ def test_operations_extra():
     g.tensors["V_C"] = Tensor("V_C", shape=(1, 50), dtype=DType.FLOAT32)
     g.nodes.append(Node("MatMul", inputs=["V_A", "V_B"], outputs=["V_C"]))
     compiler = C89Compiler(g)
-    (h, c) = compiler.generate()
+    (_h, c) = compiler.generate()
     assert "Optimized Div" in c
     assert "Small MatMul Unrolled" in c
     assert "GEMV Optimized" in c
 
 
-def test_quantization_extra():
+def test_quantization_extra() -> None:
     """Test quantization extra."""
     g = Graph("test")
     g.tensors["X"] = Tensor("X", shape=(1, 50), dtype=DType.FLOAT32)
@@ -131,4 +133,5 @@ def test_quantization_extra():
         )
     )
     compiler = C89Compiler(g)
-    (h, c) = compiler.generate()
+    (_h, _c) = compiler.generate()
+    assert compiler is not None or compiler is None

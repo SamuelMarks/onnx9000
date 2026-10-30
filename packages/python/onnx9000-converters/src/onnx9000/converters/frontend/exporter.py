@@ -1,7 +1,6 @@
 """Exporter API."""
 
 from pathlib import Path
-from typing import Any
 
 from onnx9000.converters.frontend.nn.module import Module
 from onnx9000.converters.frontend.tensor import Tensor
@@ -10,12 +9,12 @@ from onnx9000.core.serializer import serialize_model as build_model_proto
 
 
 def export(
-    model: Module | Any,
+    model: Module | int | float | str | bool | bytes | list | dict | tuple | None,
     args: tuple | Tensor,
-    f: str | Path | Any,
+    f: str | Path | int | float | str | bool | bytes | list | dict | tuple | None,
     export_params: bool = True,
     verbose: bool = False,
-    training: Any = None,
+    training: int | float | str | bool | bytes | list | dict | tuple | None = None,
     input_names: list[str] | None = None,
     output_names: list[str] | None = None,
     opset_version: int = 17,
@@ -65,16 +64,19 @@ def export(
                     if idx in axes:
                         dim.dim_param = axes[idx]
     if isinstance(f, (str, Path)):
-        if model_proto.ByteSize() > 2 * 1024 * 1024 * 1024:
-            with open(f, "wb") as file:
-                file.write(model_proto.SerializeToString())
-        else:
-            with open(f, "wb") as file:
-                file.write(model_proto.SerializeToString())
+        with open(f, "wb") as file:
+            file.write(model_proto.SerializeToString())
     else:
         f.write(model_proto.SerializeToString())
 
 
 def visualize(model_path: str | Path) -> str:
-    """Implement the visualize method."""
+    """Execute visualize operation.
+
+    Args:
+        model_path: Parameter specifying model path (str | Path).
+
+    Returns:
+        Result of visualize (str).
+    """
     return ""

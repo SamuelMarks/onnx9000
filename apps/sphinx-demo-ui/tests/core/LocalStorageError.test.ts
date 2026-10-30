@@ -1,24 +1,28 @@
-// @ts-nocheck
+import { Onnx9000Error } from '@onnx9000/core';
 import { describe, expect, it, vi } from 'vitest';
 import { Editor } from '../../src/components/Editor';
 
 describe('LocalStorage Error Handling', () => {
   it('should gracefully handle localStorage parse/quota errors', () => {
     const setItemSpy = vi.spyOn(localStorage, 'setItem').mockImplementation(() => {
-      throw new Error('QuotaExceededError');
+      throw new Onnx9000Error('QuotaExceededError');
     });
     const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
 
     const editor = new Editor({ language: 'python', onChange: vi.fn() });
     editor.mount(document.body);
 
-    const monacoInstance = (editor as object).editor;
+    const monacoInstance = (
+      editor as never as {
+        editor: { onDidChangeModelContent: { mock: { calls: Array<[() => void]> } } };
+      }
+    ).editor;
     const registeredCallback = monacoInstance.onDidChangeModelContent.mock.calls[0][0];
 
     expect(() => registeredCallback()).not.toThrow();
     expect(consoleWarnSpy).toHaveBeenCalledWith(
       'Failed to save editor state to localStorage',
-      expect.any(Error)
+      expect.any(Error),
     );
 
     editor.unmount();

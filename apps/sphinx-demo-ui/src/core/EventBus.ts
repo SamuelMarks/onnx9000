@@ -1,4 +1,6 @@
-// @ts-nocheck
+/**
+ * @fileoverview EventBus module for sphinx-demo-ui.
+ */
 /**
  * Simple Publish-Subscribe Event Bus for decoupled cross-component communication.
  * No external dependencies, purely vanilla JS.
@@ -8,7 +10,7 @@ export class EventBus {
    * Internal storage for event subscribers.
    * Maps event names to an array of callback functions.
    */
-  private listeners: Record<string, Function[]> = {};
+  private listeners: Record<string, Array<(payload?: never) => void>> = {};
 
   /**
    * Subscribes to an event with a specific callback.
@@ -21,7 +23,7 @@ export class EventBus {
     if (!this.listeners[event]) {
       this.listeners[event] = [];
     }
-    this.listeners[event].push(callback);
+    this.listeners[event].push(callback as (payload?: never) => void);
 
     // Return unsubscribe function
     return () => {
@@ -55,7 +57,7 @@ export class EventBus {
     // Clone array to avoid issues if listeners are added/removed during emit
     const listenersCpy = [...this.listeners[event]];
     for (const callback of listenersCpy) {
-      callback(payload);
+      (callback as (payload?: T) => void)(payload);
     }
   }
 

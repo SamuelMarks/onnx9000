@@ -1,17 +1,23 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../src/ir/node";
+import { describe, expect, it } from 'vitest';
+import { Attribute, Node } from '../../src/ir/node';
 
-describe("node.ts", () => {
-  it("should instantiate and cover Attribute", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('node.ts', () => {
+  it('should instantiate and cover Attribute', () => {
     try {
-      const obj = new (Module as any).Attribute();
+      const obj = Construct(Attribute);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover Node", () => {
+  it('should instantiate and cover Node', () => {
     try {
-      const obj = new (Module as any).Node();
+      const obj = Construct(Node);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

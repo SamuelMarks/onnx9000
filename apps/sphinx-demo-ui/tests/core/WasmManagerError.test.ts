@@ -1,12 +1,11 @@
-// @ts-nocheck
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { globalEventBus } from '../../src/core/EventBus';
 import { WasmManager, WasmState } from '../../src/core/WasmManager';
 
 global.WebAssembly = {
   compile: vi.fn().mockResolvedValue({}),
-  instantiate: vi.fn().mockResolvedValue({ exports: {} })
-} as object as typeof WebAssembly;
+  instantiate: vi.fn().mockResolvedValue({ exports: {} }),
+} as never as typeof WebAssembly;
 
 describe('WasmManager fallback error', () => {
   beforeEach(() => {
@@ -28,7 +27,7 @@ describe('WasmManager fallback error', () => {
 
 it('should cover the constructor being private', () => {
   // Reset singleton specifically
-  (WasmManager as object).instance = undefined;
+  (WasmManager as never as { instance?: WasmManager }).instance = undefined;
   const inst = WasmManager.getInstance();
   expect(inst).toBeDefined();
 });

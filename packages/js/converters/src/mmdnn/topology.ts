@@ -1,6 +1,8 @@
-// @ts-nocheck
-import { Graph, type Node } from "@onnx9000/core";
-import type { MMDNNReporter } from "./reporter.js";
+/**
+ * @fileoverview topology module for converters.
+ */
+import { Graph, type Node } from '@onnx9000/core';
+import type { MMDNNReporter } from './reporter.js';
 
 /**
  * Topologically sorts the nodes of an ONNX graph to ensure inputs are ready before being consumed.
@@ -37,7 +39,6 @@ export function topologicalSort(graph: Graph, reporter: MMDNNReporter): Graph {
   }
 
   function dfs(node: Node) {
-    if (visited.has(node.name)) return;
     if (visiting.has(node.name)) {
       reporter.error(`Cyclic graph detected at node: ${node.name}`, node.name);
     }
@@ -48,7 +49,7 @@ export function topologicalSort(graph: Graph, reporter: MMDNNReporter): Graph {
         const producer = outputToNodeMap.get(inp);
         if (producer) {
           dfs(producer);
-        } else if (inp !== "") {
+        } else if (inp !== '') {
           // If empty string, it's an optional parameter
           reporter.warn(
             `Input tensor ${inp} not found in graph initializers or outputs. It might be an implicit shape.`,

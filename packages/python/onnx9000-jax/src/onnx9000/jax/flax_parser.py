@@ -2,14 +2,18 @@
 
 import struct
 
+from onnx9000.core.exceptions import ConversionError
 
-def parse_msgpack(data: bytes):
+
+def parse_msgpack(data: bytes) -> int | float | str | bool | bytes | list | dict | tuple | None:
     """Parse the msgpack file."""
 
-    def _read(offset):
-        """read."""
+    def _read(
+        offset: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
+        """Read."""
         if offset >= len(data):
-            raise ValueError("Unexpected end of data")
+            raise ConversionError("Unexpected end of data")
         b = data[offset]
         offset += 1
 
@@ -34,7 +38,7 @@ def parse_msgpack(data: bytes):
             return True, offset
         elif b == 0xC4:
             if offset >= len(data):
-                raise ValueError("Unexpected end of data")
+                raise ConversionError("Unexpected end of data")
             n = data[offset]
             offset += 1
             return _read_bin(n, offset)
@@ -88,7 +92,7 @@ def parse_msgpack(data: bytes):
             return val, offset
         elif b == 0xD9:
             if offset >= len(data):
-                raise ValueError("Unexpected end of data")
+                raise ConversionError("Unexpected end of data")
             n = data[offset]
             offset += 1
             return _read_str(n, offset)
@@ -119,7 +123,7 @@ def parse_msgpack(data: bytes):
         # ext types (Flax might use them?)
         elif b == 0xC7:  # ext 8
             if offset >= len(data):
-                raise ValueError("Unexpected end of data")
+                raise ConversionError("Unexpected end of data")
             n = data[offset]
             offset += 1
             return _read_ext(n, offset)
@@ -142,10 +146,13 @@ def parse_msgpack(data: bytes):
         elif b == 0xD8:  # fixext 16
             return _read_ext(16, offset)
         else:
-            raise ValueError(f"MsgPack type {hex(b)} not implemented")
+            raise ConversionError(f"MsgPack type {hex(b)} not implemented")
 
-    def _read_map(n, offset):
-        """read map."""
+    def _read_map(
+        n: int | float | str | bool | bytes | list | dict | tuple | None,
+        offset: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
+        """Read map."""
         res = {}
         for _ in range(n):
             k, offset = _read(offset)
@@ -153,28 +160,40 @@ def parse_msgpack(data: bytes):
             res[k] = v
         return res, offset
 
-    def _read_array(n, offset):
-        """read array."""
+    def _read_array(
+        n: int | float | str | bool | bytes | list | dict | tuple | None,
+        offset: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
+        """Read array."""
         res = []
         for _ in range(n):
             v, offset = _read(offset)
             res.append(v)
         return res, offset
 
-    def _read_str(n, offset):
-        """read str."""
+    def _read_str(
+        n: int | float | str | bool | bytes | list | dict | tuple | None,
+        offset: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
+        """Read str."""
         val = data[offset : offset + n].decode("utf-8")
         return val, offset + n
 
-    def _read_bin(n, offset):
-        """read bin."""
+    def _read_bin(
+        n: int | float | str | bool | bytes | list | dict | tuple | None,
+        offset: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
+        """Read bin."""
         val = data[offset : offset + n]
         return val, offset + n
 
-    def _read_ext(n, offset):
-        """read ext."""
+    def _read_ext(
+        n: int | float | str | bool | bytes | list | dict | tuple | None,
+        offset: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
+        """Read ext."""
         if offset >= len(data):
-            raise ValueError("Unexpected end of data")
+            raise ConversionError("Unexpected end of data")
         """read ext."""
         ext_type = data[offset]
         offset += 1

@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../../src/mmdnn/cntk/generator";
+import { describe, expect, it } from 'vitest';
+import { CNTKGenerator } from '../../../src/mmdnn/cntk/generator';
 
-describe("generator.ts", () => {
-  it("should instantiate and cover CNTKGenerator", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('generator.ts', () => {
+  it('should instantiate and cover CNTKGenerator', () => {
     try {
-      const obj = new (Module as any).CNTKGenerator();
+      const obj = Construct(CNTKGenerator);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

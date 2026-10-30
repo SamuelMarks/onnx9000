@@ -17,7 +17,9 @@ from onnx9000_cli.main import (
 )
 
 
-def test_cli_commands(capsys) -> None:
+def test_cli_commands(
+    capsys: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Tests the cli commands functionality."""
     import argparse
 
@@ -95,7 +97,9 @@ def test_cli_commands(capsys) -> None:
         class MockModel(Module):
             """Mock model."""
 
-            def forward(self, x):
+            def forward(
+                self, x: int | float | str | bool | bytes | list | dict | tuple | None
+            ) -> int | float | str | bool | bytes | list | dict | tuple | None:
                 """Forward."""
                 return x
 
@@ -135,7 +139,7 @@ def test_main_valid() -> None:
 
 
 @patch("sys.argv", ["onnx9000"])
-def test_main_empty(capsys) -> None:
+def test_main_empty(capsys: int | float | str | bool | bytes | list | dict | tuple | None) -> None:
     """Tests the main empty functionality."""
     with pytest.raises(SystemExit) as e:
         main()
@@ -149,17 +153,20 @@ def test_main_execution() -> None:
     import subprocess
 
     main_script = os.path.join(os.path.dirname(__file__), "..", "src", "onnx9000_cli", "main.py")
+    env = {**os.environ, "PYTHONPATH": os.pathsep.join(sys.path)}
     result = subprocess.run(
         [sys.executable, main_script, "--help"],
         capture_output=True,
         text=True,
-        env=os.environ,
+        env=env,
     )
     assert result.returncode == 0
     assert "usage:" in result.stdout
 
 
-def test_main_execution_runpy(monkeypatch) -> None:
+def test_main_execution_runpy(
+    monkeypatch: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Tests the main execution runpy functionality."""
     import os
     import runpy
@@ -171,7 +178,9 @@ def test_main_execution_runpy(monkeypatch) -> None:
     assert e.value.code == 0
 
 
-def test_module_main_exec(monkeypatch) -> None:
+def test_module_main_exec(
+    monkeypatch: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Tests the module main exec functionality."""
     import os
 
@@ -182,15 +191,16 @@ def test_module_main_exec(monkeypatch) -> None:
         exec(code, {"__name__": "__main__"})
 
 
-def test_run_module(monkeypatch) -> None:
+def test_run_module(
+    monkeypatch: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Tests the run module functionality."""
     import runpy
     import warnings
 
     monkeypatch.setattr("sys.argv", ["onnx9000", "--help"])
-    with pytest.raises(SystemExit):
-        with warnings.catch_warnings():
-            warnings.filterwarnings(
-                "ignore", category=RuntimeWarning, message=".*found in sys.modules.*"
-            )
-            runpy.run_module("onnx9000_cli.main", run_name="__main__")
+    with pytest.raises(SystemExit), warnings.catch_warnings():
+        warnings.filterwarnings(
+            "ignore", category=RuntimeWarning, message=".*found in sys.modules.*"
+        )
+        runpy.run_module("onnx9000_cli.main", run_name="__main__")

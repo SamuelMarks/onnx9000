@@ -4,7 +4,7 @@ test.describe('WebGPU Demo App', () => {
   test.beforeEach(async ({ page }) => {
     try {
       await page.goto('/demo-webgpu');
-    } catch (_e) {
+    } catch {
       test.skip();
     }
   });

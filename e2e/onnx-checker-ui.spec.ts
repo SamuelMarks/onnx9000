@@ -4,7 +4,7 @@ test.describe('onnx-checker-ui', () => {
   test.beforeEach(async ({ page }) => {
     try {
       await page.goto('/onnx-checker-ui.html');
-    } catch (_e) {
+    } catch {
       test.skip();
     }
   });

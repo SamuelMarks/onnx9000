@@ -1,28 +1,47 @@
 """Convolution layers."""
 
-from typing import Any
-
 from onnx9000.converters.frontend.nn.module import Module
 from onnx9000.converters.frontend.tensor import Parameter, Tensor
 from onnx9000.core.dtypes import DType
 
 
 def _pair(x: int | tuple[int, int]) -> tuple[int, int]:
-    """Implement the _pair method."""
+    """Execute pair operation.
+
+    Args:
+        x: Parameter specifying x (int | tuple[int, int]).
+
+    Returns:
+        Result of pair (tuple[int, int]).
+    """
     if isinstance(x, int):
         return (x, x)
     return x
 
 
 def _single(x: int | tuple[int]) -> tuple[int]:
-    """Implement the _single method."""
+    """Execute single operation.
+
+    Args:
+        x: Parameter specifying x (int | tuple[int]).
+
+    Returns:
+        Result of single (tuple[int]).
+    """
     if isinstance(x, int):
         return (x,)
     return x
 
 
 def _triple(x: int | tuple[int, int, int]) -> tuple[int, int, int]:
-    """Implement the _triple method."""
+    """Execute triple operation.
+
+    Args:
+        x: Parameter specifying x (int | tuple[int, int, int]).
+
+    Returns:
+        Result of triple (tuple[int, int, int]).
+    """
     if isinstance(x, int):
         return (x, x, x)
     return x
@@ -35,16 +54,29 @@ class _ConvNd(Module):
         self,
         in_channels: int,
         out_channels: int,
-        kernel_size: Any,
-        stride: Any,
-        padding: Any,
-        dilation: Any,
+        kernel_size: int | float | str | bool | bytes | list | dict | tuple | None,
+        stride: int | float | str | bool | bytes | list | dict | tuple | None,
+        padding: int | float | str | bool | bytes | list | dict | tuple | None,
+        dilation: int | float | str | bool | bytes | list | dict | tuple | None,
         groups: int,
         bias: bool,
         padding_mode: str,
         dtype: DType,
     ) -> None:
-        """Implement the __init__ method."""
+        """Initialize _ConvNd with configured parameters and state.
+
+        Args:
+            in_channels: Parameter specifying in channels (int).
+            out_channels: Parameter specifying out channels (int).
+            kernel_size: Parameter specifying kernel size (Union[int, float, str, bool, bytes, list, dict, tuple, None]).
+            stride: Parameter specifying stride (Union[int, float, str, bool, bytes, list, dict, tuple, None]).
+            padding: Parameter specifying padding (Union[int, float, str, bool, bytes, list, dict, tuple, None]).
+            dilation: Parameter specifying dilation (Union[int, float, str, bool, bytes, list, dict, tuple, None]).
+            groups: Parameter specifying groups (int).
+            bias: Parameter specifying bias (bool).
+            padding_mode: Parameter specifying padding mode (str).
+            dtype: Parameter specifying dtype (DType).
+        """
         super().__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
@@ -58,7 +90,14 @@ class _ConvNd(Module):
         self.bias: Parameter | None = None
 
     def forward(self, input: Tensor) -> Tensor:
-        """Implement the forward method."""
+        """Execute forward on _ConvNd.
+
+        Args:
+            input: Parameter specifying input (Tensor).
+
+        Returns:
+            Result of forward (Tensor).
+        """
         from onnx9000.converters.frontend.utils import record_op
 
         attrs = {
@@ -90,7 +129,20 @@ class Conv1d(_ConvNd):
         padding_mode: str = "zeros",
         dtype: DType = DType.FLOAT32,
     ) -> None:
-        """Implement the __init__ method."""
+        """Initialize Conv1d with configured parameters and state.
+
+        Args:
+            in_channels: Parameter specifying in channels (int).
+            out_channels: Parameter specifying out channels (int).
+            kernel_size: Parameter specifying kernel size (int | tuple[int]).
+            stride: Parameter specifying stride (int | tuple[int]).
+            padding: Parameter specifying padding (int | tuple[int]).
+            dilation: Parameter specifying dilation (int | tuple[int]).
+            groups: Parameter specifying groups (int).
+            bias: Parameter specifying bias (bool).
+            padding_mode: Parameter specifying padding mode (str).
+            dtype: Parameter specifying dtype (DType).
+        """
         kernel_size_ = _single(kernel_size)
         stride_ = _single(stride)
         padding_ = _single(padding)
@@ -132,7 +184,20 @@ class Conv2d(_ConvNd):
         padding_mode: str = "zeros",
         dtype: DType = DType.FLOAT32,
     ) -> None:
-        """Implement the __init__ method."""
+        """Initialize Conv2d with configured parameters and state.
+
+        Args:
+            in_channels: Parameter specifying in channels (int).
+            out_channels: Parameter specifying out channels (int).
+            kernel_size: Parameter specifying kernel size (int | tuple[int, int]).
+            stride: Parameter specifying stride (int | tuple[int, int]).
+            padding: Parameter specifying padding (int | tuple[int, int]).
+            dilation: Parameter specifying dilation (int | tuple[int, int]).
+            groups: Parameter specifying groups (int).
+            bias: Parameter specifying bias (bool).
+            padding_mode: Parameter specifying padding mode (str).
+            dtype: Parameter specifying dtype (DType).
+        """
         kernel_size_ = _pair(kernel_size)
         stride_ = _pair(stride)
         padding_ = _pair(padding)
@@ -174,7 +239,20 @@ class Conv3d(_ConvNd):
         padding_mode: str = "zeros",
         dtype: DType = DType.FLOAT32,
     ) -> None:
-        """Implement the __init__ method."""
+        """Initialize Conv3d with configured parameters and state.
+
+        Args:
+            in_channels: Parameter specifying in channels (int).
+            out_channels: Parameter specifying out channels (int).
+            kernel_size: Parameter specifying kernel size (int | tuple[int, int, int]).
+            stride: Parameter specifying stride (int | tuple[int, int, int]).
+            padding: Parameter specifying padding (int | tuple[int, int, int]).
+            dilation: Parameter specifying dilation (int | tuple[int, int, int]).
+            groups: Parameter specifying groups (int).
+            bias: Parameter specifying bias (bool).
+            padding_mode: Parameter specifying padding mode (str).
+            dtype: Parameter specifying dtype (DType).
+        """
         kernel_size_ = _triple(kernel_size)
         stride_ = _triple(stride)
         padding_ = _triple(padding)
@@ -207,17 +285,31 @@ class _ConvTransposeNd(Module):
         self,
         in_channels: int,
         out_channels: int,
-        kernel_size: Any,
-        stride: Any,
-        padding: Any,
-        output_padding: Any,
+        kernel_size: int | float | str | bool | bytes | list | dict | tuple | None,
+        stride: int | float | str | bool | bytes | list | dict | tuple | None,
+        padding: int | float | str | bool | bytes | list | dict | tuple | None,
+        output_padding: int | float | str | bool | bytes | list | dict | tuple | None,
         groups: int,
         bias: bool,
-        dilation: Any,
+        dilation: int | float | str | bool | bytes | list | dict | tuple | None,
         padding_mode: str,
         dtype: DType,
     ) -> None:
-        """Implement the __init__ method."""
+        """Initialize _ConvTransposeNd with configured parameters and state.
+
+        Args:
+            in_channels: Parameter specifying in channels (int).
+            out_channels: Parameter specifying out channels (int).
+            kernel_size: Parameter specifying kernel size (Union[int, float, str, bool, bytes, list, dict, tuple, None]).
+            stride: Parameter specifying stride (Union[int, float, str, bool, bytes, list, dict, tuple, None]).
+            padding: Parameter specifying padding (Union[int, float, str, bool, bytes, list, dict, tuple, None]).
+            output_padding: Parameter specifying output padding (Union[int, float, str, bool, bytes, list, dict, tuple, None]).
+            groups: Parameter specifying groups (int).
+            bias: Parameter specifying bias (bool).
+            dilation: Parameter specifying dilation (Union[int, float, str, bool, bytes, list, dict, tuple, None]).
+            padding_mode: Parameter specifying padding mode (str).
+            dtype: Parameter specifying dtype (DType).
+        """
         super().__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
@@ -232,7 +324,14 @@ class _ConvTransposeNd(Module):
         self.bias: Parameter | None = None
 
     def forward(self, input: Tensor) -> Tensor:
-        """Implement the forward method."""
+        """Execute forward on _ConvTransposeNd.
+
+        Args:
+            input: Parameter specifying input (Tensor).
+
+        Returns:
+            Result of forward (Tensor).
+        """
         from onnx9000.converters.frontend.utils import record_op
 
         attrs = {
@@ -267,7 +366,21 @@ class ConvTranspose1d(_ConvTransposeNd):
         padding_mode: str = "zeros",
         dtype: DType = DType.FLOAT32,
     ) -> None:
-        """Implement the __init__ method."""
+        """Initialize ConvTranspose1d with configured parameters and state.
+
+        Args:
+            in_channels: Parameter specifying in channels (int).
+            out_channels: Parameter specifying out channels (int).
+            kernel_size: Parameter specifying kernel size (int | tuple[int]).
+            stride: Parameter specifying stride (int | tuple[int]).
+            padding: Parameter specifying padding (int | tuple[int]).
+            output_padding: Parameter specifying output padding (int | tuple[int]).
+            groups: Parameter specifying groups (int).
+            bias: Parameter specifying bias (bool).
+            dilation: Parameter specifying dilation (int | tuple[int]).
+            padding_mode: Parameter specifying padding mode (str).
+            dtype: Parameter specifying dtype (DType).
+        """
         kernel_size_ = _single(kernel_size)
         stride_ = _single(stride)
         padding_ = _single(padding)
@@ -312,7 +425,21 @@ class ConvTranspose2d(_ConvTransposeNd):
         padding_mode: str = "zeros",
         dtype: DType = DType.FLOAT32,
     ) -> None:
-        """Implement the __init__ method."""
+        """Initialize ConvTranspose2d with configured parameters and state.
+
+        Args:
+            in_channels: Parameter specifying in channels (int).
+            out_channels: Parameter specifying out channels (int).
+            kernel_size: Parameter specifying kernel size (int | tuple[int, int]).
+            stride: Parameter specifying stride (int | tuple[int, int]).
+            padding: Parameter specifying padding (int | tuple[int, int]).
+            output_padding: Parameter specifying output padding (int | tuple[int, int]).
+            groups: Parameter specifying groups (int).
+            bias: Parameter specifying bias (bool).
+            dilation: Parameter specifying dilation (int | tuple[int, int]).
+            padding_mode: Parameter specifying padding mode (str).
+            dtype: Parameter specifying dtype (DType).
+        """
         kernel_size_ = _pair(kernel_size)
         stride_ = _pair(stride)
         padding_ = _pair(padding)

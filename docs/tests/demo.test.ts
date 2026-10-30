@@ -4,8 +4,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import ONNX9000Demo from '../_static/demo.js';
 
 describe('ONNX9000Demo', () => {
-  let doc: any;
-  let demo: any;
+  let doc: Document;
+  let demo: InstanceType<typeof ONNX9000Demo>;
 
   beforeEach(() => {
     // Setup basic DOM

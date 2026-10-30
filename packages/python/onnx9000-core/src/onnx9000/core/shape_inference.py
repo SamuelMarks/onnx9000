@@ -2,11 +2,9 @@
 
 from __future__ import annotations
 
-from typing import Any
-
 from onnx9000.core.dtypes import DType
-from onnx9000.core.exceptions import ShapeInferenceError
-from onnx9000.core.ir import DynamicDim, Graph, Node, Tensor, ValueInfo
+from onnx9000.core.exceptions import Onnx9000Error, ShapeInferenceError
+from onnx9000.core.ir import Attribute, AttributeValue, DynamicDim, Graph, Node, Tensor, ValueInfo
 from onnx9000.core.symbolic import (
     broadcast_shapes,
     simplify_dim,
@@ -29,20 +27,20 @@ def _promote_types(t1: DType, t2: DType) -> DType:
     """
     if t1 == t2:
         return t1
-    if t1 == DType.FLOAT64 or t2 == DType.FLOAT64:
+    if DType.FLOAT64 in (t1, t2):
         return DType.FLOAT64
-    if t1 == DType.FLOAT32 or t2 == DType.FLOAT32:
+    if DType.FLOAT32 in (t1, t2):
         return DType.FLOAT32
-    if t1 == DType.FLOAT16 or t2 == DType.FLOAT16:
+    if DType.FLOAT16 in (t1, t2):
         return DType.FLOAT16
-    if t1 == DType.INT64 or t2 == DType.INT64:
+    if DType.INT64 in (t1, t2):
         return DType.INT64
-    if t1 == DType.INT32 or t2 == DType.INT32:
+    if DType.INT32 in (t1, t2):
         return DType.INT32
     return t1
 
 
-def get_attr(node: Node, name: str, default: Any = None) -> Any:
+def get_attr(node: Node, name: str, default: AttributeValue = None) -> AttributeValue:
     """Retrieve an attribute value from a node.
 
     Args:
@@ -56,13 +54,17 @@ def get_attr(node: Node, name: str, default: Any = None) -> Any:
     """
     if name in node.attributes:
         attr = node.attributes[name]
-        if hasattr(attr, "value"):
+        if isinstance(attr, Attribute):
             return attr.value if attr.value is not None else default
+        if hasattr(attr, "value"):
+            val = attr.value
+            return val if val is not None else default
         return attr
     # Fallback for when attributes are not keyed by name in the dict values
     for attr in node.attributes.values():
-        if hasattr(attr, "name") and attr.name == name:
-            return attr.value if attr.value is not None else default
+        if hasattr(attr, "name") and attr.name == name and hasattr(attr, "value"):
+            val = attr.value
+            return val if val is not None else default
     return default
 
 
@@ -80,7 +82,22 @@ def infer_shapes_and_types(graph: Graph) -> None:
     """
     try:
         sorted_nodes = topological_sort(graph)
-    except Exception as e:
+    except (
+        Onnx9000Error,
+        OSError,
+        ValueError,
+        TypeError,
+        RuntimeError,
+        KeyError,
+        IndexError,
+        AttributeError,
+        ImportError,
+        LookupError,
+        ArithmeticError,
+        BufferError,
+        AssertionError,
+        StopIteration,
+    ) as e:
         raise ShapeInferenceError(f"Cannot infer shapes on a cyclic graph: {e}") from e
 
     env: dict[str, ValueInfo] = {}
@@ -89,8 +106,10 @@ def infer_shapes_and_types(graph: Graph) -> None:
         if isinstance(inp, str) and inp in graph.tensors:
             t = graph.tensors[inp]
             env[inp] = ValueInfo(t.name, t.shape, t.dtype)
-        elif hasattr(inp, "name"):
+        elif isinstance(inp, ValueInfo):
             env[inp.name] = inp
+        elif isinstance(inp, Tensor):
+            env[inp.name] = ValueInfo(inp.name, inp.shape, inp.dtype)
 
     for _tensor_name, tensor in graph.tensors.items():
         env[tensor.name] = ValueInfo(tensor.name, tensor.shape, tensor.dtype)
@@ -166,7 +185,7 @@ def infer_shapes_and_types(graph: Graph) -> None:
                     except ShapeInferenceError:
                         batch_shape = list(batch1) if len(batch1) > len(batch2) else list(batch2)
 
-                out_shape = tuple(batch_shape + [shape1[-2], shape2[-1]])
+                out_shape = (*batch_shape, shape1[-2], shape2[-1])
             else:
                 out_shape = ()
 
@@ -225,10 +244,7 @@ def infer_shapes_and_types(graph: Graph) -> None:
             if in1:
                 in_shape = list(in1.shape)
                 perm = get_attr(node, "perm")
-                if perm:
-                    out_shape = tuple(in_shape[i] for i in perm)
-                else:
-                    out_shape = tuple(reversed(in_shape))
+                out_shape = tuple(in_shape[i] for i in perm) if perm else tuple(reversed(in_shape))
                 out_shapes = [out_shape] * len(node.outputs)
                 out_dtypes = [in1.dtype] * len(node.outputs)
 
@@ -241,16 +257,12 @@ def infer_shapes_and_types(graph: Graph) -> None:
 
             shape_tensor_name = node.inputs[1]
             out_shape = None
-            if shape_tensor_name in graph.tensors:
-                shape_tensor = graph.tensors[shape_tensor_name]
-                if hasattr(shape_tensor, "data") and shape_tensor.data:
-                    # Try to use data if available, otherwise continue to other logic
-                    if shape_tensor.data:
-                        out_shape = tuple(shape_tensor.data)
-
-            if not out_shape and hasattr(graph.tensors.get(shape_tensor_name, None), "values"):
-                vals = getattr(graph.tensors[shape_tensor_name], "values", None)
-                if vals is not None:
+            shape_t_candidate = graph.tensors.get(shape_tensor_name, None)
+            if isinstance(shape_t_candidate, Tensor):
+                if shape_t_candidate.data:
+                    out_shape = tuple(shape_t_candidate.data)
+                elif shape_t_candidate.values is not None:
+                    vals = shape_t_candidate.values
                     target_shape = list(vals)
                     try:
                         in_vol = 1
@@ -268,7 +280,22 @@ def infer_shapes_and_types(graph: Graph) -> None:
                         if neg_idx != -1 and out_vol != 0:
                             target_shape[neg_idx] = in_vol // out_vol
                         out_shape = tuple(target_shape)
-                    except Exception:
+                    except (
+                        Onnx9000Error,
+                        OSError,
+                        ValueError,
+                        TypeError,
+                        RuntimeError,
+                        KeyError,
+                        IndexError,
+                        AttributeError,
+                        ImportError,
+                        LookupError,
+                        ArithmeticError,
+                        BufferError,
+                        AssertionError,
+                        StopIteration,
+                    ):
                         out_shape = tuple(vals)
 
             if not out_shape:
@@ -316,7 +343,7 @@ def infer_shapes_and_types(graph: Graph) -> None:
                 for i in range(len(kernel_shape)):
                     try:
                         in_dim = in_shape[2 + i]
-                        if isinstance(in_dim, DynamicDim) or isinstance(in_dim, str):
+                        if isinstance(in_dim, (DynamicDim, str)):
                             spatial_dims.append(DynamicDim(f"spatial_{i}"))
                         else:
                             k = kernel_shape[i]
@@ -325,12 +352,25 @@ def infer_shapes_and_types(graph: Graph) -> None:
                             d = dilations[i]
                             out_dim = (in_dim + p - ((k - 1) * d + 1)) // s + 1
                             spatial_dims.append(out_dim)
-                    except Exception:
+                    except (
+                        Onnx9000Error,
+                        OSError,
+                        ValueError,
+                        TypeError,
+                        RuntimeError,
+                        KeyError,
+                        IndexError,
+                        AttributeError,
+                        ImportError,
+                        LookupError,
+                        ArithmeticError,
+                        BufferError,
+                        AssertionError,
+                        StopIteration,
+                    ):
                         spatial_dims.append(DynamicDim(f"spatial_{i}"))
 
-                out_shape = tuple(
-                    [in_shape[0] if len(in_shape) > 0 else 1, out_channels] + spatial_dims
-                )
+                out_shape = (in_shape[0] if len(in_shape) > 0 else 1, out_channels, *spatial_dims)
                 out_shapes = [out_shape] * len(node.outputs)
                 out_dtypes = [out_dtype] * len(node.outputs)
 
@@ -363,7 +403,7 @@ def infer_shapes_and_types(graph: Graph) -> None:
             for i in range(len(kernel_shape)):
                 try:
                     in_dim = in_shape[2 + i]
-                    if isinstance(in_dim, DynamicDim) or isinstance(in_dim, str):
+                    if isinstance(in_dim, (DynamicDim, str)):
                         spatial_dims.append(DynamicDim(f"spatial_{i}"))
                     else:
                         k = kernel_shape[i]
@@ -373,12 +413,25 @@ def infer_shapes_and_types(graph: Graph) -> None:
                         opad = output_padding[i]
                         out_dim = (in_dim - 1) * s - p + (k - 1) * d + 1 + opad
                         spatial_dims.append(out_dim)
-                except Exception:
+                except (
+                    Onnx9000Error,
+                    OSError,
+                    ValueError,
+                    TypeError,
+                    RuntimeError,
+                    KeyError,
+                    IndexError,
+                    AttributeError,
+                    ImportError,
+                    LookupError,
+                    ArithmeticError,
+                    BufferError,
+                    AssertionError,
+                    StopIteration,
+                ):
                     spatial_dims.append(DynamicDim(f"spatial_{i}"))
 
-            out_shape = tuple(
-                [in_shape[0] if len(in_shape) > 0 else 1, out_channels] + spatial_dims
-            )
+            out_shape = (in_shape[0] if len(in_shape) > 0 else 1, out_channels, *spatial_dims)
             out_shapes = [out_shape] * len(node.outputs)
             out_dtypes = [out_dtype] * len(node.outputs)
 
@@ -467,7 +520,7 @@ def infer_shapes_and_types(graph: Graph) -> None:
 
             def get_tensor_vals(
                 idx: int, n: Node = node, default_len: int | None = None
-            ) -> list[Any]:
+            ) -> list[int | float | str | bool | bytes | list | dict | tuple | None]:
                 """Retrieve constant values from a tensor at the given index.
 
                 Args:
@@ -480,22 +533,15 @@ def infer_shapes_and_types(graph: Graph) -> None:
 
                 """
                 if len(n.inputs) > idx:
-                    t_name = n.inputs[idx]
-                    if t_name in graph.tensors and hasattr(graph.tensors[t_name], "values"):
-                        vals = graph.tensors[t_name].values
-                        if vals is not None:
-                            return list(vals)
+                    t_cand = graph.tensors.get(n.inputs[idx])
+                    if isinstance(t_cand, Tensor) and t_cand.values is not None:
+                        return list(t_cand.values)
                 return [] if default_len is None else [1] * default_len
 
             starts = get_tensor_vals(1)
             ends = get_tensor_vals(2)
-            axes = get_tensor_vals(3)
-            steps = get_tensor_vals(4)
-
-            if not axes and starts:
-                axes = list(range(len(starts)))
-            if not steps and starts:
-                steps = [1] * len(starts)
+            axes = get_tensor_vals(3) or list(range(len(starts)))
+            steps = get_tensor_vals(4) or [1] * len(starts)
 
             for i, axis in enumerate(axes):
                 if axis < 0:
@@ -571,7 +617,7 @@ def infer_shapes_and_types(graph: Graph) -> None:
             splits = []
             if len(node.inputs) > 1:
                 split_t = graph.tensors.get(node.inputs[1])
-                if split_t and hasattr(split_t, "values") and split_t.values is not None:
+                if isinstance(split_t, Tensor) and split_t.values is not None:
                     splits = list(split_t.values)
             if not splits:
                 splits = get_attr(node, "split", [])
@@ -585,11 +631,10 @@ def infer_shapes_and_types(graph: Graph) -> None:
                 shape_i = in_shape.copy()
                 if splits and i < len(splits):
                     shape_i[axis] = splits[i]
+                elif isinstance(dim_val, int) and dim_val % num_outputs == 0:
+                    shape_i[axis] = dim_val // num_outputs
                 else:
-                    if isinstance(dim_val, int) and dim_val % num_outputs == 0:
-                        shape_i[axis] = dim_val // num_outputs
-                    else:
-                        shape_i[axis] = DynamicDim(f"split_{axis}")
+                    shape_i[axis] = DynamicDim(f"split_{axis}")
                 out_shapes.append(tuple(shape_i))
                 out_dtypes.append(in1.dtype)
 
@@ -602,7 +647,7 @@ def infer_shapes_and_types(graph: Graph) -> None:
 
             shape_t = graph.tensors.get(node.inputs[1])
             repeats = []
-            if shape_t and hasattr(shape_t, "values") and shape_t.values is not None:
+            if isinstance(shape_t, Tensor) and shape_t.values is not None:
                 repeats = list(shape_t.values)
 
             if node.op_type == "Tile":
@@ -635,7 +680,7 @@ def infer_shapes_and_types(graph: Graph) -> None:
             pads = []
             if len(node.inputs) > 1:
                 pads_t = graph.tensors.get(node.inputs[1])
-                if pads_t and hasattr(pads_t, "values") and pads_t.values is not None:
+                if isinstance(pads_t, Tensor) and pads_t.values is not None:
                     pads = list(pads_t.values)
 
             in_shape = list(in1.shape)
@@ -670,12 +715,7 @@ def infer_shapes_and_types(graph: Graph) -> None:
                 k = 1
                 if len(node.inputs) > 1:
                     k_t = graph.tensors.get(node.inputs[1])
-                    if (
-                        k_t
-                        and hasattr(k_t, "values")
-                        and k_t.values is not None
-                        and len(k_t.values) > 0
-                    ):
+                    if isinstance(k_t, Tensor) and k_t.values is not None and len(k_t.values) > 0:
                         k = int(k_t.values[0])
                 if axis < len(out_shape):
                     out_shape[axis] = k
@@ -685,9 +725,8 @@ def infer_shapes_and_types(graph: Graph) -> None:
                 if keepdims:
                     if axis < len(out_shape):
                         out_shape[axis] = 1
-                else:
-                    if axis < len(out_shape):
-                        out_shape.pop(axis)
+                elif axis < len(out_shape):
+                    out_shape.pop(axis)
                 out_shapes = [tuple(out_shape)] * len(node.outputs)
                 out_dtypes = [DType.INT64] * len(node.outputs)
 
@@ -699,7 +738,7 @@ def infer_shapes_and_types(graph: Graph) -> None:
             if then_graph and isinstance(then_graph, Graph):
                 infer_shapes_and_types(then_graph)
                 for out_v in then_graph.outputs:
-                    name = getattr(out_v, "name", out_v)
+                    name = out_v.name if isinstance(out_v, (Tensor, ValueInfo)) else str(out_v)
                     if name in then_graph.tensors:
                         t = then_graph.tensors[name]
                         if isinstance(out_v, ValueInfo):
@@ -708,7 +747,7 @@ def infer_shapes_and_types(graph: Graph) -> None:
             if else_graph and isinstance(else_graph, Graph):
                 infer_shapes_and_types(else_graph)
                 for out_v in else_graph.outputs:
-                    name = getattr(out_v, "name", out_v)
+                    name = out_v.name if isinstance(out_v, (Tensor, ValueInfo)) else str(out_v)
                     if name in else_graph.tensors:
                         t = else_graph.tensors[name]
                         if isinstance(out_v, ValueInfo):
@@ -717,11 +756,16 @@ def infer_shapes_and_types(graph: Graph) -> None:
 
             out_shapes = []
             out_dtypes = []
-            for i, out in enumerate(node.outputs):
+            for i, _out in enumerate(node.outputs):
                 then_shape = ()
                 then_dtype = DType.FLOAT32
                 if then_graph and i < len(then_graph.outputs):
-                    then_out_name = getattr(then_graph.outputs[i], "name", then_graph.outputs[i])
+                    then_out_v = then_graph.outputs[i]
+                    then_out_name = (
+                        then_out_v.name
+                        if isinstance(then_out_v, (Tensor, ValueInfo))
+                        else str(then_out_v)
+                    )
                     if then_out_name in then_graph.tensors:
                         then_shape = then_graph.tensors[then_out_name].shape
                         then_dtype = then_graph.tensors[then_out_name].dtype
@@ -729,14 +773,19 @@ def infer_shapes_and_types(graph: Graph) -> None:
                 else_shape = ()
                 else_dtype = DType.FLOAT32
                 if else_graph and i < len(else_graph.outputs):
-                    else_out_name = getattr(else_graph.outputs[i], "name", else_graph.outputs[i])
+                    else_out_v = else_graph.outputs[i]
+                    else_out_name = (
+                        else_out_v.name
+                        if isinstance(else_out_v, (Tensor, ValueInfo))
+                        else str(else_out_v)
+                    )
                     if else_out_name in else_graph.tensors:
                         else_shape = else_graph.tensors[else_out_name].shape
                         else_dtype = else_graph.tensors[else_out_name].dtype
 
                 final_shape = []
                 if len(then_shape) == len(else_shape):
-                    for ts, es in zip(then_shape, else_shape):
+                    for ts, es in zip(then_shape, else_shape, strict=False):
                         if ts == es:
                             final_shape.append(ts)
                         else:
@@ -761,22 +810,23 @@ def infer_shapes_and_types(graph: Graph) -> None:
             if body_graph and isinstance(body_graph, Graph):
                 # Propagate input shapes into the subgraph
                 for i, b_inp in enumerate(body_graph.inputs):
-                    b_inp_name = getattr(b_inp, "name", b_inp)
+                    b_inp_name = (
+                        b_inp.name if isinstance(b_inp, (Tensor, ValueInfo)) else str(b_inp)
+                    )
                     node_inp_idx = i
-                    if i > 1:
-                        if node_inp_idx < len(node.inputs):
-                            ext_in = env.get(node.inputs[node_inp_idx])
-                            if ext_in and b_inp_name in body_graph.tensors:
-                                body_graph.tensors[b_inp_name].shape = ext_in.shape
-                                body_graph.tensors[b_inp_name].dtype = ext_in.dtype
-                                if isinstance(b_inp, ValueInfo):
-                                    b_inp.shape = ext_in.shape
-                                    b_inp.dtype = ext_in.dtype
+                    if i > 1 and node_inp_idx < len(node.inputs):
+                        ext_in = env.get(node.inputs[node_inp_idx])
+                        if ext_in and b_inp_name in body_graph.tensors:
+                            body_graph.tensors[b_inp_name].shape = ext_in.shape
+                            body_graph.tensors[b_inp_name].dtype = ext_in.dtype
+                            if isinstance(b_inp, ValueInfo):
+                                b_inp.shape = ext_in.shape
+                                b_inp.dtype = ext_in.dtype
 
                 infer_shapes_and_types(body_graph)
 
                 for out_v in body_graph.outputs:
-                    name = getattr(out_v, "name", out_v)
+                    name = out_v.name if isinstance(out_v, (Tensor, ValueInfo)) else str(out_v)
                     if name in body_graph.tensors:
                         t = body_graph.tensors[name]
                         if isinstance(out_v, ValueInfo):
@@ -790,7 +840,7 @@ def infer_shapes_and_types(graph: Graph) -> None:
             # node.outputs: (v_out..., scan_out...)
             num_v = len(node.inputs) - 2  # v_in count
 
-            for i, out in enumerate(node.outputs):
+            for i, _out in enumerate(node.outputs):
                 if body_graph and i + 1 < len(body_graph.outputs):
                     body_out = body_graph.outputs[i + 1]  # skip cond_out
                     if body_out in body_graph.tensors:
@@ -810,14 +860,13 @@ def infer_shapes_and_types(graph: Graph) -> None:
                                 graph.tensors.get(node.inputs[0]) if len(node.inputs) > 0 else None
                             )
                             if (
-                                m_tensor
-                                and hasattr(m_tensor, "values")
+                                isinstance(m_tensor, Tensor)
                                 and m_tensor.values is not None
                                 and len(m_tensor.values) > 0
                             ):
                                 m_val = int(m_tensor.values[0])
 
-                            out_shapes.append(tuple([m_val] + list(b_shape)))
+                            out_shapes.append((m_val, *list(b_shape)))
                         else:
                             out_shapes.append(b_shape)
                         out_dtypes.append(b_dtype)
@@ -839,7 +888,7 @@ def infer_shapes_and_types(graph: Graph) -> None:
             out_shapes = [out_shape] * len(node.outputs)
             out_dtypes = [DType.INT64] * len(node.outputs)
 
-        elif getattr(node, "domain", "") == "ai.onnx.ml":
+        elif node.domain == "ai.onnx.ml":
             if node.op_type == "ArrayFeatureExtractor":
                 in1 = env.get(node.inputs[0])
                 if in1:

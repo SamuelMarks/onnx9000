@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { describe, expect, it } from 'vitest';
 import { Dropdown } from '../src/components/Dropdown.js';
 
@@ -7,9 +6,9 @@ describe('Dropdown', () => {
     const dropdown = new Dropdown({
       items: [
         { value: '1', label: 'One' },
-        { value: '2', label: 'Two' }
+        { value: '2', label: 'Two' },
       ],
-      initialValue: '1'
+      initialValue: '1',
     });
     document.body.appendChild(dropdown.element);
 

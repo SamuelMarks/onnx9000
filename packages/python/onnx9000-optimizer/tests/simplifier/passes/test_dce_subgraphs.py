@@ -5,7 +5,7 @@ from onnx9000.core.ir import Attribute, Graph, Node, Tensor
 from onnx9000.optimizer.simplifier.passes.dce import DCEPass
 
 
-def test_dce_subgraphs():
+def test_dce_subgraphs() -> None:
     """Test that dead nodes inside subgraphs (e.g., If branches) are correctly pruned."""
     g = Graph("Main")
     g.outputs = ["Y"]

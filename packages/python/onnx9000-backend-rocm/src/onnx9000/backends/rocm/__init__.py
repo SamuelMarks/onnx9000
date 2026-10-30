@@ -10,6 +10,6 @@ from onnx9000.backends.rocm.executor import Dispatcher
 __all__ = [
     "Dispatcher",
     "is_hip_available",
-    "is_rocblas_available",
     "is_miopen_available",
+    "is_rocblas_available",
 ]

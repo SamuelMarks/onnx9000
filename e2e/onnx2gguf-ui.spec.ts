@@ -4,7 +4,7 @@ test.describe('onnx2gguf-ui', () => {
   test.beforeEach(async ({ page }) => {
     try {
       await page.goto('/onnx2gguf-ui.html');
-    } catch (_e) {
+    } catch {
       test.skip();
     }
   });

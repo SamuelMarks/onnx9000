@@ -1,4 +1,4 @@
-"""Module providing core logic and structural definitions."""
+"""Unit tests and verification suite for tensor constructors functionality."""
 
 import numpy as np
 from onnx9000.converters.frontend.tensor import Tensor

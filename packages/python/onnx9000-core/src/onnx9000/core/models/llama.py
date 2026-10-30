@@ -1,7 +1,5 @@
 """Llama."""
 
-from typing import Any, Optional
-
 from onnx9000.core.ir import Tensor, Variable
 from onnx9000.core.ops import add, mul
 from onnx9000.core.primitives import (
@@ -21,8 +19,14 @@ def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:
 class SwiGLU:
     """Swi glu."""
 
-    def __init__(self, hidden_dim: int, ffn_dim: int, prefix: str = ""):
-        """Init."""
+    def __init__(self, hidden_dim: int, ffn_dim: int, prefix: str = "") -> None:
+        """Initialize SwiGLU with configured parameters and state.
+
+        Args:
+            hidden_dim: Parameter specifying hidden dim (int).
+            ffn_dim: Parameter specifying ffn dim (int).
+            prefix: Parameter specifying prefix (str).
+        """
         self.prefix = prefix
         self.hidden_dim = hidden_dim
         self.ffn_dim = ffn_dim
@@ -32,7 +36,14 @@ class SwiGLU:
         self.act = Silu()
 
     def __call__(self, x: Tensor) -> Tensor:
-        """Call."""
+        """Invoke SwiGLU with the provided inputs and keyword arguments.
+
+        Args:
+            x: Parameter specifying x (Tensor).
+
+        Returns:
+            Result of call (Tensor).
+        """
         gate = self.w1(x, get_param(f"{self.prefix}.w1.weight", [self.ffn_dim, self.hidden_dim]))
         up = self.w3(x, get_param(f"{self.prefix}.w3.weight", [self.ffn_dim, self.hidden_dim]))
 
@@ -57,8 +68,16 @@ class LLaMABlock:
         num_kv_heads: int,
         ffn_dim: int,
         prefix: str = "",
-    ):
-        """Init."""
+    ) -> None:
+        """Initialize LLaMABlock with configured parameters and state.
+
+        Args:
+            dim: Parameter specifying dim (int).
+            num_heads: Parameter specifying num heads (int).
+            num_kv_heads: Parameter specifying num kv heads (int).
+            ffn_dim: Parameter specifying ffn dim (int).
+            prefix: Parameter specifying prefix (str).
+        """
         self.prefix = prefix
         self.dim = dim
         self.norm1 = RMSNorm((dim,))
@@ -67,7 +86,16 @@ class LLaMABlock:
         self.mlp = SwiGLU(dim, ffn_dim, prefix=f"{prefix}.mlp")
 
     def __call__(self, x: Tensor, pos: Tensor, mask: Tensor | None = None) -> Tensor:
-        """Call."""
+        """Invoke LLaMABlock with the provided inputs and keyword arguments.
+
+        Args:
+            x: Parameter specifying x (Tensor).
+            pos: Parameter specifying pos (Tensor).
+            mask: Parameter specifying mask (Tensor | None).
+
+        Returns:
+            Result of call (Tensor).
+        """
         identity = x
         x_norm = self.norm1(x, get_param(f"{self.prefix}.norm1.weight", [self.dim]))
 
@@ -97,8 +125,18 @@ class LLaMA:
         depth: int = 32,
         ffn_dim: int = 11008,
         max_seq_len: int = 2048,
-    ):
-        """Init."""
+    ) -> None:
+        """Initialize LLaMA with configured parameters and state.
+
+        Args:
+            vocab_size: Parameter specifying vocab size (int).
+            dim: Parameter specifying dim (int).
+            num_heads: Parameter specifying num heads (int).
+            num_kv_heads: Parameter specifying num kv heads (int).
+            depth: Parameter specifying depth (int).
+            ffn_dim: Parameter specifying ffn dim (int).
+            max_seq_len: Parameter specifying max seq len (int).
+        """
         self.vocab_size = vocab_size
         self.dim = dim
         self.depth = depth
@@ -114,7 +152,16 @@ class LLaMA:
         self.rope = RoPE(dim // num_heads, max_seq_len=max_seq_len)
 
     def __call__(self, input_ids: Tensor, pos: Tensor, mask: Tensor | None = None) -> Tensor:
-        """Call."""
+        """Invoke LLaMA with the provided inputs and keyword arguments.
+
+        Args:
+            input_ids: Parameter specifying input ids (Tensor).
+            pos: Parameter specifying pos (Tensor).
+            mask: Parameter specifying mask (Tensor | None).
+
+        Returns:
+            Result of call (Tensor).
+        """
         from onnx9000.core.ops import gather
 
         x = gather(
@@ -134,7 +181,7 @@ class LLaMA:
         return x
 
 
-def llama_7b(**kwargs: Any) -> LLaMA:
+def llama_7b(**kwargs: int | float | str | bool | bytes | list | dict | tuple | None) -> LLaMA:
     """Llama 7b."""
     return LLaMA(
         vocab_size=32000,
@@ -147,7 +194,7 @@ def llama_7b(**kwargs: Any) -> LLaMA:
     )
 
 
-def mistral_7b(**kwargs: Any) -> LLaMA:
+def mistral_7b(**kwargs: int | float | str | bool | bytes | list | dict | tuple | None) -> LLaMA:
     """Mistral 7b."""
     return LLaMA(
         vocab_size=32000,

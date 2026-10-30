@@ -24,11 +24,10 @@ class CNTKConverter(BaseParser):
         if os.path.exists(model):  # pragma: no cover
             with open(model, "rb") as f:  # pragma: no cover
                 content = f.read()  # pragma: no cover
+        elif isinstance(model, str):  # pragma: no cover
+            content = model.encode("utf-8")  # pragma: no cover
         else:  # pragma: no cover
-            if isinstance(model, str):  # pragma: no cover
-                content = model.encode("utf-8")  # pragma: no cover
-            else:  # pragma: no cover
-                content = model  # pragma: no cover
+            content = model  # pragma: no cover
 
         model_info = parse_cntk_model(content)  # pragma: no cover
         mapper = CNTKMapper(model_info)  # pragma: no cover
@@ -37,4 +36,4 @@ class CNTKConverter(BaseParser):
         return graph  # pragma: no cover
 
 
-__all__ = ["parse_cntk_model", "CNTKMapper", "CNTKConverter"]  # pragma: no cover
+__all__ = ["CNTKConverter", "CNTKMapper", "parse_cntk_model"]  # pragma: no cover

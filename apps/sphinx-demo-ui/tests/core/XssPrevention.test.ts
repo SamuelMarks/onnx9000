@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { describe, expect, it, vi } from 'vitest';
 import { Console } from '../../src/components/Console';
 import { OnnxVisualizer } from '../../src/components/OnnxVisualizer';
@@ -11,12 +10,12 @@ const mockCyInstance = {
   elements: vi.fn(() => ({ remove: vi.fn() })),
   add: vi.fn(),
   layout: vi.fn(() => ({ run: vi.fn() })),
-  fit: vi.fn()
+  fit: vi.fn(),
 };
 
 vi.mock('cytoscape', () => {
   return {
-    default: vi.fn(() => mockCyInstance)
+    default: vi.fn(() => mockCyInstance),
   };
 });
 
@@ -24,7 +23,7 @@ describe('XSS Prevention', () => {
   it('Console should not execute malicious script tags in messages', () => {
     const consoleComp = new Console();
     consoleComp.mount(document.body);
-    const el = (consoleComp as object).element as HTMLElement;
+    const el = consoleComp.element;
     const outputDiv = el.querySelector('.demo-console-output') as HTMLDivElement;
 
     const xssPayload = '<script>window.__XSS_FLAG__ = true;</script>';
@@ -32,13 +31,13 @@ describe('XSS Prevention', () => {
     consoleComp.appendLog({
       level: LogLevel.INFO,
       message: xssPayload,
-      timestamp: new Date()
+      timestamp: new Date(),
     });
 
     const msgSpan = outputDiv.querySelector('.demo-console-msg') as HTMLElement;
     // Uses textContent, which escapes HTML inherently
     expect(msgSpan.innerHTML).toBe('&lt;script&gt;window.__XSS_FLAG__ = true;&lt;/script&gt;');
-    expect((window as object).__XSS_FLAG__).toBeUndefined();
+    expect((window as never as Record<string, unknown>).__XSS_FLAG__).toBeUndefined();
 
     consoleComp.unmount();
   });
@@ -48,26 +47,26 @@ describe('XSS Prevention', () => {
     viz.mount(document.body);
 
     // Simulate node tap with malicious payload
-    const onCalls = mockCyInstance.on.mock.calls;
-    const nodeTapCb = onCalls.find((c: object) => c[0] === 'tap' && c[1] === 'node')[2];
+    const onCalls = mockCyInstance.on.mock.calls as Array<[string, string, (evt: unknown) => void]>;
+    const nodeTapCb = onCalls.find((c) => c[0] === 'tap' && c[1] === 'node')?.[2];
 
     const maliciousData = {
       type: 'operator',
       label: '<img src="x" onerror="window.__XSS_FLAG_2__=true;">',
       attributes: {
-        '<script>alert(1)</script>': 'val'
-      }
+        '<script>alert(1)</script>': 'val',
+      },
     };
 
     const mockEvt = {
       target: { data: () => maliciousData },
-      renderedPosition: { x: 0, y: 0 }
+      renderedPosition: { x: 0, y: 0 },
     };
 
-    nodeTapCb(mockEvt);
+    nodeTapCb?.(mockEvt);
 
     // The tooltip uses innerHTML for formatting. We ensure DOM logic isn't triggered
-    expect((window as object).__XSS_FLAG_2__).toBeUndefined();
+    expect((window as never as Record<string, unknown>).__XSS_FLAG_2__).toBeUndefined();
     viz.unmount();
   });
 });

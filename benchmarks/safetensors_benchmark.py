@@ -20,7 +20,7 @@ from onnx9000.toolkit.safetensors.parser import load_file as py_load_file
 from onnx9000.toolkit.safetensors.parser import save_file as py_save_file
 
 
-def run_benchmark():
+def run_benchmark() -> None:
     """Run the safetensors benchmark."""
     print("Generating 100MB dummy tensor...")
     # 25,000,000 float32s = 100MB

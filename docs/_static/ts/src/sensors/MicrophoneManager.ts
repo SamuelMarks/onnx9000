@@ -14,7 +14,9 @@ export class MicrophoneManager {
     try {
       this.stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
 
-      this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const win = window as Window & { webkitAudioContext?: typeof AudioContext };
+      const AudioCtx = window.AudioContext || win.webkitAudioContext;
+      this.audioContext = new AudioCtx();
       const source = this.audioContext.createMediaStreamSource(this.stream);
 
       this.analyser = this.audioContext.createAnalyser();

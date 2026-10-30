@@ -1,7 +1,5 @@
 """Clip."""
 
-from typing import Any
-
 from onnx9000.core.ir import Tensor, Variable
 from onnx9000.core.models.llama import LLaMA
 from onnx9000.core.models.vit import VisionTransformer
@@ -26,8 +24,19 @@ class CLIP:
         text_layers: int = 12,
         text_heads: int = 8,
         vocab_size: int = 49408,
-    ):
-        """Init."""
+    ) -> None:
+        """Initialize CLIP with configured parameters and state.
+
+        Args:
+            embed_dim: Parameter specifying embed dim (int).
+            vision_width: Parameter specifying vision width (int).
+            vision_layers: Parameter specifying vision layers (int).
+            vision_heads: Parameter specifying vision heads (int).
+            text_width: Parameter specifying text width (int).
+            text_layers: Parameter specifying text layers (int).
+            text_heads: Parameter specifying text heads (int).
+            vocab_size: Parameter specifying vocab size (int).
+        """
         self.embed_dim = embed_dim
 
         # Vision
@@ -54,7 +63,15 @@ class CLIP:
         self.logit_scale = get_param("logit_scale", [1])
 
     def __call__(self, image: Tensor, text: Tensor) -> tuple[Tensor, Tensor]:
-        """Call."""
+        """Invoke CLIP with the provided inputs and keyword arguments.
+
+        Args:
+            image: Parameter specifying image (Tensor).
+            text: Parameter specifying text (Tensor).
+
+        Returns:
+            Result of call (tuple[Tensor, Tensor]).
+        """
         image_features = self.visual(image)
 
         # We need a mask for text if padded, but let's assume packed for AST
@@ -76,6 +93,8 @@ class CLIP:
         return image_features, text_features
 
 
-def clip_vit_base_patch16(**kwargs: Any) -> CLIP:
+def clip_vit_base_patch16(
+    **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> CLIP:
     """Clip vit base patch16."""
     return CLIP(**kwargs)

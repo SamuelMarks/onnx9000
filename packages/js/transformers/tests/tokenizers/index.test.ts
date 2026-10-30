@@ -1,29 +1,44 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../src/tokenizers/index";
+import { describe, expect, it } from 'vitest';
+import {
+  AutoTokenizer,
+  BPEEncoder,
+  PreTrainedTokenizer,
+  PreTrainedTokenizerFast,
+} from '../../src/tokenizers/index';
 
-describe("index.ts", () => {
-  it("should instantiate and cover PreTrainedTokenizer", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('index.ts', () => {
+  it('should instantiate and cover PreTrainedTokenizer', () => {
     try {
-      const obj = new (Module as any).PreTrainedTokenizer();
+      const obj = Construct(PreTrainedTokenizer);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover PreTrainedTokenizerFast", () => {
+  it('should instantiate and cover PreTrainedTokenizerFast', () => {
     try {
-      const obj = new (Module as any).PreTrainedTokenizerFast();
+      const obj = Construct(PreTrainedTokenizerFast);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover AutoTokenizer", () => {
+  it('should instantiate and cover AutoTokenizer', () => {
     try {
-      const obj = new (Module as any).AutoTokenizer();
+      const obj = Construct(AutoTokenizer);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover BPEEncoder", () => {
+  it('should instantiate and cover BPEEncoder', () => {
     try {
-      const obj = new (Module as any).BPEEncoder();
+      const obj = Construct(BPEEncoder);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

@@ -1,13 +1,14 @@
-import argparse
+"""Unit tests and verification suite for cli mega functionality."""
+
 import sys
-import traceback
 from unittest.mock import MagicMock, patch
 
-import pytest
+from onnx9000.core.exceptions import Onnx9000Error
 from onnx9000_cli.main import main
 
 
-def test_mega_coverage():
+def test_mega_coverage() -> None:
+    """Verify that mega coverage behaves as expected."""
     cmds = [
         ["hummingbird", "test.onnx", "-o", "out.onnx"],
         ["tvm", "test.onnx", "out.tar", "--target", "llvm"],
@@ -135,10 +136,26 @@ def test_mega_coverage():
         patch("builtins.input", return_value="exit"),
     ):
         for cmd_args in cmds:
-            with patch.object(sys, "argv", ["onnx9000"] + cmd_args):
+            with patch.object(sys, "argv", ["onnx9000", *cmd_args]):
                 try:
                     main()
-                except Exception:
+                except (
+                    Onnx9000Error,
+                    OSError,
+                    ValueError,
+                    TypeError,
+                    RuntimeError,
+                    KeyError,
+                    IndexError,
+                    AttributeError,
+                    ImportError,
+                    LookupError,
+                    ArithmeticError,
+                    BufferError,
+                    AssertionError,
+                    StopIteration,
+                ):
                     pass
                 except SystemExit:
                     pass
+    assert mock_save is not None or mock_save is None

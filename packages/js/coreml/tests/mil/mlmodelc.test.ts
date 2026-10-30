@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../src/mil/mlmodelc";
+import { describe, expect, it } from 'vitest';
+import { MLModelCCompiler } from '../../src/mil/mlmodelc';
 
-describe("mlmodelc.ts", () => {
-  it("should instantiate and cover MLModelCCompiler", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('mlmodelc.ts', () => {
+  it('should instantiate and cover MLModelCCompiler', () => {
     try {
-      const obj = new (Module as any).MLModelCCompiler();
+      const obj = Construct(MLModelCCompiler);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

@@ -1,7 +1,5 @@
 """Advanced static memory arena planning and simulation."""
 
-from typing import Optional
-
 from onnx9000.core.ir import Constant, Graph
 from onnx9000.core.profiler import dtype_size, resolve_volume
 
@@ -9,14 +7,19 @@ from onnx9000.core.profiler import dtype_size, resolve_volume
 class MemoryBlock:
     """Represents the Memory Block class."""
 
-    def __init__(self, offset: int, size: int):
-        """Initialize the instance."""
+    def __init__(self, offset: int, size: int) -> None:
+        """Initialize MemoryBlock with configured parameters and state.
+
+        Args:
+            offset: Parameter specifying offset (int).
+            size: Parameter specifying size (int).
+        """
         self.offset = offset
         self.size = size
         self.free = True
         self.tensor_name: str | None = None
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Execute repr magic method operation."""
         return f"Block(offset={self.offset}, size={self.size}, free={self.free}, tensor={self.tensor_name})"
 
@@ -24,8 +27,12 @@ class MemoryBlock:
 class ArenaSimulator:
     """Represents the Arena Simulator class."""
 
-    def __init__(self, alignment: int = 256):
-        """Initialize the instance."""
+    def __init__(self, alignment: int = 256) -> None:
+        """Initialize ArenaSimulator with configured parameters and state.
+
+        Args:
+            alignment: Parameter specifying alignment (int).
+        """
         self.alignment = alignment
         self.blocks: list[MemoryBlock] = []
         self.peak_memory = 0
@@ -104,7 +111,7 @@ class ArenaSimulator:
         self.peak_memory = max(self.peak_memory, last_offset + aligned_size)
         return new_block.offset
 
-    def free(self, name: str):
+    def free(self, name: str) -> None:
         """Execute the free operation."""
         for b in self.blocks:
             if b.tensor_name == name:
@@ -129,7 +136,7 @@ class ArenaSimulator:
 
 
 def simulate_memory_plan(
-    graph: Graph, strategy: str = "first_fit", dynamic_overrides: dict[str, int] = None
+    graph: Graph, strategy: str = "first_fit", dynamic_overrides: dict[str, int] | None = None
 ) -> ArenaSimulator:
     """Simulate memory allocation for a graph based on topological node execution.
 
@@ -145,8 +152,7 @@ def simulate_memory_plan(
 
     for i, n in enumerate(graph.nodes):
         for out in n.outputs:
-            if out not in lifetimes:
-                lifetimes[out] = [i, i]
+            lifetimes[out] = [i, i]
         for inp in n.inputs:
             if inp in lifetimes:
                 lifetimes[inp][1] = max(lifetimes[inp][1], i)
@@ -169,35 +175,36 @@ def simulate_memory_plan(
 
     for i, n in enumerate(graph.nodes):
         in_place_possible = False
-        if n.op_type in ["Relu", "Sigmoid", "Tanh"]:
-            if (
-                n.inputs
-                and lifetimes.get(n.inputs[0], [0, 0])[1] <= i
-                and n.inputs[0] not in graph.outputs
-            ):
-                in_place_possible = True
-                arena.tensor_offsets[n.outputs[0]] = arena.tensor_offsets.get(n.inputs[0], 0)
-                for b in arena.blocks:
-                    if b.tensor_name == n.inputs[0]:
-                        b.tensor_name = n.outputs[0]
-                        active_tensors.add(n.outputs[0])
-                        active_tensors.discard(n.inputs[0])
-                        break
+        if n.op_type in ["Relu", "Sigmoid", "Tanh"] and (
+            n.inputs
+            and lifetimes.get(n.inputs[0], [0, 0])[1] <= i
+            and n.inputs[0] not in graph.outputs
+        ):
+            in_place_possible = True
+            arena.tensor_offsets[n.outputs[0]] = arena.tensor_offsets.get(n.inputs[0], 0)
+            for b in arena.blocks:
+                if b.tensor_name == n.inputs[0]:
+                    b.tensor_name = n.outputs[0]
+                    active_tensors.add(n.outputs[0])
+                    active_tensors.discard(n.inputs[0])
+                    break
 
         view_possible = False
-        if not in_place_possible and n.op_type in [
-            "Reshape",
-            "Flatten",
-            "Squeeze",
-            "Unsqueeze",
-        ]:
-            if n.inputs and n.inputs[0] in arena.tensor_offsets:
-                view_possible = True
-                arena.tensor_offsets[n.outputs[0]] = arena.tensor_offsets[n.inputs[0]]
-                if n.outputs[0] in lifetimes and n.inputs[0] in lifetimes:
-                    lifetimes[n.inputs[0]][1] = max(
-                        lifetimes[n.outputs[0]][1], lifetimes[n.inputs[0]][1]
-                    )
+        if (
+            not in_place_possible
+            and n.op_type
+            in [
+                "Reshape",
+                "Flatten",
+                "Squeeze",
+                "Unsqueeze",
+            ]
+            and n.inputs
+            and n.inputs[0] in arena.tensor_offsets
+        ):
+            view_possible = True
+            arena.tensor_offsets[n.outputs[0]] = arena.tensor_offsets[n.inputs[0]]
+            lifetimes[n.inputs[0]][1] = max(lifetimes[n.outputs[0]][1], lifetimes[n.inputs[0]][1])
 
         if not in_place_possible and not view_possible:
             for out in n.outputs:

@@ -1,4 +1,4 @@
-"""Module containing __init__.py definitions."""
+"""Module implementing init utilities and definitions for onnx9000 / toolkit / safetensors."""
 
 from .converters import convert_pytorch_to_safetensors, convert_tf_to_safetensors
 from .hub import cached_download
@@ -19,16 +19,16 @@ from .parser import (
 
 __all__ = [
     "SafeTensors",
-    "safe_open",
-    "save_file",
-    "save",
+    "cached_download",
     "check_safetensors",
-    "get_tensor",
-    "get_metadata",
     "convert_pytorch_to_safetensors",
     "convert_tf_to_safetensors",
+    "get_metadata",
+    "get_tensor",
+    "load_flax_safetensors",
     "load_pytorch_safetensors",
     "load_tensorflow_safetensors",
-    "load_flax_safetensors",
-    "cached_download",
+    "safe_open",
+    "save",
+    "save_file",
 ]

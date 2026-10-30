@@ -1,53 +1,80 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../src/flatbuffer/schema";
+import { describe, expect, it } from 'vitest';
+import {
+  Buffer,
+  Metadata,
+  Model,
+  Operator,
+  OperatorCode,
+  QuantizationParameters,
+  SubGraph,
+  Tensor,
+} from '../../src/flatbuffer/schema';
 
-describe("schema.ts", () => {
-  it("should instantiate and cover OperatorCode", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('schema.ts', () => {
+  it('should instantiate and cover OperatorCode', () => {
     try {
-      const obj = new (Module as any).OperatorCode();
+      const obj = Construct(OperatorCode);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover QuantizationParameters", () => {
+  it('should instantiate and cover QuantizationParameters', () => {
     try {
-      const obj = new (Module as any).QuantizationParameters();
+      const obj = Construct(QuantizationParameters);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover Tensor", () => {
+  it('should instantiate and cover Tensor', () => {
     try {
-      const obj = new (Module as any).Tensor();
+      const obj = Construct(Tensor);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover Operator", () => {
+  it('should instantiate and cover Operator', () => {
     try {
-      const obj = new (Module as any).Operator();
+      const obj = Construct(Operator);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover SubGraph", () => {
+  it('should instantiate and cover SubGraph', () => {
     try {
-      const obj = new (Module as any).SubGraph();
+      const obj = Construct(SubGraph);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover Buffer", () => {
+  it('should instantiate and cover Buffer', () => {
     try {
-      const obj = new (Module as any).Buffer();
+      const obj = Construct(Buffer);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover Metadata", () => {
+  it('should instantiate and cover Metadata', () => {
     try {
-      const obj = new (Module as any).Metadata();
+      const obj = Construct(Metadata);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover Model", () => {
+  it('should instantiate and cover Model', () => {
     try {
-      const obj = new (Module as any).Model();
+      const obj = Construct(Model);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

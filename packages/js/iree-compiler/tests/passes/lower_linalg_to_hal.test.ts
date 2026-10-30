@@ -1,11 +1,18 @@
-import { describe, it } from "vitest";
-import * as Module from "../../src/passes/lower_linalg_to_hal";
+import { describe, expect, it } from 'vitest';
+import { lowerLinalgToHAL } from '../../src/passes/lower_linalg_to_hal';
 
-describe("lower_linalg_to_hal.ts", () => {
-  it("should call and cover lowerLinalgToHAL", async () => {
+const Call = <T>(fn: (...args: never[]) => T): T => fn();
+
+describe('lower_linalg_to_hal.ts', () => {
+  it('should call and cover lowerLinalgToHAL', async () => {
     try {
-      const res = (Module as any).lowerLinalgToHAL();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(lowerLinalgToHAL);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

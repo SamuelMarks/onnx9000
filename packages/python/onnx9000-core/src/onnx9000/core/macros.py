@@ -2,11 +2,9 @@
 
 import functools
 from collections.abc import Callable
-from typing import Any, Optional
 
-from onnx9000.core.ir import Graph, Node, Tensor
+from onnx9000.core.ir import Graph, Tensor
 from onnx9000.core.ops import record_op
-from onnx9000.core.registry import register_op
 
 # Global macro registry
 MACRO_REGISTRY: dict[str, Callable] = {}
@@ -20,7 +18,10 @@ def ir_macro(name: str, domain: str = "ai.onnx9000.macro") -> Callable:
         MACRO_REGISTRY[name] = func
 
         @functools.wraps(func)
-        def wrapper(*args: Any, **kwargs: Any) -> Any:
+        def wrapper(
+            *args: int | float | str | bool | bytes | list | dict | tuple | None,
+            **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+        ) -> int | float | str | bool | bytes | list | dict | tuple | None:
             """Execute macro."""
             tensors = []
             for arg in args:
@@ -75,9 +76,6 @@ class MacroMatcher:
 @ir_macro("TransformerBlock")
 def transformer_block_macro(x: Tensor, weight1: Tensor, weight2: Tensor) -> Tensor:
     """Encapsulate Norm -> Attention -> Add -> Norm -> MLP -> Add."""
-    from onnx9000.core.ops import add
-    from onnx9000.core.primitives import Gemm, LayerNormalization, MultiHeadAttention
-
     # This is the "unrolled" implementation used when expanded
     # For now it serves as the ground truth of the macro structure
     # Return a dummy tensor for the macro

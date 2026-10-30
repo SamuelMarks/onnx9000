@@ -1,7 +1,6 @@
-"""Module providing core logic and structural definitions."""
+"""Implementation of init (onnx9000 / converters / jit) providing compile."""
 
 from pathlib import Path
-from typing import Union
 
 import numpy as np
 from onnx9000.backends.memory.cpu_arena import CPUMemoryPlanner as plan_memory
@@ -44,4 +43,4 @@ def compile(
     return CompiledModel(cpp_instance, ir_graph)
 
 
-__all__ = ["compile", "compile_cpp", "load_module", "CompiledModel"]
+__all__ = ["CompiledModel", "compile", "compile_cpp", "load_module"]

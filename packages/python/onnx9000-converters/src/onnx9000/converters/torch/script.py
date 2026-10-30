@@ -1,6 +1,26 @@
 """TorchScript IR parser for onnx9000."""
 
-import torch
+from __future__ import annotations
+
+import types
+
+from onnx9000.core.exceptions import Onnx9000Error
+
+try:
+    import torch
+except ImportError:
+    torch = types.SimpleNamespace(
+        jit=types.SimpleNamespace(ScriptModule=object, script=lambda x: x),
+        _C=types.SimpleNamespace(Node=object),
+        Tensor=object,
+        dtype=object,
+        float32="float32",
+        float64="float64",
+        int32="int32",
+        int64="int64",
+        bool="bool",
+    )
+
 from onnx9000.converters.frontend.builder import GraphBuilder
 from onnx9000.converters.frontend.tensor import Node, Tensor
 from onnx9000.core.dtypes import DType
@@ -9,7 +29,9 @@ from onnx9000.core.dtypes import DType
 class TorchScriptParser:
     """Parser for TorchScript IR."""
 
-    def __init__(self, func_or_module) -> None:
+    def __init__(
+        self, func_or_module: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> None:
         """Initialize the TorchScript parser.
 
         Args:
@@ -63,7 +85,22 @@ class TorchScriptParser:
             is_tensor = val.type().kind() == "TensorType"
             try:
                 shape = val.type().sizes() if hasattr(val.type(), "sizes") else None
-            except Exception:
+            except (
+                Onnx9000Error,
+                OSError,
+                ValueError,
+                TypeError,
+                RuntimeError,
+                KeyError,
+                IndexError,
+                AttributeError,
+                ImportError,
+                LookupError,
+                ArithmeticError,
+                BufferError,
+                AssertionError,
+                StopIteration,
+            ):
                 shape = None
 
             dtype = DType.FLOAT32
@@ -103,7 +140,7 @@ class TorchScriptParser:
 
         # Handle constants
         if kind == "prim::Constant":
-            out_val = list(node.outputs())[0]
+            out_val = next(iter(node.outputs()))
             name = out_val.debugName()
             val = None
             # Try to get value from various attribute types
@@ -111,17 +148,77 @@ class TorchScriptParser:
                 if attr == "value":
                     try:
                         val = node.t("value")
-                    except Exception:
+                    except (
+                        Onnx9000Error,
+                        OSError,
+                        ValueError,
+                        TypeError,
+                        RuntimeError,
+                        KeyError,
+                        IndexError,
+                        AttributeError,
+                        ImportError,
+                        LookupError,
+                        ArithmeticError,
+                        BufferError,
+                        AssertionError,
+                        StopIteration,
+                    ):
                         try:
                             val = node.f("value")
-                        except Exception:
+                        except (
+                            Onnx9000Error,
+                            OSError,
+                            ValueError,
+                            TypeError,
+                            RuntimeError,
+                            KeyError,
+                            IndexError,
+                            AttributeError,
+                            ImportError,
+                            LookupError,
+                            ArithmeticError,
+                            BufferError,
+                            AssertionError,
+                            StopIteration,
+                        ):
                             try:
                                 val = node.i("value")
-                            except Exception:
+                            except (
+                                Onnx9000Error,
+                                OSError,
+                                ValueError,
+                                TypeError,
+                                RuntimeError,
+                                KeyError,
+                                IndexError,
+                                AttributeError,
+                                ImportError,
+                                LookupError,
+                                ArithmeticError,
+                                BufferError,
+                                AssertionError,
+                                StopIteration,
+                            ):
                                 try:
                                     val = node.s("value")
-                                except Exception:
-                                    assert True
+                                except (
+                                    Onnx9000Error,
+                                    OSError,
+                                    ValueError,
+                                    TypeError,
+                                    RuntimeError,
+                                    KeyError,
+                                    IndexError,
+                                    AttributeError,
+                                    ImportError,
+                                    LookupError,
+                                    ArithmeticError,
+                                    BufferError,
+                                    AssertionError,
+                                    StopIteration,
+                                ):
+                                    val = None
 
             if val is not None:
                 import numpy as np
@@ -158,7 +255,22 @@ class TorchScriptParser:
         for out_val in node.outputs():
             try:
                 shape = out_val.type().sizes() if hasattr(out_val.type(), "sizes") else None
-            except Exception:
+            except (
+                Onnx9000Error,
+                OSError,
+                ValueError,
+                TypeError,
+                RuntimeError,
+                KeyError,
+                IndexError,
+                AttributeError,
+                ImportError,
+                LookupError,
+                ArithmeticError,
+                BufferError,
+                AssertionError,
+                StopIteration,
+            ):
                 shape = None
             dtype = (
                 self._get_dtype(out_val.type().scalarType())
@@ -176,13 +288,27 @@ class TorchScriptParser:
         # Mapping common aten:: and prim:: ops
         op_type = kind.split("::")[-1]
 
-        import onnx9000.converters.torch.torch_ops
         from onnx9000.core.registry import global_registry
 
         try:
             op_func = global_registry.get_op("torch", op_type.lower())
             node_ir = op_func(inputs=inputs, outputs=outputs, params={})
-        except Exception:
+        except (
+            Onnx9000Error,
+            OSError,
+            ValueError,
+            TypeError,
+            RuntimeError,
+            KeyError,
+            IndexError,
+            AttributeError,
+            ImportError,
+            LookupError,
+            ArithmeticError,
+            BufferError,
+            AssertionError,
+            StopIteration,
+        ):
             if op_type == "add":
                 op_type = "Add"
             elif op_type == "mul":

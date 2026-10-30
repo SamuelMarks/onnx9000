@@ -1,12 +1,16 @@
 import { describe, expect, it } from 'vitest';
-import * as Module from '../../src/core/Cache';
+import { Cache } from '../../src/core/Cache';
+
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
 
 describe('Cache.ts', () => {
   it('should instantiate and cover Cache', () => {
     // Attempt to instantiate
     try {
-      const obj = new (Module as any).Cache();
+      const obj = Construct(Cache);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

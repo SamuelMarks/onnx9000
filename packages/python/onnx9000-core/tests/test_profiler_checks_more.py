@@ -4,7 +4,7 @@ from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.core.profiler_checks import OptimizationAnalyzer
 
 
-def test_optimization_checker():
+def test_optimization_checker() -> None:
     """Tests the optimization checker functionality."""
     g = Graph("test")
     g.add_tensor(Tensor("x", [1], "float32"))
@@ -29,7 +29,7 @@ def test_optimization_checker():
     assert any("Identity" in o for o in opts)
 
 
-def test_optimization_checker_more():
+def test_optimization_checker_more() -> None:
     """Tests the optimization checker more functionality."""
     g = Graph("test")
     g.add_tensor(Tensor("unused_init", [1], "float32", is_initializer=True))

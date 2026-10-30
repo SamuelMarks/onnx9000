@@ -2,18 +2,22 @@
  * @fileoverview Logger.ts
  * Provides Logger functionality for the Sphinx Demo UI.
  */
-// @ts-nocheck
 import { globalEventBus } from './EventBus';
 
+/** Enumeration `LogLevel`. */
 export enum LogLevel {
   INFO = 'info',
   WARN = 'warn',
-  ERROR = 'error'
+  ERROR = 'error',
 }
 
+/** Interface `LogEntry` definition. */
 export interface LogEntry {
+  /** Property `level`. */
   level: LogLevel;
+  /** Property `message`. */
   message: string;
+  /** Property `timestamp`. */
   timestamp: Date;
 }
 
@@ -22,18 +26,28 @@ export interface LogEntry {
  * Used to pipe WASM and worker logs into the UI Console component.
  */
 export class Logger {
+  /** Property `instance` of `Logger`. */
   private static instance: Logger;
+  /** Property `originalLog` of `Logger`. */
   private originalLog: typeof console.log;
+  /** Property `originalWarn` of `Logger`. */
   private originalWarn: typeof console.warn;
+  /** Property `originalError` of `Logger`. */
   private originalError: typeof console.error;
+  /** Property `isIntercepting` of `Logger`. */
   private isIntercepting = false;
 
+  /** Initializes a new `Logger` instance. */
   private constructor() {
     this.originalLog = console.log.bind(console);
     this.originalWarn = console.warn.bind(console);
     this.originalError = console.error.bind(console);
   }
 
+  /**
+   * Executes `getInstance` on `Logger`.
+   * @returns Result of `getInstance`.
+   */
   public static getInstance(): Logger {
     if (!Logger.instance) {
       Logger.instance = new Logger();
@@ -96,7 +110,7 @@ export class Logger {
     const entry: LogEntry = {
       level,
       message,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
     globalEventBus.emit('CONSOLE_LOG', entry);
@@ -109,7 +123,7 @@ export class Logger {
     const entry: LogEntry = {
       level,
       message,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
     globalEventBus.emit('CONSOLE_LOG', entry);
   }

@@ -3,13 +3,21 @@
  * Provides ui functionality for the triton-compiler package.
  */
 export class TritonCompilerElement extends HTMLElement {
+  /** Property `root` of `TritonCompilerElement`. */
+  private readonly root: ShadowRoot;
+
+  /** Initializes a new `TritonCompilerElement` instance. */
   constructor() {
     super();
-    this.attachShadow({ mode: "open" });
+    this.root = this.attachShadow({ mode: 'open' });
   }
 
+  /**
+   * Executes `connectedCallback` on `TritonCompilerElement`.
+   * @returns Result of `connectedCallback`.
+   */
   connectedCallback() {
-    this.shadowRoot!.innerHTML = `
+    this.root.innerHTML = `
       <style>
         :host { display: block; padding: 20px; font-family: sans-serif; }
         .editor { font-family: monospace; white-space: pre; background: #2d2d2d; color: #f8f8f2; padding: 10px; flex: 1; min-height: 400px; overflow: auto; border-radius: 4px; }
@@ -67,67 +75,65 @@ export class TritonCompilerElement extends HTMLElement {
       </div>
     `;
 
-    const dropzone = this.shadowRoot?.querySelector("#dropzone") as HTMLElement;
-    dropzone.addEventListener("dragover", (e) => {
+    const dropzone = this.shadowRoot?.querySelector('#dropzone') as HTMLElement;
+    dropzone.addEventListener('dragover', (e) => {
       e.preventDefault();
-      dropzone.classList.add("hover");
+      dropzone.classList.add('hover');
     });
-    dropzone.addEventListener("dragleave", () => {
-      dropzone.classList.remove("hover");
+    dropzone.addEventListener('dragleave', () => {
+      dropzone.classList.remove('hover');
     });
-    dropzone.addEventListener("drop", (e: ReturnType<typeof JSON.parse>) => {
+    dropzone.addEventListener('drop', (e: ReturnType<typeof JSON.parse>) => {
       e.preventDefault();
-      dropzone.classList.remove("hover");
+      dropzone.classList.remove('hover');
       const file = e.dataTransfer.files[0];
       if (file) {
         dropzone.innerHTML = `<p>Loaded: ${file.name}</p>`;
-        this.dispatchEvent(
-          new CustomEvent("model-loaded", { detail: { file } }),
-        );
+        this.dispatchEvent(new CustomEvent('model-loaded', { detail: { file } }));
       }
     });
 
     const bindSlider = (id: string, valId: string) => {
       const slider = this.shadowRoot?.querySelector(id) as HTMLInputElement;
       const val = this.shadowRoot?.querySelector(valId) as HTMLElement;
-      slider.addEventListener("input", () => {
+      slider.addEventListener('input', () => {
         val.textContent = slider.value;
       });
     };
-    bindSlider("#blockM", "#bm-val");
-    bindSlider("#blockN", "#bn-val");
-    bindSlider("#blockK", "#bk-val");
+    bindSlider('#blockM', '#bm-val');
+    bindSlider('#blockN', '#bn-val');
+    bindSlider('#blockK', '#bk-val');
 
-    this.shadowRoot?.querySelector("#gen")?.addEventListener("click", () => {
-      const bm = (this.shadowRoot!.querySelector("#blockM") as HTMLInputElement)
-        .value;
-      const bn = (this.shadowRoot!.querySelector("#blockN") as HTMLInputElement)
-        .value;
-      const bk = (this.shadowRoot!.querySelector("#blockK") as HTMLInputElement)
-        .value;
+    this.root.querySelector('#gen')?.addEventListener('click', () => {
+      const bm = (this.root.querySelector('#blockM') as HTMLInputElement).value;
+      const bn = (this.root.querySelector('#blockN') as HTMLInputElement).value;
+      const bk = (this.root.querySelector('#blockK') as HTMLInputElement).value;
       this.dispatchEvent(
-        new CustomEvent("generate-requested", {
+        new CustomEvent('generate-requested', {
           detail: { blockM: bm, blockN: bn, blockK: bk },
         }),
       );
     });
 
-    this.shadowRoot?.querySelector("#save")?.addEventListener("click", () => {
-      const code = this.shadowRoot?.querySelector("#output")?.textContent;
-      const blob = new Blob([code || ""], { type: "text/x-python" });
+    this.shadowRoot?.querySelector('#save')?.addEventListener('click', () => {
+      const code = this.shadowRoot?.querySelector('#output')?.textContent;
+      const blob = new Blob([code || ''], { type: 'text/x-python' });
       const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
+      const a = document.createElement('a');
       a.href = url;
-      a.download = "fused_kernel.py";
+      a.download = 'fused_kernel.py';
       a.click();
     });
   }
 
+  /**
+   * Executes `bundle` on `TritonCompilerElement`.
+   * @param graph Parameter `graph`.
+   * @returns Result of `bundle`.
+   */
   bundle(graph: ReturnType<typeof JSON.parse>) {
     const uniforms = graph.inputs
-      .filter(
-        (i: ReturnType<typeof JSON.parse>) => i.shape && i.shape.length === 0,
-      )
+      .filter((i: ReturnType<typeof JSON.parse>) => i.shape && i.shape.length === 0)
       .map((i: ReturnType<typeof JSON.parse>) => i.name);
     return `
       export async function run(device, inputs) {
@@ -136,19 +142,24 @@ export class TritonCompilerElement extends HTMLElement {
           layout: 'auto',
           compute: { module: shaderModule, entryPoint: 'main' }
         });
-        // Uniforms: ${uniforms.join(", ")}
+        // Uniforms: ${uniforms.join(', ')}
       }
     `;
   }
 
-  setCode(pythonCode: string, wgslCode: string = "") {
+  /**
+   * Executes `setCode` on `TritonCompilerElement`.
+   * @param pythonCode Parameter `pythonCode`.
+   * @param wgslCode Parameter `wgslCode`.
+   * @returns Result of `setCode`.
+   */
+  setCode(pythonCode: string, wgslCode: string = '') {
     // 138. Provide realtime syntax highlighting and formatting (simulated via basic text content for now)
-    const output = this.shadowRoot?.querySelector("#output");
+    const output = this.shadowRoot?.querySelector('#output');
     if (output) output.textContent = pythonCode;
-    const wgslOutput = this.shadowRoot?.querySelector("#wgsl-output");
-    if (wgslOutput)
-      wgslOutput.textContent = wgslCode || "// WGSL output here...";
+    const wgslOutput = this.shadowRoot?.querySelector('#wgsl-output');
+    if (wgslOutput) wgslOutput.textContent = wgslCode || '// WGSL output here...';
   }
 }
 
-customElements.define("triton-compiler-ui", TritonCompilerElement);
+customElements.define('triton-compiler-ui', TritonCompilerElement);

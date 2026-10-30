@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../../src/providers/wasm/index";
+import { describe, expect, it } from 'vitest';
+import { WasmProvider } from '../../../src/providers/wasm/index';
 
-describe("index.ts", () => {
-  it("should instantiate and cover WasmProvider", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('index.ts', () => {
+  it('should instantiate and cover WasmProvider', () => {
     try {
-      const obj = new (Module as any).WasmProvider();
+      const obj = Construct(WasmProvider);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

@@ -12,8 +12,18 @@ def optimize_model(
     level: str = "O1",
     disable_fusion: bool = False,
     optimize_size: bool = False,
-):
-    """Optimize ONNX model using onnx9000 core optimizer passes."""
+) -> bool | None:
+    """Optimize an ONNX model using onnx9000 core optimizer passes.
+
+    Args:
+        model_path: Path to the input `.onnx` model file.
+        level: Optimization level (`"O1"`, `"O2"`, `"O3"`, or `"O4"`).
+        disable_fusion: Whether to skip operator fusion passes.
+        optimize_size: Whether to strip metadata to minimize file size.
+
+    Returns:
+        `False` if post-optimization file size inspection fails, otherwise `None`.
+    """
     try:
         from onnx9000.core.parser.core import load as load_onnx
         from onnx9000.core.serializer import save as save_onnx
@@ -31,8 +41,6 @@ def optimize_model(
     graph = load_onnx(model_path)
 
     orig_graph_copy = graph.clone() if level in ["O3", "O4"] else graph
-
-    # Configure optimizer rules based on level
 
     if level in ["O3", "O4"]:
         from onnx9000.optimizer.simplifier.passes.webgpu import (
@@ -73,12 +81,12 @@ def optimize_model(
         generate_html_report(orig_graph_copy, graph, out_path.replace(".onnx", "_report.html"))
         generate_execution_schedule(graph, out_path.replace(".onnx", "_schedule.json"))
 
-    # Collect some statistics
     try:
         orig_size = os.path.getsize(model_path)
         new_size = os.path.getsize(out_path)
         print(
             f"Optimization complete. Size reduction: {orig_size / 1024 / 1024:.2f}MB -> {new_size / 1024 / 1024:.2f}MB"
         )
-    except Exception:
+        return None
+    except (OSError, StopIteration):
         return False

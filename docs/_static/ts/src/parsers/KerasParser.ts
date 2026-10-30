@@ -5,6 +5,15 @@
  */
 import type { IModelGraph, INode } from '../core/IR';
 
+export interface KerasLayerConfig {
+  name?: string;
+  kernel_size?: number[];
+  strides?: number[];
+  pool_size?: number[];
+  activation?: string;
+  rate?: number;
+}
+
 export interface KerasTopology {
   modelTopology?: {
     keras_version?: string;
@@ -15,7 +24,7 @@ export interface KerasTopology {
         name?: string;
         layers?: Array<{
           class_name: string;
-          config: Record<string, any>;
+          config: KerasLayerConfig;
         }>;
       };
     };
@@ -68,7 +77,7 @@ export class KerasParser {
    * @returns ONNX Node or null if explicitly skipped (e.g., InputLayer).
    */
   private mapLayer(
-    layer: { class_name: string; config: Record<string, any> },
+    layer: { class_name: string; config: KerasLayerConfig },
     index: number,
     prevLayerName: string | null,
   ): INode | null {

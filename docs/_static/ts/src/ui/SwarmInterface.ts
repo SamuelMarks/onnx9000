@@ -285,7 +285,7 @@ export class SwarmInterface extends BaseComponent {
           this.rtc.attachVoiceStream(activeVoiceStream);
           voiceBtn.textContent = 'Disable Voice Chat';
           Toast.show('Voice Chat Enabled. Broadcasting mic...', 'success');
-        } catch (_e) {
+        } catch {
           Toast.show('Microphone access denied', 'error');
         }
       }
@@ -295,7 +295,7 @@ export class SwarmInterface extends BaseComponent {
     const remoteAudioContainer = $create('div', { className: 'hidden' });
     this.container.appendChild(remoteAudioContainer);
 
-    globalEvents.on('swarmAudioTrackReceived', (data: any) => {
+    globalEvents.on('swarmAudioTrackReceived', (data: { peerId: string; stream: MediaStream }) => {
       const { peerId, stream } = data;
       let audioEl = document.getElementById(`audio_${peerId}`) as HTMLAudioElement;
       if (!audioEl) {
@@ -320,7 +320,7 @@ export class SwarmInterface extends BaseComponent {
         offerOutput.select();
         document.execCommand('copy');
         Toast.show('Offer generated and copied to clipboard', 'success');
-      } catch (_e) {
+      } catch {
         Toast.show('Failed to create offer', 'error');
       }
     });
@@ -335,7 +335,7 @@ export class SwarmInterface extends BaseComponent {
         answerInput.select();
         document.execCommand('copy');
         Toast.show('Answer generated and copied to clipboard. Send back to peer.', 'success');
-      } catch (_e) {
+      } catch {
         Toast.show('Failed to accept offer', 'error');
       }
     });
@@ -347,7 +347,7 @@ export class SwarmInterface extends BaseComponent {
         const mockPeerId = `peer_${Math.random().toString(36).substring(2, 6)}`;
         await this.rtc.acceptAnswer(tempId, mockPeerId, val);
         Toast.show('Connection established', 'success');
-      } catch (_e) {
+      } catch {
         Toast.show('Failed to accept answer', 'error');
       }
     });
@@ -360,12 +360,12 @@ export class SwarmInterface extends BaseComponent {
     });
 
     // 531. Sync Execution Results
-    globalEvents.on('profilerData', (traces: any) => {
+    globalEvents.on('profilerData', (traces: Array<{ duration: number }>) => {
       this.rtc.broadcast({ type: 'sync', payload: { traces } });
     });
 
     // 536. Sync Layout Coordinates
-    globalEvents.on('nodeLayoutMoved', (_data: any) => {
+    globalEvents.on('nodeLayoutMoved', (_data: Record<string, number>) => {
       // Mock: this.rtc.broadcast({ type: "sync", payload: { nodeLayout: data } });
     });
 
@@ -375,47 +375,58 @@ export class SwarmInterface extends BaseComponent {
     });
 
     // 542. Diffing mock payload listener
-    globalEvents.on('swarmSync', (data: any) => {
-      const { peerId, payload } = data;
-      if (payload.cmd === 'propose_train') {
-        if (confirm(`Peer ${peerId} proposes starting distributed training. Accept?`)) {
-          this.rtc.sendMessage(peerId, { type: 'sync', payload: { cmd: 'accept_train' } });
-        }
-      } else if (payload.cmd === 'accept_train') {
-        Toast.show(`Peer ${peerId} accepted training proposal`, 'success');
-      } else if (payload.diff) {
-        Toast.show(
-          `Visual diff received from ${peerId}. ${payload.diff.length} changes detected.`,
-          'info',
-        );
-      } else if (payload.theme) {
-        // 554. Apply remote theme change
-        Toast.show(`Peer changed theme to ${payload.theme}`, 'info');
-      } else if (payload.cmd === 'parity_check') {
-        // 551. Hash check logic
-        if (this.lastExecutionHash && this.lastExecutionHash !== payload.hash) {
-          // 552. Alert divergence
+    globalEvents.on(
+      'swarmSync',
+      (data: {
+        peerId: string;
+        payload: {
+          cmd?: string;
+          diff?: unknown[];
+          theme?: string;
+          hash?: string;
+        };
+      }) => {
+        const { peerId, payload } = data;
+        if (payload.cmd === 'propose_train') {
+          if (confirm(`Peer ${peerId} proposes starting distributed training. Accept?`)) {
+            this.rtc.sendMessage(peerId, { type: 'sync', payload: { cmd: 'accept_train' } });
+          }
+        } else if (payload.cmd === 'accept_train') {
+          Toast.show(`Peer ${peerId} accepted training proposal`, 'success');
+        } else if (payload.diff) {
           Toast.show(
-            `DIVERGENCE DETECTED: Peer ${peerId} output does not match local hardware output!`,
-            'error',
+            `Visual diff received from ${peerId}. ${payload.diff.length} changes detected.`,
+            'info',
           );
-          globalEvents.emit(
-            'agentLog',
-            `[Critical] Floating point divergence detected with peer ${peerId}.`,
-          );
-        } else {
-          Toast.show(`Parity Match: Peer ${peerId} output hash verified`, 'success');
+        } else if (payload.theme) {
+          // 554. Apply remote theme change
+          Toast.show(`Peer changed theme to ${payload.theme}`, 'info');
+        } else if (payload.cmd === 'parity_check') {
+          // 551. Hash check logic
+          if (this.lastExecutionHash && this.lastExecutionHash !== payload.hash) {
+            // 552. Alert divergence
+            Toast.show(
+              `DIVERGENCE DETECTED: Peer ${peerId} output does not match local hardware output!`,
+              'error',
+            );
+            globalEvents.emit(
+              'agentLog',
+              `[Critical] Floating point divergence detected with peer ${peerId}.`,
+            );
+          } else {
+            Toast.show(`Parity Match: Peer ${peerId} output hash verified`, 'success');
+          }
         }
-      }
-    });
+      },
+    );
 
-    globalEvents.on('swarmParityCheck', (data: any) => {
+    globalEvents.on('swarmParityCheck', (data: { hash: string }) => {
       this.lastExecutionHash = data.hash;
       this.rtc.broadcast({ type: 'sync', payload: { cmd: 'parity_check', hash: data.hash } });
     });
 
     // 373. Calculate and display network latency
-    globalEvents.on('swarmLatencyUpdate', (data: any) => {
+    globalEvents.on('swarmLatencyUpdate', (data: { peerId: string; rtt: number }) => {
       const pingEl = document.getElementById(`ping-${data.peerId}`);
       if (pingEl) {
         pingEl.textContent = `${data.rtt} ms`;

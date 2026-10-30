@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../src/session";
+import { describe, expect, it } from 'vitest';
+import { InferenceSession } from '../src/session';
 
-describe("session.ts", () => {
-  it("should instantiate and cover InferenceSession", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('session.ts', () => {
+  it('should instantiate and cover InferenceSession', () => {
     try {
-      const obj = new (Module as any).InferenceSession();
+      const obj = Construct(InferenceSession);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

@@ -85,10 +85,7 @@ from onnx9000.openvino import OpenVINOExecutionProvider
 graph = load("model.onnx")
 
 # Orchestrate execution
-session = InferenceSession(
-    graph,
-    providers=[OpenVINOExecutionProvider(), CUDAExecutionProvider()]
-)
+session = InferenceSession(graph, providers=[OpenVINOExecutionProvider(), CUDAExecutionProvider()])
 
 # Run inference
 input_data = {"input_1": np.random.randn(1, 3, 224, 224).astype(np.float32)}

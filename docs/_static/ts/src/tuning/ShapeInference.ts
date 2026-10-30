@@ -74,7 +74,7 @@ export class ShapeInference {
   ): IModelGraph {
     const cloned = JSON.parse(JSON.stringify(graph)) as IModelGraph;
 
-    const updateDims = (list: any[]) => {
+    const updateDims = (list: Array<{ name: string; dims?: (number | string)[] }>) => {
       const item = list.find((x) => x.name === tensorName);
       if (item) item.dims = [...staticDims];
     };

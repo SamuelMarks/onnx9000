@@ -2,7 +2,9 @@
 
 import struct
 from enum import Enum
-from typing import Any, BinaryIO
+from typing import BinaryIO
+
+from onnx9000.core.exceptions import GGUFError
 
 
 class GGUFValueType(Enum):
@@ -36,11 +38,15 @@ class GGUFTensorType(Enum):
 class GGUFWriter:
     """Zero-dependency GGUF Writer."""
 
-    def __init__(self, f: BinaryIO):
+    def __init__(self, f: BinaryIO) -> None:
         """Perform   init   operation."""
         self.f = f
-        self.kvs: list[tuple[str, GGUFValueType, Any]] = []
-        self.tensors: list[dict[str, Any]] = []
+        self.kvs: list[
+            tuple[str, GGUFValueType, int | float | str | bool | bytes | list | dict | tuple | None]
+        ] = []
+        self.tensors: list[
+            dict[str, int | float | str | bool | bytes | list | dict | tuple | None]
+        ] = []
         self.tensor_data_offset = 0
         self.tensor_sizes = []
 
@@ -92,7 +98,12 @@ class GGUFWriter:
         """Perform add string operation."""
         self.kvs.append((key, GGUFValueType.STRING, val))
 
-    def add_array(self, key: str, val: list[Any], array_type: GGUFValueType) -> None:
+    def add_array(
+        self,
+        key: str,
+        val: list[int | float | str | bool | bytes | list | dict | tuple | None],
+        array_type: GGUFValueType,
+    ) -> None:
         """Perform add array operation."""
         self.kvs.append((key, GGUFValueType.ARRAY, (array_type, val)))
 
@@ -100,11 +111,15 @@ class GGUFWriter:
         """Perform  write string operation."""
         encoded = s.encode("utf-8")
         if len(encoded) > 2**31 - 1:
-            raise ValueError("String exceeds standard allocation limits")
+            raise GGUFError("String exceeds standard allocation limits")
         self.f.write(struct.pack("<Q", len(encoded)))
         self.f.write(encoded)
 
-    def _write_val(self, vtype: GGUFValueType, val: Any) -> None:
+    def _write_val(
+        self,
+        vtype: GGUFValueType,
+        val: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
         """Perform  write val operation."""
         if vtype == GGUFValueType.UINT8:
             self.f.write(struct.pack("<B", val))
@@ -137,12 +152,12 @@ class GGUFWriter:
             for item in arr:
                 self._write_val(atype, item)
         else:
-            raise ValueError(f"Unknown value type: {vtype}")
+            raise GGUFError(f"Unknown value type: {vtype}")
 
     def add_tensor_info(self, name: str, shape: list[int], dtype: GGUFTensorType) -> None:
         """Perform add tensor info operation."""
         if not isinstance(dtype, GGUFTensorType):
-            raise ValueError("Invalid tensor type")
+            raise GGUFError("Invalid tensor type")
         self.tensors.append(
             {
                 "name": name,

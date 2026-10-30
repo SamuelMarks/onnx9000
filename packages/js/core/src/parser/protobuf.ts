@@ -1,3 +1,8 @@
+/**
+ * @fileoverview protobuf module for core.
+ */
+import { ONNXParseError } from '../exceptions.js';
+
 /** Protobuf Varint wire type. */
 export const WIRE_TYPE_VARINT = 0;
 /** Protobuf 64-bit wire type. */
@@ -31,7 +36,9 @@ export interface Reader {
  * Reader for Uint8Array buffers.
  */
 export class BufferReader implements Reader {
+  /** Property `buffer` of `BufferReader`. */
   private buffer: Uint8Array;
+  /** Property `offset` of `BufferReader`. */
   private offset: number = 0;
 
   /**
@@ -45,15 +52,15 @@ export class BufferReader implements Reader {
   /** Read a single byte from the buffer. */
   async readByte(): Promise<number> {
     if (this.offset >= this.buffer.length) {
-      throw new Error("Unexpected end of buffer");
+      throw new ONNXParseError('Unexpected end of buffer');
     }
-    return this.buffer[this.offset++]!;
+    return this.buffer[this.offset++] as number;
   }
 
   /** Read a fixed number of bytes from the buffer. */
   async readBytes(length: number): Promise<Uint8Array> {
     if (this.offset + length > this.buffer.length) {
-      throw new Error("Unexpected end of buffer");
+      throw new ONNXParseError('Unexpected end of buffer');
     }
     const res = this.buffer.subarray(this.offset, this.offset + length);
     this.offset += length;
@@ -80,10 +87,15 @@ export class BufferReader implements Reader {
  * Reader for Blob objects, using a rolling cache for efficiency.
  */
 export class BlobReader implements Reader {
+  /** Property `blob` of `BlobReader`. */
   private blob: Blob;
+  /** Property `offset` of `BlobReader`. */
   private offset: number = 0;
+  /** Property `cache` of `BlobReader`. */
   private cache: Uint8Array | null = null;
+  /** Property `cacheStart` of `BlobReader`. */
   private cacheStart: number = 0;
+  /** Property `cacheSize` of `BlobReader`. */
   private cacheSize: number = 1024 * 1024 * 4; // 4MB cache
 
   /**
@@ -106,10 +118,7 @@ export class BlobReader implements Reader {
       this.offset + length > this.cacheStart + this.cache.length
     ) {
       const start = this.offset;
-      const end = Math.min(
-        this.blob.size,
-        start + Math.max(this.cacheSize, length),
-      );
+      const end = Math.min(this.blob.size, start + Math.max(this.cacheSize, length));
       const slice = this.blob.slice(start, end);
       const arrayBuffer = await slice.arrayBuffer();
       this.cache = new Uint8Array(arrayBuffer);
@@ -120,7 +129,7 @@ export class BlobReader implements Reader {
   /** Read a single byte from the blob. */
   async readByte(): Promise<number> {
     if (this.offset >= this.blob.size) {
-      throw new Error("Unexpected end of blob");
+      throw new ONNXParseError('Unexpected end of blob');
     }
     await this.ensureCache(1);
     const byte = this.cache?.[this.offset - this.cacheStart] ?? 0;
@@ -131,7 +140,7 @@ export class BlobReader implements Reader {
   /** Read a fixed number of bytes from the blob. */
   async readBytes(length: number): Promise<Uint8Array> {
     if (this.offset + length > this.blob.size) {
-      throw new Error("Unexpected end of blob");
+      throw new ONNXParseError('Unexpected end of blob');
     }
     await this.ensureCache(length);
     const start = this.offset - this.cacheStart;
@@ -195,10 +204,7 @@ export async function readVarInt64(reader: Reader): Promise<bigint> {
  * @param reader Input reader.
  * @param length Length of the string in bytes.
  */
-export async function readString(
-  reader: Reader,
-  length: number,
-): Promise<string> {
+export async function readString(reader: Reader, length: number): Promise<string> {
   const bytes = await reader.readBytes(length);
   return new TextDecoder().decode(bytes);
 }
@@ -207,9 +213,7 @@ export async function readString(
  * Read a field tag (field number and wire type).
  * @param reader Input reader.
  */
-export async function readTag(
-  reader: Reader,
-): Promise<{ fieldNumber: number; wireType: number }> {
+export async function readTag(reader: Reader): Promise<{ fieldNumber: number; wireType: number }> {
   const tag = await readVarInt(reader);
   return { fieldNumber: tag >> 3, wireType: tag & 7 };
 }
@@ -219,10 +223,7 @@ export async function readTag(
  * @param reader Input reader.
  * @param wireType Protobuf wire type.
  */
-export async function skipField(
-  reader: Reader,
-  wireType: number,
-): Promise<void> {
+export async function skipField(reader: Reader, wireType: number): Promise<void> {
   switch (wireType) {
     case WIRE_TYPE_VARINT:
       await readVarInt64(reader);
@@ -237,11 +238,11 @@ export async function skipField(
     }
     case WIRE_TYPE_START_GROUP:
     case WIRE_TYPE_END_GROUP:
-      throw new Error("Groups are not supported");
+      throw new ONNXParseError('Groups are not supported');
     case WIRE_TYPE_32BIT:
       await reader.skip(4);
       break;
     default:
-      throw new Error(`Unsupported wire type: ${wireType}`);
+      throw new ONNXParseError(`Unsupported wire type: ${wireType}`);
   }
 }

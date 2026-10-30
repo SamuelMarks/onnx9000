@@ -1,7 +1,5 @@
 """Tests for parser extra4."""
 
-import os
-
 import numpy as np
 import pytest
 from onnx9000.toolkit.safetensors.parser import (
@@ -10,8 +8,8 @@ from onnx9000.toolkit.safetensors.parser import (
 )
 
 
-def test_parser_coverage():
-    """Docstring for D103."""
+def test_parser_coverage() -> None:
+    """Verify that parser coverage behaves as expected."""
     parser = SafeTensors.__new__(SafeTensors)
     parser.tensors = {
         "t1": {"dtype": "UNKN", "shape": [2, 2], "data_offsets": [0, 16]},

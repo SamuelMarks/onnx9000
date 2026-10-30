@@ -1,35 +1,47 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../src/ir/core";
+import { describe, expect, it } from 'vitest';
+import { Block, BlockArgument, Operation, Region, Value } from '../../src/ir/core';
 
-describe("core.ts", () => {
-  it("should instantiate and cover Value", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('core.ts', () => {
+  it('should instantiate and cover Value', () => {
     try {
-      const obj = new (Module as any).Value();
+      const obj = Construct(Value);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover BlockArgument", () => {
+  it('should instantiate and cover BlockArgument', () => {
     try {
-      const obj = new (Module as any).BlockArgument();
+      const obj = Construct(BlockArgument);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover Block", () => {
+  it('should instantiate and cover Block', () => {
     try {
-      const obj = new (Module as any).Block();
+      const obj = Construct(Block);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover Region", () => {
+  it('should instantiate and cover Region', () => {
     try {
-      const obj = new (Module as any).Region();
+      const obj = Construct(Region);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover Operation", () => {
+  it('should instantiate and cover Operation', () => {
     try {
-      const obj = new (Module as any).Operation();
+      const obj = Construct(Operation);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

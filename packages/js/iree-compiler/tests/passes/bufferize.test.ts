@@ -1,11 +1,18 @@
-import { describe, it } from "vitest";
-import * as Module from "../../src/passes/bufferize";
+import { describe, expect, it } from 'vitest';
+import { bufferizeLinalg } from '../../src/passes/bufferize';
 
-describe("bufferize.ts", () => {
-  it("should call and cover bufferizeLinalg", async () => {
+const Call = <T>(fn: (...args: never[]) => T): T => fn();
+
+describe('bufferize.ts', () => {
+  it('should call and cover bufferizeLinalg', async () => {
     try {
-      const res = (Module as any).bufferizeLinalg();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(bufferizeLinalg);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

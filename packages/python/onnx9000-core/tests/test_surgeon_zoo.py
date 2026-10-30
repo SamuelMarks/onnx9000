@@ -1,5 +1,6 @@
-import pytest
-from onnx9000.core.ir import Attribute, Graph, Node
+"""Unit tests and verification suite for surgeon zoo functionality."""
+
+from onnx9000.core.ir import Graph, Node
 from onnx9000.core.surgeon import (
     map_alibi,
     map_bonsai_rope,
@@ -9,7 +10,8 @@ from onnx9000.core.surgeon import (
 )
 
 
-def test_map_bonsai_rope():
+def test_map_bonsai_rope() -> None:
+    """Verify that map bonsai rope behaves as expected."""
     graph = Graph(name="test")
     graph.nodes = []
     node = Node(
@@ -26,7 +28,8 @@ def test_map_bonsai_rope():
     assert graph.nodes[0].op_type == "RotaryEmbedding"
 
 
-def test_map_alibi():
+def test_map_alibi() -> None:
+    """Verify that map alibi behaves as expected."""
     graph = Graph(name="test")
     graph.nodes = []
     node = Node(
@@ -49,7 +52,8 @@ def test_map_alibi():
     assert graph.nodes[1].outputs == ["out1"]
 
 
-def test_map_gqa_mqa():
+def test_map_gqa_mqa() -> None:
+    """Verify that map gqa mqa behaves as expected."""
     graph = Graph(name="test")
     graph.nodes = []
     node1 = Node(op_type="MQA", name="m1", inputs=[], outputs=[], domain="", attributes={})
@@ -63,7 +67,8 @@ def test_map_gqa_mqa():
     assert graph.nodes[1].attributes["kv_num_heads"].value == 8
 
 
-def test_normalize_sliding_window_attention():
+def test_normalize_sliding_window_attention() -> None:
+    """Verify that normalize sliding window attention behaves as expected."""
     graph = Graph(name="test")
     graph.nodes = []
     node = Node(
@@ -82,7 +87,8 @@ def test_normalize_sliding_window_attention():
     assert graph.nodes[0].attributes["window_size"].value == 4096
 
 
-def test_map_flash_attention():
+def test_map_flash_attention() -> None:
+    """Verify that map flash attention behaves as expected."""
     graph = Graph(name="test")
     graph.nodes = []
     node1 = Node(

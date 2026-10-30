@@ -2,28 +2,38 @@
  * @fileoverview OliveConfigPanel.ts
  * Provides OliveConfigPanel functionality for the Sphinx Demo UI.
  */
-// @ts-nocheck
 import { Component } from '../core/Component';
 import { globalEventBus } from '../core/EventBus';
 
+/** Interface `OliveConfig` definition. */
 export interface OliveConfig {
+  /** Property `quantizationLevel`. */
   quantizationLevel: 'FP16' | 'INT8' | 'None';
+  /** Property `enableStaticShapeInference`. */
   enableStaticShapeInference: boolean;
+  /** Property `enableTransformerFusion`. */
   enableTransformerFusion: boolean;
 }
 
+/** Represents the `OliveConfigPanel` class. */
 export class OliveConfigPanel extends Component<HTMLDivElement> {
-  private config: OliveConfig = {
+  /** Property `config` of `OliveConfigPanel`. */
+  public config: OliveConfig = {
     quantizationLevel: 'None',
     enableStaticShapeInference: true,
-    enableTransformerFusion: false
+    enableTransformerFusion: false,
   };
 
+  /** Initializes a new `OliveConfigPanel` instance. */
   constructor() {
     super();
     this.element = this.render();
   }
 
+  /**
+   * Executes `render` on `OliveConfigPanel`.
+   * @returns Result of `render`.
+   */
   protected render(): HTMLDivElement {
     const container = document.createElement('div');
     container.className = 'demo-olive-config-panel';
@@ -87,17 +97,19 @@ export class OliveConfigPanel extends Component<HTMLDivElement> {
     return container;
   }
 
+  /** Executes `onMount` on `OliveConfigPanel`. */
   protected onMount(): void {
     const quantSelect = this.element.querySelector('.demo-olive-quant-select') as HTMLSelectElement;
     const shapeCheckbox = this.element.querySelector(
-      '.demo-olive-shape-checkbox'
+      '.demo-olive-shape-checkbox',
     ) as HTMLInputElement;
     const fusionCheckbox = this.element.querySelector(
-      '.demo-olive-fusion-checkbox'
+      '.demo-olive-fusion-checkbox',
     ) as HTMLInputElement;
 
     this.addDOMListener(quantSelect, 'change', (e) => {
-      this.config.quantizationLevel = (e.target as HTMLSelectElement).value as object;
+      this.config.quantizationLevel = (e.target as HTMLSelectElement)
+        .value as OliveConfig['quantizationLevel'];
       this.emitConfig();
     });
 
@@ -112,10 +124,15 @@ export class OliveConfigPanel extends Component<HTMLDivElement> {
     });
   }
 
+  /** Executes `emitConfig` on `OliveConfigPanel`. */
   private emitConfig(): void {
     globalEventBus.emit('OLIVE_CONFIG_CHANGED', this.config);
   }
 
+  /**
+   * Executes `getConfig` on `OliveConfigPanel`.
+   * @returns Result of `getConfig`.
+   */
   public getConfig(): OliveConfig {
     return { ...this.config };
   }

@@ -6,7 +6,7 @@ from onnx9000.core.ir import Attribute, Graph, Node, Tensor
 from onnx9000.optimizer.simplifier.passes.dce import DCEPass, IdentityEliminationPass
 
 
-def test_dce_preserve_nodes():
+def test_dce_preserve_nodes() -> None:
     """Test dce preserve nodes."""
     g = Graph("TestPreserve")
     g.inputs = ["X"]
@@ -29,7 +29,7 @@ def test_dce_preserve_nodes():
     assert "n_preserve" in ops
 
 
-def test_identity_subgraphs():
+def test_identity_subgraphs() -> None:
     """Test identity subgraphs."""
     g = Graph("TestIdSub")
     sub = Graph("Sub")
@@ -47,7 +47,7 @@ def test_identity_subgraphs():
     assert len(sub.nodes) == 0
 
 
-def test_identity_folding():
+def test_identity_folding() -> None:
     """Test identity folding."""
     g = Graph("TestFold")
 
@@ -99,7 +99,7 @@ def test_identity_folding():
     assert changed2
 
 
-def test_mul_add_distribute():
+def test_mul_add_distribute() -> None:
     """Test mul add distribute."""
     g = Graph("TestDist")
     t_c1 = Tensor("C1", (1,), DType.FLOAT32)

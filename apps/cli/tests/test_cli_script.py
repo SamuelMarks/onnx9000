@@ -1,10 +1,13 @@
+"""Unit tests and verification suite for cli script functionality."""
+
 import argparse
 from unittest.mock import MagicMock, patch
 
 from onnx9000_cli.main import script_cmd
 
 
-def test_script_cmd_output():
+def test_script_cmd_output() -> None:
+    """Verify that script cmd output behaves as expected."""
     args = argparse.Namespace(input="dummy.py", output="out.onnx")
     with patch("onnx9000.toolkit.script.parse_and_compile") as mock_parse:
         mock_model = MagicMock()
@@ -16,7 +19,8 @@ def test_script_cmd_output():
         mock_model.save.assert_called_once_with("out.onnx")
 
 
-def test_script_cmd_no_output():
+def test_script_cmd_no_output() -> None:
+    """Verify that script cmd no output behaves as expected."""
     args = argparse.Namespace(input="dummy.py")
     with patch("onnx9000.toolkit.script.parse_and_compile") as mock_parse:
         mock_model = MagicMock()
@@ -28,10 +32,11 @@ def test_script_cmd_no_output():
         mock_model.save.assert_not_called()
 
 
-def test_script_cmd_error():
+def test_script_cmd_error() -> None:
+    """Verify that script cmd error behaves as expected."""
     args = argparse.Namespace(input="dummy.py")
     with patch("onnx9000.toolkit.script.parse_and_compile") as mock_parse:
-        mock_parse.side_effect = Exception("test error")
+        mock_parse.side_effect = RuntimeError("test error")
         with patch("sys.exit") as mock_exit:
             script_cmd(args)
             mock_exit.assert_called_once_with(1)

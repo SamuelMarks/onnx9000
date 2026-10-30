@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { describe, expect, it } from 'vitest';
 import { SplitPane } from '../src/components/SplitPane.js';
 

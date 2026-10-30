@@ -2,54 +2,60 @@
  * @fileoverview efficientnet.ts
  * Provides efficientnet functionality for the core package.
  */
-import { Tensor } from "../ir/tensor.js";
-import {
-  BatchNormalization,
-  ConvND,
-  DepthwiseConv,
-  Gemm,
-  Sigmoid,
-  Silu,
-} from "../primitives.js";
+import { Tensor } from '../ir/tensor.js';
+import { BatchNormalization, ConvND, DepthwiseConv, Gemm, Sigmoid, Silu } from '../primitives.js';
 
+/**
+ * Executes `getParam`.
+ * @param name Parameter `name`.
+ * @param shape Parameter `shape`.
+ * @param dtype Parameter `dtype`.
+ * @returns Result of `getParam`.
+ */
 function getParam(
   name: string,
   shape: number[],
-  dtype: ReturnType<typeof JSON.parse> = "float32",
+  dtype: ReturnType<typeof JSON.parse> = 'float32',
 ): Tensor {
   return new Tensor(name, shape, dtype, false, false, new Float32Array());
 }
 
-function recordOp(
-  opType: string,
-  inputs: Tensor[],
-  _attr?: ReturnType<typeof JSON.parse>,
-): Tensor {
-  const dtype = inputs[0]?.dtype ?? "float32";
-  return new Tensor(
-    `${opType}_out`,
-    [],
-    dtype,
-    false,
-    false,
-    new Float32Array(),
-  );
+/**
+ * Executes `recordOp`.
+ * @param opType Parameter `opType`.
+ * @param inputs Parameter `inputs`.
+ * @param _attr Parameter `_attr`.
+ * @returns Result of `recordOp`.
+ */
+function recordOp(opType: string, inputs: Tensor[], _attr?: ReturnType<typeof JSON.parse>): Tensor {
+  const dtype = inputs[0]?.dtype ?? 'float32';
+  return new Tensor(`${opType}_out`, [], dtype, false, false, new Float32Array());
 }
 
+/** Represents the `SqueezeExcitation` class. */
 export class SqueezeExcitation {
+  /** Property `prefix` of `SqueezeExcitation`. */
   public prefix: string;
+  /** Property `inChannels` of `SqueezeExcitation`. */
   public inChannels: number;
+  /** Property `squeezeChannels` of `SqueezeExcitation`. */
   public squeezeChannels: number;
+  /** Property `fc1` of `SqueezeExcitation`. */
   public fc1: Gemm;
+  /** Property `act` of `SqueezeExcitation`. */
   public act: Silu;
+  /** Property `fc2` of `SqueezeExcitation`. */
   public fc2: Gemm;
+  /** Property `scaleAct` of `SqueezeExcitation`. */
   public scaleAct: Sigmoid;
 
-  constructor(
-    inChannels: number,
-    squeezeChannels: number,
-    prefix: string = "",
-  ) {
+  /**
+   * Initializes a new `SqueezeExcitation` instance.
+   * @param inChannels Parameter `inChannels`.
+   * @param squeezeChannels Parameter `squeezeChannels`.
+   * @param prefix Parameter `prefix`.
+   */
+  constructor(inChannels: number, squeezeChannels: number, prefix: string = '') {
     this.prefix = prefix;
     this.inChannels = inChannels;
     this.squeezeChannels = squeezeChannels;
@@ -59,61 +65,85 @@ export class SqueezeExcitation {
     this.scaleAct = new Sigmoid();
   }
 
+  /**
+   * Executes `call` on `SqueezeExcitation`.
+   * @param x Parameter `x`.
+   * @returns Result of `call`.
+   */
   call(x: Tensor): Tensor {
-    let scale = recordOp("GlobalAveragePool", [x]);
-    scale = recordOp("Flatten", [scale]);
+    let scale = recordOp('GlobalAveragePool', [x]);
+    scale = recordOp('Flatten', [scale]);
 
-    const fc1W = getParam(`${this.prefix}.fc1.weight`, [
-      this.squeezeChannels,
-      this.inChannels,
-    ]);
+    const fc1W = getParam(`${this.prefix}.fc1.weight`, [this.squeezeChannels, this.inChannels]);
     const fc1B = getParam(`${this.prefix}.fc1.bias`, [this.squeezeChannels]);
     scale = this.fc1.call(scale, fc1W, fc1B);
     scale = this.act.call(scale);
 
-    const fc2W = getParam(`${this.prefix}.fc2.weight`, [
-      this.inChannels,
-      this.squeezeChannels,
-    ]);
+    const fc2W = getParam(`${this.prefix}.fc2.weight`, [this.inChannels, this.squeezeChannels]);
     const fc2B = getParam(`${this.prefix}.fc2.bias`, [this.inChannels]);
     scale = this.fc2.call(scale, fc2W, fc2B);
     scale = this.scaleAct.call(scale);
 
-    const shapeTensor = recordOp("Constant", [], {
+    const shapeTensor = recordOp('Constant', [], {
       value: [-1, this.inChannels, 1, 1],
     });
-    scale = recordOp("Reshape", [scale, shapeTensor]);
+    scale = recordOp('Reshape', [scale, shapeTensor]);
 
-    return recordOp("Mul", [x, scale]);
+    return recordOp('Mul', [x, scale]);
   }
 }
 
+/** Represents the `MBConv` class. */
 export class MBConv {
+  /** Property `prefix` of `MBConv`. */
   public prefix: string;
+  /** Property `inChannels` of `MBConv`. */
   public inChannels: number;
+  /** Property `outChannels` of `MBConv`. */
   public outChannels: number;
+  /** Property `expandRatio` of `MBConv`. */
   public expandRatio: number;
+  /** Property `stride` of `MBConv`. */
   public stride: number;
+  /** Property `useResConnect` of `MBConv`. */
   public useResConnect: boolean;
 
+  /** Property `expandConv` of `MBConv`. */
   public expandConv?: ConvND;
+  /** Property `bn0` of `MBConv`. */
   public bn0?: BatchNormalization;
+  /** Property `act0` of `MBConv`. */
   public act0?: Silu;
 
+  /** Property `depthwiseConv` of `MBConv`. */
   public depthwiseConv: DepthwiseConv;
+  /** Property `bn1` of `MBConv`. */
   public bn1: BatchNormalization;
+  /** Property `act1` of `MBConv`. */
   public act1: Silu;
+  /** Property `se` of `MBConv`. */
   public se: SqueezeExcitation;
+  /** Property `projectConv` of `MBConv`. */
   public projectConv: ConvND;
+  /** Property `bn2` of `MBConv`. */
   public bn2: BatchNormalization;
 
+  /**
+   * Initializes a new `MBConv` instance.
+   * @param inChannels Parameter `inChannels`.
+   * @param outChannels Parameter `outChannels`.
+   * @param expandRatio Parameter `expandRatio`.
+   * @param stride Parameter `stride`.
+   * @param kernelSize Parameter `kernelSize`.
+   * @param prefix Parameter `prefix`.
+   */
   constructor(
     inChannels: number,
     outChannels: number,
     expandRatio: number,
     stride: number,
     kernelSize: number,
-    prefix: string = "",
+    prefix: string = '',
   ) {
     this.prefix = prefix;
     this.inChannels = inChannels;
@@ -125,17 +155,7 @@ export class MBConv {
     const hiddenDim = inChannels * expandRatio;
 
     if (expandRatio !== 1) {
-      this.expandConv = new ConvND(
-        2,
-        inChannels,
-        hiddenDim,
-        1,
-        1,
-        0,
-        1,
-        1,
-        false,
-      );
+      this.expandConv = new ConvND(2, inChannels, hiddenDim, 1, 1, 0, 1, 1, false);
       this.bn0 = new BatchNormalization(hiddenDim);
       this.act0 = new Silu();
     }
@@ -158,20 +178,15 @@ export class MBConv {
       `${prefix}.se`,
     );
 
-    this.projectConv = new ConvND(
-      2,
-      hiddenDim,
-      outChannels,
-      1,
-      1,
-      0,
-      1,
-      1,
-      false,
-    );
+    this.projectConv = new ConvND(2, hiddenDim, outChannels, 1, 1, 0, 1, 1, false);
     this.bn2 = new BatchNormalization(outChannels);
   }
 
+  /**
+   * Executes `call` on `MBConv`.
+   * @param x Parameter `x`.
+   * @returns Result of `call`.
+   */
   call(x: Tensor): Tensor {
     const identity = x;
 
@@ -195,17 +210,14 @@ export class MBConv {
       x = this.act0.call(x);
     }
 
-    const ks = Array.isArray(this.depthwiseConv.kernelSize)
-      ? this.depthwiseConv.kernelSize[0]
-      : this.depthwiseConv.kernelSize;
+    const ks = (
+      Array.isArray(this.depthwiseConv.kernelSize)
+        ? this.depthwiseConv.kernelSize[0]
+        : this.depthwiseConv.kernelSize
+    ) as number;
     x = this.depthwiseConv.call(
       x,
-      getParam(`${this.prefix}.depthwise_conv.weight`, [
-        this.depthwiseConv.outChannels,
-        1,
-        ks!,
-        ks!,
-      ]),
+      getParam(`${this.prefix}.depthwise_conv.weight`, [this.depthwiseConv.outChannels, 1, ks, ks]),
     );
     x = this.bn1.call(
       x,
@@ -236,33 +248,48 @@ export class MBConv {
     );
 
     if (this.useResConnect) {
-      x = recordOp("Add", [identity, x]);
+      x = recordOp('Add', [identity, x]);
     }
 
     return x;
   }
 }
 
+/** Represents the `EfficientNet` class. */
 export class EfficientNet {
+  /** Property `numClasses` of `EfficientNet`. */
   public numClasses: number;
+  /** Property `stemConv` of `EfficientNet`. */
   public stemConv: ConvND;
+  /** Property `stemBn` of `EfficientNet`. */
   public stemBn: BatchNormalization;
+  /** Property `stemAct` of `EfficientNet`. */
   public stemAct: Silu;
+  /** Property `block1` of `EfficientNet`. */
   public block1: MBConv;
+  /** Property `block2` of `EfficientNet`. */
   public block2: MBConv;
+  /** Property `headConv` of `EfficientNet`. */
   public headConv: ConvND;
+  /** Property `headBn` of `EfficientNet`. */
   public headBn: BatchNormalization;
+  /** Property `headAct` of `EfficientNet`. */
   public headAct: Silu;
+  /** Property `classifier` of `EfficientNet`. */
   public classifier: Gemm;
 
+  /**
+   * Initializes a new `EfficientNet` instance.
+   * @param numClasses Parameter `numClasses`.
+   */
   constructor(numClasses: number = 1000) {
     this.numClasses = numClasses;
     this.stemConv = new ConvND(2, 3, 32, 3, 2, 1, 1, 1, false);
     this.stemBn = new BatchNormalization(32);
     this.stemAct = new Silu();
 
-    this.block1 = new MBConv(32, 16, 1, 1, 3, "block1");
-    this.block2 = new MBConv(16, 24, 6, 2, 3, "block2");
+    this.block1 = new MBConv(32, 16, 1, 1, 3, 'block1');
+    this.block2 = new MBConv(16, 24, 6, 2, 3, 'block2');
 
     this.headConv = new ConvND(2, 24, 1280, 1, 1, 0, 1, 1, false);
     this.headBn = new BatchNormalization(1280);
@@ -271,22 +298,22 @@ export class EfficientNet {
     this.classifier = new Gemm(1.0, 1.0, 0, 1);
   }
 
+  /**
+   * Executes `call` on `EfficientNet`.
+   * @param x Parameter `x`.
+   * @returns Result of `call`.
+   */
   call(x: Tensor): Tensor {
     x = this.stemConv.call(
       x,
-      getParam("stem_conv.weight", [
-        this.stemConv.outChannels,
-        this.stemConv.inChannels,
-        3,
-        3,
-      ]),
+      getParam('stem_conv.weight', [this.stemConv.outChannels, this.stemConv.inChannels, 3, 3]),
     );
     x = this.stemBn.call(
       x,
-      getParam("stem_bn.weight", [this.stemBn.numFeatures]),
-      getParam("stem_bn.bias", [this.stemBn.numFeatures]),
-      getParam("stem_bn.running_mean", [this.stemBn.numFeatures]),
-      getParam("stem_bn.running_var", [this.stemBn.numFeatures]),
+      getParam('stem_bn.weight', [this.stemBn.numFeatures]),
+      getParam('stem_bn.bias', [this.stemBn.numFeatures]),
+      getParam('stem_bn.running_mean', [this.stemBn.numFeatures]),
+      getParam('stem_bn.running_var', [this.stemBn.numFeatures]),
     );
     x = this.stemAct.call(x);
 
@@ -295,34 +322,34 @@ export class EfficientNet {
 
     x = this.headConv.call(
       x,
-      getParam("head_conv.weight", [
-        this.headConv.outChannels,
-        this.headConv.inChannels,
-        1,
-        1,
-      ]),
+      getParam('head_conv.weight', [this.headConv.outChannels, this.headConv.inChannels, 1, 1]),
     );
     x = this.headBn.call(
       x,
-      getParam("head_bn.weight", [this.headBn.numFeatures]),
-      getParam("head_bn.bias", [this.headBn.numFeatures]),
-      getParam("head_bn.running_mean", [this.headBn.numFeatures]),
-      getParam("head_bn.running_var", [this.headBn.numFeatures]),
+      getParam('head_bn.weight', [this.headBn.numFeatures]),
+      getParam('head_bn.bias', [this.headBn.numFeatures]),
+      getParam('head_bn.running_mean', [this.headBn.numFeatures]),
+      getParam('head_bn.running_var', [this.headBn.numFeatures]),
     );
     x = this.headAct.call(x);
 
-    x = recordOp("GlobalAveragePool", [x]);
-    x = recordOp("Flatten", [x]);
+    x = recordOp('GlobalAveragePool', [x]);
+    x = recordOp('Flatten', [x]);
     x = this.classifier.call(
       x,
-      getParam("classifier.weight", [this.numClasses, 1280]),
-      getParam("classifier.bias", [this.numClasses]),
+      getParam('classifier.weight', [this.numClasses, 1280]),
+      getParam('classifier.bias', [this.numClasses]),
     );
 
     return x;
   }
 }
 
+/**
+ * Executes `efficientnetB0`.
+ * @param numClasses Parameter `numClasses`.
+ * @returns Result of `efficientnetB0`.
+ */
 export function efficientnetB0(numClasses: number = 1000): EfficientNet {
   return new EfficientNet(numClasses);
 }

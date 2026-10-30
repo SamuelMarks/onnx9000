@@ -1,19 +1,22 @@
-/* v8 ignore start */
+/**
+ * @fileoverview GenAI Demo UI.
+ */
+
 /**
  * Initializes the GenAI demo.
  */
 export function initGenAIDemo(): void {
-  const runBtn = document.getElementById("run-btn") as HTMLButtonElement;
-  const out = document.getElementById("output") as HTMLElement;
+  const runBtn = document.getElementById('run-btn') as HTMLButtonElement | null;
+  const out = document.getElementById('output') as HTMLElement | null;
   if (!runBtn || !out) return;
 
-  runBtn.addEventListener("click", () => {
-    out.innerText = "Initializing GenAI Subsystem...";
+  runBtn.addEventListener('click', () => {
+    out.innerText = 'Initializing GenAI Subsystem...';
     setTimeout(() => {
-      out.innerText = "GenAI models loaded.\nExecution complete: SUCCESS";
-    }, 500);
+      out.innerText = `GenAI models loaded.
+Execution complete: SUCCESS`;
+    }, 50);
   });
 }
-initGenAIDemo();
 
-/* v8 ignore stop */
+initGenAIDemo();

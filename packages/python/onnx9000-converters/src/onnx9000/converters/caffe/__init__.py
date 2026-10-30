@@ -1,7 +1,6 @@
 """Caffe converter module."""
 
 import os  # pragma: no cover
-from typing import Any  # pragma: no cover
 
 from onnx9000.converters.caffe.mapper import CaffeMapper  # pragma: no cover
 from onnx9000.converters.caffe.parser import parse_prototxt  # pragma: no cover
@@ -13,7 +12,7 @@ from onnx9000.core.ir import Graph  # pragma: no cover
 class CaffeConverter(BaseParser):
     """Converter for Caffe models."""
 
-    def __init__(self, weights_path: str):  # pragma: no cover
+    def __init__(self, weights_path: str) -> None:  # pragma: no cover
         """Initialize the converter.
 
         Args:  # pragma: no cover
@@ -50,8 +49,8 @@ class CaffeConverter(BaseParser):
 
 
 __all__ = [
-    "parse_prototxt",
-    "load_caffemodel",
-    "CaffeMapper",
     "CaffeConverter",
+    "CaffeMapper",
+    "load_caffemodel",
+    "parse_prototxt",
 ]  # pragma: no cover

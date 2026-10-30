@@ -12,6 +12,7 @@ export enum DataType {
   kFP8 = 6,
 }
 
+/** Enumeration `ElementWiseOperation`. */
 export enum ElementWiseOperation {
   kSUM = 0,
   kPROD = 1,
@@ -30,6 +31,7 @@ export enum ElementWiseOperation {
   kLESS = 14,
 }
 
+/** Enumeration `ActivationType`. */
 export enum ActivationType {
   kRELU = 0,
   kSIGMOID = 1,
@@ -45,6 +47,7 @@ export enum ActivationType {
   kTHRESHOLDED_RELU = 11,
 }
 
+/** Enumeration `BuilderFlag`. */
 export enum BuilderFlag {
   kFP16 = 0,
   kINT8 = 1,

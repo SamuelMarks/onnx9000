@@ -1,7 +1,5 @@
 """Numerical debugger for onnx9000."""
 
-from typing import Any
-
 import numpy as np
 from onnx9000.core.execution import ExecutionContext, SessionOptions
 from onnx9000.core.ir import Graph, Tensor
@@ -10,7 +8,7 @@ from onnx9000.core.ir import Graph, Tensor
 class NumericalDebugger:
     """Utility to compare activations between source and target models/EPs."""
 
-    def __init__(self, graph: Graph):
+    def __init__(self, graph: Graph) -> None:
         """Initialize the NumericalDebugger with a graph.
 
         Args:
@@ -19,7 +17,12 @@ class NumericalDebugger:
         """
         self.graph = graph
 
-    def compare(self, inputs: dict[str, np.ndarray], ep1: Any, ep2: Any) -> dict[str, float]:
+    def compare(
+        self,
+        inputs: dict[str, np.ndarray],
+        ep1: int | float | str | bool | bytes | list | dict | tuple | None,
+        ep2: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> dict[str, float]:
         """Compare activations of all nodes between two execution providers.
 
         Args:

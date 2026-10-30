@@ -7,10 +7,14 @@ name = "onnx9000-profiler"
 version = "1.0.0"
 description = "Profiler and memory arena tools for ONNX9000"
 readme = "README.md"
-requires-python = ">=3.8"
-dependencies = [
-    "onnx>=1.14.0",
-]
+requires-python = ">=3.10"
+dependencies = ["onnx9000-core"]
+
+[tool.uv.sources]
+onnx9000-core = { workspace = true }
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/onnx9000_profiler"]
+packages = ["src/onnx9000", "src/onnx9000_profiler"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

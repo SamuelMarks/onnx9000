@@ -1,16 +1,17 @@
 """Triton codegen."""
 
-import os
-from typing import Any
-
 from onnx9000.core.ir import Graph, Node
 
 
 class TritonExporter:
     """Core IR -> @triton.jit exporter."""
 
-    def __init__(self, graph: Graph):
-        """Initialize."""
+    def __init__(self, graph: Graph) -> None:
+        """Initialize TritonExporter with configured parameters and state.
+
+        Args:
+            graph: Parameter specifying graph (Graph).
+        """
         self.graph = graph
 
     def export(self) -> str:
@@ -18,7 +19,7 @@ class TritonExporter:
         out = ["import triton", "import triton.language as tl\n"]
 
         for node in self.graph.nodes:
-            if node.op_type == "FlashAttention" or node.op_type == "MultiHeadAttention":
+            if node.op_type in {"FlashAttention", "MultiHeadAttention"}:
                 out.append(self._generate_attention_kernel(node))
             elif node.op_type in ("Conv", "Conv2D"):
                 out.append(self._generate_conv_kernel(node))
@@ -44,7 +45,7 @@ def {name}_kernel(Q, K, V, Out,
     offs_m = start_m * BLOCK_M + tl.arange(0, BLOCK_M)
     offs_n = tl.arange(0, BLOCK_N)
     offs_d = tl.arange(0, BLOCK_DMODEL)
-    
+
     # ... Block tiling omitted for brevity ...
     return
 """

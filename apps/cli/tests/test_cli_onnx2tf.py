@@ -1,10 +1,13 @@
+"""Unit tests and verification suite for cli onnx2tf functionality."""
+
 import argparse
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 from onnx9000_cli.main import onnx2tf_cmd
 
 
-def test_onnx2tf_cmd():
+def test_onnx2tf_cmd() -> None:
+    """Verify that onnx2tf cmd behaves as expected."""
     args = argparse.Namespace(
         input="dummy.onnx",
         output="dummy.tflite",

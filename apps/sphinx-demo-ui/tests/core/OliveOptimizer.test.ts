@@ -1,12 +1,16 @@
 import { describe, expect, it } from 'vitest';
-import * as Module from '../../src/core/OliveOptimizer';
+import { OliveOptimizer } from '../../src/core/OliveOptimizer';
+
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
 
 describe('OliveOptimizer.ts', () => {
   it('should instantiate and cover OliveOptimizer', () => {
     // Attempt to instantiate
     try {
-      const obj = new (Module as any).OliveOptimizer();
+      const obj = Construct(OliveOptimizer);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

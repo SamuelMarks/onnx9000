@@ -3,9 +3,8 @@
 import os
 import struct
 import time
-from typing import Optional
 
-from onnx9000.core.ir import Graph, Node
+from onnx9000.core.ir import Graph
 
 
 def export_tensorboard(graph: Graph, log_dir: str) -> str:

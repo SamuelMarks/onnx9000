@@ -8,7 +8,7 @@ from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Attribute, Graph, Node, Tensor
 
 
-def test_category_mapper_codegen():
+def test_category_mapper_codegen() -> None:
     """Test category mapper codegen."""
     g = Graph("TestCat")
     g.inputs = ["in"]
@@ -25,7 +25,7 @@ def test_category_mapper_codegen():
     assert "CategoryMapper" in code
 
 
-def test_get_omp_pragma_unroll():
+def test_get_omp_pragma_unroll() -> None:
     """Test get omp pragma unroll."""
     with patch("onnx9000.core.config.ONNX9000_ENABLE_LOOP_UNROLLING", True):
         pragma = get_omp_pragma("100")

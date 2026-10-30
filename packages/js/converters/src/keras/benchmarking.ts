@@ -1,6 +1,8 @@
-// @ts-nocheck
-import * as fs from "node:fs";
-import type { JsonValue } from "./tfjs-parser.js";
+/**
+ * @fileoverview benchmarking module for converters.
+ */
+import * as fs from 'node:fs';
+import type { JsonValue } from './tfjs-parser.js';
 
 /**
  * Represents a Chrome Trace event for profiling.
@@ -26,6 +28,7 @@ export interface TraceEvent {
  * Exporter for Chrome Trace format (JSON).
  */
 export class ChromeTraceExporter {
+  /** Property `events` of `ChromeTraceExporter`. */
   private events: TraceEvent[] = [];
 
   /**
@@ -33,11 +36,11 @@ export class ChromeTraceExporter {
    * @param name Event name.
    * @param category Event category.
    */
-  public startEvent(name: string, category: string = "keras_to_onnx") {
+  public startEvent(name: string, category: string = 'keras_to_onnx') {
     this.events.push({
       name,
       cat: category,
-      ph: "B",
+      ph: 'B',
       ts: Date.now() * 1000,
       pid: 1,
       tid: 1,
@@ -49,11 +52,11 @@ export class ChromeTraceExporter {
    * @param name Event name.
    * @param category Event category.
    */
-  public endEvent(name: string, category: string = "keras_to_onnx") {
+  public endEvent(name: string, category: string = 'keras_to_onnx') {
     this.events.push({
       name,
       cat: category,
-      ph: "E",
+      ph: 'E',
       ts: Date.now() * 1000,
       pid: 1,
       tid: 1,
@@ -66,9 +69,9 @@ export class ChromeTraceExporter {
    */
   public recordMemory(bytes: number) {
     this.events.push({
-      name: "MemoryAlloc",
-      cat: "memory",
-      ph: "C",
+      name: 'MemoryAlloc',
+      cat: 'memory',
+      ph: 'C',
       ts: Date.now() * 1000,
       pid: 1,
       tid: 1,

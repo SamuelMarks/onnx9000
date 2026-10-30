@@ -1,2 +1,51 @@
-def run():
-    return "[mmdnn] processed"
+"""Backward-compatible re-export module for `onnx9000_mmdnn`."""
+
+from onnx9000.mmdnn import (
+    SUPPORTED_FRAMEWORKS,
+    CaffeConverter,
+    CaffeMapper,
+    CNTKConverter,
+    CNTKMapper,
+    DarknetConverter,
+    DarknetMapper,
+    MMDNNConverter,
+    MXNetConverter,
+    MXNetMapper,
+    NCNNConverter,
+    NCNNMapper,
+    WeightsReader,
+    load_caffemodel,
+    load_params,
+    load_weights,
+    parse_cfg,
+    parse_cntk_model,
+    parse_param,
+    parse_prototxt,
+    parse_symbol,
+    run,
+)
+
+__all__ = [
+    "SUPPORTED_FRAMEWORKS",
+    "CNTKConverter",
+    "CNTKMapper",
+    "CaffeConverter",
+    "CaffeMapper",
+    "DarknetConverter",
+    "DarknetMapper",
+    "MMDNNConverter",
+    "MXNetConverter",
+    "MXNetMapper",
+    "NCNNConverter",
+    "NCNNMapper",
+    "WeightsReader",
+    "load_caffemodel",
+    "load_params",
+    "load_weights",
+    "parse_cfg",
+    "parse_cntk_model",
+    "parse_param",
+    "parse_prototxt",
+    "parse_symbol",
+    "run",
+]

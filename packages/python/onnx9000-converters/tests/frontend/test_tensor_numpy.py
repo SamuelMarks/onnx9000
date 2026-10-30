@@ -1,4 +1,4 @@
-"""Module providing core logic and structural definitions."""
+"""Unit tests and verification suite for tensor numpy functionality."""
 
 import numpy as np
 from onnx9000.converters.frontend.tensor import Tensor
@@ -9,7 +9,9 @@ from onnx9000.core.dtypes import DType
 def test_numpy_dispatch() -> None:
     """Tests the corresponding tensor functionality."""
 
-    def my_np_func(x):
+    def my_np_func(
+        x: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Test the corresponding tensor functionality."""
         return np.add(x, np.array([2.0], dtype=np.float32))
 
@@ -23,7 +25,9 @@ def test_dynamic_axes_trace() -> None:
     """Tests the corresponding tensor functionality."""
     from onnx9000.converters.frontend.tracer import trace
 
-    def my_func(x):
+    def my_func(
+        x: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Test the corresponding tensor functionality."""
         return x * 2.0
 

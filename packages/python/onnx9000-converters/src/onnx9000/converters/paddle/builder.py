@@ -1,7 +1,5 @@
 """PaddlePaddle converter operations and graph builders."""
 
-from typing import Any
-
 from onnx9000.converters.paddle.parsers import PaddleNode
 from onnx9000.core.ir import Graph, Node, Tensor
 
@@ -10,7 +8,11 @@ class PaddleToONNXGraphBuilder:
     """PaddleToONNXGraphBuilder implementation."""
 
     def __init__(self, name: str = "paddle_to_onnx") -> None:
-        """Initialize."""
+        """Initialize PaddleToONNXGraphBuilder with configured parameters and state.
+
+        Args:
+            name: Parameter specifying name (str).
+        """
         self.graph = Graph(name=name)
         self._name_counters: dict[str, int] = {}
         self.tensor_map: dict[str, str] = {}
@@ -24,7 +26,13 @@ class PaddleToONNXGraphBuilder:
         self._name_counters[base_name] += 1
         return f"{base_name}_{count}"
 
-    def add_constant(self, name: str, value: Any, dtype: int, shape: tuple[int, ...]) -> str:
+    def add_constant(
+        self,
+        name: str,
+        value: int | float | str | bool | bytes | list | dict | tuple | None,
+        dtype: int,
+        shape: tuple[int, ...],
+    ) -> str:
         """add_constant implementation."""
         unique_name = self.get_unique_name(name)
         t = Tensor(name=unique_name, dtype=dtype, shape=shape)
@@ -37,16 +45,24 @@ class PaddleToONNXGraphBuilder:
         if node.op_type == "matmul_v2" and len(input_shapes) == 2:
             (s1, s2) = (input_shapes[0], input_shapes[1])
             if len(s1) > 0 and len(s2) > 0:
-                return s1[:-1] + (s2[-1],)
+                return (*s1[:-1], s2[-1])
         return ()
 
-    def extract_attr(self, node: PaddleNode, attr_name: str, default: Any = None) -> Any:
+    def extract_attr(
+        self,
+        node: PaddleNode,
+        attr_name: str,
+        default: int | float | str | bool | bytes | list | dict | tuple | None = None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """extract_attr implementation."""
         return node.attrs.get(attr_name, default)
 
     def extract_list_attr(
-        self, node: PaddleNode, attr_name: str, default: list[Any] = None
-    ) -> list[Any]:
+        self,
+        node: PaddleNode,
+        attr_name: str,
+        default: list[int | float | str | bool | bytes | list | dict | tuple | None] | None = None,
+    ) -> list[int | float | str | bool | bytes | list | dict | tuple | None]:
         """extract_list_attr implementation."""
         if default is None:
             default = []
@@ -69,9 +85,9 @@ class PaddleToONNXGraphBuilder:
         self,
         op_type: str,
         inputs: list[str],
-        attributes: dict[str, Any],
+        attributes: dict[str, int | float | str | bool | bytes | list | dict | tuple | None],
         name_prefix: str,
-        outputs: list[str] = None,
+        outputs: list[str] | None = None,
     ) -> list[str]:
         """make_node implementation."""
         node_name = self.get_unique_name(name_prefix)
@@ -92,9 +108,9 @@ class PaddleToONNXGraphBuilder:
         self,
         op_type: str,
         inputs: list[str | None],
-        attributes: dict[str, Any],
+        attributes: dict[str, int | float | str | bool | bytes | list | dict | tuple | None],
         name_prefix: str,
-        outputs: list[str] = None,
+        outputs: list[str] | None = None,
     ) -> list[str]:
         """make_node_optional_inputs implementation."""
         resolved_inputs = [inp if inp is not None else "" for inp in inputs]
@@ -112,7 +128,9 @@ class PaddleToONNXGraphBuilder:
         for n in self.graph.nodes:
             n.inputs = [new_output if inp == old_output else inp for inp in n.inputs]
 
-    def resolve_variable(self, var_name: str) -> Any:
+    def resolve_variable(
+        self, var_name: str
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """resolve_variable implementation."""
         return None
 

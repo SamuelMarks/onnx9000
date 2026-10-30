@@ -1,8 +1,6 @@
 /**
- * @fileoverview parser.ts
- * Provides parser functionality for the converters package.
+ * @fileoverview Caffe prototxt text parser and binary `.caffemodel` protobuf parser.
  */
-// @ts-nocheck
 import {
   BufferReader,
   type Reader,
@@ -14,90 +12,96 @@ import {
   WIRE_TYPE_32BIT,
   WIRE_TYPE_LENGTH_DELIMITED,
   WIRE_TYPE_VARINT,
-} from "@onnx9000/core";
+} from '@onnx9000/core';
+import type {
+  CaffeBlob,
+  CaffeLayerParam,
+  CaffeNetParameter,
+  CaffePrototxtObject,
+  CaffePrototxtValue,
+} from '../types.js';
+
+export type { CaffeBlob, CaffeLayerParam, CaffeNetParameter };
 
 /**
- * Parses a Caffe prototxt string into a JavaScript object.
+ * Parses a Caffe `.prototxt` string into a strongly typed `CaffeNetParameter` structure.
  *
- * @param {string} text - The raw Caffe prototxt string.
- * @returns {object} The parsed Caffe network architecture as a JavaScript object.
+ * @param text Raw Caffe prototxt string.
+ * @returns Parsed Caffe network architecture as a `CaffeNetParameter` object.
  */
-export function parsePrototxt(text: string): object {
-  const result: object = {
+export function parsePrototxt(text: string): CaffeNetParameter {
+  const result: CaffeNetParameter = {
     layer: [],
     input: [],
     input_dim: [],
     input_shape: [],
   };
-  const lines = text.split("\n");
-  const stack: object[] = [result];
-  let currentObj = result;
+  const lines = text.split(String.fromCharCode(10));
+  const rootObj: CaffePrototxtObject = result as CaffePrototxtObject;
+  const stack: CaffePrototxtObject[] = [rootObj];
+  let currentObj: CaffePrototxtObject = rootObj;
 
-  for (let i = 0; i < lines.length; i++) {
-    const _l = lines[i];
-    if (_l === undefined) continue;
-    const line = _l.split("#")[0]?.trim();
+  for (const rawLine of lines) {
+    const line = (rawLine.split('#')[0] || '').trim();
     if (!line) continue;
 
-    if (line.endsWith("{")) {
+    if (line.endsWith('{')) {
       const key = line.slice(0, -1).trim();
-      const newObj: object = {};
+      const newObj: CaffePrototxtObject = {};
 
-      if (key === "layer" || key === "layers") {
-        result.layer.push(newObj);
+      if (key === 'layer' || key === 'layers') {
+        result.layer.push(newObj as CaffeLayerParam);
         stack.push(newObj);
         currentObj = newObj;
       } else {
-        if (!currentObj[key]) {
+        const existing = currentObj[key];
+        if (existing === undefined) {
           currentObj[key] = newObj;
+        } else if (Array.isArray(existing)) {
+          existing.push(newObj);
         } else {
-          if (!Array.isArray(currentObj[key])) {
-            currentObj[key] = [currentObj[key]];
-          }
-          currentObj[key].push(newObj);
+          currentObj[key] = [existing, newObj];
         }
         stack.push(newObj);
         currentObj = newObj;
       }
-    } else if (line === "}") {
+    } else if (line === '}') {
       stack.pop();
-      currentObj = stack[stack.length - 1];
+      currentObj = stack[stack.length - 1] ?? rootObj;
     } else {
-      const colonIdx = line.indexOf(":");
+      const colonIdx = line.indexOf(':');
       if (colonIdx !== -1) {
         const key = line.substring(0, colonIdx).trim();
         const valStr = line.substring(colonIdx + 1).trim();
-        let val: object = valStr;
+        let val: CaffePrototxtValue = valStr;
         if (
           (valStr.startsWith('"') && valStr.endsWith('"')) ||
           (valStr.startsWith("'") && valStr.endsWith("'"))
         ) {
           val = valStr.substring(1, valStr.length - 1);
-        } else if (
-          !Number.isNaN(Number(valStr)) &&
-          valStr !== "true" &&
-          valStr !== "false"
-        ) {
+        } else if (!Number.isNaN(Number(valStr)) && valStr !== 'true' && valStr !== 'false') {
           val = Number(valStr);
-        } else if (valStr === "true") {
+        } else if (valStr === 'true') {
           val = true;
-        } else if (valStr === "false") {
+        } else if (valStr === 'false') {
           val = false;
         }
 
         if (
-          key === "input" ||
-          key === "input_dim" ||
-          key === "bottom" ||
-          key === "top" ||
-          key === "dim"
+          key === 'input' ||
+          key === 'input_dim' ||
+          key === 'bottom' ||
+          key === 'top' ||
+          key === 'dim'
         ) {
-          if (!currentObj[key]) {
-            currentObj[key] = [];
-          } else if (!Array.isArray(currentObj[key])) {
-            currentObj[key] = [currentObj[key]];
+          const existing = currentObj[key];
+          if (existing === undefined) {
+            currentObj[key] = [val];
+          } else if (Array.isArray(existing)) {
+            existing.push(val);
+          } else {
+            currentObj[key] = [existing, val];
           }
-          currentObj[key].push(val);
         } else {
           currentObj[key] = val;
         }
@@ -108,25 +112,22 @@ export function parsePrototxt(text: string): object {
 }
 
 /**
- * Parses a Caffe binary model (.caffemodel) from a Uint8Array into a JavaScript object.
+ * Parses a Caffe binary model (`.caffemodel`) from a `Uint8Array` into a `CaffeNetParameter`.
  *
- * @param {Uint8Array} buffer - The binary buffer containing the Caffe model.
- * @returns {Promise<object>} A promise that resolves to the parsed Caffe model parameters.
+ * @param buffer Binary buffer containing the Caffe model.
+ * @returns Promise resolving to the parsed `CaffeNetParameter`.
  */
-export async function parseCaffemodel(buffer: Uint8Array): Promise<object> {
+export async function parseCaffemodel(buffer: Uint8Array): Promise<CaffeNetParameter> {
   const reader = new BufferReader(buffer);
-  const result: object = { layer: [] };
+  const result: CaffeNetParameter = { layer: [] };
 
   while (reader.getPosition() < reader.getLength()) {
     const { fieldNumber, wireType } = await readTag(reader);
 
-    // NetParameter.name (1)
     if (fieldNumber === 1 && wireType === WIRE_TYPE_LENGTH_DELIMITED) {
       const len = await readVarInt(reader);
       result.name = await readString(reader, len);
-    }
-    // NetParameter.layer (100) or V1LayerParameter (2)
-    else if (
+    } else if (
       (fieldNumber === 100 || fieldNumber === 2) &&
       wireType === WIRE_TYPE_LENGTH_DELIMITED
     ) {
@@ -143,36 +144,32 @@ export async function parseCaffemodel(buffer: Uint8Array): Promise<object> {
 }
 
 /**
- * Parses a single LayerParameter from a protobuf reader.
+ * Parses a single `LayerParameter` from a protobuf reader.
  *
- * @param {Reader} reader - The protobuf reader positioned at a LayerParameter.
- * @returns {Promise<object>} A promise that resolves to the parsed layer parameter object.
+ * @param reader Protobuf reader positioned at a `LayerParameter`.
+ * @returns Promise resolving to the parsed `CaffeLayerParam`.
  */
-async function parseLayerParameter(reader: Reader): Promise<object> {
-  const layer: object = { blobs: [] };
+async function parseLayerParameter(reader: Reader): Promise<CaffeLayerParam> {
+  const blobs: CaffeBlob[] = [];
+  const layer: CaffeLayerParam = { blobs };
 
   while (reader.getPosition() < reader.getLength()) {
     const { fieldNumber, wireType } = await readTag(reader);
 
-    // name (1)
     if (fieldNumber === 1 && wireType === WIRE_TYPE_LENGTH_DELIMITED) {
       const len = await readVarInt(reader);
       layer.name = await readString(reader, len);
-    }
-    // type (2)
-    else if (fieldNumber === 2 && wireType === WIRE_TYPE_LENGTH_DELIMITED) {
+    } else if (fieldNumber === 2 && wireType === WIRE_TYPE_LENGTH_DELIMITED) {
       const len = await readVarInt(reader);
       layer.type = await readString(reader, len);
-    }
-    // blobs (50) or V1 blobs (6)
-    else if (
+    } else if (
       (fieldNumber === 50 || fieldNumber === 6) &&
       wireType === WIRE_TYPE_LENGTH_DELIMITED
     ) {
       const len = await readVarInt(reader);
       const subReader = new BufferReader(await reader.readBytes(len));
       const blob = await parseBlobProto(subReader);
-      layer.blobs.push(blob);
+      blobs.push(blob);
     } else {
       await skipField(reader, wireType);
     }
@@ -181,61 +178,45 @@ async function parseLayerParameter(reader: Reader): Promise<object> {
 }
 
 /**
- * Parses a BlobProto from a protobuf reader.
+ * Parses a `BlobProto` from a protobuf reader.
  *
- * @param {Reader} reader - The protobuf reader positioned at a BlobProto.
- * @returns {Promise<object>} A promise that resolves to the parsed blob containing shape and data.
+ * @param reader Protobuf reader positioned at a `BlobProto`.
+ * @returns Promise resolving to the parsed `CaffeBlob` containing shape and data.
  */
-async function parseBlobProto(reader: Reader): Promise<object> {
-  const blob: object = { data: [] };
+async function parseBlobProto(reader: Reader): Promise<CaffeBlob> {
+  const blob: CaffeBlob = { data: [] };
   const shape: number[] = [];
 
   while (reader.getPosition() < reader.getLength()) {
     const { fieldNumber, wireType } = await readTag(reader);
 
-    // num (1)
     if (fieldNumber === 1 && wireType === WIRE_TYPE_VARINT) {
       shape[0] = await readVarInt(reader);
-    }
-    // channels (2)
-    else if (fieldNumber === 2 && wireType === WIRE_TYPE_VARINT) {
+    } else if (fieldNumber === 2 && wireType === WIRE_TYPE_VARINT) {
       shape[1] = await readVarInt(reader);
-    }
-    // height (3)
-    else if (fieldNumber === 3 && wireType === WIRE_TYPE_VARINT) {
+    } else if (fieldNumber === 3 && wireType === WIRE_TYPE_VARINT) {
       shape[2] = await readVarInt(reader);
-    }
-    // width (4)
-    else if (fieldNumber === 4 && wireType === WIRE_TYPE_VARINT) {
+    } else if (fieldNumber === 4 && wireType === WIRE_TYPE_VARINT) {
       shape[3] = await readVarInt(reader);
-    }
-    // data (5) float
-    else if (fieldNumber === 5) {
+    } else if (fieldNumber === 5) {
       if (wireType === WIRE_TYPE_32BIT) {
         const bytes = await reader.readBytes(4);
-        const floatVal = new DataView(
-          bytes.buffer,
-          bytes.byteOffset,
-          bytes.byteLength,
-        ).getFloat32(0, true);
+        const floatVal = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength).getFloat32(
+          0,
+          true,
+        );
         blob.data.push(floatVal);
       } else if (wireType === WIRE_TYPE_LENGTH_DELIMITED) {
         const len = await readVarInt(reader);
         const bytes = await reader.readBytes(len);
-        const view = new DataView(
-          bytes.buffer,
-          bytes.byteOffset,
-          bytes.byteLength,
-        );
+        const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
         for (let i = 0; i < len; i += 4) {
           blob.data.push(view.getFloat32(i, true));
         }
       } else {
         await skipField(reader, wireType);
       }
-    }
-    // shape (7)
-    else if (fieldNumber === 7 && wireType === WIRE_TYPE_LENGTH_DELIMITED) {
+    } else if (fieldNumber === 7 && wireType === WIRE_TYPE_LENGTH_DELIMITED) {
       const len = await readVarInt(reader);
       const subReader = new BufferReader(await reader.readBytes(len));
       blob.shape = await parseBlobShape(subReader);
@@ -251,10 +232,10 @@ async function parseBlobProto(reader: Reader): Promise<object> {
 }
 
 /**
- * Parses a BlobShape from a protobuf reader.
+ * Parses a `BlobShape` from a protobuf reader.
  *
- * @param {Reader} reader - The protobuf reader positioned at a BlobShape.
- * @returns {Promise<number[]>} A promise that resolves to an array of numbers representing the shape.
+ * @param reader Protobuf reader positioned at a `BlobShape`.
+ * @returns Promise resolving to an array of dimension sizes.
  */
 async function parseBlobShape(reader: Reader): Promise<number[]> {
   const shape: number[] = [];

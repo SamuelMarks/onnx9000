@@ -1,20 +1,20 @@
-import { describe, expect, it } from "vitest";
-import { applyCompression } from "../src/mil/compression.js";
-import { TensorType } from "../src/mil/types.js";
+import { describe, expect, it } from 'vitest';
+import { applyCompression } from '../src/mil/compression.js';
+import { TensorType } from '../src/mil/types.js';
 
-describe("compression", () => {
-  it("should compress", () => {
-    const block: any = {
+describe('compression', () => {
+  it('should compress', () => {
+    const block = {
       operations: [
         {
-          opType: "const",
+          opType: 'const',
           outputs: [{ type: new TensorType(1, [2, 2]) }],
           attributes: {},
         },
       ],
     };
-    const res = applyCompression(block, {
-      mode: "w8a16",
+    const res = applyCompression(block as never as Parameters<typeof applyCompression>[0], {
+      mode: 'w8a16',
       reportReduction: true,
     });
     expect(res).toBeDefined();

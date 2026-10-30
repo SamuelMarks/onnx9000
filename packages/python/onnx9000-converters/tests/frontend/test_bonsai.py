@@ -1,9 +1,12 @@
+"""Unit tests and verification suite for bonsai functionality."""
+
 import numpy as np
 from onnx9000.converters.frontend.bonsai import BonsaiImporter
 
 
-def test_bonsai_importer():
+def test_bonsai_importer() -> None:
     # 2:4 sparsity pattern mock
+    """Verify that bonsai importer behaves as expected."""
     w = np.array([[1, 0, 0, 2], [0, 3, 4, 0]], dtype=np.float32)
 
     importer = BonsaiImporter()

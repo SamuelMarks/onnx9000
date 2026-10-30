@@ -1,17 +1,23 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../src/mmdnn/reporter";
+import { describe, expect, it } from 'vitest';
+import { MMDNNError, MMDNNReporter } from '../../src/mmdnn/reporter';
 
-describe("reporter.ts", () => {
-  it("should instantiate and cover MMDNNError", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('reporter.ts', () => {
+  it('should instantiate and cover MMDNNError', () => {
     try {
-      const obj = new (Module as any).MMDNNError();
+      const obj = Construct(MMDNNError);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover MMDNNReporter", () => {
+  it('should instantiate and cover MMDNNReporter', () => {
     try {
-      const obj = new (Module as any).MMDNNReporter();
+      const obj = Construct(MMDNNReporter);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

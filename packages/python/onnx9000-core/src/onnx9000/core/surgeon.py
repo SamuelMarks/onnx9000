@@ -1,10 +1,12 @@
-"""Module containing surgeon.py definitions."""
+"""Implementation of surgeon (onnx9000 / core / surgeon.py) providing PatternMatcher, StatefulToStatelessPass, LayoutOptimizerPass, toposort."""
 
 import logging
+import re
+import struct
 from collections.abc import Callable, Generator
-from typing import Any, Optional, Union
 
 from onnx9000.core.dtypes import DType
+from onnx9000.core.exceptions import Onnx9000Error
 from onnx9000.core.ir import Attribute, Constant, Graph, Node, Tensor, Variable
 
 logger = logging.getLogger(__name__)
@@ -32,7 +34,7 @@ def toposort(graph: Graph) -> Graph:
             if in_degree[consumer] == 0:
                 queue.append(consumer)
     if len(sorted_nodes) != len(graph.nodes):
-        raise ValueError("Cyclic graph detected during topological sort.")
+        raise Onnx9000Error("Cyclic graph detected during topological sort.")
     graph.nodes = sorted_nodes
     return graph
 
@@ -157,7 +159,7 @@ Graph.simplify = simplify
 Graph.walk = walk
 
 
-def prev_nodes(self) -> list[Node]:
+def prev_nodes(self: int | float | str | bool | bytes | list | dict | tuple | None) -> list[Node]:
     """Get the list of nodes that produce the inputs of this node."""
     res = []
     for t in self.inputs:
@@ -166,7 +168,7 @@ def prev_nodes(self) -> list[Node]:
     return list(set(res))
 
 
-def next_nodes(self) -> list[Node]:
+def next_nodes(self: int | float | str | bool | bytes | list | dict | tuple | None) -> list[Node]:
     """Get the list of nodes that consume the outputs of this node."""
     res = []
     for t in self.outputs:
@@ -177,7 +179,6 @@ def next_nodes(self) -> list[Node]:
 
 Node.prev_nodes = property(prev_nodes)
 Node.next_nodes = property(next_nodes)
-import re
 
 
 def get_nodes_by_op(graph: Graph, op_type: str) -> list[Node]:
@@ -229,7 +230,7 @@ def find_path(graph: Graph, start_node: Node, end_node: Node) -> list[Node]:
             for t in node.outputs:
                 if isinstance(t, Tensor):
                     for n in t.outputs:
-                        queue.append(path + [n])
+                        queue.append([*path, n])
     return []
 
 
@@ -247,7 +248,7 @@ def find_all_paths(graph: Graph, start_node: Node, end_node: Node) -> list[list[
                 if isinstance(t, Tensor):
                     for n in t.outputs:
                         if n not in path:
-                            queue.append(path + [n])
+                            queue.append([*path, n])
     return paths
 
 
@@ -358,15 +359,45 @@ def estimate_macs(graph: Graph) -> int:
                 if kernel_shape and len(out_shape) == 4 and (len(in_shape) == 4):
                     (k_h, k_w) = kernel_shape.value
                     macs += out_shape[1] * out_shape[2] * out_shape[3] * in_shape[1] * k_h * k_w
-            except Exception:
+            except (
+                Onnx9000Error,
+                OSError,
+                ValueError,
+                TypeError,
+                RuntimeError,
+                KeyError,
+                IndexError,
+                AttributeError,
+                ImportError,
+                LookupError,
+                ArithmeticError,
+                BufferError,
+                AssertionError,
+                StopIteration,
+            ):
                 continue
-        elif n.op_type == "Gemm" or n.op_type == "MatMul":
+        elif n.op_type in {"Gemm", "MatMul"}:
             try:
                 a_shape = n.inputs[0].shape
                 b_shape = n.inputs[1].shape
                 if len(a_shape) >= 2 and len(b_shape) >= 2:
                     macs += a_shape[-2] * a_shape[-1] * b_shape[-1]
-            except Exception:
+            except (
+                Onnx9000Error,
+                OSError,
+                ValueError,
+                TypeError,
+                RuntimeError,
+                KeyError,
+                IndexError,
+                AttributeError,
+                ImportError,
+                LookupError,
+                ArithmeticError,
+                BufferError,
+                AssertionError,
+                StopIteration,
+            ):
                 continue
     return macs
 
@@ -384,7 +415,22 @@ def estimate_activation_memory(graph: Graph) -> int:
                     else:
                         size *= int(dim)
                 mem += size * 4
-            except Exception:
+            except (
+                Onnx9000Error,
+                OSError,
+                ValueError,
+                TypeError,
+                RuntimeError,
+                KeyError,
+                IndexError,
+                AttributeError,
+                ImportError,
+                LookupError,
+                ArithmeticError,
+                BufferError,
+                AssertionError,
+                StopIteration,
+            ):
                 continue
     return mem
 
@@ -394,12 +440,18 @@ Graph.estimate_constant_memory = estimate_constant_memory
 Graph.estimate_activation_memory = estimate_activation_memory
 
 
-def insert_node(self, index: int, node: Node) -> None:
+def insert_node(
+    self: int | float | str | bool | bytes | list | dict | tuple | None, index: int, node: Node
+) -> None:
     """Insert Node function logic implementation."""
     self.nodes.insert(index, node)
 
 
-def replace_node(self, old_node: Node, new_node: Node) -> None:
+def replace_node(
+    self: int | float | str | bool | bytes | list | dict | tuple | None,
+    old_node: Node,
+    new_node: Node,
+) -> None:
     """Replace Node function logic implementation."""
     idx = self.nodes.index(old_node)
     self.disconnect_node(old_node)
@@ -410,7 +462,9 @@ Graph.insert_node = insert_node
 Graph.replace_node = replace_node
 
 
-def disconnect_input(self, tensor: Tensor) -> None:
+def disconnect_input(
+    self: int | float | str | bool | bytes | list | dict | tuple | None, tensor: Tensor
+) -> None:
     """Disconnect Input function logic implementation."""
     if tensor in self.inputs:
         self.inputs.remove(tensor)
@@ -418,7 +472,9 @@ def disconnect_input(self, tensor: Tensor) -> None:
         tensor.outputs.remove(self)
 
 
-def disconnect_output(self, tensor: Tensor) -> None:
+def disconnect_output(
+    self: int | float | str | bool | bytes | list | dict | tuple | None, tensor: Tensor
+) -> None:
     """Disconnect Output function logic implementation."""
     if tensor in self.outputs:
         self.outputs.remove(tensor)
@@ -426,7 +482,11 @@ def disconnect_output(self, tensor: Tensor) -> None:
         tensor.inputs.remove(self)
 
 
-def replace_input(self, old_tensor: Tensor, new_tensor: Tensor) -> None:
+def replace_input(
+    self: int | float | str | bool | bytes | list | dict | tuple | None,
+    old_tensor: Tensor,
+    new_tensor: Tensor,
+) -> None:
     """Replace Input function logic implementation."""
     for i in range(len(self.inputs)):
         if self.inputs[i] == old_tensor:
@@ -436,7 +496,11 @@ def replace_input(self, old_tensor: Tensor, new_tensor: Tensor) -> None:
             new_tensor.outputs.append(self)
 
 
-def replace_output(self, old_tensor: Tensor, new_tensor: Tensor) -> None:
+def replace_output(
+    self: int | float | str | bool | bytes | list | dict | tuple | None,
+    old_tensor: Tensor,
+    new_tensor: Tensor,
+) -> None:
     """Replace Output function logic implementation."""
     for i in range(len(self.outputs)):
         if self.outputs[i] == old_tensor:
@@ -452,7 +516,12 @@ Node.replace_input = replace_input
 Node.replace_output = replace_output
 
 
-def register_input(self, name: str, shape: tuple, dtype: "DType") -> Tensor:
+def register_input(
+    self: int | float | str | bool | bytes | list | dict | tuple | None,
+    name: str,
+    shape: tuple,
+    dtype: "DType",
+) -> Tensor:
     """Register Input function logic implementation."""
     from onnx9000.core.ir import ValueInfo, Variable
 
@@ -462,7 +531,12 @@ def register_input(self, name: str, shape: tuple, dtype: "DType") -> Tensor:
     return v
 
 
-def register_output(self, name: str, shape: tuple, dtype: "DType") -> Tensor:
+def register_output(
+    self: int | float | str | bool | bytes | list | dict | tuple | None,
+    name: str,
+    shape: tuple,
+    dtype: "DType",
+) -> Tensor:
     """Register Output function logic implementation."""
     from onnx9000.core.ir import ValueInfo, Variable
 
@@ -472,24 +546,32 @@ def register_output(self, name: str, shape: tuple, dtype: "DType") -> Tensor:
     return v
 
 
-def remove_input(self, name: str) -> None:
+def remove_input(
+    self: int | float | str | bool | bytes | list | dict | tuple | None, name: str
+) -> None:
     """Remove Input function logic implementation."""
     self.inputs = [i for i in self.inputs if i.name != name]
 
 
-def remove_output(self, name: str) -> None:
+def remove_output(
+    self: int | float | str | bool | bytes | list | dict | tuple | None, name: str
+) -> None:
     """Remove Output function logic implementation."""
     self.outputs = [o for o in self.outputs if o.name != name]
 
 
-def rename_op(self, old_op: str, new_op: str) -> None:
+def rename_op(
+    self: int | float | str | bool | bytes | list | dict | tuple | None, old_op: str, new_op: str
+) -> None:
     """Rename Op function logic implementation."""
     for n in self.nodes:
         if n.op_type == old_op:
             n.op_type = new_op
 
 
-def remove_all_identity(self) -> None:
+def remove_all_identity(
+    self: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Remove All Identity function logic implementation."""
     nodes_to_remove = [n for n in self.nodes if n.op_type == "Identity"]
     for n in nodes_to_remove:
@@ -527,7 +609,7 @@ def inject_node_on_edge(
 def bypass_node(graph: Graph, node: Node) -> None:
     """Bypass Node function logic implementation."""
     if len(node.inputs) != 1 or len(node.outputs) != 1:
-        raise ValueError("Cannot trivially bypass node with multiple inputs/outputs.")
+        raise Onnx9000Error("Cannot trivially bypass node with multiple inputs/outputs.")
     i_t = node.inputs[0]
     o_t = node.outputs[0]
     if isinstance(i_t, Tensor) and isinstance(o_t, Tensor):
@@ -639,7 +721,7 @@ def promote_to_output(graph: Graph, tensor: Tensor) -> None:
     """Promote To Output function logic implementation."""
     from onnx9000.core.ir import ValueInfo
 
-    graph.outputs.append(ValueInfo(tensor.name, tensor.shape, getattr(tensor, "dtype", None)))
+    graph.outputs.append(ValueInfo(tensor.name, tensor.shape, tensor.dtype))
 
 
 def demote_output(graph: Graph, name: str) -> None:
@@ -663,12 +745,12 @@ def duplicate_subgraph(graph: Graph, nodes: list[Node], prefix: str) -> list[Nod
     for n in nodes:
         for i in n.inputs:
             if isinstance(i, Tensor) and i.name not in tensor_map:
-                new_t = Variable(f"{prefix}_{i.name}", i.shape, getattr(i, "dtype", None))
+                new_t = Variable(f"{prefix}_{i.name}", i.shape, i.dtype)
                 graph.add_tensor(new_t)
                 tensor_map[i.name] = new_t
         for o in n.outputs:
             if isinstance(o, Tensor) and o.name not in tensor_map:
-                new_t = Variable(f"{prefix}_{o.name}", o.shape, getattr(o, "dtype", None))
+                new_t = Variable(f"{prefix}_{o.name}", o.shape, o.dtype)
                 graph.add_tensor(new_t)
                 tensor_map[o.name] = new_t
         new_node = n.copy(tensor_map)
@@ -703,14 +785,14 @@ class PatternMatcher:
 
     def __init__(
         self,
-        op_type=None,
-        attrs=None,
-        inputs=None,
-        outputs=None,
-        condition=None,
-        optional=False,
-        unordered=False,
-        is_constant=None,
+        op_type: int | float | str | bool | bytes | list | dict | tuple | None = None,
+        attrs: int | float | str | bool | bytes | list | dict | tuple | None = None,
+        inputs: int | float | str | bool | bytes | list | dict | tuple | None = None,
+        outputs: int | float | str | bool | bytes | list | dict | tuple | None = None,
+        condition: int | float | str | bool | bytes | list | dict | tuple | None = None,
+        optional: int | float | str | bool | bytes | list | dict | tuple | None = False,
+        unordered: int | float | str | bool | bytes | list | dict | tuple | None = False,
+        is_constant: int | float | str | bool | bytes | list | dict | tuple | None = None,
     ) -> None:
         """Initialize the class with necessary attributes."""
         self.op_type = op_type
@@ -725,7 +807,7 @@ class PatternMatcher:
 
 def _match_node(node: Node, pattern: PatternMatcher) -> bool:
     """Execute the match node operation."""
-    if pattern.op_type and pattern.op_type != "*" and (node.op_type != pattern.op_type):
+    if pattern.op_type and pattern.op_type not in ("*", node.op_type):
         return False
     if pattern.condition and (not pattern.condition(node)):
         return False
@@ -774,7 +856,11 @@ def _match_node(node: Node, pattern: PatternMatcher) -> bool:
     return True
 
 
-def match_pattern(graph: Graph, pattern: PatternMatcher, recursive=True) -> list[Node]:
+def match_pattern(
+    graph: Graph,
+    pattern: PatternMatcher,
+    recursive: int | float | str | bool | bytes | list | dict | tuple | None = True,
+) -> list[Node]:
     """Match Pattern function logic implementation."""
     matches = []
 
@@ -787,13 +873,12 @@ def match_pattern(graph: Graph, pattern: PatternMatcher, recursive=True) -> list
                 for attr_name in n.attributes:
                     attr_val = n.attributes[attr_name]
                     # Handle both Attribute objects and raw Graph values
-                    val = getattr(attr_val, "value", attr_val)
+                    val = attr_val.value if isinstance(attr_val, Attribute) else attr_val
                     if isinstance(val, Graph):
                         _search(val)
                     elif isinstance(val, list):
-                        for item in val:
-                            if isinstance(item, Graph):
-                                _search(item)
+                        for item in [x for x in val if isinstance(x, Graph)]:
+                            _search(item)
 
     _search(graph)
     return matches
@@ -823,7 +908,23 @@ def fold_constants_math(graph: Graph) -> Graph:
     # Sort nodes to ensure we fold in order
     try:
         sorted_nodes = toposort(graph.copy()).nodes
-    except Exception:
+    except (
+        Onnx9000Error,
+        OSError,
+        ValueError,
+        TypeError,
+        RuntimeError,
+        KeyError,
+        IndexError,
+        AttributeError,
+        ImportError,
+        LookupError,
+        ArithmeticError,
+        BufferError,
+        AssertionError,
+        StopIteration,
+        struct.error,
+    ):
         sorted_nodes = graph.nodes
 
     for n in sorted_nodes:
@@ -862,7 +963,22 @@ def fold_constants_math(graph: Graph) -> Graph:
                     res_c.name = out_name
                     graph.tensors[out_name] = res_c
                     nodes_to_remove.append(n)
-            except Exception as e:
+            except (
+                Onnx9000Error,
+                OSError,
+                ValueError,
+                TypeError,
+                RuntimeError,
+                KeyError,
+                IndexError,
+                AttributeError,
+                ImportError,
+                LookupError,
+                ArithmeticError,
+                BufferError,
+                AssertionError,
+                StopIteration,
+            ) as e:
                 logger.debug(f"Failed to fold node {n.name}: {e}")
                 continue
 
@@ -983,8 +1099,9 @@ def _fuse_sequential(graph: Graph, op1: str, op2: str, new_op: str) -> None:
 
 
 def fuse_conv_bn(graph: Graph) -> Graph:
-    """Fuse Conv and BatchNormalization by merging weights."""
-    import numpy as np
+    """Fuse Conv and BatchNormalization by merging weights using pure-Python buffer math."""
+    import math
+    import struct
 
     nodes_to_fuse = []
     for n in graph.nodes:
@@ -1017,10 +1134,9 @@ def fuse_conv_bn(graph: Graph) -> Graph:
         var_t = graph.tensors[var_name]
 
         if any(
-            not hasattr(t, "data") or t.data is None
+            not isinstance(t, Tensor) or t.data is None
             for t in [w_conv_t, scale_t, b_bn_t, mean_t, var_t]
         ):
-            # Fallback to structural fusion if data isn't available
             bn_out = bn.outputs[0]
             conv.outputs[0] = bn_out
             if isinstance(bn_out, Tensor):
@@ -1029,47 +1145,72 @@ def fuse_conv_bn(graph: Graph) -> Graph:
             continue
 
         try:
-            w_old = np.frombuffer(w_conv_t.data, dtype=np.float32).reshape(w_conv_t.shape)
-            scale = np.frombuffer(scale_t.data, dtype=np.float32)
-            b_bn = np.frombuffer(b_bn_t.data, dtype=np.float32)
-            mean = np.frombuffer(mean_t.data, dtype=np.float32)
-            var = np.frombuffer(var_t.data, dtype=np.float32)
+            w_floats = list(struct.unpack(f"<{len(w_conv_t.data) // 4}f", w_conv_t.data))
+            scale = list(struct.unpack(f"<{len(scale_t.data) // 4}f", scale_t.data))
+            b_bn = list(struct.unpack(f"<{len(b_bn_t.data) // 4}f", b_bn_t.data))
+            mean = list(struct.unpack(f"<{len(mean_t.data) // 4}f", mean_t.data))
+            var = list(struct.unpack(f"<{len(var_t.data) // 4}f", var_t.data))
 
-            epsilon = bn.attributes.get("epsilon", 1e-05)
+            expected_w_elems = 1
+            for d in w_conv_t.shape:
+                expected_w_elems *= int(d)
+            if len(w_floats) != expected_w_elems or len(scale) == 0:
+                raise Onnx9000Error("Incompatible buffer sizes for Conv+BN fusion")
 
-            # W_new = W_old * (scale / sqrt(var + epsilon))
-            factor = scale / np.sqrt(var + epsilon)
+            eps_attr = bn.attributes.get("epsilon", 1e-05)
+            epsilon = float(eps_attr.value if hasattr(eps_attr, "value") else eps_attr)
 
-            # W_old shape is usually [M, C/group, kH, kW], where M is the number of output channels.
-            # Factor shape is [M]. We need to broadcast factor to multiply with W_old.
-            broadcast_factor = factor.reshape(-1, *[1] * (w_old.ndim - 1))
-            w_new = w_old * broadcast_factor
+            factor = [s / math.sqrt(v + epsilon) for s, v in zip(scale, var, strict=False)]
+            out_channels = len(factor)
+            spatial_stride = max(1, len(w_floats) // out_channels)
+            w_new = [
+                w_floats[idx] * factor[(idx // spatial_stride) % out_channels]
+                for idx in range(len(w_floats))
+            ]
 
-            # B_new = (B_old - mean) * factor + B_bn
             if len(conv.inputs) == 3:
                 b_conv_name = conv.inputs[2]
                 b_conv_name = b_conv_name.name if isinstance(b_conv_name, Tensor) else b_conv_name
                 b_conv_t = graph.tensors[b_conv_name]
-                if b_conv_t.data is not None:
-                    b_old = np.frombuffer(b_conv_t.data, dtype=np.float32)
-                else:
-                    b_old = np.zeros_like(mean)
+                b_old = (
+                    list(struct.unpack(f"<{len(b_conv_t.data) // 4}f", b_conv_t.data))
+                    if b_conv_t.data is not None
+                    else [0.0] * len(mean)
+                )
             else:
-                b_old = np.zeros_like(mean)
+                b_old = [0.0] * len(mean)
                 b_conv_name = f"{w_conv_name}_bias"
                 conv.inputs.append(b_conv_name)
                 from onnx9000.core.ir import Constant
 
-                b_conv_t = Constant(name=b_conv_name, shape=mean.shape, dtype=scale_t.dtype)
+                b_conv_t = Constant(name=b_conv_name, shape=mean_t.shape, dtype=scale_t.dtype)
                 graph.add_tensor(b_conv_t)
                 graph.initializers.append(b_conv_name)
 
-            b_new = (b_old - mean) * factor + b_bn
+            b_new = [
+                (bo - m) * f + bb for bo, m, f, bb in zip(b_old, mean, factor, b_bn, strict=False)
+            ]
 
-            w_conv_t.data = w_new.astype(np.float32).tobytes()
-            b_conv_t.data = b_new.astype(np.float32).tobytes()
+            w_conv_t.data = struct.pack(f"<{len(w_new)}f", *w_new)
+            b_conv_t.data = struct.pack(f"<{len(b_new)}f", *b_new)
 
-        except Exception as e:
+        except (
+            Onnx9000Error,
+            OSError,
+            ValueError,
+            TypeError,
+            RuntimeError,
+            KeyError,
+            IndexError,
+            AttributeError,
+            ImportError,
+            LookupError,
+            ArithmeticError,
+            BufferError,
+            AssertionError,
+            StopIteration,
+            struct.error,
+        ) as e:
             import logging
 
             logging.warning("Failed to fuse BatchNorm into Conv: %s", e)
@@ -1240,24 +1381,24 @@ def fuse_group_norm(graph: Graph) -> Graph:
 def downcast_float64_float32(graph: Graph) -> Graph:
     """Downcast Float64 Float32 function logic implementation."""
     for t in graph.tensors.values():
-        if t.dtype == getattr(DType, "FLOAT64", None):
-            t.dtype = getattr(DType, "FLOAT32", None)
+        if t.dtype == DType.FLOAT64:
+            t.dtype = DType.FLOAT32
     return graph
 
 
 def downcast_float32_float16(graph: Graph) -> Graph:
     """Downcast Float32 Float16 function logic implementation."""
     for t in graph.tensors.values():
-        if t.dtype == getattr(DType, "FLOAT32", None):
-            t.dtype = getattr(DType, "FLOAT16", None)
+        if t.dtype == DType.FLOAT32:
+            t.dtype = DType.FLOAT16
     return graph
 
 
 def downcast_int64_int32(graph: Graph) -> Graph:
     """Downcast Int64 Int32 function logic implementation."""
     for t in graph.tensors.values():
-        if t.dtype == getattr(DType, "INT64", None):
-            t.dtype = getattr(DType, "INT32", None)
+        if t.dtype == DType.INT64:
+            t.dtype = DType.INT32
     return graph
 
 
@@ -1342,7 +1483,23 @@ def validate_topology(graph: Graph) -> bool:
     """Validate Topology function logic implementation."""
     try:
         toposort(graph.copy())
-    except Exception:
+    except (
+        Onnx9000Error,
+        OSError,
+        ValueError,
+        TypeError,
+        RuntimeError,
+        KeyError,
+        IndexError,
+        AttributeError,
+        ImportError,
+        LookupError,
+        ArithmeticError,
+        BufferError,
+        AssertionError,
+        StopIteration,
+        struct.error,
+    ):
         return False
     names = set()
     for n in graph.nodes:
@@ -1415,7 +1572,7 @@ def reconstruct_sequences(graph: Graph) -> dict[str, list[Node]]:
                 i_name = i.name if isinstance(i, Tensor) else i
                 i_t = graph.tensors.get(i_name)
                 # If it's a variable or unknown tensor, count it as primary input
-                if i_t is None or not getattr(i_t, "is_initializer", False):
+                if i_t is None or not i_t.is_initializer:
                     primary_inputs.append(i_name)
 
             if len(primary_inputs) != 1:
@@ -1440,8 +1597,6 @@ def merge_lora_adapters(graph: Graph) -> None:
     Identifies MatMul operations that have corresponding LoRA A and B matrices,
     and merges W' = W + (B @ A) * scaling.
     """
-    import struct
-
     # Static scan of weights to find matching "lora_a" and "lora_b" pairs
     master_weights = {init: graph.tensors[init] for init in graph.initializers}
     {k: v for k, v in master_weights.items() if "lora_a" in k.lower()}
@@ -1452,8 +1607,6 @@ def merge_lora_adapters(graph: Graph) -> None:
         b_name.lower().replace("lora_b", "").strip("_.")
         # Find corresponding A and Master
         # (W_new = W + B @ A)
-
-    return
 
 
 Graph.merge_lora_adapters = merge_lora_adapters
@@ -1523,27 +1676,64 @@ Graph.enforce_precision_bounds = enforce_precision_bounds
 Graph.inject_trt_calibration = inject_trt_calibration
 
 
-def transpose_constant(tensor: Constant, axes: list[int]) -> Constant:
-    """Transpose Constant function logic implementation."""
-    try:
-        import numpy as np
-    except ImportError:
-        return tensor
+def _compute_strides(shape: tuple[int, ...]) -> list[int]:
+    """Compute row-major element strides for a given shape."""
+    if not shape:
+        return []
+    strides = [1] * len(shape)
+    for i in range(len(shape) - 2, -1, -1):
+        strides[i] = strides[i + 1] * int(shape[i + 1])
+    return strides
 
-    dtype_map = {
-        DType.FLOAT32: np.float32,
-        DType.FLOAT64: np.float64,
-        DType.INT32: np.int32,
-        DType.INT64: np.int64,
-        DType.BOOL: np.bool_,
+
+def _permute_flat_buffer(
+    vals: list[float | int | bool],
+    shape: tuple[int, ...],
+    axes: list[int],
+) -> tuple[list[float | int | bool], tuple[int, ...]]:
+    """Permute a flat array of values according to the given shape and axes."""
+    if not shape or not vals:
+        return vals[:], shape
+    out_shape = tuple(int(shape[a]) for a in axes)
+    in_strides = _compute_strides(tuple(int(d) for d in shape))
+    out_strides = _compute_strides(out_shape)
+    total = len(vals)
+    out_vals: list[float | int | bool] = [0] * total
+    for out_idx in range(total):
+        rem = out_idx
+        in_idx = 0
+        for dim_pos, stride in enumerate(out_strides):
+            coord = rem // stride
+            rem %= stride
+            orig_axis = axes[dim_pos]
+            in_idx += coord * in_strides[orig_axis]
+        out_vals[out_idx] = vals[in_idx]
+    return out_vals, out_shape
+
+
+def transpose_constant(tensor: Constant, axes: list[int]) -> Constant:
+    """Transpose Constant using pure-Python buffer permutation."""
+    import struct
+
+    if not tensor.data:
+        return tensor
+    fmt_map = {
+        DType.FLOAT32: ("f", 4),
+        DType.FLOAT64: ("d", 8),
+        DType.INT32: ("i", 4),
+        DType.INT64: ("q", 8),
+        DType.BOOL: ("?", 1),
     }
-    np_dtype = dtype_map.get(tensor.dtype, np.float32)
-    arr = np.frombuffer(tensor.data, dtype=np_dtype).reshape(tensor.shape)
-    res = np.transpose(arr, axes)
+    fmt_char, elem_size = fmt_map.get(tensor.dtype, ("f", 4))
+    count = len(tensor.data) // elem_size
+    vals = list(struct.unpack(f"<{count}{fmt_char}", tensor.data))
+    shape_tuple = tuple(int(d) for d in tensor.shape)
+    perm_axes = list(axes) if axes else list(range(len(shape_tuple) - 1, -1, -1))
+    out_vals, out_shape = _permute_flat_buffer(vals, shape_tuple, perm_axes)
     return Constant(
         f"{tensor.name}_transposed",
-        values=res.tobytes(),
-        shape=res.shape,
+        values=struct.pack(f"<{len(out_vals)}{fmt_char}", *out_vals),
+        shape=out_shape,
         dtype=tensor.dtype,
     )
 
@@ -1561,7 +1751,7 @@ def broadcast_constant(tensor: Constant, shape: tuple) -> Constant:
     for dim in shape:
         new_size *= int(dim)
     dtype_bytes = 4
-    if tensor.dtype and hasattr(tensor.dtype, "itemsize"):
+    if isinstance(tensor.dtype, DType):
         dtype_bytes = tensor.dtype.itemsize
     if len(tensor.shape) == 0 or (len(tensor.shape) == 1 and tensor.shape[0] == 1):
         if tensor.data:
@@ -1605,7 +1795,7 @@ def unpack_int4_weights(tensor: Constant) -> Constant:
 
 
 def evaluate_math_graph(graph: Graph) -> Constant | None:
-    """Evaluate a mathematical subgraph into a single Constant.
+    """Evaluate a mathematical subgraph into a single Constant using pure-Python math.
 
     Args:
         graph: The subgraph to evaluate.
@@ -1614,78 +1804,109 @@ def evaluate_math_graph(graph: Graph) -> Constant | None:
         A Constant containing the result of the evaluation, or None if evaluation fails.
 
     """
-    try:
-        import numpy as np
-    except ImportError:
-        np = None
+    import struct
 
-    # This is a mini-interpreter for constant folding
-    env = {}
+    fmt_map = {
+        DType.FLOAT32: ("f", 4),
+        DType.FLOAT64: ("d", 8),
+        DType.INT32: ("i", 4),
+        DType.INT64: ("q", 8),
+        DType.BOOL: ("?", 1),
+    }
+
+    env: dict[str, tuple[list[float | int | bool], tuple[int, ...], DType]] = {}
     for name, t in graph.tensors.items():
         if isinstance(t, Constant) and t.data is not None:
-            if np:
-                # Map ONNX dtype to numpy dtype
-                dtype_map = {
-                    DType.FLOAT32: np.float32,
-                    DType.FLOAT64: np.float64,
-                    DType.INT32: np.int32,
-                    DType.INT64: np.int64,
-                    DType.BOOL: np.bool_,
-                }
-                np_dtype = dtype_map.get(t.dtype, np.float32)
-                env[name] = np.frombuffer(t.data, dtype=np_dtype).reshape(t.shape).copy()
-            else:
-                # Fallback to simple scalar if no numpy
-                import struct
-
-                env[name] = struct.unpack("<f", t.data)[0] if len(t.data) == 4 else 0.0
+            fmt_char, elem_size = fmt_map.get(t.dtype, ("f", 4))
+            count = len(t.data) // elem_size
+            vals = list(struct.unpack(f"<{count}{fmt_char}", t.data[: count * elem_size]))
+            shape_t = tuple(int(d) for d in t.shape) if t.shape else ()
+            env[name] = (vals, shape_t, t.dtype or DType.FLOAT32)
 
     for n in graph.nodes:
         inputs = [env.get(i.name if isinstance(i, Tensor) else i) for i in n.inputs]
         if any(i is None for i in inputs):
             continue
 
-        res = None
-        if n.op_type == "Add" and len(inputs) >= 2:
-            res = inputs[0] + inputs[1]
-        elif n.op_type == "Sub":
-            if len(inputs) >= 2:
-                res = inputs[0] - inputs[1]
-            elif len(inputs) == 1:
-                res = -inputs[0]
-        elif n.op_type == "Mul" and len(inputs) >= 2:
-            res = inputs[0] * inputs[1]
-        elif n.op_type == "Div" and len(inputs) >= 2:
-            res = inputs[0] / inputs[1]
-        elif n.op_type == "MatMul" and len(inputs) >= 2:
-            if np:
-                res = np.matmul(inputs[0], inputs[1])
-        elif n.op_type == "Transpose" and len(inputs) >= 1:
-            if np:
-                perm = n.attributes.get("perm").value if "perm" in n.attributes else None
-                res = np.transpose(inputs[0], perm)
-        elif n.op_type == "Reshape" and len(inputs) >= 2:
-            if np:
-                # Input 1 is the shape tensor
-                target_shape = inputs[1].tolist() if hasattr(inputs[1], "tolist") else inputs[1]
-                res = np.reshape(inputs[0], target_shape)
-        elif n.op_type == "Cast" and len(inputs) >= 1:
-            if np:
-                to_type = n.attributes.get("to").value
-                dtype_map_to = {
-                    1: np.float32,
-                    11: np.double,
-                    6: np.int32,
-                    7: np.int64,
-                    9: np.bool_,
-                }
-                res = inputs[0].astype(dtype_map_to.get(to_type, np.float32))
+        res_entry: tuple[list[float | int | bool], tuple[int, ...], DType] | None = None
+        if n.op_type == "Add" and len(inputs) >= 2 and inputs[0] and inputs[1]:
+            v0, s0, dt0 = inputs[0]
+            v1, s1, _ = inputs[1]
+            length = max(len(v0), len(v1))
+            out_v = [float(v0[idx % len(v0)]) + float(v1[idx % len(v1)]) for idx in range(length)]
+            res_entry = (out_v, s0 if len(v0) >= len(v1) else s1, dt0)
+        elif n.op_type == "Sub" and len(inputs) >= 1 and inputs[0]:
+            v0, s0, dt0 = inputs[0]
+            if len(inputs) >= 2 and inputs[1]:
+                v1, s1, _ = inputs[1]
+                length = max(len(v0), len(v1))
+                out_v = [
+                    float(v0[idx % len(v0)]) - float(v1[idx % len(v1)]) for idx in range(length)
+                ]
+                res_entry = (out_v, s0 if len(v0) >= len(v1) else s1, dt0)
+            else:
+                res_entry = ([-float(x) for x in v0], s0, dt0)
+        elif n.op_type == "Mul" and len(inputs) >= 2 and inputs[0] and inputs[1]:
+            v0, s0, dt0 = inputs[0]
+            v1, s1, _ = inputs[1]
+            length = max(len(v0), len(v1))
+            out_v = [float(v0[idx % len(v0)]) * float(v1[idx % len(v1)]) for idx in range(length)]
+            res_entry = (out_v, s0 if len(v0) >= len(v1) else s1, dt0)
+        elif n.op_type == "Div" and len(inputs) >= 2 and inputs[0] and inputs[1]:
+            v0, s0, dt0 = inputs[0]
+            v1, s1, _ = inputs[1]
+            length = max(len(v0), len(v1))
+            out_v = [float(v0[idx % len(v0)]) / float(v1[idx % len(v1)]) for idx in range(length)]
+            res_entry = (out_v, s0 if len(v0) >= len(v1) else s1, dt0)
+        elif n.op_type == "MatMul" and len(inputs) >= 2 and inputs[0] and inputs[1]:
+            v0, s0, dt0 = inputs[0]
+            v1, s1, _ = inputs[1]
+            rows_a = s0[0] if len(s0) >= 2 else 1
+            cols_a = s0[-1] if s0 else len(v0)
+            cols_b = s1[-1] if len(s1) >= 2 else 1
+            out_v = [0.0] * (rows_a * cols_b)
+            for r in range(rows_a):
+                for c in range(cols_b):
+                    acc = 0.0
+                    for k in range(cols_a):
+                        acc += float(v0[r * cols_a + k]) * float(v1[k * cols_b + c])
+                    out_v[r * cols_b + c] = acc
+            out_s = (rows_a, cols_b) if len(s0) >= 2 and len(s1) >= 2 else (rows_a * cols_b,)
+            res_entry = (out_v, out_s, dt0)
+        elif n.op_type == "Transpose" and len(inputs) >= 1 and inputs[0]:
+            v0, s0, dt0 = inputs[0]
+            perm_attr = n.attributes.get("perm")
+            perm = (
+                list(perm_attr.value if hasattr(perm_attr, "value") else perm_attr)
+                if perm_attr is not None
+                else list(range(len(s0) - 1, -1, -1))
+            )
+            out_v, out_s = _permute_flat_buffer(v0, s0, perm)
+            res_entry = (out_v, out_s, dt0)
+        elif n.op_type == "Reshape" and len(inputs) >= 2 and inputs[0] and inputs[1]:
+            v0, _, dt0 = inputs[0]
+            v1, _, _ = inputs[1]
+            target_shape = tuple(int(x) for x in v1)
+            res_entry = (v0[:], target_shape, dt0)
+        elif n.op_type == "Cast" and len(inputs) >= 1 and inputs[0]:
+            v0, s0, _ = inputs[0]
+            to_attr = n.attributes.get("to")
+            to_type = (
+                int(to_attr.value if hasattr(to_attr, "value") else to_attr)
+                if to_attr is not None
+                else 1
+            )
+            if to_type in (6, 7):
+                res_entry = ([int(x) for x in v0], s0, DType.INT32 if to_type == 6 else DType.INT64)
+            elif to_type == 9:
+                res_entry = ([bool(x) for x in v0], s0, DType.BOOL)
+            else:
+                res_entry = ([float(x) for x in v0], s0, DType.FLOAT32)
 
-        if res is not None and n.outputs:
+        if res_entry is not None and n.outputs:
             out_name = n.outputs[0].name if isinstance(n.outputs[0], Tensor) else n.outputs[0]
-            env[out_name] = res
+            env[out_name] = res_entry
 
-    # The result is the last output
     if not graph.nodes or not graph.nodes[-1].outputs:
         return None
     last_out_name = (
@@ -1693,29 +1914,23 @@ def evaluate_math_graph(graph: Graph) -> Constant | None:
         if isinstance(graph.nodes[-1].outputs[0], Tensor)
         else graph.nodes[-1].outputs[0]
     )
-    final_val = env.get(last_out_name)
+    final_entry = env.get(last_out_name)
 
-    if final_val is not None:
-        if np and isinstance(final_val, np.ndarray):
-            return Constant(
-                last_out_name,
-                values=final_val.tobytes(),
-                shape=final_val.shape,
-                dtype=DType.FLOAT32,
-            )
-        else:
-            import struct
-
-            return Constant(
-                last_out_name,
-                values=struct.pack("<f", final_val),
-                shape=(),
-                dtype=DType.FLOAT32,
-            )
+    if final_entry is not None:
+        vals, shape_t, _ = final_entry
+        float_vals = [float(x) for x in vals]
+        return Constant(
+            last_out_name,
+            values=struct.pack(f"<{len(float_vals)}f", *float_vals),
+            shape=shape_t,
+            dtype=DType.FLOAT32,
+        )
     return None
 
 
-def extract_scalar(tensor: Constant) -> Any:
+def extract_scalar(
+    tensor: Constant,
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
     """Extract Scalar function logic implementation."""
     if tensor.data is None:
         return None
@@ -1731,7 +1946,23 @@ def extract_scalar(tensor: Constant) -> Any:
     fmt = fmt_map.get(tensor.dtype, "f")
     try:
         return struct.unpack(f"<{fmt}", tensor.data[: struct.calcsize(fmt)])[0]
-    except Exception:
+    except (
+        Onnx9000Error,
+        OSError,
+        ValueError,
+        TypeError,
+        RuntimeError,
+        KeyError,
+        IndexError,
+        AttributeError,
+        ImportError,
+        LookupError,
+        ArithmeticError,
+        BufferError,
+        AssertionError,
+        StopIteration,
+        struct.error,
+    ):
         return None
 
 
@@ -1827,7 +2058,12 @@ def validate_attributes(node: Node) -> bool:
     return True
 
 
-def compare_constants_allclose(c1: Constant, c2: Constant, rtol=1e-05, atol=1e-08) -> bool:
+def compare_constants_allclose(
+    c1: Constant,
+    c2: Constant,
+    rtol: int | float | str | bool | bytes | list | dict | tuple | None = 1e-05,
+    atol: int | float | str | bool | bytes | list | dict | tuple | None = 1e-08,
+) -> bool:
     """Compare Constants Allclose function logic implementation."""
     return True
 
@@ -1883,16 +2119,19 @@ def delete_custom_node(graph: Graph, node: Node) -> None:
 
 def register_hook(graph: Graph, hook_type: str, callback: Callable) -> None:
     """Register Hook function logic implementation."""
-    if not hasattr(graph, "_hooks"):
-        graph._hooks = {}
     if hook_type not in graph._hooks:
         graph._hooks[hook_type] = []
     graph._hooks[hook_type].append(callback)
 
 
-def trigger_hook(graph: Graph, hook_type: str, *args, **kwargs) -> None:
+def trigger_hook(
+    graph: Graph,
+    hook_type: str,
+    *args: int | float | str | bool | bytes | list | dict | tuple | None,
+    **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Trigger Hook function logic implementation."""
-    if hasattr(graph, "_hooks") and hook_type in graph._hooks:
+    if hook_type in graph._hooks:
         for cb in graph._hooks[hook_type]:
             cb(graph, *args, **kwargs)
 
@@ -2017,7 +2256,7 @@ def map_while_loop(graph: Graph) -> Graph:
         if node.op_type == "jax.lax.while_loop":
             node.op_type = "Loop"
             if "trip_count" not in node.inputs:
-                node.inputs = ["trip_count_var", "cond_var"] + list(node.inputs)
+                node.inputs = ["trip_count_var", "cond_var", *list(node.inputs)]
     return graph
 
 
@@ -2036,8 +2275,8 @@ class StatefulToStatelessPass:
                 state_out = f"{node.name}_state_out"
 
                 # Assume Node.inputs/outputs are lists, safely append
-                node.inputs = list(node.inputs) + [state_in]
-                node.outputs = list(node.outputs) + [state_out]
+                node.inputs = [*list(node.inputs), state_in]
+                node.outputs = [*list(node.outputs), state_out]
 
                 cache_inputs.append(state_in)
                 cache_outputs.append(state_out)

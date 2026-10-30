@@ -13,8 +13,8 @@ declare interface ML {
 }
 
 declare interface MLContextOptions {
-  deviceType?: "cpu" | "gpu" | "npu";
-  powerPreference?: "default" | "high-performance" | "low-power";
+  deviceType?: 'cpu' | 'gpu' | 'npu';
+  powerPreference?: 'default' | 'high-performance' | 'low-power';
 }
 
 declare interface MLContext {
@@ -36,14 +36,14 @@ declare interface MLGraph {
 }
 
 declare type MLOperandDataType =
-  | "float32"
-  | "float16"
-  | "int32"
-  | "uint32"
-  | "int8"
-  | "uint8"
-  | "int64"
-  | "uint64";
+  | 'float32'
+  | 'float16'
+  | 'int32'
+  | 'uint32'
+  | 'int8'
+  | 'uint8'
+  | 'int64'
+  | 'uint64';
 
 declare interface MLOperandDescriptor {
   dataType: MLOperandDataType;
@@ -91,7 +91,7 @@ declare interface MLSliceOptions {
 }
 
 declare interface MLPadOptions {
-  mode?: "constant" | "edge" | "reflection" | "symmetric";
+  mode?: 'constant' | 'edge' | 'reflection' | 'symmetric';
   value?: number;
 }
 
@@ -107,10 +107,10 @@ declare interface MLConv2dOptions {
   padding?: number[];
   strides?: number[];
   dilations?: number[];
-  autoPad?: "explicit" | "same-upper" | "same-lower";
+  autoPad?: 'explicit' | 'same-upper' | 'same-lower';
   groups?: number;
-  inputLayout?: "nchw" | "nhwc";
-  filterLayout?: "oihw" | "hwio" | "ohwi" | "ihwo";
+  inputLayout?: 'nchw' | 'nhwc';
+  filterLayout?: 'oihw' | 'hwio' | 'ohwi' | 'ihwo';
   bias?: MLOperand;
 }
 
@@ -124,9 +124,9 @@ declare interface MLPool2dOptions {
   padding?: number[];
   strides?: number[];
   dilations?: number[];
-  autoPad?: "explicit" | "same-upper" | "same-lower";
-  layout?: "nchw" | "nhwc";
-  roundingType?: "floor" | "ceil";
+  autoPad?: 'explicit' | 'same-upper' | 'same-lower';
+  layout?: 'nchw' | 'nhwc';
+  roundingType?: 'floor' | 'ceil';
   outputSizes?: number[];
 }
 
@@ -146,7 +146,7 @@ declare interface MLInstanceNormalizationOptions {
   scale?: MLOperand;
   bias?: MLOperand;
   epsilon?: number;
-  layout?: "nchw" | "nhwc";
+  layout?: 'nchw' | 'nhwc';
 }
 
 declare interface MLLayerNormalizationOptions {
@@ -159,10 +159,7 @@ declare interface MLLayerNormalizationOptions {
 declare class MLGraphBuilder {
   constructor(context: MLContext);
   input(name: string, descriptor: MLOperandDescriptor): MLOperand;
-  constant(
-    descriptor: MLOperandDescriptor,
-    bufferView: ArrayBufferView,
-  ): MLOperand;
+  constant(descriptor: MLOperandDescriptor, bufferView: ArrayBufferView): MLOperand;
   build(outputs: Record<string, MLOperand>): Promise<MLGraph>;
 
   // Binary Arithmetic
@@ -212,33 +209,16 @@ declare class MLGraphBuilder {
   // Tensor Manipulation
   reshape(a: MLOperand, newShape: number[]): MLOperand;
   transpose(a: MLOperand, options?: MLTransposeOptions): MLOperand;
-  slice(
-    a: MLOperand,
-    starts: number[],
-    sizes: number[],
-    options?: MLSliceOptions,
-  ): MLOperand;
+  slice(a: MLOperand, starts: number[], sizes: number[], options?: MLSliceOptions): MLOperand;
   concat(inputs: MLOperand[], axis: number): MLOperand;
-  split(
-    a: MLOperand,
-    splits: number | number[],
-    options?: MLSplitOptions,
-  ): MLOperand[];
+  split(a: MLOperand, splits: number | number[], options?: MLSplitOptions): MLOperand[];
   expand(a: MLOperand, newShape: number[]): MLOperand;
-  gather(
-    a: MLOperand,
-    indices: MLOperand,
-    options?: MLGatherOptions,
-  ): MLOperand;
+  gather(a: MLOperand, indices: MLOperand, options?: MLGatherOptions): MLOperand;
   pad(a: MLOperand, padding: number[], options?: MLPadOptions): MLOperand;
   cast(a: MLOperand, type: MLOperandDataType): MLOperand;
 
   // Convolution & Pooling
-  conv2d(
-    input: MLOperand,
-    filter: MLOperand,
-    options?: MLConv2dOptions,
-  ): MLOperand;
+  conv2d(input: MLOperand, filter: MLOperand, options?: MLConv2dOptions): MLOperand;
   convTranspose2d(
     input: MLOperand,
     filter: MLOperand,
@@ -267,21 +247,12 @@ declare class MLGraphBuilder {
     variance: MLOperand,
     options?: MLBatchNormalizationOptions,
   ): MLOperand;
-  instanceNormalization(
-    input: MLOperand,
-    options?: MLInstanceNormalizationOptions,
-  ): MLOperand;
-  layerNormalization(
-    input: MLOperand,
-    options?: MLLayerNormalizationOptions,
-  ): MLOperand;
+  instanceNormalization(input: MLOperand, options?: MLInstanceNormalizationOptions): MLOperand;
+  layerNormalization(input: MLOperand, options?: MLLayerNormalizationOptions): MLOperand;
   l2Normalization(input: MLOperand, options?: MLReduceOptions): MLOperand;
 
   // Transformer & NLP Drafts (193, 282)
-  triangular?(
-    input: MLOperand,
-    options?: { upper?: boolean; diagonal?: number },
-  ): MLOperand;
+  triangular?(input: MLOperand, options?: { upper?: boolean; diagonal?: number }): MLOperand;
   scaledDotProductAttention?(
     query: MLOperand,
     key: MLOperand,
@@ -290,16 +261,8 @@ declare class MLGraphBuilder {
   ): MLOperand;
 
   // Quantization (201, 202)
-  quantizeLinear?(
-    input: MLOperand,
-    scale: MLOperand,
-    zeroPoint: MLOperand,
-  ): MLOperand;
-  dequantizeLinear?(
-    input: MLOperand,
-    scale: MLOperand,
-    zeroPoint: MLOperand,
-  ): MLOperand;
+  quantizeLinear?(input: MLOperand, scale: MLOperand, zeroPoint: MLOperand): MLOperand;
+  dequantizeLinear?(input: MLOperand, scale: MLOperand, zeroPoint: MLOperand): MLOperand;
   bitwiseAnd?(a: MLOperand, b: MLOperand): MLOperand;
   shiftRightLogical?(a: MLOperand, b: MLOperand): MLOperand;
 
@@ -313,11 +276,7 @@ declare class MLGraphBuilder {
   logicalAnd(a: MLOperand, b: MLOperand): MLOperand;
   logicalOr(a: MLOperand, b: MLOperand): MLOperand;
   logicalXor(a: MLOperand, b: MLOperand): MLOperand;
-  where(
-    condition: MLOperand,
-    trueValue: MLOperand,
-    falseValue: MLOperand,
-  ): MLOperand;
+  where(condition: MLOperand, trueValue: MLOperand, falseValue: MLOperand): MLOperand;
 }
 
 declare interface MLOpSupportLimits {

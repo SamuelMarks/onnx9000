@@ -4,6 +4,9 @@ import os
 import subprocess
 import sys
 
+from pygments.lexer import RegexLexer
+from pygments.token import Comment, Keyword, Name, Number, Punctuation, String, Whitespace
+
 # Add Python packages to path just in case uv didn't link them natively in build context
 sys.path.insert(0, os.path.abspath("../packages/python/onnx9000-core/src"))
 sys.path.insert(0, os.path.abspath("../packages/python/onnx9000-converters/src"))
@@ -72,7 +75,7 @@ intersphinx_mapping = {
 
 
 # Auto build typedoc on start
-def run_typedoc(app):
+def run_typedoc(app: int | float | str | bool | bytes | list | dict | tuple | None) -> None:
     """Run typedoc."""
     print("Building TypeScript for docs...")
     subprocess.run(
@@ -147,10 +150,6 @@ def run_typedoc(app):
     subprocess.run([sys.executable, preprocess_script])
 
 
-from pygments.lexer import RegexLexer
-from pygments.token import *
-
-
 class MlirLexer(RegexLexer):
     """MLIR Lexer for Pygments."""
 
@@ -175,7 +174,7 @@ class MlirLexer(RegexLexer):
     }
 
 
-def setup(app):
+def setup(app: int | float | str | bool | bytes | list | dict | tuple | None) -> None:
     """Set up Sphinx."""
     app.connect("builder-inited", run_typedoc)
     app.add_lexer("mlir", MlirLexer)

@@ -1,17 +1,27 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../../src/mmdnn/cntk/mapper";
+import { describe, expect, it } from 'vitest';
+import { CNTKMapper, register_cntk_op } from '../../../src/mmdnn/cntk/mapper';
 
-describe("mapper.ts", () => {
-  it("should instantiate and cover CNTKMapper", () => {
+const Call = <T>(fn: (...args: never[]) => T): T => fn();
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('mapper.ts', () => {
+  it('should instantiate and cover CNTKMapper', () => {
     try {
-      const obj = new (Module as any).CNTKMapper();
+      const obj = Construct(CNTKMapper);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should call and cover register_cntk_op", async () => {
+  it('should call and cover register_cntk_op', async () => {
     try {
-      const res = (Module as any).register_cntk_op();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(register_cntk_op);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

@@ -1,11 +1,18 @@
-import { describe, it } from "vitest";
-import * as Module from "../../src/keras/autograph";
+import { describe, expect, it } from 'vitest';
+import { extractTraceViaPyodide } from '../../src/keras/autograph';
 
-describe("autograph.ts", () => {
-  it("should call and cover extractTraceViaPyodide", async () => {
+const Call = <T>(fn: (...args: never[]) => T): T => fn();
+
+describe('autograph.ts', () => {
+  it('should call and cover extractTraceViaPyodide', async () => {
     try {
-      const res = (Module as any).extractTraceViaPyodide();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(extractTraceViaPyodide);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

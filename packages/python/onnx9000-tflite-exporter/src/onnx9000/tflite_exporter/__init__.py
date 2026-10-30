@@ -22,18 +22,18 @@ from .flatbuffer.schema import (
 )
 
 __all__ = [
-    "FlatBufferBuilder",
-    "TensorType",
+    "Buffer",
     "BuiltinOperator",
     "BuiltinOptions",
-    "OperatorCode",
-    "QuantizationParameters",
-    "Tensor",
-    "Operator",
-    "SubGraph",
-    "Buffer",
+    "FlatBufferBuilder",
     "Metadata",
     "Model",
+    "Operator",
+    "OperatorCode",
+    "QuantizationParameters",
+    "SubGraph",
     "TFLiteExporter",
+    "Tensor",
+    "TensorType",
     "compile_graph_to_tflite",
 ]

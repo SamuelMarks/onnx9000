@@ -1,4 +1,4 @@
-"""Module providing core logic and structural definitions."""
+"""Implementation of compiler (converters / jit / compiler.py) providing compile_cpp, compile_wasm, load_module."""
 
 import importlib.resources
 import importlib.util
@@ -139,7 +139,7 @@ def compile_wasm(graph: Graph, out_dir: Path) -> Path:
             )
 
     # Locate include directory
-    import onnx9000.backends.codegen as codegen
+    from onnx9000.backends import codegen
 
     codegen_dir = Path(codegen.__file__).parent
     inc_dir = codegen_dir.parent.parent / "include"
@@ -169,7 +169,7 @@ def compile_wasm(graph: Graph, out_dir: Path) -> Path:
     return js_path
 
 
-def load_module(module_path: Path):
+def load_module(module_path: Path) -> int | float | str | bool | bytes | list | dict | tuple | None:
     """Load the compiled shared library into Python."""
     module_name = module_path.stem
     spec = importlib.util.spec_from_file_location(module_name, module_path)

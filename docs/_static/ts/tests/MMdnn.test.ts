@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { IModelGraph } from '../src/core/IR';
-import { MMdnn } from '../src/mmdnn/MMdnn';
+import { type Framework, MMdnn } from '../src/mmdnn/MMdnn';
 
 describe('MMdnn Core Architecture & Converters', () => {
   it('should parse Caffe prototxt to ONNX', () => {
@@ -125,7 +125,7 @@ describe('MMdnn Core Architecture & Converters', () => {
   });
 
   it('should throw error for unsupported source framework in parseToONNX', () => {
-    expect(() => MMdnn.parseToONNX('cntk' as any, '')).toThrow(
+    expect(() => MMdnn.parseToONNX('cntk' as Framework, '')).toThrow(
       'Unsupported source framework: cntk',
     );
   });
@@ -258,7 +258,7 @@ describe('MMdnn Core Architecture & Converters', () => {
       outputs: [],
       initializers: [],
     };
-    expect(() => MMdnn.exportFromONNX('caffe' as any, graph)).toThrow(
+    expect(() => MMdnn.exportFromONNX('caffe' as Framework, graph)).toThrow(
       'Unsupported target framework: caffe',
     );
   });

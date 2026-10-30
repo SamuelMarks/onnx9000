@@ -1,6 +1,6 @@
 """Module providing onnx2gguf functionality."""
 
-from typing import Any, BinaryIO, Optional
+from typing import BinaryIO
 
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Tensor
@@ -34,7 +34,12 @@ def sanitize_doc_string(doc: str) -> str:
     return doc.strip()
 
 
-def compile_gguf(graph: Graph, out_f: BinaryIO, kv_overrides: dict[str, Any] | None = None):
+def compile_gguf(
+    graph: Graph,
+    out_f: BinaryIO,
+    kv_overrides: dict[str, int | float | str | bool | bytes | list | dict | tuple | None]
+    | None = None,
+) -> None:
     """Compiles gguf."""
     writer = GGUFWriter(out_f)
     kv_overrides = kv_overrides or {}
@@ -61,8 +66,8 @@ def compile_gguf(graph: Graph, out_f: BinaryIO, kv_overrides: dict[str, Any] | N
             writer.add_string(k, v)
         elif isinstance(v, int):
             writer.add_uint32(k, v)
-        elif isinstance(v, float):
-            writer.add_float32(k, v)
+        else:
+            writer.add_float32(k, float(v))
     if general_kvs["general.architecture"] == "llama":
         writer.add_uint32("llama.context_length", 2048)
         writer.add_uint32("llama.embedding_length", 4096)
@@ -84,12 +89,12 @@ def compile_gguf(graph: Graph, out_f: BinaryIO, kv_overrides: dict[str, Any] | N
                 writer.add_uint32(k, v)
             elif isinstance(v, float):
                 writer.add_float32(k, v)
-            elif isinstance(v, list):
-                if v and isinstance(v[0], str):
+            elif isinstance(v, list) and v:
+                if isinstance(v[0], str):
                     writer.add_array(k, v, GGUFValueType.STRING)
-                elif v and isinstance(v[0], float):
+                elif isinstance(v[0], float):
                     writer.add_array(k, v, GGUFValueType.FLOAT32)
-                elif v and isinstance(v[0], int):
+                else:
                     writer.add_array(k, v, GGUFValueType.INT32)
     for k, v in kv_overrides.items():
         if not k.startswith("general."):

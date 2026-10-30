@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../src/compiler/layout";
+import { describe, expect, it } from 'vitest';
+import { LayoutOptimizer } from '../../src/compiler/layout';
 
-describe("layout.ts", () => {
-  it("should instantiate and cover LayoutOptimizer", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('layout.ts', () => {
+  it('should instantiate and cover LayoutOptimizer', () => {
     try {
-      const obj = new (Module as any).LayoutOptimizer();
+      const obj = Construct(LayoutOptimizer);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

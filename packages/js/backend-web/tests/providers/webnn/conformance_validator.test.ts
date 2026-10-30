@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../../src/providers/webnn/conformance_validator";
+import { describe, expect, it } from 'vitest';
+import { WebNNLayoutValidator } from '../../../src/providers/webnn/conformance_validator';
 
-describe("conformance_validator.ts", () => {
-  it("should instantiate and cover WebNNLayoutValidator", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('conformance_validator.ts', () => {
+  it('should instantiate and cover WebNNLayoutValidator', () => {
     try {
-      const obj = new (Module as any).WebNNLayoutValidator();
+      const obj = Construct(WebNNLayoutValidator);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

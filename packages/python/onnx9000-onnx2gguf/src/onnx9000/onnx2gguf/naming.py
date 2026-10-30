@@ -2,6 +2,8 @@
 
 import re
 
+from onnx9000.core.exceptions import GGUFError
+
 DEFAULT_MAPPING = [
     ("^model\\.embed_tokens\\.weight$", "token_embd.weight"),
     (
@@ -55,7 +57,7 @@ DEFAULT_MAPPING = [
 ]
 
 
-def rename_tensor(name: str, overrides: dict[str, str] = None) -> str:
+def rename_tensor(name: str, overrides: dict[str, str] | None = None) -> str:
     """Rename tensor."""
     overrides = overrides or {}
     for pattern, repl in overrides.items():
@@ -64,4 +66,4 @@ def rename_tensor(name: str, overrides: dict[str, str] = None) -> str:
     for pattern, repl in DEFAULT_MAPPING:
         if re.match(pattern, name):
             return re.sub(pattern, repl, name)
-    raise ValueError(f"Unmatched tensor name: {name}")
+    raise GGUFError(f"Unmatched tensor name: {name}")

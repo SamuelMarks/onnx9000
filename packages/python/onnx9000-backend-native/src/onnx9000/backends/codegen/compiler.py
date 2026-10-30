@@ -11,12 +11,14 @@ import subprocess
 import sys
 import tempfile
 
+from onnx9000.core.exceptions import BackendExecutionError
+
 
 def compile_cpp(
     cpp_code: str,
-    output_path: str = None,
+    output_path: str | None = None,
     use_pybind: bool = True,
-    extra_flags: list[str] = None,
+    extra_flags: list[str] | None = None,
 ) -> str:
     """Compiles C++ source code into a shared library.
 
@@ -35,13 +37,12 @@ def compile_cpp(
 
     if use_pybind:
         ext = ".pyd" if sys.platform == "win32" else ".so"
+    elif sys.platform == "win32":
+        ext = ".dll"
+    elif sys.platform == "darwin":
+        ext = ".dylib"
     else:
-        if sys.platform == "win32":
-            ext = ".dll"
-        elif sys.platform == "darwin":
-            ext = ".dylib"
-        else:
-            ext = ".so"
+        ext = ".so"
 
     if output_path is None:
         fd, output_path = tempfile.mkstemp(suffix=ext, prefix="_model_")
@@ -63,7 +64,8 @@ def compile_cpp(
         "-Werror",
         "-Wno-sign-compare",
         "-Wno-unknown-pragmas",
-    ] + extra_flags
+        *extra_flags,
+    ]
 
     include_dir = os.path.join(os.path.dirname(__file__), "..", "..", "include")
     flags.append(f"-I{os.path.abspath(include_dir)}")
@@ -83,26 +85,26 @@ def compile_cpp(
     if sys.platform == "darwin":
         flags.extend(["-undefined", "dynamic_lookup", "-framework", "Accelerate"])
 
-    cmd = [compiler] + flags + ["-o", output_path, cpp_path]
+    cmd = [compiler, *flags, "-o", output_path, cpp_path]
 
     try:
         subprocess.run(cmd, check=True, capture_output=True, text=True)
     except subprocess.CalledProcessError as e:
-        raise RuntimeError(f"Compilation failed:\n{e.stderr}")
+        raise BackendExecutionError(f"Compilation failed:\n{e.stderr}") from e
 
     return output_path
 
 
 def compile_wasm(
     cpp_code: str,
-    output_path: str = None,
-    extra_flags: list[str] = None,
+    output_path: str | None = None,
+    extra_flags: list[str] | None = None,
     opt_level: str = "-O3",
     allow_memory_growth: bool = True,
     standalone_wasm: bool = False,
     enable_simd: bool = False,
-    initial_memory: int = None,
-    maximum_memory: int = None,
+    initial_memory: int | None = None,
+    maximum_memory: int | None = None,
     environment: str = "web,worker,node",
     use_pthreads: bool = False,
     emit_tsd: bool = False,
@@ -167,16 +169,16 @@ def compile_wasm(
     include_dir = os.path.join(os.path.dirname(__file__), "..", "..", "include")
     flags.append(f"-I{os.path.abspath(include_dir)}")
 
-    cmd = [compiler] + flags + ["-o", output_path, cpp_path]
+    cmd = [compiler, *flags, "-o", output_path, cpp_path]
 
     try:
         subprocess.run(cmd, check=True, capture_output=True, text=True)
     except subprocess.CalledProcessError as e:
-        raise RuntimeError(f"WASM Compilation failed:\n{e.stderr}")
+        raise BackendExecutionError(f"WASM Compilation failed:\n{e.stderr}") from e
     except FileNotFoundError:
-        raise RuntimeError(
+        raise BackendExecutionError(
             "emcc not found. Please install Emscripten and ensure it's in your PATH."
-        )
+        ) from None
 
     wasm_path = output_path.replace(".js", ".wasm")
     if os.path.exists(wasm_path):
@@ -211,7 +213,9 @@ Module.freeBuffer = function(ptr) {
     return output_path
 
 
-def load_pybind_module(so_path: str, module_name: str = "_model"):
+def load_pybind_module(
+    so_path: str, module_name: str = "_model"
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
     """Dynamically loads a compiled Pybind11 shared library."""
     spec = importlib.util.spec_from_file_location(module_name, so_path)
     if spec is None or spec.loader is None:
@@ -221,13 +225,15 @@ def load_pybind_module(so_path: str, module_name: str = "_model"):
     return module
 
 
-def load_ctypes_library(so_path: str):
+def load_ctypes_library(
+    so_path: str,
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
     """Dynamically loads a compiled C++ shared library via ctypes."""
     return ctypes.cdll.LoadLibrary(so_path)
 
 
 def compile_static_lib(
-    cpp_code: str, output_path: str = None, extra_flags: list[str] = None
+    cpp_code: str, output_path: str | None = None, extra_flags: list[str] | None = None
 ) -> str:
     """Compiles C++ source code into a static library (.a / .lib)."""
     if extra_flags is None:
@@ -257,17 +263,18 @@ def compile_static_lib(
         "-Werror",
         "-Wno-sign-compare",
         "-Wno-unknown-pragmas",
-    ] + extra_flags
+        *extra_flags,
+    ]
 
     include_dir = os.path.join(os.path.dirname(__file__), "..", "..", "include")
     flags.append(f"-I{os.path.abspath(include_dir)}")
 
-    cmd = [compiler] + flags + ["-o", obj_path, cpp_path]
+    cmd = [compiler, *flags, "-o", obj_path, cpp_path]
 
     try:
         subprocess.run(cmd, check=True, capture_output=True, text=True)
     except subprocess.CalledProcessError as e:
-        raise RuntimeError(f"Object compilation failed:\\n{e.stderr}")
+        raise BackendExecutionError(f"Object compilation failed:\\n{e.stderr}") from e
 
     # Now archive it
     if sys.platform == "win32":
@@ -278,7 +285,7 @@ def compile_static_lib(
     try:
         subprocess.run(ar_cmd, check=True, capture_output=True, text=True)
     except subprocess.CalledProcessError as e:
-        raise RuntimeError(f"Archiving failed:\\n{e.stderr}")
+        raise BackendExecutionError(f"Archiving failed:\\n{e.stderr}") from e
     finally:
         if os.path.exists(obj_path):
             os.remove(obj_path)

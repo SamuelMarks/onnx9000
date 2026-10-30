@@ -1,32 +1,30 @@
-import { beforeEach, describe, expect, it } from "vitest";
+// @vitest-environment jsdom
+import { beforeEach, describe, expect, it } from 'vitest';
+import { initMlirLoweringDemo } from '../src/main.js';
 
-describe("demo", () => {
+describe('demo-mlir-lowering', () => {
   beforeEach(() => {
-    document.body.innerHTML = `
-      <textarea id="prompt"></textarea>
-      <button id="runBtn"></button>
-      <div id="output"></div>
-    `;
+    document.body.innerHTML =
+      '<button id="lowerBtn"></button><button id="resetBtn"></button><div id="output"></div>';
   });
 
-  it("should run flow", async () => {
-    // import to execute module top-level
-    try {
-      await import("../src/main.js");
-    } catch (_e) {}
+  it('should execute all 5 MLIR lowering stages and reset', async () => {
+    document.body.innerHTML = '';
+    initMlirLoweringDemo();
 
-    const btn = document.getElementById("runBtn");
-    const prompt = document.getElementById("prompt");
-    const _out = document.getElementById("output");
+    document.body.innerHTML =
+      '<button id="lowerBtn"></button><button id="resetBtn"></button><div id="output"></div>';
+    initMlirLoweringDemo();
 
-    if (btn) btn.click();
-    if (prompt && btn) {
-      prompt.value = "test";
-      btn.click();
-    }
+    const lowerBtn = document.getElementById('lowerBtn') as HTMLButtonElement;
+    const resetBtn = document.getElementById('resetBtn') as HTMLButtonElement;
+    const out = document.getElementById('output') as HTMLDivElement;
 
-    // allow some async code to run
-    await new Promise((r) => setTimeout(r, 100));
-    expect(true).toBe(true);
+    lowerBtn.click();
+    await new Promise((r) => setTimeout(r, 250));
+    expect(out.textContent).toContain('MLIR Lowering Pipeline Completed Successfully!');
+
+    resetBtn.click();
+    expect(out.textContent).toContain('Ready to compile.');
   });
 });

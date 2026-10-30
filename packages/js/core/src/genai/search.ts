@@ -1,4 +1,7 @@
-import type { Tensor } from "../index.js";
+/**
+ * @fileoverview search module for core.
+ */
+import type { Tensor } from '../index.js';
 
 /**
  * Interface for token search algorithms used in GenAI.
@@ -30,15 +33,12 @@ export class GreedySearch implements SearchAlgorithm {
     let maxVal = -Infinity;
     let maxIdx = 0;
 
-    for (let i = 0; i < vocabSize; i++) {
-      const data = logits.data;
-      const val = data[offset + i]!;
-
+    for (const [i, val] of logits.data.subarray(offset, offset + vocabSize).entries()) {
       if (Number.isNaN(val) || (!Number.isFinite(val) && val > 0)) {
         return 0;
       }
       if (val > maxVal) {
-        maxVal = val!;
+        maxVal = val;
         maxIdx = i;
       }
     }
@@ -63,30 +63,29 @@ export class MultinomialSampling implements SearchAlgorithm {
     const offset = logits.data.length - vocabSize;
 
     let maxVal = -Infinity;
-    for (let i = 0; i < vocabSize; i++) {
-      const data = logits.data;
-      if (data[offset + i]! > maxVal) {
-        maxVal = data[offset + i]!;
+    for (const v of logits.data.subarray(offset, offset + vocabSize)) {
+      if (v > maxVal) {
+        maxVal = v;
       }
     }
 
     let sumExp = 0;
     const probs = new Float32Array(vocabSize);
-    for (let i = 0; i < vocabSize; i++) {
-      const data = logits.data;
-      probs[i] = Math.exp(data[offset + i]! - maxVal);
-      sumExp += probs[i]!;
+    for (const [i, v] of logits.data.subarray(offset, offset + vocabSize).entries()) {
+      const p = Math.exp(v - maxVal);
+      probs[i] = p;
+      sumExp += p;
     }
 
-    for (let i = 0; i < vocabSize; i++) {
-      probs[i] = probs[i]! / sumExp;
+    for (const [i, p] of probs.entries()) {
+      probs[i] = p / sumExp;
     }
 
     // Simplistic pseudo-randomness for mock implementation without explicit seed handling
     const r = Math.random();
     let cumulative = 0.0;
-    for (let i = 0; i < vocabSize; i++) {
-      cumulative += probs[i]!;
+    for (const [i, p] of probs.entries()) {
+      cumulative += p;
       if (r <= cumulative) {
         return i;
       }
@@ -165,23 +164,18 @@ export class BeamSearchAlgorithm implements SearchAlgorithm {
    * @param nextTokenLogits Logits for next token.
    * @param beamIdx Beam index.
    */
-  processLogits(
-    nextTokenLogits: Tensor,
-    _beamIdx: number,
-  ): { val: number; idx: number }[] {
+  processLogits(nextTokenLogits: Tensor, _beamIdx: number): { val: number; idx: number }[] {
     if (!(nextTokenLogits.data instanceof Float32Array)) {
       return [];
     }
 
-    const vocabSize = nextTokenLogits.shape[
-      nextTokenLogits.shape.length - 1
-    ] as number;
+    const vocabSize = nextTokenLogits.shape[nextTokenLogits.shape.length - 1] as number;
     const data = nextTokenLogits.data;
     const offset = data.length - vocabSize;
 
     const vals: { val: number; idx: number }[] = [];
-    for (let i = 0; i < vocabSize; i++) {
-      vals.push({ val: data[offset + i]!, idx: i });
+    for (const [i, v] of data.subarray(offset, offset + vocabSize).entries()) {
+      vals.push({ val: v, idx: i });
     }
 
     vals.sort((a, b) => b.val - a.val);

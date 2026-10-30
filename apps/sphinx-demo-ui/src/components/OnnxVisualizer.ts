@@ -2,22 +2,29 @@
  * @fileoverview OnnxVisualizer.ts
  * Provides OnnxVisualizer functionality for the Sphinx Demo UI.
  */
-// @ts-nocheck
 
 import cytoscape from 'cytoscape';
 import { Component } from '../core/Component';
 import { globalEventBus } from '../core/EventBus';
 import { OnnxAdapter, type VizGraph } from '../core/OnnxAdapter';
 
+/** Represents the `OnnxVisualizer` class. */
 export class OnnxVisualizer extends Component<HTMLDivElement> {
+  /** Property `cy` of `OnnxVisualizer`. */
   private cy: cytoscape.Core | null = null;
+  /** Property `tooltip` of `OnnxVisualizer`. */
   private tooltip!: HTMLDivElement;
 
+  /** Initializes a new `OnnxVisualizer` instance. */
   constructor() {
     super();
     this.element = this.render();
   }
 
+  /**
+   * Executes `render` on `OnnxVisualizer`.
+   * @returns Result of `render`.
+   */
   protected render(): HTMLDivElement {
     const container = document.createElement('div');
     container.className = 'demo-onnx-viz-container';
@@ -45,8 +52,9 @@ export class OnnxVisualizer extends Component<HTMLDivElement> {
     return container;
   }
 
+  /** Executes `onMount` on `OnnxVisualizer`. */
   protected onMount(): void {
-    (window as object).__CY__ = this.cy = cytoscape({
+    (window as never as Record<string, unknown>).__CY__ = this.cy = cytoscape({
       container: this.element,
       elements: [],
       style: [
@@ -62,22 +70,22 @@ export class OnnxVisualizer extends Component<HTMLDivElement> {
             shape: 'round-rectangle',
             width: 'label',
             height: 'label',
-            padding: '10px'
-          }
+            padding: '10px',
+          },
         },
         {
           selector: '.onnx-input, .onnx-output',
           style: {
             'background-color': '#2b8a3e',
-            shape: 'ellipse'
-          }
+            shape: 'ellipse',
+          },
         },
         {
           selector: '.onnx-initializer',
           style: {
             'background-color': '#e67700',
-            shape: 'barrel'
-          }
+            shape: 'barrel',
+          },
         },
         {
           selector: 'edge',
@@ -92,13 +100,13 @@ export class OnnxVisualizer extends Component<HTMLDivElement> {
             color: '#868e96',
             'text-background-color': '#ffffff',
             'text-background-opacity': 1,
-            'text-background-padding': '2px'
-          }
-        }
+            'text-background-padding': '2px',
+          },
+        },
       ],
       layout: {
-        name: 'preset'
-      }
+        name: 'preset',
+      },
     });
 
     this.cy.on('tap', 'node', (evt) => {
@@ -133,7 +141,7 @@ export class OnnxVisualizer extends Component<HTMLDivElement> {
     this.onCleanup(
       globalEventBus.on<VizGraph>('ONNX_GRAPH_GENERATED', (graph) => {
         this.renderGraph(graph);
-      })
+      }),
     );
 
     this.onCleanup(
@@ -145,10 +153,14 @@ export class OnnxVisualizer extends Component<HTMLDivElement> {
             this.cy?.fit();
           }, 50);
         }
-      })
+      }),
     );
   }
 
+  /**
+   * Executes `renderGraph` on `OnnxVisualizer`.
+   * @param graph Parameter `graph`.
+   */
   public renderGraph(graph: VizGraph | null): void {
     if (!this.cy) return;
 
@@ -161,7 +173,7 @@ export class OnnxVisualizer extends Component<HTMLDivElement> {
     const elements = OnnxAdapter.toCytoscape(graph);
 
     this.cy.elements().remove();
-    this.cy.add(elements as object);
+    this.cy.add(elements as never as cytoscape.ElementDefinition[]);
 
     // Simple top-to-bottom layout for DAGs
     this.cy
@@ -170,7 +182,7 @@ export class OnnxVisualizer extends Component<HTMLDivElement> {
         directed: true,
         spacingFactor: 1.5,
         fit: true,
-        padding: 50
+        padding: 50,
       })
       .run();
 

@@ -1,32 +1,49 @@
-import { beforeEach, describe, expect, it } from "vitest";
+// @vitest-environment jsdom
+import { beforeEach, describe, expect, it } from 'vitest';
+import { initNewModelArchDemo } from '../src/main.js';
 
-describe("demo", () => {
+describe('demo-new-model-arch', () => {
   beforeEach(() => {
-    document.body.innerHTML = `
-      <textarea id="prompt"></textarea>
-      <button id="runBtn"></button>
-      <div id="output"></div>
-    `;
+    document.body.innerHTML =
+      '<select id="archSelect"><option value="mamba">mamba</option><option value="rwkv">rwkv</option><option value="mixtral">mixtral</option></select><button id="parseBtn"></button><button id="resetBtn"></button><div id="output"></div>';
   });
 
-  it("should run flow", async () => {
-    // import to execute module top-level
-    try {
-      await import("../src/main.js");
-    } catch (_e) {}
+  it('should generate IR for mamba, rwkv, and mixtral architectures', async () => {
+    document.body.innerHTML = '';
+    initNewModelArchDemo();
 
-    const btn = document.getElementById("runBtn");
-    const prompt = document.getElementById("prompt");
-    const _out = document.getElementById("output");
+    document.body.innerHTML =
+      '<select id="archSelect"><option value="mamba">mamba</option><option value="rwkv">rwkv</option><option value="mixtral">mixtral</option></select><button id="parseBtn"></button><button id="resetBtn"></button><div id="output"></div>';
+    initNewModelArchDemo();
 
-    if (btn) btn.click();
-    if (prompt && btn) {
-      prompt.value = "test";
-      btn.click();
-    }
+    const select = document.getElementById('archSelect') as HTMLSelectElement;
+    const parseBtn = document.getElementById('parseBtn') as HTMLButtonElement;
+    const resetBtn = document.getElementById('resetBtn') as HTMLButtonElement;
+    const out = document.getElementById('output') as HTMLDivElement;
 
-    // allow some async code to run
-    await new Promise((r) => setTimeout(r, 100));
-    expect(true).toBe(true);
+    parseBtn.click();
+    await new Promise((r) => setTimeout(r, 180));
+    expect(out.textContent).toContain('SelectiveScan');
+
+    resetBtn.click();
+    expect(out.textContent).toContain('Select an architecture');
+
+    select.value = 'rwkv';
+    parseBtn.click();
+    await new Promise((r) => setTimeout(r, 180));
+    expect(out.textContent).toContain('TimeMix');
+
+    resetBtn.click();
+    select.value = 'mixtral';
+    parseBtn.click();
+    await new Promise((r) => setTimeout(r, 180));
+    expect(out.textContent).toContain('Router Gate');
+
+    resetBtn.click();
+    select.innerHTML = '<option value=""></option>';
+    select.value = '';
+    parseBtn.click();
+    await new Promise((r) => setTimeout(r, 180));
+    expect(out.textContent).toContain('SelectiveScan');
   });
 });

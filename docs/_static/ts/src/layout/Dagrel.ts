@@ -58,13 +58,13 @@ export class Dagrel {
     });
 
     while (queue.length > 0) {
-      const current = queue.shift()!;
-      const currentRank = ranks.get(current)!;
+      const current = queue.shift();
+      const currentRank = ranks.get(current);
       const deps = outgoingEdges.get(current) || [];
 
       deps.forEach((dep) => {
         const nextRank = currentRank + 1;
-        if (!ranks.has(dep) || ranks.get(dep)! < nextRank) {
+        if (!ranks.has(dep) || ranks.get(dep) < nextRank) {
           ranks.set(dep, nextRank);
           queue.push(dep);
         }
@@ -81,7 +81,7 @@ export class Dagrel {
     const rankWidths = new Map<number, number>(); // track how many nodes in each rank
 
     graph.nodes.forEach((n) => {
-      const rank = ranks.get(n.name)!;
+      const rank = ranks.get(n.name);
       const pos = rankWidths.get(rank) || 0;
 
       layoutNodes.push({
@@ -101,8 +101,8 @@ export class Dagrel {
     const maxWidth = maxRankWidth * (this.nodeWidth + this.nodeSeparation);
 
     layoutNodes.forEach((ln) => {
-      const rank = ranks.get(ln.id)!;
-      const rankCount = rankWidths.get(rank)!;
+      const rank = ranks.get(ln.id);
+      const rankCount = rankWidths.get(rank);
       const rankTotalWidth = rankCount * (this.nodeWidth + this.nodeSeparation);
       const xOffset = (maxWidth - rankTotalWidth) / 2;
       ln.x += xOffset;

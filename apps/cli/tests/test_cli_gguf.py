@@ -11,7 +11,9 @@ from unittest.mock import MagicMock
 from onnx9000_cli.main import gguf2onnx_cmd, onnx2gguf_cmd
 
 
-def test_onnx2gguf_dry_run(capsys):
+def test_onnx2gguf_dry_run(
+    capsys: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Test the ONNX to GGUF conversion command in dry-run mode.
 
     Verifies that when the `dry_run` flag is provided, the command prints the
@@ -31,7 +33,10 @@ def test_onnx2gguf_dry_run(capsys):
     assert "Dry run" in out
 
 
-def test_onnx2gguf_massive(monkeypatch, capsys):
+def test_onnx2gguf_massive(
+    monkeypatch: int | float | str | bool | bytes | list | dict | tuple | None,
+    capsys: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Ensure that massive models trigger a warning during ONNX to GGUF conversion.
 
     By mocking the file size to be exceedingly large, this test confirms that
@@ -54,7 +59,9 @@ def test_onnx2gguf_massive(monkeypatch, capsys):
     assert "Massive model detected" in out
 
 
-def test_onnx2gguf(monkeypatch):
+def test_onnx2gguf(
+    monkeypatch: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Verify standard execution of the ONNX to GGUF conversion process.
 
     This test sets up a mock environment to simulate a normal-sized ONNX file,
@@ -88,7 +95,9 @@ def test_onnx2gguf(monkeypatch):
     assert len(called) == 1
 
 
-def test_gguf2onnx(monkeypatch):
+def test_gguf2onnx(
+    monkeypatch: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Validate the GGUF to ONNX reverse conversion execution.
 
     By replacing the GGUF reader and ONNX reconstructor with dummy objects,

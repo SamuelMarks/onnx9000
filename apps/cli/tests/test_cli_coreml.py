@@ -1,25 +1,28 @@
+"""Unit tests and verification suite for cli coreml functionality."""
+
 import argparse
+import contextlib
 from unittest.mock import patch
 
 from onnx9000_cli.main import coreml_cmd
 
 
-def test_coreml_cmd_js_missing():
+def test_coreml_cmd_js_missing() -> None:
+    """Verify that coreml cmd js missing behaves as expected."""
     args = argparse.Namespace(coreml_command="export", model="dummy.onnx")
     with (
         patch("os.path.exists", return_value=False),
         patch("sys.exit", side_effect=SystemExit) as mock_exit,
         patch("builtins.print") as mock_print,
+        contextlib.suppress(SystemExit),
     ):
-        try:
-            coreml_cmd(args)
-        except SystemExit:
-            pass
+        coreml_cmd(args)
     mock_exit.assert_called_once_with(1)
     mock_print.assert_called_once()
 
 
-def test_coreml_cmd_js_exists():
+def test_coreml_cmd_js_exists() -> None:
+    """Verify that coreml cmd js exists behaves as expected."""
     args = argparse.Namespace(coreml_command="export", model="dummy.onnx", output="out.mlpackage")
 
     with (

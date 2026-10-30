@@ -1,10 +1,13 @@
+"""Unit tests and verification suite for cli genai models functionality."""
+
 import argparse
-from unittest.mock import MagicMock, mock_open, patch
+from unittest.mock import mock_open, patch
 
 from onnx9000_cli.main import llama_web_cmd, whisper_llm_cmd
 
 
-def test_whisper_llm_cmd_stdout():
+def test_whisper_llm_cmd_stdout() -> None:
+    """Verify that whisper llm cmd stdout behaves as expected."""
     args = argparse.Namespace(model="whisper.onnx", audio="test.wav", output=None)
     with (
         patch("onnx9000.core.models.whisper.Whisper") as mock_whisper,
@@ -15,7 +18,8 @@ def test_whisper_llm_cmd_stdout():
     mock_print.assert_any_call("Transcription: Transcribed text mock")
 
 
-def test_whisper_llm_cmd_file():
+def test_whisper_llm_cmd_file() -> None:
+    """Verify that whisper llm cmd file behaves as expected."""
     args = argparse.Namespace(model="whisper.onnx", audio="test.wav", output="out.txt")
     m_open = mock_open()
     with (
@@ -28,7 +32,8 @@ def test_whisper_llm_cmd_file():
     m_open().write.assert_called_once_with("Transcribed text mock")
 
 
-def test_llama_web_cmd_stdout():
+def test_llama_web_cmd_stdout() -> None:
+    """Verify that llama web cmd stdout behaves as expected."""
     args = argparse.Namespace(model="llama.onnx", prompt="Hello", output=None)
     with (
         patch("onnx9000.core.models.llama.LLaMA") as mock_llama,
@@ -39,7 +44,8 @@ def test_llama_web_cmd_stdout():
     mock_print.assert_any_call("Generated text: Generated text mock")
 
 
-def test_llama_web_cmd_file():
+def test_llama_web_cmd_file() -> None:
+    """Verify that llama web cmd file behaves as expected."""
     args = argparse.Namespace(model="llama.onnx", prompt="Hello", output="out.txt")
     m_open = mock_open()
     with (

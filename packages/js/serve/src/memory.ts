@@ -13,24 +13,45 @@
 // 99. Share weights natively across multiple instances
 // 100. Force Javascript Garbage Collection
 
+import { BackendError } from '@onnx9000/core';
+/** Interface `ModelInstance` definition. */
 export interface ModelInstance {
+  /** Property `id`. */
   id: string;
+  /** Property `sizeBytes`. */
   sizeBytes: number;
+  /** Property `lastUsed`. */
   lastUsed: number;
+  /** Property `buffer`. */
   buffer: ArrayBuffer | SharedArrayBuffer; // 99. Share weights natively
+  /** Property `unload`. */
   unload: () => void;
 }
 
+/** Represents the `MemoryManager` class. */
 export class MemoryManager {
+  /** Property `maxVramBytes` of `MemoryManager`. */
   public maxVramBytes: number = 4 * 1024 * 1024 * 1024; // 4GB Default
+  /** Property `maxRamBytes` of `MemoryManager`. */
   public maxRamBytes: number = 8 * 1024 * 1024 * 1024; // 8GB Default
+  /** Property `maxRamPercent` of `MemoryManager`. */
   public maxRamPercent: number = 0.85; // 95. Implement graceful memory eviction limits
+  /** Property `maxConcurrentExecutions` of `MemoryManager`. */
   public maxConcurrentExecutions: number = 4; // 97. Provide global configuration
 
+  /** Property `activeModels` of `MemoryManager`. */
   private activeModels: Map<string, ModelInstance> = new Map();
+  /** Property `currentRamUsage` of `MemoryManager`. */
   private currentRamUsage: number = 0; // 92
+  /** Property `currentVramUsage` of `MemoryManager`. */
+  public currentVramUsage: number = 0; // 91
+  /** Property `activeExecutions` of `MemoryManager`. */
   private activeExecutions: number = 0;
 
+  /**
+   * Initializes a new `MemoryManager` instance.
+   * @param options Parameter `options`.
+   */
   constructor(options?: {
     maxVramBytes?: number;
     maxRamBytes?: number;
@@ -46,35 +67,36 @@ export class MemoryManager {
 
   // 93. LRU Cache logic
   // 94. Evict models gracefully
-  public async requestLoad(
-    modelId: string,
-    requiredBytes: number,
-  ): Promise<boolean> {
+  /**
+   * Executes `requestLoad` on `MemoryManager`.
+   * @param modelId Parameter `modelId`.
+   * @param requiredBytes Parameter `requiredBytes`.
+   * @returns Result of `requestLoad`.
+   */
+  public async requestLoad(modelId: string, requiredBytes: number): Promise<boolean> {
     // 98. static arena planner check
     if (requiredBytes > this.maxRamBytes * this.maxRamPercent) {
-      console.error(
-        `Model ${modelId} (${requiredBytes}B) exceeds max allowable RAM bounds.`,
-      );
+      console.error(`Model ${modelId} (${requiredBytes}B) exceeds max allowable RAM bounds.`);
       return false; // Refuse loading
     }
 
-    if (
-      this.currentRamUsage + requiredBytes >
-      this.maxRamBytes * this.maxRamPercent
-    ) {
+    if (this.currentRamUsage + requiredBytes > this.maxRamBytes * this.maxRamPercent) {
       this.evictUntilSpaceAvailable(requiredBytes);
     }
 
     // 96. Reject if severely OOM even after eviction
     if (this.currentRamUsage + requiredBytes > this.maxRamBytes) {
-      throw new Error(
-        "HTTP 503: Service Unavailable. Server is Out Of Memory.",
-      );
+      throw new BackendError('HTTP 503: Service Unavailable. Server is Out Of Memory.');
     }
 
     return true;
   }
 
+  /**
+   * Executes `registerModel` on `MemoryManager`.
+   * @param instance Parameter `instance`.
+   * @returns Result of `registerModel`.
+   */
   public registerModel(instance: ModelInstance) {
     this.activeModels.set(instance.id, instance);
     this.currentRamUsage += instance.sizeBytes;
@@ -82,6 +104,11 @@ export class MemoryManager {
     this.currentVramUsage += instance.sizeBytes * 0.5;
   }
 
+  /**
+   * Executes `trackUsage` on `MemoryManager`.
+   * @param modelId Parameter `modelId`.
+   * @returns Result of `trackUsage`.
+   */
   public trackUsage(modelId: string) {
     const model = this.activeModels.get(modelId);
     if (model) {
@@ -89,22 +116,19 @@ export class MemoryManager {
     }
   }
 
+  /** Executes `beginExecution` on `MemoryManager`. */
   public async beginExecution(): Promise<void> {
     if (this.activeExecutions >= this.maxConcurrentExecutions) {
-      throw new Error(
-        "HTTP 503: Service Unavailable. Max concurrent executions reached.",
-      );
+      throw new BackendError('HTTP 503: Service Unavailable. Max concurrent executions reached.');
     }
     this.activeExecutions++;
   }
 
+  /** Executes `endExecution` on `MemoryManager`. */
   public endExecution(): void {
     this.activeExecutions--;
     // 100. Force Javascript Garbage Collection (global.gc()) explicitly
-    if (
-      typeof global !== "undefined" &&
-      (global as ReturnType<typeof JSON.parse>).gc
-    ) {
+    if (typeof global !== 'undefined' && (global as ReturnType<typeof JSON.parse>).gc) {
       // Don't run it on every single execution to avoid stutter, but for massive batches
       if (Math.random() < 0.05) {
         (global as ReturnType<typeof JSON.parse>).gc();
@@ -112,22 +136,22 @@ export class MemoryManager {
     }
   }
 
+  /**
+   * Executes `evictUntilSpaceAvailable` on `MemoryManager`.
+   * @param requiredBytes Parameter `requiredBytes`.
+   * @returns Result of `evictUntilSpaceAvailable`.
+   */
   private evictUntilSpaceAvailable(requiredBytes: number) {
     const sortedModels = Array.from(this.activeModels.values()).sort(
       (a, b) => a.lastUsed - b.lastUsed,
     );
 
     for (const model of sortedModels) {
-      if (
-        this.currentRamUsage + requiredBytes <=
-        this.maxRamBytes * this.maxRamPercent
-      ) {
+      if (this.currentRamUsage + requiredBytes <= this.maxRamBytes * this.maxRamPercent) {
         break;
       }
 
-      console.log(
-        `Evicting model ${model.id} (LRU) to free ${model.sizeBytes} bytes.`,
-      );
+      console.log(`Evicting model ${model.id} (LRU) to free ${model.sizeBytes} bytes.`);
       model.unload();
       this.activeModels.delete(model.id);
       this.currentRamUsage -= model.sizeBytes;

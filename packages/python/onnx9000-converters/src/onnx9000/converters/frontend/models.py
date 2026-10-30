@@ -15,8 +15,21 @@ class BasicBlock(Module):
 
     expansion = 1
 
-    def __init__(self, inplanes, planes, stride=1, downsample=None) -> None:
-        """Implement the __init__ method."""
+    def __init__(
+        self,
+        inplanes: int | float | str | bool | bytes | list | dict | tuple | None,
+        planes: int | float | str | bool | bytes | list | dict | tuple | None,
+        stride: int | float | str | bool | bytes | list | dict | tuple | None = 1,
+        downsample: int | float | str | bool | bytes | list | dict | tuple | None = None,
+    ) -> None:
+        """Initialize BasicBlock with configured parameters and state.
+
+        Args:
+            inplanes: Parameter specifying inplanes.
+            planes: Parameter specifying planes.
+            stride: Parameter specifying stride.
+            downsample: Parameter specifying downsample.
+        """
         super().__init__()
         self.conv1 = Conv2d(inplanes, planes, kernel_size=3, stride=stride, padding=1, bias=False)
         self.bn1 = BatchNorm2d(planes)
@@ -24,8 +37,17 @@ class BasicBlock(Module):
         self.bn2 = BatchNorm2d(planes)
         self.downsample = downsample
 
-    def forward(self, x):
-        """Implement the forward method."""
+    def forward(
+        self, x: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
+        """Execute forward on BasicBlock.
+
+        Args:
+            x: Parameter specifying x.
+
+        Returns:
+            Result of forward.
+        """
         identity = x
         out = self.conv1(x)
         out = self.bn1(out)
@@ -42,8 +64,14 @@ class BasicBlock(Module):
 class ResNet18(Module):
     """Class ResNet18 implementation."""
 
-    def __init__(self, num_classes=1000) -> None:
-        """Implement the __init__ method."""
+    def __init__(
+        self, num_classes: int | float | str | bool | bytes | list | dict | tuple | None = 1000
+    ) -> None:
+        """Initialize ResNet18 with configured parameters and state.
+
+        Args:
+            num_classes: Parameter specifying num classes.
+        """
         super().__init__()
         self.inplanes = 64
         self.conv1 = Conv2d(3, self.inplanes, kernel_size=7, stride=2, padding=3, bias=False)
@@ -56,8 +84,22 @@ class ResNet18(Module):
         self.avgpool = AdaptiveAvgPool2d((1, 1))
         self.fc = Linear(512, num_classes)
 
-    def _make_layer(self, planes, blocks, stride=1):
-        """Implement the _make_layer method."""
+    def _make_layer(
+        self,
+        planes: int | float | str | bool | bytes | list | dict | tuple | None,
+        blocks: int | float | str | bool | bytes | list | dict | tuple | None,
+        stride: int | float | str | bool | bytes | list | dict | tuple | None = 1,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
+        """Execute make layer on ResNet18.
+
+        Args:
+            planes: Parameter specifying planes.
+            blocks: Parameter specifying blocks.
+            stride: Parameter specifying stride.
+
+        Returns:
+            Result of make layer.
+        """
         downsample = None
         if stride != 1 or self.inplanes != planes:
             downsample = Sequential(
@@ -70,8 +112,17 @@ class ResNet18(Module):
             layers.append(BasicBlock(self.inplanes, planes))
         return Sequential(*layers)
 
-    def forward(self, x):
-        """Implement the forward method."""
+    def forward(
+        self, x: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
+        """Execute forward on ResNet18.
+
+        Args:
+            x: Parameter specifying x.
+
+        Returns:
+            Result of forward.
+        """
         x = self.conv1(x)
         x = self.bn1(x)
         x = relu(x)
@@ -89,8 +140,14 @@ class ResNet18(Module):
 class MobileNetV2(Module):
     """Class MobileNetV2 implementation."""
 
-    def __init__(self, num_classes=1000) -> None:
-        """Implement the __init__ method."""
+    def __init__(
+        self, num_classes: int | float | str | bool | bytes | list | dict | tuple | None = 1000
+    ) -> None:
+        """Initialize MobileNetV2 with configured parameters and state.
+
+        Args:
+            num_classes: Parameter specifying num classes.
+        """
         super().__init__()
         self.features = Sequential(
             Conv2d(3, 32, kernel_size=3, stride=2, padding=1, bias=False),
@@ -100,8 +157,17 @@ class MobileNetV2(Module):
         )
         self.classifier = Sequential(Linear(1280, num_classes))
 
-    def forward(self, x):
-        """Implement the forward method."""
+    def forward(
+        self, x: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
+        """Execute forward on MobileNetV2.
+
+        Args:
+            x: Parameter specifying x.
+
+        Returns:
+            Result of forward.
+        """
         x = self.features(x)
         x = x.mean((2, 3))
         x = x.flatten(1)
@@ -112,8 +178,17 @@ class MobileNetV2(Module):
 class GPT2Block(Module):
     """Class GPT2Block implementation."""
 
-    def __init__(self, d_model=768, n_head=12) -> None:
-        """Implement the __init__ method."""
+    def __init__(
+        self,
+        d_model: int | float | str | bool | bytes | list | dict | tuple | None = 768,
+        n_head: int | float | str | bool | bytes | list | dict | tuple | None = 12,
+    ) -> None:
+        """Initialize GPT2Block with configured parameters and state.
+
+        Args:
+            d_model: Parameter specifying d model.
+            n_head: Parameter specifying n head.
+        """
         super().__init__()
         self.ln_1 = LayerNorm(d_model)
         self.attn_c_attn = Linear(d_model, 3 * d_model)
@@ -122,8 +197,17 @@ class GPT2Block(Module):
         self.mlp_c_fc = Linear(d_model, 4 * d_model)
         self.mlp_c_proj = Linear(4 * d_model, d_model)
 
-    def forward(self, x):
-        """Implement the forward method."""
+    def forward(
+        self, x: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
+        """Execute forward on GPT2Block.
+
+        Args:
+            x: Parameter specifying x.
+
+        Returns:
+            Result of forward.
+        """
         a = self.ln_1(x)
         a = self.attn_c_attn(a)
         a = self.attn_c_proj(a)
@@ -139,16 +223,34 @@ class GPT2Block(Module):
 class GPT2(Module):
     """Class GPT2 implementation."""
 
-    def __init__(self, vocab_size=50257, d_model=768) -> None:
-        """Implement the __init__ method."""
+    def __init__(
+        self,
+        vocab_size: int | float | str | bool | bytes | list | dict | tuple | None = 50257,
+        d_model: int | float | str | bool | bytes | list | dict | tuple | None = 768,
+    ) -> None:
+        """Initialize GPT2 with configured parameters and state.
+
+        Args:
+            vocab_size: Parameter specifying vocab size.
+            d_model: Parameter specifying d model.
+        """
         super().__init__()
         self.wte = Embedding(vocab_size, d_model)
         self.wpe = Embedding(1024, d_model)
         self.blocks = Sequential(*[GPT2Block(d_model) for _ in range(2)])
         self.ln_f = LayerNorm(d_model)
 
-    def forward(self, idx):
-        """Implement the forward method."""
+    def forward(
+        self, idx: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
+        """Execute forward on GPT2.
+
+        Args:
+            idx: Parameter specifying idx.
+
+        Returns:
+            Result of forward.
+        """
         x = self.wte(idx)
         x = self.blocks(x)
         x = self.ln_f(x)

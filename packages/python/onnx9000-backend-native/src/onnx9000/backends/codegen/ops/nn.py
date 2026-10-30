@@ -3,13 +3,15 @@
 Translates ONNX operations to equivalent C++ bindings and memory buffers.
 """
 
-from typing import Any
-
+from onnx9000.backends.codegen.generator import Generator
+from onnx9000.core.dtypes import to_cpp_type
 from onnx9000.core.ir import Node
 from onnx9000.core.registry import global_registry as registry
 
 
-def _get_attr(node: Node, name: str, default: Any) -> Any:
+def _get_attr(
+    node: Node, name: str, default: int | float | str | bool | bytes | list | dict | tuple | None
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
     """Safely retrieve attribute values."""
     attr = node.attributes.get(name)
     if attr is not None:
@@ -18,8 +20,16 @@ def _get_attr(node: Node, name: str, default: Any) -> Any:
 
 
 @registry.register_op("", "Attention")
-def generate_attention(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implement the generate_attention method or operation."""
+def generate_attention(node: Node, ctx: Generator) -> str:
+    """Generate target source code for the attention operator.
+
+    Args:
+        node: Parameter specifying node (Node).
+        ctx: Parameter specifying ctx ('onnx9000.backends.codegen.Generator').
+
+    Returns:
+        Result of generate attention (str).
+    """
     ctx.get_tensor_name(node.inputs[0])
     code = "// Attention (Mock)\n"
     for _i, out_name in enumerate(node.outputs):
@@ -28,28 +38,28 @@ def generate_attention(node: Node, ctx: "onnx9000.backends.codegen.Generator") -
         out = ctx.get_tensor_name(out_name)
         info = ctx.graph.tensors[out_name]
         idx = info.buffer_id
-        c_type = "float"
-        if info.dtype is not None:
-            from onnx9000.core.dtypes import to_cpp_type
-
-            c_type = to_cpp_type(info.dtype)
+        c_type = to_cpp_type(info.dtype) if info.dtype is not None else "float"
         shape_str = "{" + ", ".join(map(str, info.shape)) + "}"
         code += f"\n        std::vector<int64_t> {out}_shape = {shape_str};\n        int64_t {out}_size = 1;\n        for (auto d : {out}_shape) {{\n            if (d < 0) d = 1; // MOCK ONLY\n            {out}_size *= d;\n        }}\n        if ({out}_size < 0) {out}_size = 1;\n        if ({out}_shape.empty()) {out}_shape = {{1}}; // Safe fallback\n\n        for (size_t k = 0; k < {out}_shape.size(); ++k) {{\n            if ({out}_shape[k] < 0) {out}_shape[k] = 1;\n        }}\n\n        _arena[{idx}].resize({out}_size * sizeof({c_type}));\n        onnx9000::Tensor<{c_type}> {out}(reinterpret_cast<{c_type}*>(_arena[{idx}].data()), {out}_shape);\n        std::fill({out}.data, {out}.data + {out}_size, static_cast<{c_type}>(0));\n        "
     return code
 
 
 @registry.register_op("", "Conv")
-def generate_conv(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
-    """Implement the generate_conv method or operation."""
+def generate_conv(node: Node, generator_context: Generator) -> str:
+    """Generate target source code for the conv operator.
+
+    Args:
+        node: Parameter specifying node (Node).
+        generator_context: Parameter specifying generator context ('onnx9000.backends.codegen.Generator').
+
+    Returns:
+        Result of generate conv (str).
+    """
     x_var = generator_context.get_tensor_name(node.inputs[0])
     w_var = generator_context.get_tensor_name(node.inputs[1])
     tensor_info = generator_context.graph.tensors[node.outputs[0]]
     offset = generator_context.tensor_offsets.get(node.outputs[0], 0)
-    cpp_type = "float"
-    if tensor_info.dtype is not None:
-        from onnx9000.core.dtypes import to_cpp_type
-
-        cpp_type = to_cpp_type(tensor_info.dtype)
+    cpp_type = to_cpp_type(tensor_info.dtype) if tensor_info.dtype is not None else "float"
     b_opt = "std::nullopt"
     if len(node.inputs) > 2:
         b_var = generator_context.get_tensor_name(node.inputs[2])
@@ -63,17 +73,13 @@ def generate_conv(node: Node, generator_context: "onnx9000.backends.codegen.Gene
 
 
 @registry.register_op("", "Transpose")
-def generate_transpose(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
+def generate_transpose(node: Node, generator_context: Generator) -> str:
     """Generate Transpose op."""
     inp = generator_context.get_tensor_name(node.inputs[0])
     out = generator_context.get_tensor_name(node.outputs[0])
     tensor_info = generator_context.graph.tensors[node.outputs[0]]
     offset = generator_context.tensor_offsets.get(node.outputs[0], 0)
-    cpp_type = "float"
-    if tensor_info.dtype is not None:
-        from onnx9000.core.dtypes import to_cpp_type
-
-        cpp_type = to_cpp_type(tensor_info.dtype)
+    cpp_type = to_cpp_type(tensor_info.dtype) if tensor_info.dtype is not None else "float"
     perm = _get_attr(node, "perm", [])
 
     perm_logic = ""
@@ -98,17 +104,17 @@ def generate_transpose(node: Node, generator_context: "onnx9000.backends.codegen
         std::vector<int64_t> {out}_shape;
         std::vector<int64_t> {out}_perm;
         {perm_logic}
-        
+
         int64_t {out}_size = 1;
         for (auto d : {out}_shape) {out}_size *= d;
         /* preallocated */
         onnx9000::Tensor<{cpp_type}> {out}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);
-        
+
         std::vector<int64_t> {out}_strides({out}_shape.size(), 1);
         for (int i = {out}_shape.size() - 2; i >= 0; --i) {{
             {out}_strides[i] = {out}_strides[i+1] * {out}_shape[i+1];
         }}
-        
+
         for (int64_t i = 0; i < {out}_size; ++i) {{
             int64_t in_idx = 0;
             int64_t temp = i;
@@ -123,17 +129,21 @@ def generate_transpose(node: Node, generator_context: "onnx9000.backends.codegen
 
 
 @registry.register_op("", "Softmax")
-def generate_softmax(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implement the generate_softmax method or operation."""
+def generate_softmax(node: Node, ctx: Generator) -> str:
+    """Generate target source code for the softmax operator.
+
+    Args:
+        node: Parameter specifying node (Node).
+        ctx: Parameter specifying ctx ('onnx9000.backends.codegen.Generator').
+
+    Returns:
+        Result of generate softmax (str).
+    """
     inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
     offset = ctx.tensor_offsets.get(node.outputs[0], 0)
-    cpp_type = "float"
-    if tensor_info.dtype is not None:
-        from onnx9000.core.dtypes import to_cpp_type
-
-        cpp_type = to_cpp_type(tensor_info.dtype)
+    cpp_type = to_cpp_type(tensor_info.dtype) if tensor_info.dtype is not None else "float"
     axis = _get_attr(node, "axis", -1)
 
     return f"""
@@ -174,17 +184,21 @@ def generate_softmax(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> 
 
 
 @registry.register_op("", "LogSoftmax")
-def generate_log_softmax(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implement the generate_log_softmax method or operation."""
+def generate_log_softmax(node: Node, ctx: Generator) -> str:
+    """Generate target source code for the log softmax operator.
+
+    Args:
+        node: Parameter specifying node (Node).
+        ctx: Parameter specifying ctx ('onnx9000.backends.codegen.Generator').
+
+    Returns:
+        Result of generate log softmax (str).
+    """
     inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
     offset = ctx.tensor_offsets.get(node.outputs[0], 0)
-    cpp_type = "float"
-    if tensor_info.dtype is not None:
-        from onnx9000.core.dtypes import to_cpp_type
-
-        cpp_type = to_cpp_type(tensor_info.dtype)
+    cpp_type = to_cpp_type(tensor_info.dtype) if tensor_info.dtype is not None else "float"
     axis = _get_attr(node, "axis", -1)
     in_buf = ctx.graph.tensors[node.inputs[0]].buffer_id
     in_obj = (
@@ -197,150 +211,186 @@ def generate_log_softmax(node: Node, ctx: "onnx9000.backends.codegen.Generator")
 
 
 @registry.register_op("", "Hardmax")
-def generate_hardmax(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implement the generate_hardmax method or operation."""
+def generate_hardmax(node: Node, ctx: Generator) -> str:
+    """Generate target source code for the hardmax operator.
+
+    Args:
+        node: Parameter specifying node (Node).
+        ctx: Parameter specifying ctx ('onnx9000.backends.codegen.Generator').
+
+    Returns:
+        Result of generate hardmax (str).
+    """
     inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
     offset = ctx.tensor_offsets.get(node.outputs[0], 0)
-    cpp_type = "float"
-    if tensor_info.dtype is not None:
-        from onnx9000.core.dtypes import to_cpp_type
-
-        cpp_type = to_cpp_type(tensor_info.dtype)
-    return f"\n        // Hardmax (Mock)\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {inp}.shape);\n        // Simple Hardmax implementation\n        {pragma}\n        for (int64_t i = 0; i < {in1}_size; ++i) {{\n            {out}.data[i] = ({in1}.data[i] == max_val) ? 1.0f : 0.0f;\n        }}\n        std::copy({inp}.data, {inp}.data + {inp}.size(), {out}.data);\n"
+    cpp_type = to_cpp_type(tensor_info.dtype) if tensor_info.dtype is not None else "float"
+    return f"\n        // Hardmax (Mock)\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {inp}.shape);\n        // Simple Hardmax implementation\n        for (int64_t i = 0; i < {inp}.size(); ++i) {{\n            {out}.data[i] = ({inp}.data[i] == max_val) ? 1.0f : 0.0f;\n        }}\n        std::copy({inp}.data, {inp}.data + {inp}.size(), {out}.data);\n"
 
 
 @registry.register_op("", "RNN")
-def generate_rnn(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implement the generate_rnn method or operation."""
+def generate_rnn(node: Node, ctx: Generator) -> str:
+    """Generate target source code for the rnn operator.
+
+    Args:
+        node: Parameter specifying node (Node).
+        ctx: Parameter specifying ctx ('onnx9000.backends.codegen.Generator').
+
+    Returns:
+        Result of generate rnn (str).
+    """
     ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
     offset = ctx.tensor_offsets.get(node.outputs[0], 0)
-    cpp_type = "float"
-    if tensor_info.dtype is not None:
-        from onnx9000.core.dtypes import to_cpp_type
-
-        cpp_type = to_cpp_type(tensor_info.dtype)
+    cpp_type = to_cpp_type(tensor_info.dtype) if tensor_info.dtype is not None else "float"
     out_shape_str = "{" + ", ".join(map(str, tensor_info.shape)) + "}"
     return f"\n        // RNN (Mock)\n        std::vector<int64_t> {out}_shape = {out_shape_str};\n        int64_t {out}_size = 1;\n        for (auto d : {out}_shape) {out}_size *= d;\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n        std::fill({out}.data, {out}.data + {out}_size, static_cast<{cpp_type}>(0));\n"
 
 
 @registry.register_op("", "LSTM")
-def generate_lstm(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implement the generate_lstm method or operation."""
+def generate_lstm(node: Node, ctx: Generator) -> str:
+    """Generate target source code for the lstm operator.
+
+    Args:
+        node: Parameter specifying node (Node).
+        ctx: Parameter specifying ctx ('onnx9000.backends.codegen.Generator').
+
+    Returns:
+        Result of generate lstm (str).
+    """
     ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
     offset = ctx.tensor_offsets.get(node.outputs[0], 0)
-    cpp_type = "float"
-    if tensor_info.dtype is not None:
-        from onnx9000.core.dtypes import to_cpp_type
-
-        cpp_type = to_cpp_type(tensor_info.dtype)
+    cpp_type = to_cpp_type(tensor_info.dtype) if tensor_info.dtype is not None else "float"
     out_shape_str = "{" + ", ".join(map(str, tensor_info.shape)) + "}"
     return f"\n        // LSTM (Mock)\n        std::vector<int64_t> {out}_shape = {out_shape_str};\n        int64_t {out}_size = 1;\n        for (auto d : {out}_shape) {out}_size *= d;\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n        std::fill({out}.data, {out}.data + {out}_size, static_cast<{cpp_type}>(0));\n"
 
 
 @registry.register_op("", "GRU")
-def generate_gru(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implement the generate_gru method or operation."""
+def generate_gru(node: Node, ctx: Generator) -> str:
+    """Generate target source code for the gru operator.
+
+    Args:
+        node: Parameter specifying node (Node).
+        ctx: Parameter specifying ctx ('onnx9000.backends.codegen.Generator').
+
+    Returns:
+        Result of generate gru (str).
+    """
     ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
     offset = ctx.tensor_offsets.get(node.outputs[0], 0)
-    cpp_type = "float"
-    if tensor_info.dtype is not None:
-        from onnx9000.core.dtypes import to_cpp_type
-
-        cpp_type = to_cpp_type(tensor_info.dtype)
+    cpp_type = to_cpp_type(tensor_info.dtype) if tensor_info.dtype is not None else "float"
     out_shape_str = "{" + ", ".join(map(str, tensor_info.shape)) + "}"
     return f"\n        // GRU (Mock)\n        std::vector<int64_t> {out}_shape = {out_shape_str};\n        int64_t {out}_size = 1;\n        for (auto d : {out}_shape) {out}_size *= d;\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n        std::fill({out}.data, {out}.data + {out}_size, static_cast<{cpp_type}>(0));\n"
 
 
 @registry.register_op("", "ConvTranspose")
-def generate_conv_transpose(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implement the generate_conv_transpose method or operation."""
+def generate_conv_transpose(node: Node, ctx: Generator) -> str:
+    """Generate target source code for the conv transpose operator.
+
+    Args:
+        node: Parameter specifying node (Node).
+        ctx: Parameter specifying ctx ('onnx9000.backends.codegen.Generator').
+
+    Returns:
+        Result of generate conv transpose (str).
+    """
     ctx.get_tensor_name(node.inputs[0])
     ctx.get_tensor_name(node.inputs[1])
     ctx.get_tensor_name(node.inputs[2]) if len(node.inputs) > 2 else None
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
     offset = ctx.tensor_offsets.get(node.outputs[0], 0)
-    cpp_type = "float"
-    if tensor_info.dtype is not None:
-        from onnx9000.core.dtypes import to_cpp_type
-
-        cpp_type = to_cpp_type(tensor_info.dtype)
+    cpp_type = to_cpp_type(tensor_info.dtype) if tensor_info.dtype is not None else "float"
     out_shape_str = "{" + ", ".join(map(str, tensor_info.shape)) + "}"
     return f"\n        // ConvTranspose (Mock)\n        std::vector<int64_t> {out}_shape = {out_shape_str};\n        int64_t {out}_size = 1;\n        for (auto d : {out}_shape) {{\n            if (d < 0) d = 1; // MOCK ONLY\n            {out}_size *= d;\n        }}\n        if ({out}_size < 0) {out}_size = 1;\n        if ({out}_shape.empty()) {out}_shape = {{1}}; // Safe fallback\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n        // Fill mock\n        std::fill({out}.data, {out}.data + {out}_size, static_cast<{cpp_type}>(0));\n    "
 
 
 @registry.register_op("", "DeformConv")
-def generate_deform_conv(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implement the generate_deform_conv method or operation."""
+def generate_deform_conv(node: Node, ctx: Generator) -> str:
+    """Generate target source code for the deform conv operator.
+
+    Args:
+        node: Parameter specifying node (Node).
+        ctx: Parameter specifying ctx ('onnx9000.backends.codegen.Generator').
+
+    Returns:
+        Result of generate deform conv (str).
+    """
     ctx.get_tensor_name(node.inputs[0])
     ctx.get_tensor_name(node.inputs[1])
     ctx.get_tensor_name(node.inputs[2])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
     offset = ctx.tensor_offsets.get(node.outputs[0], 0)
-    cpp_type = "float"
-    if tensor_info.dtype is not None:
-        from onnx9000.core.dtypes import to_cpp_type
-
-        cpp_type = to_cpp_type(tensor_info.dtype)
+    cpp_type = to_cpp_type(tensor_info.dtype) if tensor_info.dtype is not None else "float"
     out_shape_str = "{" + ", ".join(map(str, tensor_info.shape)) + "}"
     return f"\n        // DeformConv (Mock)\n        std::vector<int64_t> {out}_shape = {out_shape_str};\n        int64_t {out}_size = 1;\n        for (auto d : {out}_shape) {{\n            if (d < 0) d = 1; // MOCK ONLY\n            {out}_size *= d;\n        }}\n        if ({out}_size < 0) {out}_size = 1;\n        if ({out}_shape.empty()) {out}_shape = {{1}}; // Safe fallback\n\n        for (size_t i = 0; i < {out}_shape.size(); ++i) {{\n            if ({out}_shape[i] < 0) {out}_shape[i] = 1;\n        }}\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n        // Fill mock\n        std::fill({out}.data, {out}.data + {out}_size, static_cast<{cpp_type}>(0));\n    "
 
 
 @registry.register_op("", "LpNormalization")
-def generate_lp_normalization(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implement the generate_lp_normalization method or operation."""
+def generate_lp_normalization(node: Node, ctx: Generator) -> str:
+    """Generate target source code for the lp normalization operator.
+
+    Args:
+        node: Parameter specifying node (Node).
+        ctx: Parameter specifying ctx ('onnx9000.backends.codegen.Generator').
+
+    Returns:
+        Result of generate lp normalization (str).
+    """
     ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
     offset = ctx.tensor_offsets.get(node.outputs[0], 0)
-    cpp_type = "float"
-    if tensor_info.dtype is not None:
-        from onnx9000.core.dtypes import to_cpp_type
-
-        cpp_type = to_cpp_type(tensor_info.dtype)
+    cpp_type = to_cpp_type(tensor_info.dtype) if tensor_info.dtype is not None else "float"
     out_shape_str = "{" + ", ".join(map(str, tensor_info.shape)) + "}"
     return f"\n        // LpNormalization (Mock)\n        std::vector<int64_t> {out}_shape = {out_shape_str};\n        int64_t {out}_size = 1;\n        for (auto d : {out}_shape) {{\n            if (d < 0) d = 1; // MOCK ONLY\n            {out}_size *= d;\n        }}\n        if ({out}_size < 0) {out}_size = 1;\n        if ({out}_shape.empty()) {out}_shape = {{1}}; // Safe fallback\n\n        for (size_t i = 0; i < {out}_shape.size(); ++i) {{\n            if ({out}_shape[i] < 0) {out}_shape[i] = 1;\n        }}\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n        // Fill mock\n        std::fill({out}.data, {out}.data + {out}_size, static_cast<{cpp_type}>(0));\n    "
 
 
 @registry.register_op("", "LpPool")
-def generate_lp_pool(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implement the generate_lp_pool method or operation."""
+def generate_lp_pool(node: Node, ctx: Generator) -> str:
+    """Generate target source code for the lp pool operator.
+
+    Args:
+        node: Parameter specifying node (Node).
+        ctx: Parameter specifying ctx ('onnx9000.backends.codegen.Generator').
+
+    Returns:
+        Result of generate lp pool (str).
+    """
     ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
     offset = ctx.tensor_offsets.get(node.outputs[0], 0)
-    cpp_type = "float"
-    if tensor_info.dtype is not None:
-        from onnx9000.core.dtypes import to_cpp_type
-
-        cpp_type = to_cpp_type(tensor_info.dtype)
+    cpp_type = to_cpp_type(tensor_info.dtype) if tensor_info.dtype is not None else "float"
     out_shape_str = "{" + ", ".join(map(str, tensor_info.shape)) + "}"
     return f"\n        // LpPool (Mock)\n        std::vector<int64_t> {out}_shape = {out_shape_str};\n        int64_t {out}_size = 1;\n        for (auto d : {out}_shape) {{\n            if (d < 0) d = 1; // MOCK ONLY\n            {out}_size *= d;\n        }}\n        if ({out}_size < 0) {out}_size = 1;\n        if ({out}_shape.empty()) {out}_shape = {{1}}; // Safe fallback\n\n        for (size_t i = 0; i < {out}_shape.size(); ++i) {{\n            if ({out}_shape[i] < 0) {out}_shape[i] = 1;\n        }}\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n        // Fill mock\n        std::fill({out}.data, {out}.data + {out}_size, static_cast<{cpp_type}>(0));\n    "
 
 
 @registry.register_op("", "LayerNormalization")
-def generate_layer_normalization(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implement the generate_layer_normalization method or operation."""
+def generate_layer_normalization(node: Node, ctx: Generator) -> str:
+    """Generate target source code for the layer normalization operator.
+
+    Args:
+        node: Parameter specifying node (Node).
+        ctx: Parameter specifying ctx ('onnx9000.backends.codegen.Generator').
+
+    Returns:
+        Result of generate layer normalization (str).
+    """
     inp = ctx.get_tensor_name(node.inputs[0])
     scale = ctx.get_tensor_name(node.inputs[1])
     b = ctx.get_tensor_name(node.inputs[2]) if len(node.inputs) > 2 else None
     out_y = ctx.get_tensor_name(node.outputs[0])
     y_info = ctx.graph.tensors[node.outputs[0]]
     buffer_idx_y = y_info.buffer_id
-    cpp_type = "float"
-    if y_info.dtype is not None:
-        from onnx9000.core.dtypes import to_cpp_type
-
-        cpp_type = to_cpp_type(y_info.dtype)
+    cpp_type = to_cpp_type(y_info.dtype) if y_info.dtype is not None else "float"
     axis = _get_attr(node, "axis", -1)
     epsilon = _get_attr(node, "epsilon", 1e-05)
     in_buf = ctx.graph.tensors[node.inputs[0]].buffer_id
@@ -371,19 +421,21 @@ def generate_layer_normalization(node: Node, ctx: "onnx9000.backends.codegen.Gen
 
 
 @registry.register_op("", "MeanVarianceNormalization")
-def generate_mean_variance_normalization(
-    node: Node, ctx: "onnx9000.backends.codegen.Generator"
-) -> str:
-    """Implement the generate_mean_variance_normalization method or operation."""
+def generate_mean_variance_normalization(node: Node, ctx: Generator) -> str:
+    """Generate target source code for the mean variance normalization operator.
+
+    Args:
+        node: Parameter specifying node (Node).
+        ctx: Parameter specifying ctx ('onnx9000.backends.codegen.Generator').
+
+    Returns:
+        Result of generate mean variance normalization (str).
+    """
     inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
     offset = ctx.tensor_offsets.get(node.outputs[0], 0)
-    cpp_type = "float"
-    if tensor_info.dtype is not None:
-        from onnx9000.core.dtypes import to_cpp_type
-
-        cpp_type = to_cpp_type(tensor_info.dtype)
+    cpp_type = to_cpp_type(tensor_info.dtype) if tensor_info.dtype is not None else "float"
     axes_name = ctx.get_tensor_name(node.inputs[1]) if len(node.inputs) > 1 else None
     in_buf = ctx.graph.tensors[node.inputs[0]].buffer_id
     in_obj = (
@@ -410,19 +462,23 @@ def generate_mean_variance_normalization(
 
 
 @registry.register_op("", "InstanceNormalization")
-def generate_instance_normalization(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implement the generate_instance_normalization method or operation."""
+def generate_instance_normalization(node: Node, ctx: Generator) -> str:
+    """Generate target source code for the instance normalization operator.
+
+    Args:
+        node: Parameter specifying node (Node).
+        ctx: Parameter specifying ctx ('onnx9000.backends.codegen.Generator').
+
+    Returns:
+        Result of generate instance normalization (str).
+    """
     inp = ctx.get_tensor_name(node.inputs[0])
     scale = ctx.get_tensor_name(node.inputs[1])
     b = ctx.get_tensor_name(node.inputs[2])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
     offset = ctx.tensor_offsets.get(node.outputs[0], 0)
-    cpp_type = "float"
-    if tensor_info.dtype is not None:
-        from onnx9000.core.dtypes import to_cpp_type
-
-        cpp_type = to_cpp_type(tensor_info.dtype)
+    cpp_type = to_cpp_type(tensor_info.dtype) if tensor_info.dtype is not None else "float"
     epsilon = _get_attr(node, "epsilon", 1e-05)
     in_buf = ctx.graph.tensors[node.inputs[0]].buffer_id
     in_obj = (
@@ -449,33 +505,41 @@ def generate_instance_normalization(node: Node, ctx: "onnx9000.backends.codegen.
 
 
 @registry.register_op("", "MaxUnpool")
-def generate_max_unpool(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implement the generate_max_unpool method or operation."""
+def generate_max_unpool(node: Node, ctx: Generator) -> str:
+    """Generate target source code for the max unpool operator.
+
+    Args:
+        node: Parameter specifying node (Node).
+        ctx: Parameter specifying ctx ('onnx9000.backends.codegen.Generator').
+
+    Returns:
+        Result of generate max unpool (str).
+    """
     ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
     offset = ctx.tensor_offsets.get(node.outputs[0], 0)
-    cpp_type = "float"
-    if tensor_info.dtype is not None:
-        from onnx9000.core.dtypes import to_cpp_type
-
-        cpp_type = to_cpp_type(tensor_info.dtype)
+    cpp_type = to_cpp_type(tensor_info.dtype) if tensor_info.dtype is not None else "float"
     out_shape_str = "{" + ", ".join(map(str, tensor_info.shape)) + "}"
     return f"\n        // MaxUnpool (Mock)\n        std::vector<int64_t> {out}_shape = {out_shape_str};\n        int64_t {out}_size = 1;\n        for (auto d : {out}_shape) {{\n            if (d < 0) d = 1; // MOCK ONLY\n            {out}_size *= d;\n        }}\n        if ({out}_size < 0) {out}_size = 1;\n        if ({out}_shape.empty()) {out}_shape = {{1}}; // Safe fallback\n\n        for (size_t i = 0; i < {out}_shape.size(); ++i) {{\n            if ({out}_shape[i] < 0) {out}_shape[i] = 1;\n        }}\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n        // Fill mock\n        std::fill({out}.data, {out}.data + {out}_size, static_cast<{cpp_type}>(0));\n    "
 
 
 @registry.register_op("", "AveragePool")
-def generate_average_pool(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implement the generate_average_pool method or operation."""
+def generate_average_pool(node: Node, ctx: Generator) -> str:
+    """Generate target source code for the average pool operator.
+
+    Args:
+        node: Parameter specifying node (Node).
+        ctx: Parameter specifying ctx ('onnx9000.backends.codegen.Generator').
+
+    Returns:
+        Result of generate average pool (str).
+    """
     inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
     offset = ctx.tensor_offsets.get(node.outputs[0], 0)
-    cpp_type = "float"
-    if tensor_info.dtype is not None:
-        from onnx9000.core.dtypes import to_cpp_type
-
-        cpp_type = to_cpp_type(tensor_info.dtype)
+    cpp_type = to_cpp_type(tensor_info.dtype) if tensor_info.dtype is not None else "float"
     kernel_shape = _get_attr(node, "kernel_shape", [1, 1])
     strides = _get_attr(node, "strides", [1, 1])
     pads = _get_attr(node, "pads", [0, 0, 0, 0])
@@ -547,17 +611,21 @@ def generate_average_pool(node: Node, ctx: "onnx9000.backends.codegen.Generator"
 
 
 @registry.register_op("", "MaxPool")
-def generate_max_pool(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implement the generate_max_pool method or operation."""
+def generate_max_pool(node: Node, ctx: Generator) -> str:
+    """Generate target source code for the max pool operator.
+
+    Args:
+        node: Parameter specifying node (Node).
+        ctx: Parameter specifying ctx ('onnx9000.backends.codegen.Generator').
+
+    Returns:
+        Result of generate max pool (str).
+    """
     inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
     offset = ctx.tensor_offsets.get(node.outputs[0], 0)
-    cpp_type = "float"
-    if tensor_info.dtype is not None:
-        from onnx9000.core.dtypes import to_cpp_type
-
-        cpp_type = to_cpp_type(tensor_info.dtype)
+    cpp_type = to_cpp_type(tensor_info.dtype) if tensor_info.dtype is not None else "float"
     kernel_shape = _get_attr(node, "kernel_shape", [1, 1])
     strides = _get_attr(node, "strides", [1, 1])
     pads = _get_attr(node, "pads", [0, 0, 0, 0])
@@ -628,29 +696,33 @@ def generate_max_pool(node: Node, ctx: "onnx9000.backends.codegen.Generator") ->
 
 
 @registry.register_op("", "GlobalMaxPool")
-def generate_global_max_pool(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implement the generate_global_max_pool method or operation."""
+def generate_global_max_pool(node: Node, ctx: Generator) -> str:
+    """Generate target source code for the global max pool operator.
+
+    Args:
+        node: Parameter specifying node (Node).
+        ctx: Parameter specifying ctx ('onnx9000.backends.codegen.Generator').
+
+    Returns:
+        Result of generate global max pool (str).
+    """
     inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
     offset = ctx.tensor_offsets.get(node.outputs[0], 0)
-    cpp_type = "float"
-    if tensor_info.dtype is not None:
-        from onnx9000.core.dtypes import to_cpp_type
-
-        cpp_type = to_cpp_type(tensor_info.dtype)
+    cpp_type = to_cpp_type(tensor_info.dtype) if tensor_info.dtype is not None else "float"
 
     return f"""
         // GlobalMaxPool
         std::vector<int64_t> {out}_shape = {inp}.shape;
         int64_t {out}_size = 1;
-        
+
         if ({out}_shape.size() >= 3) {{
             for (size_t i = 2; i < {out}_shape.size(); ++i) {{
                 {out}_shape[i] = 1;
             }}
         }}
-        
+
         for (auto d : {out}_shape) {out}_size *= d;
 
         /* preallocated */
@@ -662,7 +734,7 @@ def generate_global_max_pool(node: Node, ctx: "onnx9000.backends.codegen.Generat
             for (size_t i = 2; i < {inp}.shape.size(); ++i) {{
                 spatial_size *= {inp}.shape[i];
             }}
-            
+
             for (int64_t c = 0; c < num_channels; ++c) {{
                 {cpp_type} max_val = std::numeric_limits<{cpp_type}>::lowest();
                 for (int64_t s = 0; s < spatial_size; ++s) {{
@@ -680,29 +752,33 @@ def generate_global_max_pool(node: Node, ctx: "onnx9000.backends.codegen.Generat
 
 
 @registry.register_op("", "GlobalAveragePool")
-def generate_global_average_pool(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implement the generate_global_average_pool method or operation."""
+def generate_global_average_pool(node: Node, ctx: Generator) -> str:
+    """Generate target source code for the global average pool operator.
+
+    Args:
+        node: Parameter specifying node (Node).
+        ctx: Parameter specifying ctx ('onnx9000.backends.codegen.Generator').
+
+    Returns:
+        Result of generate global average pool (str).
+    """
     inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
     offset = ctx.tensor_offsets.get(node.outputs[0], 0)
-    cpp_type = "float"
-    if tensor_info.dtype is not None:
-        from onnx9000.core.dtypes import to_cpp_type
-
-        cpp_type = to_cpp_type(tensor_info.dtype)
+    cpp_type = to_cpp_type(tensor_info.dtype) if tensor_info.dtype is not None else "float"
 
     return f"""
         // GlobalAveragePool
         std::vector<int64_t> {out}_shape = {inp}.shape;
         int64_t {out}_size = 1;
-        
+
         if ({out}_shape.size() >= 3) {{
             for (size_t i = 2; i < {out}_shape.size(); ++i) {{
                 {out}_shape[i] = 1;
             }}
         }}
-        
+
         for (auto d : {out}_shape) {out}_size *= d;
 
         /* preallocated */
@@ -714,7 +790,7 @@ def generate_global_average_pool(node: Node, ctx: "onnx9000.backends.codegen.Gen
             for (size_t i = 2; i < {inp}.shape.size(); ++i) {{
                 spatial_size *= {inp}.shape[i];
             }}
-            
+
             for (int64_t c = 0; c < num_channels; ++c) {{
                 {cpp_type} sum = 0;
                 for (int64_t s = 0; s < spatial_size; ++s) {{
@@ -731,8 +807,16 @@ def generate_global_average_pool(node: Node, ctx: "onnx9000.backends.codegen.Gen
 
 
 @registry.register_op("", "BatchNormalization")
-def generate_batchnorm(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implement the generate_batchnorm method or operation."""
+def generate_batchnorm(node: Node, ctx: Generator) -> str:
+    """Generate target source code for the batchnorm operator.
+
+    Args:
+        node: Parameter specifying node (Node).
+        ctx: Parameter specifying ctx ('onnx9000.backends.codegen.Generator').
+
+    Returns:
+        Result of generate batchnorm (str).
+    """
     x = ctx.get_tensor_name(node.inputs[0])
     scale = ctx.get_tensor_name(node.inputs[1])
     b = ctx.get_tensor_name(node.inputs[2])
@@ -742,11 +826,7 @@ def generate_batchnorm(node: Node, ctx: "onnx9000.backends.codegen.Generator") -
     tensor_info = ctx.graph.tensors[node.outputs[0]]
     offset = ctx.tensor_offsets.get(node.outputs[0], 0)
     epsilon = _get_attr(node, "epsilon", 1e-05)
-    cpp_type = "float"
-    if tensor_info.dtype is not None:
-        from onnx9000.core.dtypes import to_cpp_type
-
-        cpp_type = to_cpp_type(tensor_info.dtype)
+    cpp_type = to_cpp_type(tensor_info.dtype) if tensor_info.dtype is not None else "float"
     from onnx9000.backends.codegen.utils import get_omp_pragma
 
     pragma = get_omp_pragma(f"{x}.size()")
@@ -754,15 +834,19 @@ def generate_batchnorm(node: Node, ctx: "onnx9000.backends.codegen.Generator") -
 
 
 @registry.register_op("", "Gelu")
-def generate_gelu(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implement the generate_gelu method or operation."""
+def generate_gelu(node: Node, ctx: Generator) -> str:
+    """Generate target source code for the gelu operator.
+
+    Args:
+        node: Parameter specifying node (Node).
+        ctx: Parameter specifying ctx ('onnx9000.backends.codegen.Generator').
+
+    Returns:
+        Result of generate gelu (str).
+    """
     inp = ctx.get_tensor_name(node.inputs[0])
     out = ctx.get_tensor_name(node.outputs[0])
     tensor_info = ctx.graph.tensors[node.outputs[0]]
     offset = ctx.tensor_offsets.get(node.outputs[0], 0)
-    cpp_type = "float"
-    if tensor_info.dtype is not None:
-        from onnx9000.core.dtypes import to_cpp_type
-
-        cpp_type = to_cpp_type(tensor_info.dtype)
+    cpp_type = to_cpp_type(tensor_info.dtype) if tensor_info.dtype is not None else "float"
     return f"\n        // Gelu\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {inp}.shape);\n        #pragma omp parallel for\n        for (int64_t i = 0; i < {inp}.size(); ++i) {{\n            {cpp_type} x = {inp}.data[i];\n            {out}.data[i] = static_cast<{cpp_type}>(0.5f * x * (1.0f + std::erf(x / std::sqrt(2.0f))));\n        }}\n"

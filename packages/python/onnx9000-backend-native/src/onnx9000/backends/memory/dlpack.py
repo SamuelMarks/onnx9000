@@ -1,7 +1,8 @@
 """Provide dlpack module functionality."""
 
 import ctypes
-from typing import Any, Optional
+
+from onnx9000.core.exceptions import BackendExecutionError
 
 
 class DLDataType(ctypes.Structure):
@@ -53,7 +54,7 @@ kDLCUDAManaged = 13
 
 
 def from_dlpack(
-    ext_tensor: Any,
+    ext_tensor: int | float | str | bool | bytes | list | dict | tuple | None,
 ) -> tuple[ctypes.c_void_p, tuple, tuple | None, DLDataType, int]:
     """Consume PyTorch `torch.Tensor`, JAX `jax.Array`, TensorFlow `tf.Tensor` directly via DLPack (Zero-copy).
 
@@ -62,13 +63,13 @@ def from_dlpack(
     Extract data types (`DLDataType` struct) strictly natively.
     """
     if not hasattr(ext_tensor, "__dlpack__"):
-        raise TypeError("Object does not support DLPack protocol")
+        raise BackendExecutionError("Object does not support DLPack protocol")
     capsule = ext_tensor.__dlpack__()
     ctypes.pythonapi.PyCapsule_GetPointer.restype = ctypes.POINTER(DLManagedTensor)
     ctypes.pythonapi.PyCapsule_GetPointer.argtypes = [ctypes.py_object, ctypes.c_char_p]
     managed_tensor_ptr = ctypes.pythonapi.PyCapsule_GetPointer(capsule, b"dltensor")
     if not managed_tensor_ptr:
-        raise RuntimeError("Failed to extract DLManagedTensor pointer")
+        raise BackendExecutionError("Failed to extract DLManagedTensor pointer")
     dl_tensor = managed_tensor_ptr.contents.dl_tensor
     ndim = dl_tensor.ndim
     shape = tuple(dl_tensor.shape[i] for i in range(ndim))
@@ -82,7 +83,7 @@ def from_dlpack(
                 break
             expected_stride *= shape[i]
         if not is_c_contiguous:
-            raise ValueError(
+            raise BackendExecutionError(
                 "Tensor is not C_CONTIGUOUS. Auto-copy fallback not yet implemented in FFI boundaries."
             )
     data_ptr = ctypes.c_void_p(dl_tensor.data or 0)
@@ -90,12 +91,14 @@ def from_dlpack(
     return (data_ptr, shape, strides, dl_tensor.dtype, device_type)
 
 
-def from_numpy(array: Any) -> tuple[ctypes.c_void_p, tuple, tuple | None, str]:
+def from_numpy(
+    array: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> tuple[ctypes.c_void_p, tuple, tuple | None, str]:
     """Consume NumPy `np.ndarray` directly via `__array_interface__` (Zero-copy)."""
     if not hasattr(array, "__array_interface__"):
-        raise TypeError("Object does not support __array_interface__")
+        raise BackendExecutionError("Object does not support __array_interface__")
     interface = array.__array_interface__
-    (data_ptr, read_only) = interface["data"]
+    (data_ptr, _read_only) = interface["data"]
     shape = interface["shape"]
     strides = interface.get("strides")
     typestr = interface["typestr"]
@@ -108,5 +111,5 @@ def from_numpy(array: Any) -> tuple[ctypes.c_void_p, tuple, tuple | None, str]:
                 break
             expected_stride *= shape[i]
         if not is_c_contiguous:
-            raise ValueError("NumPy array is not C_CONTIGUOUS.")
+            raise BackendExecutionError("NumPy array is not C_CONTIGUOUS.")
     return (ctypes.c_void_p(data_ptr), shape, strides, typestr)

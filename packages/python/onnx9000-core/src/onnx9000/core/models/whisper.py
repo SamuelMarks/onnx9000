@@ -1,7 +1,5 @@
 """Whisper."""
 
-from typing import Any, Optional
-
 from onnx9000.core.ir import Tensor, Variable
 from onnx9000.core.ops import add
 from onnx9000.core.primitives import (
@@ -27,8 +25,15 @@ class WhisperEncoderLayer:
         encoder_attention_heads: int,
         encoder_ffn_dim: int,
         prefix: str = "",
-    ):
-        """Init."""
+    ) -> None:
+        """Initialize WhisperEncoderLayer with configured parameters and state.
+
+        Args:
+            d_model: Parameter specifying d model (int).
+            encoder_attention_heads: Parameter specifying encoder attention heads (int).
+            encoder_ffn_dim: Parameter specifying encoder ffn dim (int).
+            prefix: Parameter specifying prefix (str).
+        """
         self.prefix = prefix
         self.d_model = d_model
 
@@ -41,7 +46,14 @@ class WhisperEncoderLayer:
         self.final_layer_norm = LayerNormalization((d_model,))
 
     def __call__(self, x: Tensor) -> Tensor:
-        """Call."""
+        """Invoke WhisperEncoderLayer with the provided inputs and keyword arguments.
+
+        Args:
+            x: Parameter specifying x (Tensor).
+
+        Returns:
+            Result of call (Tensor).
+        """
         identity = x
         x_norm = self.self_attn_layer_norm(
             x,
@@ -81,8 +93,15 @@ class WhisperEncoder:
         encoder_attention_heads: int = 8,
         encoder_ffn_dim: int = 2048,
         encoder_layers: int = 6,
-    ):
-        """Init."""
+    ) -> None:
+        """Initialize WhisperEncoder with configured parameters and state.
+
+        Args:
+            d_model: Parameter specifying d model (int).
+            encoder_attention_heads: Parameter specifying encoder attention heads (int).
+            encoder_ffn_dim: Parameter specifying encoder ffn dim (int).
+            encoder_layers: Parameter specifying encoder layers (int).
+        """
         self.d_model = d_model
         self.conv1 = ConvND(1, 80, d_model, kernel_size=3, padding=1)
         self.act1 = Gelu()
@@ -99,7 +118,14 @@ class WhisperEncoder:
 
     def __call__(self, x: Tensor) -> Tensor:
         # Input x: [batch, 80, seq_len]
-        """Call."""
+        """Invoke WhisperEncoder with the provided inputs and keyword arguments.
+
+        Args:
+            x: Parameter specifying x (Tensor).
+
+        Returns:
+            Result of call (Tensor).
+        """
         x = self.conv1(
             x,
             get_param("conv1.weight", [self.d_model, 80, 3]),
@@ -142,8 +168,15 @@ class WhisperDecoderLayer:
         decoder_attention_heads: int,
         decoder_ffn_dim: int,
         prefix: str = "",
-    ):
-        """Init."""
+    ) -> None:
+        """Initialize WhisperDecoderLayer with configured parameters and state.
+
+        Args:
+            d_model: Parameter specifying d model (int).
+            decoder_attention_heads: Parameter specifying decoder attention heads (int).
+            decoder_ffn_dim: Parameter specifying decoder ffn dim (int).
+            prefix: Parameter specifying prefix (str).
+        """
         self.prefix = prefix
         self.d_model = d_model
 
@@ -164,7 +197,16 @@ class WhisperDecoderLayer:
         encoder_hidden_states: Tensor,
         causal_mask: Tensor | None = None,
     ) -> Tensor:
-        """Call."""
+        """Invoke WhisperDecoderLayer with the provided inputs and keyword arguments.
+
+        Args:
+            x: Parameter specifying x (Tensor).
+            encoder_hidden_states: Parameter specifying encoder hidden states (Tensor).
+            causal_mask: Parameter specifying causal mask (Tensor | None).
+
+        Returns:
+            Result of call (Tensor).
+        """
         identity = x
         x_norm = self.self_attn_layer_norm(
             x,
@@ -214,8 +256,16 @@ class WhisperDecoder:
         decoder_attention_heads: int = 8,
         decoder_ffn_dim: int = 2048,
         decoder_layers: int = 6,
-    ):
-        """Init."""
+    ) -> None:
+        """Initialize WhisperDecoder with configured parameters and state.
+
+        Args:
+            vocab_size: Parameter specifying vocab size (int).
+            d_model: Parameter specifying d model (int).
+            decoder_attention_heads: Parameter specifying decoder attention heads (int).
+            decoder_ffn_dim: Parameter specifying decoder ffn dim (int).
+            decoder_layers: Parameter specifying decoder layers (int).
+        """
         self.vocab_size = vocab_size
         self.d_model = d_model
 
@@ -234,7 +284,16 @@ class WhisperDecoder:
         encoder_hidden_states: Tensor,
         causal_mask: Tensor | None = None,
     ) -> Tensor:
-        """Call."""
+        """Invoke WhisperDecoder with the provided inputs and keyword arguments.
+
+        Args:
+            input_ids: Parameter specifying input ids (Tensor).
+            encoder_hidden_states: Parameter specifying encoder hidden states (Tensor).
+            causal_mask: Parameter specifying causal mask (Tensor | None).
+
+        Returns:
+            Result of call (Tensor).
+        """
         from onnx9000.core.ops import gather
 
         x = gather(
@@ -271,8 +330,19 @@ class Whisper:
         decoder_ffn_dim: int = 2048,
         decoder_layers: int = 6,
         vocab_size: int = 51865,
-    ):
-        """Init."""
+    ) -> None:
+        """Initialize Whisper with configured parameters and state.
+
+        Args:
+            d_model: Parameter specifying d model (int).
+            encoder_attention_heads: Parameter specifying encoder attention heads (int).
+            encoder_ffn_dim: Parameter specifying encoder ffn dim (int).
+            encoder_layers: Parameter specifying encoder layers (int).
+            decoder_attention_heads: Parameter specifying decoder attention heads (int).
+            decoder_ffn_dim: Parameter specifying decoder ffn dim (int).
+            decoder_layers: Parameter specifying decoder layers (int).
+            vocab_size: Parameter specifying vocab size (int).
+        """
         self.encoder = WhisperEncoder(
             d_model=d_model,
             encoder_attention_heads=encoder_attention_heads,
@@ -288,13 +358,23 @@ class Whisper:
         )
 
     def __call__(self, input_features: Tensor, decoder_input_ids: Tensor) -> Tensor:
-        """Call."""
+        """Invoke Whisper with the provided inputs and keyword arguments.
+
+        Args:
+            input_features: Parameter specifying input features (Tensor).
+            decoder_input_ids: Parameter specifying decoder input ids (Tensor).
+
+        Returns:
+            Result of call (Tensor).
+        """
         encoder_hidden_states = self.encoder(input_features)
         out = self.decoder(decoder_input_ids, encoder_hidden_states)
         return out
 
 
-def whisper_tiny(**kwargs: Any) -> Whisper:
+def whisper_tiny(
+    **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> Whisper:
     """Whisper tiny."""
     return Whisper(
         d_model=384,

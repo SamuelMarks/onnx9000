@@ -1,12 +1,12 @@
 """Weight management utilities for onnx9000."""
 
-from typing import Any
-
 import numpy as np
 from onnx9000.core.ir import Constant, Graph
 
 
-def export_state_dict(graph: Graph) -> dict[str, Any]:
+def export_state_dict(
+    graph: Graph,
+) -> dict[str, int | float | str | bool | bytes | list | dict | tuple | None]:
     """Export model weights from Graph IR into a PyTorch-compatible state_dict."""
     state_dict = {}
     for name, tensor in graph.tensors.items():
@@ -39,7 +39,10 @@ def export_state_dict(graph: Graph) -> dict[str, Any]:
     return state_dict
 
 
-def universal_weight_bridge(weights: dict[str, Any], target_fmt: str = "pytorch") -> Any:
+def universal_weight_bridge(
+    weights: dict[str, int | float | str | bool | bytes | list | dict | tuple | None],
+    target_fmt: str = "pytorch",
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
     """Standalone conversion between Safetensors, HDF5, and PyTorch pickles."""
     if target_fmt == "pytorch":
         return weights

@@ -10,10 +10,16 @@ from onnx9000.converters.frontend.tree import (
 from onnx9000.core.dtypes import DType
 
 
-def test_tree_map():
-    """Docstring for D103."""
+def test_tree_map() -> None:
+    """Verify that tree map behaves as expected.
 
-    def inc(x):
+    Returns:
+        Result of test tree map.
+    """
+
+    def inc(
+        x: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Inc."""
         return x + 1
 
@@ -24,8 +30,8 @@ def test_tree_map():
     assert tree_map(inc, [{"a": 1}, (2,)]) == [{"a": 2}, (3,)]
 
 
-def test_tree_flatten_unflatten():
-    """Docstring for D103."""
+def test_tree_flatten_unflatten() -> None:
+    """Verify that tree flatten unflatten behaves as expected."""
     tree = [{"a": 1}, (2, 3), 4]
     leaves, treedef = tree_flatten(tree)
     assert leaves == [1, 2, 3, 4]
@@ -39,8 +45,8 @@ def test_tree_flatten_unflatten():
     assert tree_unflatten(leaves2, treedef2) == tree2
 
 
-def test_find_tensors():
-    """Docstring for D103."""
+def test_find_tensors() -> None:
+    """Verify that find tensors behaves as expected."""
     t1 = Tensor(name="t1", shape=(1,), dtype=DType.FLOAT32)
     t2 = Tensor(name="t2", shape=(2,), dtype=DType.FLOAT32)
 

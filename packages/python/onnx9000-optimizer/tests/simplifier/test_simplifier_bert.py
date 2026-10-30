@@ -5,7 +5,7 @@ from onnx9000.core.ir import Constant, Graph, Node, ValueInfo, Variable
 from onnx9000.optimizer.simplifier.api import simplify
 
 
-def test_lock_batch_size_on_bert_and_evaluate_shape_constant_folding():
+def test_lock_batch_size_on_bert_and_evaluate_shape_constant_folding() -> None:
     """Test that locking the batch size allows cascading constant folding in a BERT-like graph."""
     graph = Graph("BERT_Simulated")
 

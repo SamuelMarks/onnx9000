@@ -20,6 +20,7 @@ from onnx9000.backends.rocm.bindings import (
     miopenHandle_t,
     rocblas_handle,
 )
+from onnx9000.core.exceptions import BackendExecutionError, Onnx9000Error
 from onnx9000.core.ir import Graph, Node
 from onnx9000.core.registry import register_op
 
@@ -30,7 +31,11 @@ class Dispatcher:
     """AMD ROCm (HIP) & MIOpen Dispatcher."""
 
     def __init__(self, graph: Graph) -> None:
-        """Implement the __init__ method or operation."""
+        """Initialize Dispatcher with configured parameters and state.
+
+        Args:
+            graph: Parameter specifying graph (Graph).
+        """
         self.graph = graph
         self.planner = MemoryPlanner()
         self.cpu_fallback = CPUExecutor({})
@@ -67,9 +72,7 @@ class Dispatcher:
                             break
                         shape.append(int(val))
                     if not is_dynamic:
-                        dtype = np.float32
-                        if tensor.dtype:
-                            dtype = np.dtype("float32")
+                        dtype = np.dtype("float32")
                         size_in_bytes = np.prod(shape, dtype=int) * dtype.itemsize
                         self.planner.allocate_static(
                             out_name, size_in_bytes, tuple(shape), str(dtype)
@@ -86,7 +89,7 @@ class Dispatcher:
     def _execute_matmul(self, node: Node) -> None:
         """Execute MatMul using rocBLAS."""
         if not is_rocblas_available():
-            raise RuntimeError("rocBLAS is required for MatMul")
+            raise BackendExecutionError("rocBLAS is required for MatMul")
         (_a_name, _b_name) = (node.inputs[0], node.inputs[1])
         node.outputs[0]
         self._cpu_fallback_node(node)
@@ -103,7 +106,7 @@ class Dispatcher:
         for out in node.outputs:
             if out in out_dict:
                 val = out_dict[out]
-                if hasattr(val, "data") and val.data is not None:
+                if not isinstance(val, np.ndarray):
                     val = np.frombuffer(val.data, dtype=np.float32).reshape(
                         [int(x) for x in val.shape]
                     )
@@ -117,7 +120,6 @@ class Dispatcher:
             self._cpu_fallback_node(node)
             return
 
-        from onnx9000.core.exceptions import UnsupportedOpError
         from onnx9000.core.registry import global_registry
 
         try:
@@ -125,7 +127,21 @@ class Dispatcher:
             op_impl(self, node)
         except RuntimeError:
             raise
-        except Exception:
+        except (
+            Onnx9000Error,
+            OSError,
+            ValueError,
+            TypeError,
+            KeyError,
+            IndexError,
+            AttributeError,
+            ImportError,
+            LookupError,
+            ArithmeticError,
+            BufferError,
+            AssertionError,
+            StopIteration,
+        ):
             self._cpu_fallback_node(node)
 
     def run(self, inputs: dict[str, np.ndarray]) -> dict[str, np.ndarray]:
@@ -146,26 +162,77 @@ class Dispatcher:
         return results
 
     def __del__(self) -> None:
-        """Implement the __del__ method or operation."""
+        """Clean up resources and native handles held by Dispatcher."""
         if not self.initialized:
             return
         if is_rocblas_available() and getattr(self, "rocblas_handle", None):
             try:
                 _rocblas_lib.rocblas_destroy_handle(self.rocblas_handle)
-            except Exception as e:
+            except (
+                Onnx9000Error,
+                OSError,
+                ValueError,
+                TypeError,
+                RuntimeError,
+                KeyError,
+                IndexError,
+                AttributeError,
+                ImportError,
+                LookupError,
+                ArithmeticError,
+                BufferError,
+                AssertionError,
+                StopIteration,
+            ) as e:
                 logger.debug(f"rocBLAS destroy error: {e}")
         if is_miopen_available() and getattr(self, "miopen_handle", None):
             try:
                 _miopen_lib.miopenDestroy(self.miopen_handle)
-            except Exception as e:
+            except (
+                Onnx9000Error,
+                OSError,
+                ValueError,
+                TypeError,
+                RuntimeError,
+                KeyError,
+                IndexError,
+                AttributeError,
+                ImportError,
+                LookupError,
+                ArithmeticError,
+                BufferError,
+                AssertionError,
+                StopIteration,
+            ) as e:
                 logger.debug(f"MIOpen destroy error: {e}")
         if is_hip_available() and getattr(self, "stream", None):
             try:
                 _hip_lib.hipStreamDestroy(self.stream)
-            except Exception as e:
+            except (
+                Onnx9000Error,
+                OSError,
+                ValueError,
+                TypeError,
+                RuntimeError,
+                KeyError,
+                IndexError,
+                AttributeError,
+                ImportError,
+                LookupError,
+                ArithmeticError,
+                BufferError,
+                AssertionError,
+                StopIteration,
+            ) as e:
                 logger.debug(f"HIP stream destroy error: {e}")
 
 
 @register_op("", "MatMul", provider="rocm")
 def _rocm_matmul(dispatcher: Dispatcher, node: Node) -> None:
+    """Execute rocm matmul operation.
+
+    Args:
+        dispatcher: Parameter specifying dispatcher (Dispatcher).
+        node: Parameter specifying node (Node).
+    """
     dispatcher._execute_matmul(node)

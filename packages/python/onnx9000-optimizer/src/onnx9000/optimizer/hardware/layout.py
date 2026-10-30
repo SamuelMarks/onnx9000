@@ -1,7 +1,5 @@
 """Hardware-Aware Memory Layout Optimization module."""
 
-from typing import Any
-
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Node, Tensor
 
@@ -290,7 +288,10 @@ class LayoutOptimizer:
         return "NHWC"
 
     @staticmethod
-    def pad_to_alignment(shape: tuple[Any, ...], alignment: int = 4) -> tuple[Any, ...]:
+    def pad_to_alignment(
+        shape: tuple[int | float | str | bool | bytes | list | dict | tuple | None, ...],
+        alignment: int = 4,
+    ) -> tuple[int | float | str | bool | bytes | list | dict | tuple | None, ...]:
         """Implement memory alignment packing (e.g., padding channels to multiples of 4 for vec4<f32> in WGSL)."""
         if len(shape) < 1:
             return shape

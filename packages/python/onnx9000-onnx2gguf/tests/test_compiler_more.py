@@ -8,7 +8,9 @@ from onnx9000.onnx2gguf.compiler import compile_gguf
 
 
 @patch("onnx9000.onnx2gguf.compiler.extract_tokenizer_metadata")
-def test_compile_gguf_overrides(mock_tok):
+def test_compile_gguf_overrides(
+    mock_tok: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Provides functional implementation."""
     mock_tok.return_value = {
         "float_val": 3.14,

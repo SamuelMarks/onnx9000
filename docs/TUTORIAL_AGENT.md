@@ -15,17 +15,19 @@ The `onnx9000-toolkit` provides a high-level `AgentRunner` designed for "Reason+
 ```python
 from onnx9000.toolkit.agent import AgentRunner
 
+
 # Define a custom tool for graph surgery
 def optimize_graph(graph_path: str):
     # Logic to call onnx9000-optimizer
     print(f"Optimizing graph at {graph_path}...")
     return "Graph optimized successfully."
 
+
 agent = AgentRunner()
 agent.register_tool(
     name="optimize_graph",
     func=optimize_graph,
-    description="Optimizes an ONNX graph by fusing operators and pruning weights."
+    description="Optimizes an ONNX graph by fusing operators and pruning weights.",
 )
 ```
 
@@ -35,7 +37,9 @@ Agents in `onnx9000` can interact directly with model IRs. For example, you can 
 
 ```python
 # Run an agentic loop to reduce model size
-agent.run_loop("Load the model at './model.onnx', prune it to 80% sparsity, and save it as './pruned.onnx'.")
+agent.run_loop(
+    "Load the model at './model.onnx', prune it to 80% sparsity, and save it as './pruned.onnx'."
+)
 ```
 
 ## 3. Defining Multi-Agent DAGs
@@ -45,12 +49,14 @@ For complex tasks, such as a "Planner" followed by a "Coder", `onnx9000-toolkit`
 ```python
 dag = {
     "nodes": [
-        {"id": "planner", "type": "llm", "prompt": "Create an optimization plan for this ResNet50 model."},
+        {
+            "id": "planner",
+            "type": "llm",
+            "prompt": "Create an optimization plan for this ResNet50 model.",
+        },
         {"id": "optimizer", "type": "tool", "tool_name": "optimize_graph"},
     ],
-    "edges": [
-        {"from": "planner", "to": "optimizer"}
-    ]
+    "edges": [{"from": "planner", "to": "optimizer"}],
 }
 
 agent.execute_dag(dag, initial_input="./resnet50.onnx")

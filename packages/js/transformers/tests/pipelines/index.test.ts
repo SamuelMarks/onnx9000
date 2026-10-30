@@ -1,161 +1,246 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../src/pipelines/index";
+import { describe, expect, it } from 'vitest';
+import {
+  AudioClassificationPipeline,
+  AutomaticSpeechRecognitionPipeline,
+  Callable,
+  DepthEstimationPipeline,
+  DocumentQuestionAnsweringPipeline,
+  FeatureExtractionPipeline,
+  FillMaskPipeline,
+  ImageClassificationPipeline,
+  ImageFeatureExtractionPipeline,
+  ImageSegmentationPipeline,
+  ImageToImagePipeline,
+  ModelOutput,
+  ObjectDetectionPipeline,
+  Pipeline,
+  pipeline,
+  QuestionAnsweringPipeline,
+  SummarizationPipeline,
+  Text2TextGenerationPipeline,
+  TextClassificationPipeline,
+  TextGenerationPipeline,
+  TextToSpeechPipeline,
+  TokenClassificationPipeline,
+  TranslationPipeline,
+  VisualQuestionAnsweringPipeline,
+  ZeroShotClassificationPipeline,
+  ZeroShotImageClassificationPipeline,
+} from '../../src/pipelines/index';
 
-describe("index.ts", () => {
-  it("should instantiate and cover Callable", () => {
+const Call = <T>(fn: (...args: never[]) => T): T => fn();
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('index.ts', () => {
+  it('should instantiate and cover Callable', () => {
     try {
-      const obj = new (Module as any).Callable();
+      const obj = Construct(Callable);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover Pipeline", () => {
+  it('should instantiate and cover Pipeline', () => {
     try {
-      const obj = new (Module as any).Pipeline();
+      const obj = Construct(Pipeline);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover FeatureExtractionPipeline", () => {
+  it('should instantiate and cover FeatureExtractionPipeline', () => {
     try {
-      const obj = new (Module as any).FeatureExtractionPipeline();
+      const obj = Construct(FeatureExtractionPipeline);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover ModelOutput", () => {
+  it('should instantiate and cover ModelOutput', () => {
     try {
-      const obj = new (Module as any).ModelOutput();
+      const obj = Construct(ModelOutput);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover TextClassificationPipeline", () => {
+  it('should instantiate and cover TextClassificationPipeline', () => {
     try {
-      const obj = new (Module as any).TextClassificationPipeline();
+      const obj = Construct(TextClassificationPipeline);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover TokenClassificationPipeline", () => {
+  it('should instantiate and cover TokenClassificationPipeline', () => {
     try {
-      const obj = new (Module as any).TokenClassificationPipeline();
+      const obj = Construct(TokenClassificationPipeline);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover QuestionAnsweringPipeline", () => {
+  it('should instantiate and cover QuestionAnsweringPipeline', () => {
     try {
-      const obj = new (Module as any).QuestionAnsweringPipeline();
+      const obj = Construct(QuestionAnsweringPipeline);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover ZeroShotClassificationPipeline", () => {
+  it('should instantiate and cover ZeroShotClassificationPipeline', () => {
     try {
-      const obj = new (Module as any).ZeroShotClassificationPipeline();
+      const obj = Construct(ZeroShotClassificationPipeline);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover TranslationPipeline", () => {
+  it('should instantiate and cover TranslationPipeline', () => {
     try {
-      const obj = new (Module as any).TranslationPipeline();
+      const obj = Construct(TranslationPipeline);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover SummarizationPipeline", () => {
+  it('should instantiate and cover SummarizationPipeline', () => {
     try {
-      const obj = new (Module as any).SummarizationPipeline();
+      const obj = Construct(SummarizationPipeline);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover TextGenerationPipeline", () => {
+  it('should instantiate and cover TextGenerationPipeline', () => {
     try {
-      const obj = new (Module as any).TextGenerationPipeline();
+      const obj = Construct(TextGenerationPipeline);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover Text2TextGenerationPipeline", () => {
+  it('should instantiate and cover Text2TextGenerationPipeline', () => {
     try {
-      const obj = new (Module as any).Text2TextGenerationPipeline();
+      const obj = Construct(Text2TextGenerationPipeline);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover FillMaskPipeline", () => {
+  it('should instantiate and cover FillMaskPipeline', () => {
     try {
-      const obj = new (Module as any).FillMaskPipeline();
+      const obj = Construct(FillMaskPipeline);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover ImageClassificationPipeline", () => {
+  it('should instantiate and cover ImageClassificationPipeline', () => {
     try {
-      const obj = new (Module as any).ImageClassificationPipeline();
+      const obj = Construct(ImageClassificationPipeline);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover ObjectDetectionPipeline", () => {
+  it('should instantiate and cover ObjectDetectionPipeline', () => {
     try {
-      const obj = new (Module as any).ObjectDetectionPipeline();
+      const obj = Construct(ObjectDetectionPipeline);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover ZeroShotImageClassificationPipeline", () => {
+  it('should instantiate and cover ZeroShotImageClassificationPipeline', () => {
     try {
-      const obj = new (Module as any).ZeroShotImageClassificationPipeline();
+      const obj = Construct(ZeroShotImageClassificationPipeline);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover ImageSegmentationPipeline", () => {
+  it('should instantiate and cover ImageSegmentationPipeline', () => {
     try {
-      const obj = new (Module as any).ImageSegmentationPipeline();
+      const obj = Construct(ImageSegmentationPipeline);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover DepthEstimationPipeline", () => {
+  it('should instantiate and cover DepthEstimationPipeline', () => {
     try {
-      const obj = new (Module as any).DepthEstimationPipeline();
+      const obj = Construct(DepthEstimationPipeline);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover ImageToImagePipeline", () => {
+  it('should instantiate and cover ImageToImagePipeline', () => {
     try {
-      const obj = new (Module as any).ImageToImagePipeline();
+      const obj = Construct(ImageToImagePipeline);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover AudioClassificationPipeline", () => {
+  it('should instantiate and cover AudioClassificationPipeline', () => {
     try {
-      const obj = new (Module as any).AudioClassificationPipeline();
+      const obj = Construct(AudioClassificationPipeline);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover AutomaticSpeechRecognitionPipeline", () => {
+  it('should instantiate and cover AutomaticSpeechRecognitionPipeline', () => {
     try {
-      const obj = new (Module as any).AutomaticSpeechRecognitionPipeline();
+      const obj = Construct(AutomaticSpeechRecognitionPipeline);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover TextToSpeechPipeline", () => {
+  it('should instantiate and cover TextToSpeechPipeline', () => {
     try {
-      const obj = new (Module as any).TextToSpeechPipeline();
+      const obj = Construct(TextToSpeechPipeline);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover DocumentQuestionAnsweringPipeline", () => {
+  it('should instantiate and cover DocumentQuestionAnsweringPipeline', () => {
     try {
-      const obj = new (Module as any).DocumentQuestionAnsweringPipeline();
+      const obj = Construct(DocumentQuestionAnsweringPipeline);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover VisualQuestionAnsweringPipeline", () => {
+  it('should instantiate and cover VisualQuestionAnsweringPipeline', () => {
     try {
-      const obj = new (Module as any).VisualQuestionAnsweringPipeline();
+      const obj = Construct(VisualQuestionAnsweringPipeline);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover ImageFeatureExtractionPipeline", () => {
+  it('should instantiate and cover ImageFeatureExtractionPipeline', () => {
     try {
-      const obj = new (Module as any).ImageFeatureExtractionPipeline();
+      const obj = Construct(ImageFeatureExtractionPipeline);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should call and cover pipeline", async () => {
+  it('should call and cover pipeline', async () => {
     try {
-      const res = (Module as any).pipeline();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(pipeline);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

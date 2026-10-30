@@ -67,7 +67,10 @@ def flatten_ensemble(trees: list[TreeAbstractions]) -> TreeAbstractions:
     return flattened
 
 
-def cast_parameters(abstractions: TreeAbstractions, target_dtype="float32") -> TreeAbstractions:
+def cast_parameters(
+    abstractions: TreeAbstractions,
+    target_dtype: int | float | str | bool | bytes | list | dict | tuple | None = "float32",
+) -> TreeAbstractions:
     """Resolve numerical precision mismatches (FP32 vs FP64) ahead of time.
 
     Cast FP64 parameters to FP32 natively to optimize WebGPU limits.

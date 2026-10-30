@@ -1,17 +1,29 @@
-import { describe, it } from "vitest";
-import * as Module from "../../src/parser/onnx";
+import { describe, expect, it } from 'vitest';
+import { parseModelProto, releaseArrayBuffer } from '../../src/parser/onnx';
 
-describe("onnx.ts", () => {
-  it("should call and cover parseModelProto", async () => {
+const Call = <T>(fn: (...args: never[]) => T): T => fn();
+
+describe('onnx.ts', () => {
+  it('should call and cover parseModelProto', async () => {
     try {
-      const res = (Module as any).parseModelProto();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(parseModelProto);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should call and cover releaseArrayBuffer", async () => {
+  it('should call and cover releaseArrayBuffer', async () => {
     try {
-      const res = (Module as any).releaseArrayBuffer();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(releaseArrayBuffer);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

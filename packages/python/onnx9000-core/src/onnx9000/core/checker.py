@@ -1,7 +1,5 @@
 """ONNX Model and Tensor Checker implementation."""
 
-from typing import Any, Optional
-
 from onnx9000.core.exceptions import (
     UnsupportedOpError,
     UnsupportedOpsetError,
@@ -18,7 +16,7 @@ class ValidationContext:
         strict: bool = True,
         allow_unrecognized_ops: bool = False,
         skip_shape_inference: bool = False,
-    ):
+    ) -> None:
         """Initialize the ValidationContext."""
         self.strict = strict
         self.allow_unrecognized_ops = allow_unrecognized_ops
@@ -29,7 +27,7 @@ class ValidationContext:
 class SchemaRegistry:
     """Registry for ONNX operator schemas across different domains and opsets."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the SchemaRegistry with default ONNX schemas."""
         self.schemas = {}
         for i in range(1, 22):
@@ -37,11 +35,18 @@ class SchemaRegistry:
         for i in range(1, 5):
             self.schemas[f"ai.onnx.ml_v{i}"] = {"TreeEnsembleClassifier": {}}
 
-    def register_custom_schema(self, domain: str, opset: int, schema_json: dict[str, Any]):
+    def register_custom_schema(
+        self,
+        domain: str,
+        opset: int,
+        schema_json: dict[str, int | float | str | bool | bytes | list | dict | tuple | None],
+    ) -> None:
         """Register a custom schema for a specific domain and opset."""
         self.schemas[f"{domain}_v{opset}"] = schema_json
 
-    def get_schema(self, op_type: str, opset: int, domain: str = "ai.onnx"):
+    def get_schema(
+        self, op_type: str, opset: int, domain: str = "ai.onnx"
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Get the schema for a specific operator."""
         key = f"{domain}_v{opset}"
         if key not in self.schemas:
@@ -51,7 +56,7 @@ class SchemaRegistry:
         return self.schemas[key][op_type]
 
 
-def check_tensor(tensor: Tensor, ctx: ValidationContext):
+def check_tensor(tensor: Tensor, ctx: ValidationContext) -> None:
     """Check a tensor for validity against ONNX rules."""
     if tensor.data_type not in [
         "float",
@@ -89,7 +94,12 @@ def check_tensor(tensor: Tensor, ctx: ValidationContext):
             ctx.errors.append("Tensor exceeds 2GB")
 
 
-def check_attribute(attr_name: str, attr_val: Any, schema_type: str, ctx: ValidationContext):
+def check_attribute(
+    attr_name: str,
+    attr_val: int | float | str | bool | bytes | list | dict | tuple | None,
+    schema_type: str,
+    ctx: ValidationContext,
+) -> None:
     """Check a node attribute for validity."""
     if schema_type == "ints":
         if not isinstance(attr_val, list) or not all(isinstance(x, int) for x in attr_val):
@@ -99,7 +109,7 @@ def check_attribute(attr_name: str, attr_val: Any, schema_type: str, ctx: Valida
             ctx.errors.append(f"Expected floats for {attr_name}")
 
 
-def _check_op_specific(node: Node, ctx: ValidationContext):
+def _check_op_specific(node: Node, ctx: ValidationContext) -> None:
     """Perform operator-specific validity checks."""
     op = node.op_type
     if op in ["Add", "Sub", "Mul", "Div"]:
@@ -118,14 +128,16 @@ def _check_op_specific(node: Node, ctx: ValidationContext):
             or "body" in node.attributes
         ):
             ctx.errors.append(f"{op} requires subgraph attributes")
-    elif op == "TreeEnsembleClassifier":
-        if not all(
-            k in node.attributes for k in ["nodes_treeids", "nodes_nodeids", "nodes_featureids"]
-        ):
-            ctx.errors.append(f"{op} missing attributes")
+    elif op == "TreeEnsembleClassifier" and not all(
+        k in node.attributes for k in ["nodes_treeids", "nodes_nodeids", "nodes_featureids"]
+    ):
+        ctx.errors.append(f"{op} missing attributes")
 
 
-def check_model(model: Any, ctx: ValidationContext | None = None):
+def check_model(
+    model: int | float | str | bool | bytes | list | dict | tuple | None,
+    ctx: ValidationContext | None = None,
+) -> bool:
     """Check a whole model for validity."""
     ctx = ctx or ValidationContext()
 
@@ -180,6 +192,9 @@ def check_model(model: Any, ctx: ValidationContext | None = None):
     return True
 
 
-async def check_model_async(model: Any, ctx: ValidationContext | None = None):
+async def check_model_async(
+    model: int | float | str | bool | bytes | list | dict | tuple | None,
+    ctx: ValidationContext | None = None,
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
     """Check a whole model for validity asynchronously."""
     return check_model(model, ctx)

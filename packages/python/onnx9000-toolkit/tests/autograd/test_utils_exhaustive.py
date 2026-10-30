@@ -15,7 +15,7 @@ from onnx9000.toolkit.training.autograd.utils import (
 )
 
 
-def test_gradient_proto():
+def test_gradient_proto() -> None:
     """Tests the gradient proto functionality."""
     proto = GradientProto("g1", "w1", "grad_w1")
     assert proto.name == "g1"
@@ -23,7 +23,7 @@ def test_gradient_proto():
     assert proto.gradient_name == "grad_w1"
 
 
-def test_generate_gradient_proto():
+def test_generate_gradient_proto() -> None:
     """Tests the generate gradient proto functionality."""
     fwd_graph = Graph(name="fwd")
     fwd_graph.initializers.append("w1")
@@ -36,7 +36,7 @@ def test_generate_gradient_proto():
     assert {p.weight_name for p in protos} == {"w1", "w2"}
 
 
-def test_calculate_gradient_payload_size():
+def test_calculate_gradient_payload_size() -> None:
     """Tests the calculate gradient payload size functionality."""
     graph = Graph(name="g")
 
@@ -69,7 +69,7 @@ def test_calculate_gradient_payload_size():
     assert size == 476
 
 
-def test_compress_gradients_int8():
+def test_compress_gradients_int8() -> None:
     """Tests the compress gradients int8 functionality."""
     graph = Graph(name="g")
     compress_gradients_int8(graph)
@@ -81,7 +81,7 @@ def test_compress_gradients_int8():
     assert len(graph.nodes) == 1
 
 
-def test_compile_multi_replica_graph():
+def test_compile_multi_replica_graph() -> None:
     """Tests the compile multi replica graph functionality."""
     graph = Graph(name="g")
     assert compile_multi_replica_graph(graph, 1) is graph
@@ -112,16 +112,16 @@ def test_compile_multi_replica_graph():
     assert "y_replica_0" in multi2.tensors
 
 
-def test_embed_distributed_identifiers():
+def test_embed_distributed_identifiers() -> None:
     """Tests the embed distributed identifiers functionality."""
     graph = Graph(name="g")
     graph.outputs.append("grad_w1")
     graph.add_tensor(Tensor(name="grad_w1", shape=(1,), dtype="float32"))
     embed_distributed_identifiers(graph)
-    assert "distributed_sync_id_0" == graph.tensors["grad_w1"].doc_string
+    assert graph.tensors["grad_w1"].doc_string == "distributed_sync_id_0"
 
 
-def test_add_synchronous_barrier():
+def test_add_synchronous_barrier() -> None:
     """Tests the add synchronous barrier functionality."""
     graph = Graph(name="g")
     graph.outputs.append("all_gradients_flat")
@@ -130,7 +130,7 @@ def test_add_synchronous_barrier():
     assert graph.nodes[0].op_type == "Identity"
 
 
-def test_calculate_communication_bounds():
+def test_calculate_communication_bounds() -> None:
     """Tests the calculate communication bounds functionality."""
     graph = Graph(name="g")
     graph.outputs.append("grad_w1")
@@ -139,7 +139,7 @@ def test_calculate_communication_bounds():
     assert calculate_communication_bounds(graph, 0) == 0.0
 
 
-def test_flatten_gradients():
+def test_flatten_gradients() -> None:
     """Tests the flatten gradients functionality."""
     graph = Graph(name="g")
     flatten_gradients(graph)  # Should do nothing
@@ -149,7 +149,7 @@ def test_flatten_gradients():
     assert "all_gradients_flat" in graph.outputs
 
 
-def test_reverse_topological_sort_cycle():
+def test_reverse_topological_sort_cycle() -> None:
     """Tests the reverse topological sort cycle functionality."""
     graph = Graph(name="g")
     graph.add_node(Node("Id", ["x"], ["y"], name="n1"))
@@ -159,7 +159,7 @@ def test_reverse_topological_sort_cycle():
     assert len(ordered) == 2
 
 
-def test_reverse_topological_sort_diamond():
+def test_reverse_topological_sort_diamond() -> None:
     """Tests the reverse topological sort diamond functionality."""
     graph = Graph(name="g")
     graph.add_node(Node("Id", ["x"], ["y1"], name="n1"))

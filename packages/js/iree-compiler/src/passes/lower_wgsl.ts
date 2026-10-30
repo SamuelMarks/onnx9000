@@ -2,19 +2,26 @@
  * @fileoverview lower_wgsl.ts
  * Provides lower_wgsl functionality for the iree-compiler package.
  */
-import type { Region } from "../ir/core.js";
+import type { Region } from '../ir/core.js';
 
 // 106-120. WGSL Translation
+/** Represents the `WGSLEmitter` class. */
 export class WGSLEmitter {
+  /**
+   * Executes `emit` on `WGSLEmitter`.
+   * @param region Parameter `region`.
+   * @param options Parameter `options`.
+   * @returns Result of `emit`.
+   */
   emit(
     region: Region,
     options: { fp16?: boolean; workgroupSize?: [number, number, number] } = {},
   ): string {
-    let wgsl = "";
+    let wgsl = '';
 
     // 118. Handle FP16 WGSL extensions
     if (options.fp16) {
-      wgsl += "enable f16;\n";
+      wgsl += 'enable f16;\n';
     }
 
     const wgSize = options.workgroupSize || [64, 1, 1];
@@ -32,11 +39,11 @@ export class WGSLEmitter {
     for (const block of region.blocks) {
       for (const op of block.operations) {
         // 110. Translating inner loops / AST mapping
-        if (op.opcode === "web.linalg.matmul") {
+        if (op.opcode === 'web.linalg.matmul') {
           wgsl += `  // matmul body\n`;
           // 111. 1D buffer offset calc
           wgsl += `  let flat_idx = global_id.y * 64u + global_id.x;\n`;
-        } else if (op.opcode === "web.mhlo.maximum") {
+        } else if (op.opcode === 'web.mhlo.maximum') {
           // 117. Kernel fusion (e.g. Relu)
           wgsl += `  // fused relu\n`;
         }
@@ -49,20 +56,28 @@ export class WGSLEmitter {
     return this.minifyWGSL(wgsl);
   }
 
+  /**
+   * Executes `minifyWGSL` on `WGSLEmitter`.
+   * @param wgsl Parameter `wgsl`.
+   * @returns Result of `minifyWGSL`.
+   */
   private minifyWGSL(wgsl: string): string {
     return wgsl
-      .replace(/\/\/.*$/gm, "") // Remove comments
-      .replace(/\s+/g, " ") // Collapse whitespace
-      .replace(/\s*([;{},:])\s*/g, "$1") // Remove spaces around syntax
+      .replace(/\/\/.*$/gm, '') // Remove comments
+      .replace(/\s+/g, ' ') // Collapse whitespace
+      .replace(/\s*([;{},:])\s*/g, '$1') // Remove spaces around syntax
       .trim();
   }
 }
 
 // 114, 115, 116. WGSL Runner / Pipeline Generator (Stub)
+/** Represents the `WGSLRunner` class. */
 export class WGSLRunner {
-  async executeGraph(
-    _compiledGraph: ReturnType<typeof JSON.parse>,
-  ): Promise<void> {
+  /**
+   * Executes `executeGraph` on `WGSLRunner`.
+   * @param _compiledGraph Parameter `_compiledGraph`.
+   */
+  async executeGraph(_compiledGraph: ReturnType<typeof JSON.parse>): Promise<void> {
     // 114. Generate standard WebGPU pipelines directly from compiled shader string
     // 115. Execute following VM command buffer
     // 116. hal.device.queue.submit mapping

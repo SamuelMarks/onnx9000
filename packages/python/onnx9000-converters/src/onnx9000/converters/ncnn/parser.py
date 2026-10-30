@@ -1,25 +1,27 @@
 """NCNN param parser."""
 
-from typing import Any
+from onnx9000.core.exceptions import ConversionError
 
 
-def parse_param(content: str) -> dict[str, Any]:
+def parse_param(
+    content: str,
+) -> dict[str, int | float | str | bool | bytes | list | dict | tuple | None]:
     """Parse NCNN .param file.
 
     Args:
         content (str): The string content of the .param file.
 
     Returns:
-        Dict[str, Any]: Parsed model info including layers.
+        dict[str, Union[int, float, str, bool]]: Parsed model info including layers.
 
     """
     lines = [line.strip() for line in content.split("\n") if line.strip()]
     if not lines:
-        raise ValueError("Empty NCNN param file")
+        raise ConversionError("Empty NCNN param file")
 
     magic = int(lines[0])
     if magic != 7767517:
-        raise ValueError(f"Invalid NCNN magic number: {magic}")
+        raise ConversionError(f"Invalid NCNN magic number: {magic}")
 
     counts = lines[1].split()
     layer_count = int(counts[0])
@@ -28,9 +30,6 @@ def parse_param(content: str) -> dict[str, Any]:
     layers = []
     for line in lines[2:]:
         parts = line.split()
-        if not parts:  # pragma: no cover
-            continue
-
         layer_type = parts[0]
         layer_name = parts[1]
         bottom_count = int(parts[2])

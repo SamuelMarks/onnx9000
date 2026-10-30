@@ -3,8 +3,8 @@
  * Provides builder functionality for the webnn-polyfill package.
  */
 
-import { Attribute, Graph, Node, Tensor, ValueInfo } from "@onnx9000/core";
-import { PolyfillMLGraph } from "./graph.js";
+import { Attribute, Graph, Node, Tensor, ValueInfo } from '@onnx9000/core';
+import { PolyfillMLGraph } from './graph.js';
 import type {
   MLBatchNormalizationOptions,
   MLClampOptions,
@@ -28,17 +28,29 @@ import type {
   MLSliceOptions,
   MLSplitOptions,
   MLTransposeOptions,
-} from "./interfaces.js";
-import { PolyfillMLOperand } from "./operand.js";
+} from './interfaces.js';
+import { PolyfillMLOperand } from './operand.js';
 
+/** Represents the `PolyfillMLGraphBuilder` class. */
 export class PolyfillMLGraphBuilder {
+  /** Property `graph` of `PolyfillMLGraphBuilder`. */
   private graph: Graph;
+  /** Property `nodeCounter` of `PolyfillMLGraphBuilder`. */
   private nodeCounter: number = 0;
 
+  /**
+   * Initializes a new `PolyfillMLGraphBuilder` instance.
+   * @param _context Parameter `_context`.
+   */
   constructor(_context: MLContext) {
-    this.graph = new Graph("WebNN_Polyfill_Graph");
+    this.graph = new Graph('WebNN_Polyfill_Graph');
   }
 
+  /**
+   * Executes `nextName` on `PolyfillMLGraphBuilder`.
+   * @param op Parameter `op`.
+   * @returns Result of `nextName`.
+   */
   private nextName(op: string): string {
     return `${op}_${this.nodeCounter++}`;
   }
@@ -54,25 +66,22 @@ export class PolyfillMLGraphBuilder {
     // 19. Validate MLOperandDescriptor shapes strictly (Array of positive integers).
     for (const d of descriptor.dimensions) {
       if (d <= 0 || !Number.isInteger(d)) {
-        throw new DOMException(`Invalid dimension ${d} in shape`, "DataError");
+        throw new DOMException(`Invalid dimension ${d} in shape`, 'DataError');
       }
     }
     // 20. Validate MLOperandDescriptor datatypes strictly
     const validTypes = [
-      "float32",
-      "float16",
-      "int32",
-      "uint32",
-      "int8",
-      "uint8",
-      "int64",
-      "uint64",
+      'float32',
+      'float16',
+      'int32',
+      'uint32',
+      'int8',
+      'uint8',
+      'int64',
+      'uint64',
     ];
     if (!validTypes.includes(descriptor.dataType)) {
-      throw new DOMException(
-        `Invalid dataType ${descriptor.dataType}`,
-        "DataError",
-      );
+      throw new DOMException(`Invalid dataType ${descriptor.dataType}`, 'DataError');
     }
 
     this.graph.inputs.push(
@@ -82,11 +91,7 @@ export class PolyfillMLGraphBuilder {
         descriptor.dataType as ReturnType<typeof JSON.parse>,
       ),
     );
-    return new PolyfillMLOperand(
-      name,
-      descriptor.dataType,
-      descriptor.dimensions,
-    );
+    return new PolyfillMLOperand(name, descriptor.dataType, descriptor.dimensions);
   }
 
   // 22. Support builder.constant(descriptor, bufferView).
@@ -96,11 +101,8 @@ export class PolyfillMLGraphBuilder {
    * @param bufferView Input operand
    * @returns Result operand
    */
-  constant(
-    descriptor: MLOperandDescriptor,
-    bufferView: ArrayBufferView,
-  ): MLOperand {
-    const name = this.nextName("Constant");
+  constant(descriptor: MLOperandDescriptor, bufferView: ArrayBufferView): MLOperand {
+    const name = this.nextName('Constant');
     // 23. Extract ArrayBuffer values from constant() calls into onnx9000 Initializers natively.
     const tensor = new Tensor(
       name,
@@ -112,28 +114,24 @@ export class PolyfillMLGraphBuilder {
     );
     this.graph.addTensor(tensor);
     this.graph.initializers.push(name);
-    return new PolyfillMLOperand(
-      name,
-      descriptor.dataType,
-      descriptor.dimensions,
-    );
+    return new PolyfillMLOperand(name, descriptor.dataType, descriptor.dimensions);
   }
 
+  /**
+   * Executes `build` on `PolyfillMLGraphBuilder`.
+   * @param outputs Parameter `outputs`.
+   * @returns Result of `build`.
+   */
   async build(outputs: Record<string, MLOperand>): Promise<MLGraph> {
     const entries = Object.entries(outputs);
-    for (let i = 0; i < entries.length; i++) {
-      const [key, op] = entries[i]!;
+    for (const [key, op] of entries) {
       const polyOp = op as PolyfillMLOperand;
       if (polyOp.name !== key) {
         // Emit an identity node to map the name to the expected output key
-        const node = new Node("Identity", [polyOp.name], [key]);
+        const node = new Node('Identity', [polyOp.name], [key]);
         this.graph.addNode(node);
         this.graph.outputs.push(
-          new ValueInfo(
-            key,
-            polyOp.shape,
-            polyOp.dataType as ReturnType<typeof JSON.parse>,
-          ),
+          new ValueInfo(key, polyOp.shape, polyOp.dataType as ReturnType<typeof JSON.parse>),
         );
       } else {
         this.graph.outputs.push(
@@ -149,6 +147,13 @@ export class PolyfillMLGraphBuilder {
     return new PolyfillMLGraph(this.graph);
   }
 
+  /**
+   * Executes `emitNode` on `PolyfillMLGraphBuilder`.
+   * @param opType Parameter `opType`.
+   * @param inputs Parameter `inputs`.
+   * @param attributes Parameter `attributes`.
+   * @returns Result of `emitNode`.
+   */
   private emitNode(
     opType: string,
     inputs: (MLOperand | undefined)[],
@@ -160,8 +165,9 @@ export class PolyfillMLGraphBuilder {
     const outName = `${name}_out`;
 
     // Simplistic shape/type inference for the polyfill (we rely on ONNX standard later, but provide a basic shape)
-    const outType = inputs[0]?.dataType || "float32";
-    const outShape = inputs[0]?.shape || []; // Broadcasting not strictly implemented here, just passing through
+    const firstInput = validInputs[0] as MLOperand;
+    const outType = firstInput.dataType;
+    const outShape = firstInput.shape; // Broadcasting not strictly implemented here, just passing through
 
     const node = new Node(opType, inNames, [outName], attributes, name);
     this.graph.addNode(node);
@@ -177,7 +183,7 @@ export class PolyfillMLGraphBuilder {
    * @returns Result operand
    */
   add(a: MLOperand, b: MLOperand): MLOperand {
-    return this.emitNode("Add", [a, b]);
+    return this.emitNode('Add', [a, b]);
   }
   /**
    * WebNN Sub operation.
@@ -186,7 +192,7 @@ export class PolyfillMLGraphBuilder {
    * @returns Result operand
    */
   sub(a: MLOperand, b: MLOperand): MLOperand {
-    return this.emitNode("Sub", [a, b]);
+    return this.emitNode('Sub', [a, b]);
   }
   /**
    * WebNN Mul operation.
@@ -195,7 +201,7 @@ export class PolyfillMLGraphBuilder {
    * @returns Result operand
    */
   mul(a: MLOperand, b: MLOperand): MLOperand {
-    return this.emitNode("Mul", [a, b]);
+    return this.emitNode('Mul', [a, b]);
   }
   /**
    * WebNN Div operation.
@@ -204,7 +210,7 @@ export class PolyfillMLGraphBuilder {
    * @returns Result operand
    */
   div(a: MLOperand, b: MLOperand): MLOperand {
-    return this.emitNode("Div", [a, b]);
+    return this.emitNode('Div', [a, b]);
   }
   /**
    * WebNN Max operation.
@@ -213,7 +219,7 @@ export class PolyfillMLGraphBuilder {
    * @returns Result operand
    */
   max(a: MLOperand, b: MLOperand): MLOperand {
-    return this.emitNode("Max", [a, b]);
+    return this.emitNode('Max', [a, b]);
   }
   /**
    * WebNN Min operation.
@@ -222,7 +228,7 @@ export class PolyfillMLGraphBuilder {
    * @returns Result operand
    */
   min(a: MLOperand, b: MLOperand): MLOperand {
-    return this.emitNode("Min", [a, b]);
+    return this.emitNode('Min', [a, b]);
   }
   /**
    * WebNN Pow operation.
@@ -231,7 +237,7 @@ export class PolyfillMLGraphBuilder {
    * @returns Result operand
    */
   pow(a: MLOperand, b: MLOperand): MLOperand {
-    return this.emitNode("Pow", [a, b]);
+    return this.emitNode('Pow', [a, b]);
   }
   /**
    * WebNN Abs operation.
@@ -239,7 +245,7 @@ export class PolyfillMLGraphBuilder {
    * @returns Result operand
    */
   abs(a: MLOperand): MLOperand {
-    return this.emitNode("Abs", [a]);
+    return this.emitNode('Abs', [a]);
   }
   /**
    * WebNN Ceil operation.
@@ -247,7 +253,7 @@ export class PolyfillMLGraphBuilder {
    * @returns Result operand
    */
   ceil(a: MLOperand): MLOperand {
-    return this.emitNode("Ceil", [a]);
+    return this.emitNode('Ceil', [a]);
   }
   /**
    * WebNN Floor operation.
@@ -255,7 +261,7 @@ export class PolyfillMLGraphBuilder {
    * @returns Result operand
    */
   floor(a: MLOperand): MLOperand {
-    return this.emitNode("Floor", [a]);
+    return this.emitNode('Floor', [a]);
   }
   /**
    * WebNN Exp operation.
@@ -263,7 +269,7 @@ export class PolyfillMLGraphBuilder {
    * @returns Result operand
    */
   exp(a: MLOperand): MLOperand {
-    return this.emitNode("Exp", [a]);
+    return this.emitNode('Exp', [a]);
   }
   /**
    * WebNN Log operation.
@@ -271,7 +277,7 @@ export class PolyfillMLGraphBuilder {
    * @returns Result operand
    */
   log(a: MLOperand): MLOperand {
-    return this.emitNode("Log", [a]);
+    return this.emitNode('Log', [a]);
   }
   /**
    * WebNN Cos operation.
@@ -279,7 +285,7 @@ export class PolyfillMLGraphBuilder {
    * @returns Result operand
    */
   cos(a: MLOperand): MLOperand {
-    return this.emitNode("Cos", [a]);
+    return this.emitNode('Cos', [a]);
   }
   /**
    * WebNN Sin operation.
@@ -287,7 +293,7 @@ export class PolyfillMLGraphBuilder {
    * @returns Result operand
    */
   sin(a: MLOperand): MLOperand {
-    return this.emitNode("Sin", [a]);
+    return this.emitNode('Sin', [a]);
   }
   /**
    * WebNN Tan operation.
@@ -295,7 +301,7 @@ export class PolyfillMLGraphBuilder {
    * @returns Result operand
    */
   tan(a: MLOperand): MLOperand {
-    return this.emitNode("Tan", [a]);
+    return this.emitNode('Tan', [a]);
   }
   /**
    * WebNN Acos operation.
@@ -303,7 +309,7 @@ export class PolyfillMLGraphBuilder {
    * @returns Result operand
    */
   acos(a: MLOperand): MLOperand {
-    return this.emitNode("Acos", [a]);
+    return this.emitNode('Acos', [a]);
   }
   /**
    * WebNN Asin operation.
@@ -311,7 +317,7 @@ export class PolyfillMLGraphBuilder {
    * @returns Result operand
    */
   asin(a: MLOperand): MLOperand {
-    return this.emitNode("Asin", [a]);
+    return this.emitNode('Asin', [a]);
   }
   /**
    * WebNN Atan operation.
@@ -319,7 +325,7 @@ export class PolyfillMLGraphBuilder {
    * @returns Result operand
    */
   atan(a: MLOperand): MLOperand {
-    return this.emitNode("Atan", [a]);
+    return this.emitNode('Atan', [a]);
   }
   /**
    * WebNN Sqrt operation.
@@ -327,7 +333,7 @@ export class PolyfillMLGraphBuilder {
    * @returns Result operand
    */
   sqrt(a: MLOperand): MLOperand {
-    return this.emitNode("Sqrt", [a]);
+    return this.emitNode('Sqrt', [a]);
   }
   /**
    * WebNN Erf operation.
@@ -335,7 +341,7 @@ export class PolyfillMLGraphBuilder {
    * @returns Result operand
    */
   erf(a: MLOperand): MLOperand {
-    return this.emitNode("Erf", [a]);
+    return this.emitNode('Erf', [a]);
   }
   /**
    * WebNN Sign operation.
@@ -343,7 +349,7 @@ export class PolyfillMLGraphBuilder {
    * @returns Result operand
    */
   sign(a: MLOperand): MLOperand {
-    return this.emitNode("Sign", [a]);
+    return this.emitNode('Sign', [a]);
   }
   /**
    * WebNN Neg operation.
@@ -351,7 +357,7 @@ export class PolyfillMLGraphBuilder {
    * @returns Result operand
    */
   neg(a: MLOperand): MLOperand {
-    return this.emitNode("Neg", [a]);
+    return this.emitNode('Neg', [a]);
   }
 
   // Phase 4: Activations & Non-Linearities
@@ -361,7 +367,7 @@ export class PolyfillMLGraphBuilder {
    * @returns Result operand
    */
   relu(a: MLOperand): MLOperand {
-    return this.emitNode("Relu", [a]);
+    return this.emitNode('Relu', [a]);
   }
   /**
    * WebNN Sigmoid operation.
@@ -369,7 +375,7 @@ export class PolyfillMLGraphBuilder {
    * @returns Result operand
    */
   sigmoid(a: MLOperand): MLOperand {
-    return this.emitNode("Sigmoid", [a]);
+    return this.emitNode('Sigmoid', [a]);
   }
   /**
    * WebNN Tanh operation.
@@ -377,7 +383,7 @@ export class PolyfillMLGraphBuilder {
    * @returns Result operand
    */
   tanh(a: MLOperand): MLOperand {
-    return this.emitNode("Tanh", [a]);
+    return this.emitNode('Tanh', [a]);
   }
   /**
    * WebNN Softmax operation.
@@ -387,18 +393,22 @@ export class PolyfillMLGraphBuilder {
    */
   softmax(a: MLOperand, axis?: number): MLOperand {
     return this.emitNode(
-      "Softmax",
+      'Softmax',
       [a],
-      axis !== undefined ? { axis: new Attribute("axis", "INT", axis) } : {},
+      axis !== undefined ? { axis: new Attribute('axis', 'INT', axis) } : {},
     );
   }
+  /**
+   * Executes `leakyRelu` on `PolyfillMLGraphBuilder`.
+   * @param a Parameter `a`.
+   * @param options Parameter `options`.
+   * @returns Result of `leakyRelu`.
+   */
   leakyRelu(a: MLOperand, options?: MLLeakyReluOptions): MLOperand {
     return this.emitNode(
-      "LeakyRelu",
+      'LeakyRelu',
       [a],
-      options?.alpha !== undefined
-        ? { alpha: new Attribute("alpha", "FLOAT", options.alpha) }
-        : {},
+      options?.alpha !== undefined ? { alpha: new Attribute('alpha', 'FLOAT', options.alpha) } : {},
     );
   }
   /**
@@ -409,23 +419,30 @@ export class PolyfillMLGraphBuilder {
    */
   elu(a: MLOperand, options?: MLEluOptions): MLOperand {
     return this.emitNode(
-      "Elu",
+      'Elu',
       [a],
-      options?.alpha !== undefined
-        ? { alpha: new Attribute("alpha", "FLOAT", options.alpha) }
-        : {},
+      options?.alpha !== undefined ? { alpha: new Attribute('alpha', 'FLOAT', options.alpha) } : {},
     );
   }
+  /**
+   * Executes `hardSigmoid` on `PolyfillMLGraphBuilder`.
+   * @param a Parameter `a`.
+   * @param options Parameter `options`.
+   * @returns Result of `hardSigmoid`.
+   */
   hardSigmoid(a: MLOperand, options?: MLHardSigmoidOptions): MLOperand {
     const attrs: Record<string, Attribute> = {};
-    if (options?.alpha !== undefined)
-      attrs.alpha = new Attribute("alpha", "FLOAT", options.alpha);
-    if (options?.beta !== undefined)
-      attrs.beta = new Attribute("beta", "FLOAT", options.beta);
-    return this.emitNode("HardSigmoid", [a], attrs);
+    if (options?.alpha !== undefined) attrs.alpha = new Attribute('alpha', 'FLOAT', options.alpha);
+    if (options?.beta !== undefined) attrs.beta = new Attribute('beta', 'FLOAT', options.beta);
+    return this.emitNode('HardSigmoid', [a], attrs);
   }
+  /**
+   * Executes `hardSwish` on `PolyfillMLGraphBuilder`.
+   * @param a Parameter `a`.
+   * @returns Result of `hardSwish`.
+   */
   hardSwish(a: MLOperand): MLOperand {
-    return this.emitNode("HardSwish", [a]);
+    return this.emitNode('HardSwish', [a]);
   }
   /**
    * WebNN Linear operation.
@@ -444,8 +461,8 @@ export class PolyfillMLGraphBuilder {
       { dataType: a.dataType, dimensions: [] },
       new Float32Array([beta]),
     );
-    const mulOp = this.emitNode("Mul", [a, alphaOp]);
-    return this.emitNode("Add", [mulOp, betaOp]);
+    const mulOp = this.emitNode('Mul', [a, alphaOp]);
+    return this.emitNode('Add', [mulOp, betaOp]);
   }
 
   /**
@@ -454,7 +471,7 @@ export class PolyfillMLGraphBuilder {
    * @returns Result operand
    */
   softplus(a: MLOperand): MLOperand {
-    return this.emitNode("Softplus", [a]);
+    return this.emitNode('Softplus', [a]);
   }
   /**
    * WebNN Softsign operation.
@@ -462,7 +479,7 @@ export class PolyfillMLGraphBuilder {
    * @returns Result operand
    */
   softsign(a: MLOperand): MLOperand {
-    return this.emitNode("Softsign", [a]);
+    return this.emitNode('Softsign', [a]);
   }
   /**
    * WebNN Gelu operation.
@@ -470,7 +487,7 @@ export class PolyfillMLGraphBuilder {
    * @returns Result operand
    */
   gelu(a: MLOperand): MLOperand {
-    return this.emitNode("Gelu", [a]);
+    return this.emitNode('Gelu', [a]);
   }
   /**
    * WebNN Prelu operation.
@@ -479,7 +496,7 @@ export class PolyfillMLGraphBuilder {
    * @returns Result operand
    */
   prelu(a: MLOperand, slope: MLOperand): MLOperand {
-    return this.emitNode("PRelu", [a, slope]);
+    return this.emitNode('PRelu', [a, slope]);
   }
   /**
    * WebNN Clamp operation.
@@ -493,14 +510,11 @@ export class PolyfillMLGraphBuilder {
     if (options?.maxValue) {
       if (!options.minValue)
         inputs.push(
-          this.constant(
-            { dataType: a.dataType, dimensions: [] },
-            new Float32Array([-Infinity]),
-          ),
+          this.constant({ dataType: a.dataType, dimensions: [] }, new Float32Array([-Infinity])),
         );
       inputs.push(options.maxValue);
     }
-    return this.emitNode("Clip", inputs);
+    return this.emitNode('Clip', inputs);
   }
 
   // Phase 4: Matrix Multiplication & Linear Algebra
@@ -511,7 +525,7 @@ export class PolyfillMLGraphBuilder {
    * @returns Result operand
    */
   matmul(a: MLOperand, b: MLOperand): MLOperand {
-    return this.emitNode("MatMul", [a, b]);
+    return this.emitNode('MatMul', [a, b]);
   }
   /**
    * WebNN Gemm operation.
@@ -522,15 +536,13 @@ export class PolyfillMLGraphBuilder {
    */
   gemm(a: MLOperand, b: MLOperand, options?: MLGemmOptions): MLOperand {
     const attrs: Record<string, Attribute> = {};
-    if (options?.alpha !== undefined)
-      attrs.alpha = new Attribute("alpha", "FLOAT", options.alpha);
-    if (options?.beta !== undefined)
-      attrs.beta = new Attribute("beta", "FLOAT", options.beta);
-    if (options?.aTranspose) attrs.transA = new Attribute("transA", "INT", 1);
-    if (options?.bTranspose) attrs.transB = new Attribute("transB", "INT", 1);
+    if (options?.alpha !== undefined) attrs.alpha = new Attribute('alpha', 'FLOAT', options.alpha);
+    if (options?.beta !== undefined) attrs.beta = new Attribute('beta', 'FLOAT', options.beta);
+    if (options?.aTranspose) attrs.transA = new Attribute('transA', 'INT', 1);
+    if (options?.bTranspose) attrs.transB = new Attribute('transB', 'INT', 1);
     const inputs = [a, b];
     if (options?.c) inputs.push(options.c);
-    return this.emitNode("Gemm", inputs, attrs);
+    return this.emitNode('Gemm', inputs, attrs);
   }
 
   // Phase 8: Tensor Manipulation
@@ -542,10 +554,10 @@ export class PolyfillMLGraphBuilder {
    */
   reshape(a: MLOperand, newShape: number[]): MLOperand {
     const shapeOp = this.constant(
-      { dataType: "int64", dimensions: [newShape.length] },
+      { dataType: 'int64', dimensions: [newShape.length] },
       new BigInt64Array(newShape.map(BigInt)),
     );
-    return this.emitNode("Reshape", [a, shapeOp]);
+    return this.emitNode('Reshape', [a, shapeOp]);
   }
   /**
    * WebNN Transpose operation.
@@ -555,11 +567,9 @@ export class PolyfillMLGraphBuilder {
    */
   transpose(a: MLOperand, options?: MLTransposeOptions): MLOperand {
     return this.emitNode(
-      "Transpose",
+      'Transpose',
       [a],
-      options?.permutation
-        ? { perm: new Attribute("perm", "INTS", options.permutation) }
-        : {},
+      options?.permutation ? { perm: new Attribute('perm', 'INTS', options.permutation) } : {},
     );
   }
   /**
@@ -570,26 +580,21 @@ export class PolyfillMLGraphBuilder {
    * @param options? Input operand
    * @returns Result operand
    */
-  slice(
-    a: MLOperand,
-    starts: number[],
-    sizes: number[],
-    options?: MLSliceOptions,
-  ): MLOperand {
-    const ends = starts.map((s, i) => s + sizes[i]!);
+  slice(a: MLOperand, starts: number[], sizes: number[], options?: MLSliceOptions): MLOperand {
+    const ends = starts.map((s, i) => s + (sizes[i] as number));
     const startsOp = this.constant(
-      { dataType: "int64", dimensions: [starts.length] },
+      { dataType: 'int64', dimensions: [starts.length] },
       new BigInt64Array(starts.map(BigInt)),
     );
     const endsOp = this.constant(
-      { dataType: "int64", dimensions: [ends.length] },
+      { dataType: 'int64', dimensions: [ends.length] },
       new BigInt64Array(ends.map(BigInt)),
     );
     const inputs = [a, startsOp, endsOp];
     if (options?.axes) {
       inputs.push(
         this.constant(
-          { dataType: "int64", dimensions: [options.axes.length] },
+          { dataType: 'int64', dimensions: [options.axes.length] },
           new BigInt64Array(options.axes.map(BigInt)),
         ),
       );
@@ -598,18 +603,18 @@ export class PolyfillMLGraphBuilder {
       if (!options.axes)
         inputs.push(
           this.constant(
-            { dataType: "int64", dimensions: [starts.length] },
+            { dataType: 'int64', dimensions: [starts.length] },
             new BigInt64Array(starts.map((_, i) => BigInt(i))),
           ),
         );
       inputs.push(
         this.constant(
-          { dataType: "int64", dimensions: [options.strides.length] },
+          { dataType: 'int64', dimensions: [options.strides.length] },
           new BigInt64Array(options.strides.map(BigInt)),
         ),
       );
     }
-    return this.emitNode("Slice", inputs);
+    return this.emitNode('Slice', inputs);
   }
   /**
    * WebNN Concat operation.
@@ -618,40 +623,39 @@ export class PolyfillMLGraphBuilder {
    * @returns Result operand
    */
   concat(inputs: MLOperand[], axis: number): MLOperand {
-    return this.emitNode("Concat", inputs, {
-      axis: new Attribute("axis", "INT", axis),
+    return this.emitNode('Concat', inputs, {
+      axis: new Attribute('axis', 'INT', axis),
     });
   }
-  split(
-    a: MLOperand,
-    splits: number | number[],
-    options?: MLSplitOptions,
-  ): MLOperand[] {
+  /**
+   * Executes `split` on `PolyfillMLGraphBuilder`.
+   * @param a Parameter `a`.
+   * @param splits Parameter `splits`.
+   * @param options Parameter `options`.
+   * @returns Result of `split`.
+   */
+  split(a: MLOperand, splits: number | number[], options?: MLSplitOptions): MLOperand[] {
     const attrs: Record<string, Attribute> = {};
-    if (options?.axis !== undefined)
-      attrs.axis = new Attribute("axis", "INT", options.axis);
+    if (options?.axis !== undefined) attrs.axis = new Attribute('axis', 'INT', options.axis);
 
     // Simplistic return of multiple operands
-    const name = this.nextName("Split");
+    const name = this.nextName('Split');
     const _inNames = [(a as PolyfillMLOperand).name];
-    const numOutputs = typeof splits === "number" ? splits : splits.length;
-    const outNames = Array.from(
-      { length: numOutputs },
-      (_, i) => `${name}_out${i}`,
-    );
+    const numOutputs = typeof splits === 'number' ? splits : splits.length;
+    const outNames = Array.from({ length: numOutputs }, (_, i) => `${name}_out${i}`);
 
     const inputs = [a];
     if (Array.isArray(splits)) {
       inputs.push(
         this.constant(
-          { dataType: "int64", dimensions: [splits.length] },
+          { dataType: 'int64', dimensions: [splits.length] },
           new BigInt64Array(splits.map(BigInt)),
         ),
       );
     }
 
     const node = new Node(
-      "Split",
+      'Split',
       inputs.map((i) => (i as PolyfillMLOperand).name),
       outNames,
       attrs,
@@ -668,10 +672,10 @@ export class PolyfillMLGraphBuilder {
    */
   expand(a: MLOperand, newShape: number[]): MLOperand {
     const shapeOp = this.constant(
-      { dataType: "int64", dimensions: [newShape.length] },
+      { dataType: 'int64', dimensions: [newShape.length] },
       new BigInt64Array(newShape.map(BigInt)),
     );
-    return this.emitNode("Expand", [a, shapeOp]);
+    return this.emitNode('Expand', [a, shapeOp]);
   }
   /**
    * WebNN Gather operation.
@@ -680,51 +684,61 @@ export class PolyfillMLGraphBuilder {
    * @param options? Input operand
    * @returns Result operand
    */
-  gather(
-    a: MLOperand,
-    indices: MLOperand,
-    options?: MLGatherOptions,
-  ): MLOperand {
+  gather(a: MLOperand, indices: MLOperand, options?: MLGatherOptions): MLOperand {
     return this.emitNode(
-      "Gather",
+      'Gather',
       [a, indices],
-      options?.axis !== undefined
-        ? { axis: new Attribute("axis", "INT", options.axis) }
-        : {},
+      options?.axis !== undefined ? { axis: new Attribute('axis', 'INT', options.axis) } : {},
     );
   }
+  /**
+   * Executes `gatherNd` on `PolyfillMLGraphBuilder`.
+   * @param a Parameter `a`.
+   * @param indices Parameter `indices`.
+   * @returns Result of `gatherNd`.
+   */
   gatherNd(a: MLOperand, indices: MLOperand): MLOperand {
-    return this.emitNode("GatherND", [a, indices]);
+    return this.emitNode('GatherND', [a, indices]);
   }
+  /**
+   * Executes `scatterNd` on `PolyfillMLGraphBuilder`.
+   * @param indices Parameter `indices`.
+   * @param updates Parameter `updates`.
+   * @param options Parameter `options`.
+   * @returns Result of `scatterNd`.
+   */
   scatterNd(
     indices: MLOperand,
     updates: MLOperand,
     options?: ReturnType<typeof JSON.parse>,
   ): MLOperand {
-    return this.emitNode("ScatterND", [
+    return this.emitNode('ScatterND', [
       this.constant(
         { dataType: updates.dataType, dimensions: options?.shape || [] },
         new Float32Array(
-          options?.shape
-            ? options.shape.reduce((a: number, b: number) => a * b, 1)
-            : 0,
+          options?.shape ? options.shape.reduce((a: number, b: number) => a * b, 1) : 0,
         ),
       ),
       indices,
       updates,
     ]);
   }
+  /**
+   * Executes `gatherElements` on `PolyfillMLGraphBuilder`.
+   * @param a Parameter `a`.
+   * @param indices Parameter `indices`.
+   * @param options Parameter `options`.
+   * @returns Result of `gatherElements`.
+   */
   gatherElements(
     a: MLOperand,
     indices: MLOperand,
     options?: ReturnType<typeof JSON.parse>,
   ): MLOperand {
     return this.emitNode(
-      "GatherElements",
+      'GatherElements',
       [a, indices],
-      options?.axis !== undefined
-        ? { axis: new Attribute("axis", "INT", options.axis) }
-        : {},
+      options?.axis !== undefined ? { axis: new Attribute('axis', 'INT', options.axis) } : {},
     );
   }
 
@@ -737,22 +751,18 @@ export class PolyfillMLGraphBuilder {
    */
   pad(a: MLOperand, padding: number[], options?: MLPadOptions): MLOperand {
     const attrs: Record<string, Attribute> = {};
-    if (options?.mode)
-      attrs.mode = new Attribute("mode", "STRING", options.mode);
+    if (options?.mode) attrs.mode = new Attribute('mode', 'STRING', options.mode);
     const padsOp = this.constant(
-      { dataType: "int64", dimensions: [padding.length] },
+      { dataType: 'int64', dimensions: [padding.length] },
       new BigInt64Array(padding.map(BigInt)),
     );
     const inputs = [a, padsOp];
     if (options?.value !== undefined) {
       inputs.push(
-        this.constant(
-          { dataType: a.dataType, dimensions: [] },
-          new Float32Array([options.value]),
-        ),
+        this.constant({ dataType: a.dataType, dimensions: [] }, new Float32Array([options.value])),
       );
     }
-    return this.emitNode("Pad", inputs, attrs);
+    return this.emitNode('Pad', inputs, attrs);
   }
   /**
    * WebNN Cast operation.
@@ -777,8 +787,8 @@ export class PolyfillMLGraphBuilder {
       uint32: 12,
       uint64: 13,
     };
-    return this.emitNode("Cast", [a], {
-      to: new Attribute("to", "INT", typeMap[type] || 1),
+    return this.emitNode('Cast', [a], {
+      to: new Attribute('to', 'INT', typeMap[type] || 1),
     });
   }
 
@@ -790,212 +800,208 @@ export class PolyfillMLGraphBuilder {
    * @param options? Input operand
    * @returns Result operand
    */
-  conv2d(
-    input: MLOperand,
-    filter: MLOperand,
-    options?: MLConv2dOptions,
-  ): MLOperand {
+  conv2d(input: MLOperand, filter: MLOperand, options?: MLConv2dOptions): MLOperand {
     const attrs: Record<string, Attribute> = {};
-    if (options?.padding)
-      attrs.pads = new Attribute("pads", "INTS", options.padding);
-    if (options?.strides)
-      attrs.strides = new Attribute("strides", "INTS", options.strides);
-    if (options?.dilations)
-      attrs.dilations = new Attribute("dilations", "INTS", options.dilations);
-    if (options?.groups)
-      attrs.group = new Attribute("group", "INT", options.groups);
+    if (options?.padding) attrs.pads = new Attribute('pads', 'INTS', options.padding);
+    if (options?.strides) attrs.strides = new Attribute('strides', 'INTS', options.strides);
+    if (options?.dilations) attrs.dilations = new Attribute('dilations', 'INTS', options.dilations);
+    if (options?.groups) attrs.group = new Attribute('group', 'INT', options.groups);
     if (options?.autoPad) {
       const padMap: Record<string, string> = {
-        explicit: "NOTSET",
-        "same-upper": "SAME_UPPER",
-        "same-lower": "SAME_LOWER",
+        explicit: 'NOTSET',
+        'same-upper': 'SAME_UPPER',
+        'same-lower': 'SAME_LOWER',
       };
-      attrs.auto_pad = new Attribute(
-        "auto_pad",
-        "STRING",
-        padMap[options.autoPad] || "NOTSET",
-      );
+      attrs.auto_pad = new Attribute('auto_pad', 'STRING', padMap[options.autoPad] || 'NOTSET');
     }
     const inputs = [input, filter];
     if (options?.bias) inputs.push(options.bias);
-    return this.emitNode("Conv", inputs, attrs);
+    return this.emitNode('Conv', inputs, attrs);
   }
+  /**
+   * Executes `convTranspose2d` on `PolyfillMLGraphBuilder`.
+   * @param input Parameter `input`.
+   * @param filter Parameter `filter`.
+   * @param options Parameter `options`.
+   * @returns Result of `convTranspose2d`.
+   */
   convTranspose2d(
     input: MLOperand,
     filter: MLOperand,
     options?: MLConvTranspose2dOptions,
   ): MLOperand {
     const attrs: Record<string, Attribute> = {};
-    if (options?.padding)
-      attrs.pads = new Attribute("pads", "INTS", options.padding);
-    if (options?.strides)
-      attrs.strides = new Attribute("strides", "INTS", options.strides);
-    if (options?.dilations)
-      attrs.dilations = new Attribute("dilations", "INTS", options.dilations);
-    if (options?.groups)
-      attrs.group = new Attribute("group", "INT", options.groups);
+    if (options?.padding) attrs.pads = new Attribute('pads', 'INTS', options.padding);
+    if (options?.strides) attrs.strides = new Attribute('strides', 'INTS', options.strides);
+    if (options?.dilations) attrs.dilations = new Attribute('dilations', 'INTS', options.dilations);
+    if (options?.groups) attrs.group = new Attribute('group', 'INT', options.groups);
     if (options?.outputPadding)
-      attrs.output_padding = new Attribute(
-        "output_padding",
-        "INTS",
-        options.outputPadding,
-      );
+      attrs.output_padding = new Attribute('output_padding', 'INTS', options.outputPadding);
     const inputs = [input, filter];
     if (options?.bias) inputs.push(options.bias);
-    return this.emitNode("ConvTranspose", inputs, attrs);
+    return this.emitNode('ConvTranspose', inputs, attrs);
   }
+  /**
+   * Executes `maxPool2d` on `PolyfillMLGraphBuilder`.
+   * @param input Parameter `input`.
+   * @param options Parameter `options`.
+   * @returns Result of `maxPool2d`.
+   */
   maxPool2d(input: MLOperand, options?: MLPool2dOptions): MLOperand {
     const attrs: Record<string, Attribute> = {};
     if (options?.windowDimensions)
-      attrs.kernel_shape = new Attribute(
-        "kernel_shape",
-        "INTS",
-        options.windowDimensions,
-      );
-    if (options?.padding)
-      attrs.pads = new Attribute("pads", "INTS", options.padding);
-    if (options?.strides)
-      attrs.strides = new Attribute("strides", "INTS", options.strides);
-    if (options?.dilations)
-      attrs.dilations = new Attribute("dilations", "INTS", options.dilations);
-    if (options?.roundingType === "ceil")
-      attrs.ceil_mode = new Attribute("ceil_mode", "INT", 1);
-    return this.emitNode("MaxPool", [input], attrs);
+      attrs.kernel_shape = new Attribute('kernel_shape', 'INTS', options.windowDimensions);
+    if (options?.padding) attrs.pads = new Attribute('pads', 'INTS', options.padding);
+    if (options?.strides) attrs.strides = new Attribute('strides', 'INTS', options.strides);
+    if (options?.dilations) attrs.dilations = new Attribute('dilations', 'INTS', options.dilations);
+    if (options?.roundingType === 'ceil') attrs.ceil_mode = new Attribute('ceil_mode', 'INT', 1);
+    return this.emitNode('MaxPool', [input], attrs);
   }
+  /**
+   * Executes `averagePool2d` on `PolyfillMLGraphBuilder`.
+   * @param input Parameter `input`.
+   * @param options Parameter `options`.
+   * @returns Result of `averagePool2d`.
+   */
   averagePool2d(input: MLOperand, options?: MLPool2dOptions): MLOperand {
     const attrs: Record<string, Attribute> = {};
     if (options?.windowDimensions)
-      attrs.kernel_shape = new Attribute(
-        "kernel_shape",
-        "INTS",
-        options.windowDimensions,
-      );
-    if (options?.padding)
-      attrs.pads = new Attribute("pads", "INTS", options.padding);
-    if (options?.strides)
-      attrs.strides = new Attribute("strides", "INTS", options.strides);
-    if (options?.roundingType === "ceil")
-      attrs.ceil_mode = new Attribute("ceil_mode", "INT", 1);
-    return this.emitNode("AveragePool", [input], attrs);
+      attrs.kernel_shape = new Attribute('kernel_shape', 'INTS', options.windowDimensions);
+    if (options?.padding) attrs.pads = new Attribute('pads', 'INTS', options.padding);
+    if (options?.strides) attrs.strides = new Attribute('strides', 'INTS', options.strides);
+    if (options?.roundingType === 'ceil') attrs.ceil_mode = new Attribute('ceil_mode', 'INT', 1);
+    return this.emitNode('AveragePool', [input], attrs);
   }
+  /**
+   * Executes `l2Pool2d` on `PolyfillMLGraphBuilder`.
+   * @param input Parameter `input`.
+   * @param options Parameter `options`.
+   * @returns Result of `l2Pool2d`.
+   */
   l2Pool2d(input: MLOperand, options?: MLPool2dOptions): MLOperand {
     const attrs: Record<string, Attribute> = {};
     if (options?.windowDimensions)
-      attrs.kernel_shape = new Attribute(
-        "kernel_shape",
-        "INTS",
-        options.windowDimensions,
-      );
-    if (options?.padding)
-      attrs.pads = new Attribute("pads", "INTS", options.padding);
-    if (options?.strides)
-      attrs.strides = new Attribute("strides", "INTS", options.strides);
-    return this.emitNode("LpPool", [input], attrs); // p=2 default
+      attrs.kernel_shape = new Attribute('kernel_shape', 'INTS', options.windowDimensions);
+    if (options?.padding) attrs.pads = new Attribute('pads', 'INTS', options.padding);
+    if (options?.strides) attrs.strides = new Attribute('strides', 'INTS', options.strides);
+    return this.emitNode('LpPool', [input], attrs); // p=2 default
   }
 
   // Phase 9: Reduction
-  reduceMean(input: MLOperand, options?: MLReduceOptions): MLOperand {
-    return this.emitNode("ReduceMean", [input], {
-      axes: new Attribute("axes", "INTS", options?.axes || []),
-      keepdims: new Attribute(
-        "keepdims",
-        "INT",
-        options?.keepDimensions === false ? 0 : 1,
-      ),
-    });
-  }
-  reduceSum(input: MLOperand, options?: MLReduceOptions): MLOperand {
-    return this.emitNode("ReduceSum", [input], {
-      axes: new Attribute("axes", "INTS", options?.axes || []),
-      keepdims: new Attribute(
-        "keepdims",
-        "INT",
-        options?.keepDimensions === false ? 0 : 1,
-      ),
-    });
-  }
-  reduceMax(input: MLOperand, options?: MLReduceOptions): MLOperand {
-    return this.emitNode("ReduceMax", [input], {
-      axes: new Attribute("axes", "INTS", options?.axes || []),
-      keepdims: new Attribute(
-        "keepdims",
-        "INT",
-        options?.keepDimensions === false ? 0 : 1,
-      ),
-    });
-  }
-  reduceMin(input: MLOperand, options?: MLReduceOptions): MLOperand {
-    return this.emitNode("ReduceMin", [input], {
-      axes: new Attribute("axes", "INTS", options?.axes || []),
-      keepdims: new Attribute(
-        "keepdims",
-        "INT",
-        options?.keepDimensions === false ? 0 : 1,
-      ),
-    });
-  }
-  reduceProduct(input: MLOperand, options?: MLReduceOptions): MLOperand {
-    return this.emitNode("ReduceProd", [input], {
-      axes: new Attribute("axes", "INTS", options?.axes || []),
-      keepdims: new Attribute(
-        "keepdims",
-        "INT",
-        options?.keepDimensions === false ? 0 : 1,
-      ),
-    });
-  }
-  reduceL1(input: MLOperand, options?: MLReduceOptions): MLOperand {
-    return this.emitNode("ReduceL1", [input], {
-      axes: new Attribute("axes", "INTS", options?.axes || []),
-      keepdims: new Attribute(
-        "keepdims",
-        "INT",
-        options?.keepDimensions === false ? 0 : 1,
-      ),
-    });
-  }
-  reduceL2(input: MLOperand, options?: MLReduceOptions): MLOperand {
-    return this.emitNode("ReduceL2", [input], {
-      axes: new Attribute("axes", "INTS", options?.axes || []),
-      keepdims: new Attribute(
-        "keepdims",
-        "INT",
-        options?.keepDimensions === false ? 0 : 1,
-      ),
-    });
-  }
-  reduceLogSumExp(input: MLOperand, options?: MLReduceOptions): MLOperand {
-    return this.emitNode("ReduceLogSumExp", [input], {
-      axes: new Attribute("axes", "INTS", options?.axes || []),
-      keepdims: new Attribute(
-        "keepdims",
-        "INT",
-        options?.keepDimensions === false ? 0 : 1,
-      ),
-    });
-  }
-  argMax(input: MLOperand, options?: MLReduceOptions): MLOperand {
-    return this.emitNode("ArgMax", [input], {
-      axis: new Attribute("axis", "INT", options?.axes?.[0] || 0),
-      keepdims: new Attribute(
-        "keepdims",
-        "INT",
-        options?.keepDimensions === false ? 0 : 1,
-      ),
-    });
-  }
-  argMin(input: MLOperand, options?: MLReduceOptions): MLOperand {
-    return this.emitNode("ArgMin", [input], {
-      axis: new Attribute("axis", "INT", options?.axes?.[0] || 0),
-      keepdims: new Attribute(
-        "keepdims",
-        "INT",
-        options?.keepDimensions === false ? 0 : 1,
-      ),
+  private emitReduce(opType: string, input: MLOperand, options?: MLReduceOptions): MLOperand {
+    return this.emitNode(opType, [input], {
+      axes: new Attribute('axes', 'INTS', options?.axes || []),
+      keepdims: new Attribute('keepdims', 'INT', options?.keepDimensions === false ? 0 : 1),
     });
   }
 
+  private emitArgReduce(opType: string, input: MLOperand, options?: MLReduceOptions): MLOperand {
+    return this.emitNode(opType, [input], {
+      axis: new Attribute('axis', 'INT', options?.axes?.[0] || 0),
+      keepdims: new Attribute('keepdims', 'INT', options?.keepDimensions === false ? 0 : 1),
+    });
+  }
+
+  /**
+   * Executes `reduceMean` on `PolyfillMLGraphBuilder`.
+   * @param input Parameter `input`.
+   * @param options Parameter `options`.
+   * @returns Result of `reduceMean`.
+   */
+  reduceMean(input: MLOperand, options?: MLReduceOptions): MLOperand {
+    return this.emitReduce('ReduceMean', input, options);
+  }
+  /**
+   * Executes `reduceSum` on `PolyfillMLGraphBuilder`.
+   * @param input Parameter `input`.
+   * @param options Parameter `options`.
+   * @returns Result of `reduceSum`.
+   */
+  reduceSum(input: MLOperand, options?: MLReduceOptions): MLOperand {
+    return this.emitReduce('ReduceSum', input, options);
+  }
+  /**
+   * Executes `reduceMax` on `PolyfillMLGraphBuilder`.
+   * @param input Parameter `input`.
+   * @param options Parameter `options`.
+   * @returns Result of `reduceMax`.
+   */
+  reduceMax(input: MLOperand, options?: MLReduceOptions): MLOperand {
+    return this.emitReduce('ReduceMax', input, options);
+  }
+  /**
+   * Executes `reduceMin` on `PolyfillMLGraphBuilder`.
+   * @param input Parameter `input`.
+   * @param options Parameter `options`.
+   * @returns Result of `reduceMin`.
+   */
+  reduceMin(input: MLOperand, options?: MLReduceOptions): MLOperand {
+    return this.emitReduce('ReduceMin', input, options);
+  }
+  /**
+   * Executes `reduceProduct` on `PolyfillMLGraphBuilder`.
+   * @param input Parameter `input`.
+   * @param options Parameter `options`.
+   * @returns Result of `reduceProduct`.
+   */
+  reduceProduct(input: MLOperand, options?: MLReduceOptions): MLOperand {
+    return this.emitReduce('ReduceProd', input, options);
+  }
+  /**
+   * Executes `reduceL1` on `PolyfillMLGraphBuilder`.
+   * @param input Parameter `input`.
+   * @param options Parameter `options`.
+   * @returns Result of `reduceL1`.
+   */
+  reduceL1(input: MLOperand, options?: MLReduceOptions): MLOperand {
+    return this.emitReduce('ReduceL1', input, options);
+  }
+  /**
+   * Executes `reduceL2` on `PolyfillMLGraphBuilder`.
+   * @param input Parameter `input`.
+   * @param options Parameter `options`.
+   * @returns Result of `reduceL2`.
+   */
+  reduceL2(input: MLOperand, options?: MLReduceOptions): MLOperand {
+    return this.emitReduce('ReduceL2', input, options);
+  }
+  /**
+   * Executes `reduceLogSumExp` on `PolyfillMLGraphBuilder`.
+   * @param input Parameter `input`.
+   * @param options Parameter `options`.
+   * @returns Result of `reduceLogSumExp`.
+   */
+  reduceLogSumExp(input: MLOperand, options?: MLReduceOptions): MLOperand {
+    return this.emitReduce('ReduceLogSumExp', input, options);
+  }
+  /**
+   * Executes `argMax` on `PolyfillMLGraphBuilder`.
+   * @param input Parameter `input`.
+   * @param options Parameter `options`.
+   * @returns Result of `argMax`.
+   */
+  argMax(input: MLOperand, options?: MLReduceOptions): MLOperand {
+    return this.emitArgReduce('ArgMax', input, options);
+  }
+  /**
+   * Executes `argMin` on `PolyfillMLGraphBuilder`.
+   * @param input Parameter `input`.
+   * @param options Parameter `options`.
+   * @returns Result of `argMin`.
+   */
+  argMin(input: MLOperand, options?: MLReduceOptions): MLOperand {
+    return this.emitArgReduce('ArgMin', input, options);
+  }
+
   // Phase 7: Normalization Operations
+  /**
+   * Executes `batchNormalization` on `PolyfillMLGraphBuilder`.
+   * @param input Parameter `input`.
+   * @param mean Parameter `mean`.
+   * @param variance Parameter `variance`.
+   * @param options Parameter `options`.
+   * @returns Result of `batchNormalization`.
+   */
   batchNormalization(
     input: MLOperand,
     mean: MLOperand,
@@ -1014,18 +1020,17 @@ export class PolyfillMLGraphBuilder {
         { dataType: input.dataType, dimensions: mean.shape },
         new Float32Array(mean.shape.reduce((a, b) => a * b, 1)).fill(0),
       );
-    return this.emitNode(
-      "BatchNormalization",
-      [input, scale, bias, mean, variance],
-      {
-        epsilon: new Attribute("epsilon", "FLOAT", options?.epsilon || 1e-5),
-      },
-    );
+    return this.emitNode('BatchNormalization', [input, scale, bias, mean, variance], {
+      epsilon: new Attribute('epsilon', 'FLOAT', options?.epsilon || 1e-5),
+    });
   }
-  instanceNormalization(
-    input: MLOperand,
-    options?: MLInstanceNormalizationOptions,
-  ): MLOperand {
+  /**
+   * Executes `instanceNormalization` on `PolyfillMLGraphBuilder`.
+   * @param input Parameter `input`.
+   * @param options Parameter `options`.
+   * @returns Result of `instanceNormalization`.
+   */
+  instanceNormalization(input: MLOperand, options?: MLInstanceNormalizationOptions): MLOperand {
     const cDim = input.shape[1] || 1;
     const scale =
       options?.scale ||
@@ -1039,14 +1044,17 @@ export class PolyfillMLGraphBuilder {
         { dataType: input.dataType, dimensions: [cDim] },
         new Float32Array(cDim).fill(0),
       );
-    return this.emitNode("InstanceNormalization", [input, scale, bias], {
-      epsilon: new Attribute("epsilon", "FLOAT", options?.epsilon || 1e-5),
+    return this.emitNode('InstanceNormalization', [input, scale, bias], {
+      epsilon: new Attribute('epsilon', 'FLOAT', options?.epsilon || 1e-5),
     });
   }
-  layerNormalization(
-    input: MLOperand,
-    options?: MLLayerNormalizationOptions,
-  ): MLOperand {
+  /**
+   * Executes `layerNormalization` on `PolyfillMLGraphBuilder`.
+   * @param input Parameter `input`.
+   * @param options Parameter `options`.
+   * @returns Result of `layerNormalization`.
+   */
+  layerNormalization(input: MLOperand, options?: MLLayerNormalizationOptions): MLOperand {
     const cDim = input.shape[input.shape.length - 1] || 1;
     const scale =
       options?.scale ||
@@ -1060,15 +1068,21 @@ export class PolyfillMLGraphBuilder {
         { dataType: input.dataType, dimensions: [cDim] },
         new Float32Array(cDim).fill(0),
       );
-    return this.emitNode("LayerNormalization", [input, scale, bias], {
-      axis: new Attribute("axis", "INT", options?.axes?.[0] || -1),
-      epsilon: new Attribute("epsilon", "FLOAT", options?.epsilon || 1e-5),
+    return this.emitNode('LayerNormalization', [input, scale, bias], {
+      axis: new Attribute('axis', 'INT', options?.axes?.[0] || -1),
+      epsilon: new Attribute('epsilon', 'FLOAT', options?.epsilon || 1e-5),
     });
   }
+  /**
+   * Executes `l2Normalization` on `PolyfillMLGraphBuilder`.
+   * @param input Parameter `input`.
+   * @param options Parameter `options`.
+   * @returns Result of `l2Normalization`.
+   */
   l2Normalization(input: MLOperand, options?: MLReduceOptions): MLOperand {
-    return this.emitNode("LpNormalization", [input], {
-      axis: new Attribute("axis", "INT", options?.axes?.[0] || -1),
-      p: new Attribute("p", "INT", 2),
+    return this.emitNode('LpNormalization', [input], {
+      axis: new Attribute('axis', 'INT', options?.axes?.[0] || -1),
+      p: new Attribute('p', 'INT', 2),
     });
   }
 
@@ -1080,7 +1094,7 @@ export class PolyfillMLGraphBuilder {
    * @returns Result operand
    */
   equal(a: MLOperand, b: MLOperand): MLOperand {
-    return this.emitNode("Equal", [a, b]);
+    return this.emitNode('Equal', [a, b]);
   }
   /**
    * WebNN Greater operation.
@@ -1089,10 +1103,16 @@ export class PolyfillMLGraphBuilder {
    * @returns Result operand
    */
   greater(a: MLOperand, b: MLOperand): MLOperand {
-    return this.emitNode("Greater", [a, b]);
+    return this.emitNode('Greater', [a, b]);
   }
+  /**
+   * Executes `greaterOrEqual` on `PolyfillMLGraphBuilder`.
+   * @param a Parameter `a`.
+   * @param b Parameter `b`.
+   * @returns Result of `greaterOrEqual`.
+   */
   greaterOrEqual(a: MLOperand, b: MLOperand): MLOperand {
-    return this.emitNode("GreaterOrEqual", [a, b]);
+    return this.emitNode('GreaterOrEqual', [a, b]);
   }
   /**
    * WebNN Lesser operation.
@@ -1101,22 +1121,51 @@ export class PolyfillMLGraphBuilder {
    * @returns Result operand
    */
   lesser(a: MLOperand, b: MLOperand): MLOperand {
-    return this.emitNode("Less", [a, b]);
+    return this.emitNode('Less', [a, b]);
   }
+  /**
+   * Executes `lesserOrEqual` on `PolyfillMLGraphBuilder`.
+   * @param a Parameter `a`.
+   * @param b Parameter `b`.
+   * @returns Result of `lesserOrEqual`.
+   */
   lesserOrEqual(a: MLOperand, b: MLOperand): MLOperand {
-    return this.emitNode("LessOrEqual", [a, b]);
+    return this.emitNode('LessOrEqual', [a, b]);
   }
+  /**
+   * Executes `logicalNot` on `PolyfillMLGraphBuilder`.
+   * @param a Parameter `a`.
+   * @returns Result of `logicalNot`.
+   */
   logicalNot(a: MLOperand): MLOperand {
-    return this.emitNode("Not", [a]);
+    return this.emitNode('Not', [a]);
   }
+  /**
+   * Executes `logicalAnd` on `PolyfillMLGraphBuilder`.
+   * @param a Parameter `a`.
+   * @param b Parameter `b`.
+   * @returns Result of `logicalAnd`.
+   */
   logicalAnd(a: MLOperand, b: MLOperand): MLOperand {
-    return this.emitNode("And", [a, b]);
+    return this.emitNode('And', [a, b]);
   }
+  /**
+   * Executes `logicalOr` on `PolyfillMLGraphBuilder`.
+   * @param a Parameter `a`.
+   * @param b Parameter `b`.
+   * @returns Result of `logicalOr`.
+   */
   logicalOr(a: MLOperand, b: MLOperand): MLOperand {
-    return this.emitNode("Or", [a, b]);
+    return this.emitNode('Or', [a, b]);
   }
+  /**
+   * Executes `logicalXor` on `PolyfillMLGraphBuilder`.
+   * @param a Parameter `a`.
+   * @param b Parameter `b`.
+   * @returns Result of `logicalXor`.
+   */
   logicalXor(a: MLOperand, b: MLOperand): MLOperand {
-    return this.emitNode("Xor", [a, b]);
+    return this.emitNode('Xor', [a, b]);
   }
   /**
    * WebNN Where operation.
@@ -1125,15 +1174,22 @@ export class PolyfillMLGraphBuilder {
    * @param falseValue Input operand
    * @returns Result operand
    */
-  where(
-    condition: MLOperand,
-    trueValue: MLOperand,
-    falseValue: MLOperand,
-  ): MLOperand {
-    return this.emitNode("Where", [condition, trueValue, falseValue]);
+  where(condition: MLOperand, trueValue: MLOperand, falseValue: MLOperand): MLOperand {
+    return this.emitNode('Where', [condition, trueValue, falseValue]);
   }
 
   // Phase 16: Transformers & Quantization
+  /**
+   * Executes `lstmCell` on `PolyfillMLGraphBuilder`.
+   * @param input Parameter `input`.
+   * @param weight Parameter `weight`.
+   * @param recurrentWeight Parameter `recurrentWeight`.
+   * @param _hiddenState Parameter `_hiddenState`.
+   * @param _cellState Parameter `_cellState`.
+   * @param _hiddenSize Parameter `_hiddenSize`.
+   * @param options Parameter `options`.
+   * @returns Result of `lstmCell`.
+   */
   lstmCell(
     input: MLOperand,
     weight: MLOperand,
@@ -1143,7 +1199,7 @@ export class PolyfillMLGraphBuilder {
     _hiddenSize: number,
     options?: ReturnType<typeof JSON.parse>,
   ): MLOperand[] {
-    const node = this.emitNode("LSTM", [
+    const node = this.emitNode('LSTM', [
       input,
       weight,
       recurrentWeight,
@@ -1155,6 +1211,16 @@ export class PolyfillMLGraphBuilder {
     ]);
     return [node, node, node]; // Return array for polyfill
   }
+  /**
+   * Executes `gruCell` on `PolyfillMLGraphBuilder`.
+   * @param input Parameter `input`.
+   * @param weight Parameter `weight`.
+   * @param recurrentWeight Parameter `recurrentWeight`.
+   * @param _hiddenState Parameter `_hiddenState`.
+   * @param _hiddenSize Parameter `_hiddenSize`.
+   * @param options Parameter `options`.
+   * @returns Result of `gruCell`.
+   */
   gruCell(
     input: MLOperand,
     weight: MLOperand,
@@ -1163,7 +1229,7 @@ export class PolyfillMLGraphBuilder {
     _hiddenSize: number,
     options?: ReturnType<typeof JSON.parse>,
   ): MLOperand[] {
-    const node = this.emitNode("GRU", [
+    const node = this.emitNode('GRU', [
       input,
       weight,
       recurrentWeight,
@@ -1180,43 +1246,66 @@ export class PolyfillMLGraphBuilder {
    * @param options? Input operand
    * @returns Result operand
    */
-  triangular(
-    input: MLOperand,
-    options?: { upper?: boolean; diagonal?: number },
-  ): MLOperand {
+  triangular(input: MLOperand, options?: { upper?: boolean; diagonal?: number }): MLOperand {
     // Emulated via Trilu
-    return this.emitNode("Trilu", [input], {
-      upper: new Attribute("upper", "INT", options?.upper ? 1 : 0),
+    return this.emitNode('Trilu', [input], {
+      upper: new Attribute('upper', 'INT', options?.upper ? 1 : 0),
     });
   }
+  /**
+   * Executes `scaledDotProductAttention` on `PolyfillMLGraphBuilder`.
+   * @param query Parameter `query`.
+   * @param key Parameter `key`.
+   * @param value Parameter `value`.
+   * @param _options Parameter `_options`.
+   * @returns Result of `scaledDotProductAttention`.
+   */
   scaledDotProductAttention(
     query: MLOperand,
     key: MLOperand,
     value: MLOperand,
     _options?: ReturnType<typeof JSON.parse>,
   ): MLOperand {
-    return this.emitNode("Attention", [query, key, value]);
+    return this.emitNode('Attention', [query, key, value]);
   }
-  quantizeLinear(
-    input: MLOperand,
-    scale: MLOperand,
-    zeroPoint: MLOperand,
-  ): MLOperand {
-    return this.emitNode("QuantizeLinear", [input, scale, zeroPoint]);
+  /**
+   * Executes `quantizeLinear` on `PolyfillMLGraphBuilder`.
+   * @param input Parameter `input`.
+   * @param scale Parameter `scale`.
+   * @param zeroPoint Parameter `zeroPoint`.
+   * @returns Result of `quantizeLinear`.
+   */
+  quantizeLinear(input: MLOperand, scale: MLOperand, zeroPoint: MLOperand): MLOperand {
+    return this.emitNode('QuantizeLinear', [input, scale, zeroPoint]);
   }
-  dequantizeLinear(
-    input: MLOperand,
-    scale: MLOperand,
-    zeroPoint: MLOperand,
-  ): MLOperand {
-    return this.emitNode("DequantizeLinear", [input, scale, zeroPoint]);
+  /**
+   * Executes `dequantizeLinear` on `PolyfillMLGraphBuilder`.
+   * @param input Parameter `input`.
+   * @param scale Parameter `scale`.
+   * @param zeroPoint Parameter `zeroPoint`.
+   * @returns Result of `dequantizeLinear`.
+   */
+  dequantizeLinear(input: MLOperand, scale: MLOperand, zeroPoint: MLOperand): MLOperand {
+    return this.emitNode('DequantizeLinear', [input, scale, zeroPoint]);
   }
+  /**
+   * Executes `bitwiseAnd` on `PolyfillMLGraphBuilder`.
+   * @param a Parameter `a`.
+   * @param b Parameter `b`.
+   * @returns Result of `bitwiseAnd`.
+   */
   bitwiseAnd(a: MLOperand, b: MLOperand): MLOperand {
-    return this.emitNode("BitwiseAnd", [a, b]);
+    return this.emitNode('BitwiseAnd', [a, b]);
   }
+  /**
+   * Executes `shiftRightLogical` on `PolyfillMLGraphBuilder`.
+   * @param a Parameter `a`.
+   * @param b Parameter `b`.
+   * @returns Result of `shiftRightLogical`.
+   */
   shiftRightLogical(a: MLOperand, b: MLOperand): MLOperand {
-    return this.emitNode("BitShift", [a, b], {
-      direction: new Attribute("direction", "STRING", "RIGHT"),
+    return this.emitNode('BitShift', [a, b], {
+      direction: new Attribute('direction', 'STRING', 'RIGHT'),
     });
   }
 }

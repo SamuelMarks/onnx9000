@@ -1,8 +1,12 @@
 /**
+ * @fileoverview sort module for coreml.
+ */
+/**
  * Topological sorting implementation mapping Kahn's algorithm for MIL graphs.
  * @module
  */
-import type { Operation } from "./ast.js";
+import { Onnx9000Error } from '@onnx9000/core';
+import type { Operation, Var } from './ast.js';
 
 /**
  * Topologically sorts an array of independent `mil.Operation` nodes ensuring input validity.
@@ -18,7 +22,7 @@ export function topologicalSort(operations: Operation[]): Operation[] {
 
   // Map each operation to a unique ID (based on output var name)
   for (const op of operations) {
-    const opId = op.outputs.map((o) => o.name).join(",");
+    const opId = op.outputs.map((o) => o.name).join(',');
     opMap.set(opId, op);
     inDegree.set(opId, 0);
     adjList.set(opId, []);
@@ -26,9 +30,9 @@ export function topologicalSort(operations: Operation[]): Operation[] {
 
   // Build the graph
   for (const op of operations) {
-    const opId = op.outputs.map((o) => o.name).join(",");
+    const opId = op.outputs.map((o) => o.name).join(',');
     for (const inputKey in op.inputs) {
-      const inputs = op.inputs[inputKey]!;
+      const inputs = op.inputs[inputKey] as Var | Var[];
       const inputArray = Array.isArray(inputs) ? inputs : [inputs];
 
       for (const inputVar of inputArray) {
@@ -36,7 +40,7 @@ export function topologicalSort(operations: Operation[]): Operation[] {
         for (const [otherId, otherOp] of opMap) {
           if (otherOp.outputs.some((o) => o.name === inputVar.name)) {
             adjList.get(otherId)?.push(opId);
-            inDegree.set(opId, inDegree.get(opId)! + 1);
+            inDegree.set(opId, (inDegree.get(opId) as number) + 1);
             break;
           }
         }
@@ -52,11 +56,11 @@ export function topologicalSort(operations: Operation[]): Operation[] {
 
   const sorted: Operation[] = [];
   while (queue.length > 0) {
-    const currentId = queue.shift()!;
-    sorted.push(opMap.get(currentId)!);
+    const currentId = queue.shift() as string;
+    sorted.push(opMap.get(currentId) as Operation);
 
-    for (const neighbor of adjList.get(currentId)!) {
-      inDegree.set(neighbor, inDegree.get(neighbor)! - 1);
+    for (const neighbor of adjList.get(currentId) as string[]) {
+      inDegree.set(neighbor, (inDegree.get(neighbor) as number) - 1);
       if (inDegree.get(neighbor) === 0) {
         queue.push(neighbor);
       }
@@ -64,7 +68,7 @@ export function topologicalSort(operations: Operation[]): Operation[] {
   }
 
   if (sorted.length !== operations.length) {
-    throw new Error("Cycle detected in MIL graph operations");
+    throw new Onnx9000Error('Cycle detected in MIL graph operations');
   }
 
   return sorted;

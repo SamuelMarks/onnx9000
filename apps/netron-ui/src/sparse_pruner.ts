@@ -3,40 +3,47 @@
  * Manages drag-and-drop of models and recipes, handles pruning operations
  * visually, and reports progress and statistics back to the user interface.
  */
-import { Graph, unpackData } from "@onnx9000/core";
-import { applyRecipe } from "@onnx9000/modifier";
+import { Graph, unpackData } from '@onnx9000/core';
+import { applyRecipe } from '@onnx9000/modifier';
 
+/** Represents the `SparsePrunerUI` class. */
 export class SparsePrunerUI {
+  /** Property `graph` of `SparsePrunerUI`. */
   private graph: Graph | null = null;
+  /** Property `logElement` of `SparsePrunerUI`. */
   private logElement: HTMLElement | null = null;
 
+  /** Initializes a new `SparsePrunerUI` instance. */
   constructor() {
-    this.logElement = document.getElementById("log");
+    this.logElement = document.getElementById('log');
     this.setupEventListeners();
   }
 
+  /** Executes `setupEventListeners` on `SparsePrunerUI`. */
   private setupEventListeners(): void {
-    const slider = document.getElementById(
-      "sparsity-slider",
-    ) as HTMLInputElement;
-    const sliderVal = document.getElementById("sparsity-value");
+    const slider = document.getElementById('sparsity-slider') as HTMLInputElement;
+    const sliderVal = document.getElementById('sparsity-value');
     if (slider && sliderVal) {
-      slider.addEventListener("input", () => {
+      slider.addEventListener('input', () => {
         sliderVal.innerText = `${slider.value}%`;
       });
     }
 
-    const runBtn = document.getElementById("run-btn");
+    const runBtn = document.getElementById('run-btn');
     if (runBtn) {
-      runBtn.addEventListener("click", () => this.runPruning());
+      runBtn.addEventListener('click', () => this.runPruning());
     }
 
-    this.setupDragAndDrop("drop-zone");
+    this.setupDragAndDrop('drop-zone');
   }
 
+  /**
+   * Executes `log` on `SparsePrunerUI`.
+   * @param message Parameter `message`.
+   */
   private log(message: string): void {
     if (this.logElement) {
-      const entry = document.createElement("div");
+      const entry = document.createElement('div');
       entry.innerText = `[${new Date().toLocaleTimeString()}] ${message}`;
       this.logElement.appendChild(entry);
       this.logElement.scrollTop = this.logElement.scrollHeight;
@@ -44,32 +51,36 @@ export class SparsePrunerUI {
     console.log(message);
   }
 
+  /**
+   * Executes `setupDragAndDrop` on `SparsePrunerUI`.
+   * @param dropZoneId Parameter `dropZoneId`.
+   */
   setupDragAndDrop(dropZoneId: string): void {
     const dropZone = document.getElementById(dropZoneId);
     if (!dropZone) return;
 
-    dropZone.addEventListener("dragover", (e) => {
+    dropZone.addEventListener('dragover', (e) => {
       e.preventDefault();
-      dropZone.classList.add("drag-over");
+      dropZone.classList.add('drag-over');
     });
 
-    dropZone.addEventListener("dragleave", () => {
-      dropZone.classList.remove("drag-over");
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('drag-over');
     });
 
-    dropZone.addEventListener("drop", async (e) => {
+    dropZone.addEventListener('drop', async (e) => {
       e.preventDefault();
-      dropZone.classList.remove("drag-over");
+      dropZone.classList.remove('drag-over');
 
       const files = e.dataTransfer?.files;
       if (!files) return;
 
       for (const file of Array.from(files)) {
-        if (file.name.endsWith(".onnx")) {
+        if (file.name.endsWith('.onnx')) {
           this.log(`Loading model: ${file.name}`);
           const buffer = await file.arrayBuffer();
           await this.loadModel(new Uint8Array(buffer));
-        } else if (file.name.endsWith(".yaml") || file.name.endsWith(".yml")) {
+        } else if (file.name.endsWith('.yaml') || file.name.endsWith('.yml')) {
           this.log(`Loading recipe: ${file.name}`);
           const text = await file.text();
           (window as ReturnType<typeof JSON.parse>).currentRecipe = text;
@@ -78,87 +89,97 @@ export class SparsePrunerUI {
     });
   }
 
+  /**
+   * Executes `loadModel` on `SparsePrunerUI`.
+   * @param modelBytes Parameter `modelBytes`.
+   */
   async loadModel(modelBytes: Uint8Array): Promise<void> {
-    this.log(
-      `Parsing model (${(modelBytes.length / 1024 / 1024).toFixed(2)} MB)...`,
-    );
-    this.graph = new Graph("web-pruned-model");
-    document.getElementById("param-count")!.innerText = "1.2M";
+    this.log(`Parsing model (${(modelBytes.length / 1024 / 1024).toFixed(2)} MB)...`);
+    this.graph = new Graph('web-pruned-model');
+    (document.getElementById('param-count') as HTMLElement).innerText = '1.2M';
     this.updateStats();
   }
 
+  /** Executes `runPruning` on `SparsePrunerUI`. */
   async runPruning(): Promise<void> {
     if (!this.graph) {
-      this.log("Error: No model loaded.");
+      this.log('Error: No model loaded.');
       return;
     }
 
-    const progressDiv = document.getElementById("progress");
-    const fill = document.getElementById("progress-fill");
+    const progressDiv = document.getElementById('progress');
+    const fill = document.getElementById('progress-fill');
     if (progressDiv && fill) {
-      progressDiv.style.display = "block";
-      fill.style.width = "0%";
+      progressDiv.style.display = 'block';
+      fill.style.width = '0%';
     }
 
-    this.log("Starting pruning in Web Worker...");
+    this.log('Starting pruning in Web Worker...');
 
     const steps = [
-      "Extracting Tensors",
-      "Calculating Saliency",
-      "Applying Masks",
-      "Compacting Data",
+      'Extracting Tensors',
+      'Calculating Saliency',
+      'Applying Masks',
+      'Compacting Data',
     ];
     for (let i = 0; i < steps.length; i++) {
-      const step = steps[i]!;
+      const step = steps[i];
       this.log(`Step ${i + 1}/${steps.length}: ${step}...`);
 
       for (let p = 0; p <= 100; p += 20) {
         await new Promise((r) => setTimeout(r, 100));
         const totalProgress = (i * 100 + p) / steps.length;
         if (fill) fill.style.width = `${totalProgress}%`;
-        document.getElementById("progress-text")!.innerText = `${step}: ${p}%`;
+        (document.getElementById('progress-text') as HTMLElement).innerText = `${step}: ${p}%`;
 
         // Item 128: Provide visually updating accuracy charts during the browser-based calibration loop
         this.updateAccuracyChart(totalProgress, 0.99 - totalProgress / 1000);
       }
-      this.highlightLayer(`Layer_${i}`, "processing");
+      this.highlightLayer(`Layer_${i}`, 'processing');
     }
 
-    const recipe =
-      (window as ReturnType<typeof JSON.parse>).currentRecipe || "";
+    const recipe = (window as ReturnType<typeof JSON.parse>).currentRecipe || '';
     if (recipe) {
-      this.log("Applying recipe...");
+      this.log('Applying recipe...');
       applyRecipe(this.graph, recipe);
     }
 
-    this.log("Pruning complete.");
+    this.log('Pruning complete.');
     this.updateStats();
-    (document.getElementById("download-btn") as HTMLButtonElement).disabled =
-      false;
+    (document.getElementById('download-btn') as HTMLButtonElement).disabled = false;
 
     steps.forEach((_, i) => {
-      this.highlightLayer(`Layer_${i}`, "complete");
+      this.highlightLayer(`Layer_${i}`, 'complete');
     });
   }
 
   // Item 128: Provide visually updating accuracy charts (Chart.js/D3) during the browser-based calibration loop
+  /**
+   * Executes `updateAccuracyChart` on `SparsePrunerUI`.
+   * @param step Parameter `step`.
+   * @param accuracy Parameter `accuracy`.
+   */
   private updateAccuracyChart(step: number, accuracy: number): void {
     console.log(`Calibration Step ${step}: Accuracy ${accuracy.toFixed(4)}`);
     // Integration with D3 or Chart.js would happen here.
   }
 
-  private highlightLayer(
-    layerId: string,
-    status: "idle" | "processing" | "complete",
-  ): void {
+  /**
+   * Executes `highlightLayer` on `SparsePrunerUI`.
+   * @param layerId Parameter `layerId`.
+   * @param status Parameter `status`.
+   */
+  private highlightLayer(layerId: string, status: 'idle' | 'processing' | 'complete'): void {
     console.log(`Layer ${layerId} is now ${status}`);
   }
 
-  public adjustSaliency(
-    tensorName: string,
-    index: number,
-    newScore: number,
-  ): void {
+  /**
+   * Executes `adjustSaliency` on `SparsePrunerUI`.
+   * @param tensorName Parameter `tensorName`.
+   * @param index Parameter `index`.
+   * @param newScore Parameter `newScore`.
+   */
+  public adjustSaliency(tensorName: string, index: number, newScore: number): void {
     if (!this.graph) return;
     const tensor = this.graph.tensors[tensorName];
     if (!tensor) return;
@@ -166,28 +187,28 @@ export class SparsePrunerUI {
     if (!(tensor as ReturnType<typeof JSON.parse>).metadata_props)
       (tensor as ReturnType<typeof JSON.parse>).metadata_props = {};
     const scores = (
-      (tensor as ReturnType<typeof JSON.parse>).metadata_props
-        .saliency_scores || ""
-    ).split(",");
+      (tensor as ReturnType<typeof JSON.parse>).metadata_props.saliency_scores || ''
+    ).split(',');
     if (index < scores.length) {
       scores[index] = newScore.toFixed(4);
-      (tensor as ReturnType<typeof JSON.parse>).metadata_props.saliency_scores =
-        scores.join(",");
-      this.log(
-        `Adjusted saliency for ${tensorName} at index ${index} to ${newScore}`,
-      );
+      (tensor as ReturnType<typeof JSON.parse>).metadata_props.saliency_scores = scores.join(',');
+      this.log(`Adjusted saliency for ${tensorName} at index ${index} to ${newScore}`);
     }
   }
 
+  /** Executes `updateStats` on `SparsePrunerUI`. */
   updateStats(): void {
     if (!this.graph) return;
-    const slider = document.getElementById(
-      "sparsity-slider",
-    ) as HTMLInputElement;
-    document.getElementById("current-sparsity")!.innerText = `${slider.value}%`;
-    document.getElementById("est-speedup")!.innerText = "2.4x";
+    const slider = document.getElementById('sparsity-slider') as HTMLInputElement;
+    (document.getElementById('current-sparsity') as HTMLElement).innerText = `${slider.value}%`;
+    (document.getElementById('est-speedup') as HTMLElement).innerText = '2.4x';
   }
 
+  /**
+   * Executes `getWeightDistribution` on `SparsePrunerUI`.
+   * @param tensorName Parameter `tensorName`.
+   * @returns Result of `getWeightDistribution`.
+   */
   getWeightDistribution(tensorName: string): number[] {
     if (!this.graph) return [];
     const tensor = this.graph.tensors[tensorName];

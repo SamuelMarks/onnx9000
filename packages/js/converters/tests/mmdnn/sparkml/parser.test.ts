@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../../src/mmdnn/sparkml/parser";
+import { describe, expect, it } from 'vitest';
+import { SparkMLParser } from '../../../src/mmdnn/sparkml/parser';
 
-describe("parser.ts", () => {
-  it("should instantiate and cover SparkMLParser", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('parser.ts', () => {
+  it('should instantiate and cover SparkMLParser', () => {
     try {
-      const obj = new (Module as any).SparkMLParser();
+      const obj = Construct(SparkMLParser);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

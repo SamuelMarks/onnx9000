@@ -2,19 +2,27 @@
  * @fileoverview Dropdown.ts
  * Provides Dropdown functionality for the Sphinx Demo UI.
  */
-// @ts-nocheck
 import { Component } from '../core/Component';
 
+/** Interface `DropdownItem` definition. */
 export interface DropdownItem {
+  /** Property `value`. */
   value: string;
+  /** Property `label`. */
   label: string;
+  /** Property `group`. */
   group?: string;
 }
 
+/** Interface `DropdownOptions` definition. */
 export interface DropdownOptions {
+  /** Property `items`. */
   items: DropdownItem[];
+  /** Property `initialValue`. */
   initialValue?: string;
+  /** Property `placeholder`. */
   placeholder?: string;
+  /** Property `onChange`. */
   onChange?: (value: string) => void;
 }
 
@@ -23,14 +31,24 @@ export interface DropdownOptions {
  * Supports keyboard navigation (Arrow Up/Down, Enter, Escape).
  */
 export class Dropdown extends Component<HTMLDivElement> {
-  private options: DropdownOptions;
+  /** Property `options` of `Dropdown`. */
+  public options: DropdownOptions;
+  /** Property `selectedValue` of `Dropdown`. */
   private selectedValue: string | null = null;
+  /** Property `isOpen` of `Dropdown`. */
   private isOpen = false;
+  /** Property `focusedIndex` of `Dropdown`. */
   private focusedIndex = -1;
 
+  /** Property `button` of `Dropdown`. */
   private button!: HTMLButtonElement;
+  /** Property `listbox` of `Dropdown`. */
   private listbox!: HTMLUListElement;
 
+  /**
+   * Initializes a new `Dropdown` instance.
+   * @param options Parameter `options`.
+   */
   constructor(options: DropdownOptions) {
     super();
     this.options = { placeholder: 'Select an option...', ...options };
@@ -43,6 +61,10 @@ export class Dropdown extends Component<HTMLDivElement> {
     this.updateButtonText();
   }
 
+  /**
+   * Executes `render` on `Dropdown`.
+   * @returns Result of `render`.
+   */
   protected render(): HTMLDivElement {
     const container = document.createElement('div');
     container.className = 'demo-dropdown';
@@ -69,6 +91,7 @@ export class Dropdown extends Component<HTMLDivElement> {
     return container;
   }
 
+  /** Executes `renderItems` on `Dropdown`. */
   private renderItems(): void {
     this.listbox.innerHTML = ''; // Clear
     this.options.items.forEach((item, index) => {
@@ -88,6 +111,7 @@ export class Dropdown extends Component<HTMLDivElement> {
     });
   }
 
+  /** Executes `onMount` on `Dropdown`. */
   protected onMount(): void {
     // Click toggle
     this.addDOMListener(this.button, 'click', () => this.toggle());
@@ -115,6 +139,10 @@ export class Dropdown extends Component<HTMLDivElement> {
     this.addDOMListener(this.element, 'keydown', (e) => this.handleKeyDown(e as KeyboardEvent));
   }
 
+  /**
+   * Executes `handleKeyDown` on `Dropdown`.
+   * @param e Parameter `e`.
+   */
   private handleKeyDown(e: KeyboardEvent): void {
     switch (e.key) {
       case 'ArrowDown':
@@ -153,11 +181,13 @@ export class Dropdown extends Component<HTMLDivElement> {
     }
   }
 
+  /** Executes `focusNext` on `Dropdown`. */
   private focusNext(): void {
     this.focusedIndex = (this.focusedIndex + 1) % this.options.items.length;
     this.updateFocus();
   }
 
+  /** Executes `focusPrev` on `Dropdown`. */
   private focusPrev(): void {
     this.focusedIndex = this.focusedIndex - 1;
     if (this.focusedIndex < 0) {
@@ -166,6 +196,7 @@ export class Dropdown extends Component<HTMLDivElement> {
     this.updateFocus();
   }
 
+  /** Executes `updateFocus` on `Dropdown`. */
   private updateFocus(): void {
     const items = this.listbox.querySelectorAll('.demo-dropdown-item');
     items.forEach((item, index) => {
@@ -179,6 +210,7 @@ export class Dropdown extends Component<HTMLDivElement> {
     });
   }
 
+  /** Executes `toggle` on `Dropdown`. */
   public toggle(): void {
     if (this.isOpen) {
       this.close();
@@ -187,6 +219,7 @@ export class Dropdown extends Component<HTMLDivElement> {
     }
   }
 
+  /** Executes `open` on `Dropdown`. */
   public open(): void {
     this.isOpen = true;
     this.listbox.style.display = 'block';
@@ -198,6 +231,7 @@ export class Dropdown extends Component<HTMLDivElement> {
     this.updateFocus();
   }
 
+  /** Executes `close` on `Dropdown`. */
   public close(): void {
     this.isOpen = false;
     this.listbox.style.display = 'none';
@@ -211,6 +245,10 @@ export class Dropdown extends Component<HTMLDivElement> {
     });
   }
 
+  /**
+   * Executes `select` on `Dropdown`.
+   * @param value Parameter `value`.
+   */
   public select(value: string): void {
     this.selectedValue = value;
     this.updateButtonText();
@@ -224,6 +262,10 @@ export class Dropdown extends Component<HTMLDivElement> {
     }
   }
 
+  /**
+   * Executes `updateItems` on `Dropdown`.
+   * @param newItems Parameter `newItems`.
+   */
   public updateItems(newItems: DropdownItem[]): void {
     this.options.items = newItems;
 
@@ -236,11 +278,16 @@ export class Dropdown extends Component<HTMLDivElement> {
     this.updateButtonText();
   }
 
+  /** Executes `updateButtonText` on `Dropdown`. */
   private updateButtonText(): void {
     const selectedItem = this.options.items.find((i) => i.value === this.selectedValue);
     this.button.textContent = selectedItem ? selectedItem.label : this.options.placeholder || '';
   }
 
+  /**
+   * Executes `getValue` on `Dropdown`.
+   * @returns Result of `getValue`.
+   */
   public getValue(): string | null {
     return this.selectedValue;
   }

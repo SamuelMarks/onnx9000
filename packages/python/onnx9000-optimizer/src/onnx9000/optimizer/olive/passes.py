@@ -1,7 +1,6 @@
 """Provides pure-Python Pass base class and subclasses."""
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional
 
 from onnx9000.optimizer.olive.context import PassContext
 from onnx9000.optimizer.olive.model import OliveModel
@@ -10,7 +9,12 @@ from onnx9000.optimizer.olive.model import OliveModel
 class Pass(ABC):
     """Base class for Olive optimization passes."""
 
-    def __init__(self, name: str, config: dict[str, Any] | None = None) -> None:
+    def __init__(
+        self,
+        name: str,
+        config: dict[str, int | float | str | bool | bytes | list | dict | tuple | None]
+        | None = None,
+    ) -> None:
         """Initialize the pass."""
         self.name = name
         self.config = config or {}
@@ -24,7 +28,10 @@ class QuantizationPass(Pass):
     """Base pass for quantization."""
 
     def __init__(
-        self, name: str = "QuantizationPass", config: dict[str, Any] | None = None
+        self,
+        name: str = "QuantizationPass",
+        config: dict[str, int | float | str | bool | bytes | list | dict | tuple | None]
+        | None = None,
     ) -> None:
         """Initialize the pass."""
         super().__init__(name, config)
@@ -43,7 +50,8 @@ class DynamicQuantizationPass(QuantizationPass):
     def __init__(
         self,
         name: str = "DynamicQuantizationPass",
-        config: dict[str, Any] | None = None,
+        config: dict[str, int | float | str | bool | bytes | list | dict | tuple | None]
+        | None = None,
     ) -> None:
         """Initialize the pass."""
         super().__init__(name, config)
@@ -53,7 +61,10 @@ class StaticQuantizationPass(QuantizationPass):
     """Pass for static quantization (with calibration logic)."""
 
     def __init__(
-        self, name: str = "StaticQuantizationPass", config: dict[str, Any] | None = None
+        self,
+        name: str = "StaticQuantizationPass",
+        config: dict[str, int | float | str | bool | bytes | list | dict | tuple | None]
+        | None = None,
     ) -> None:
         """Initialize the pass."""
         super().__init__(name, config)
@@ -65,7 +76,8 @@ class WeightOnlyQuantizationPass(QuantizationPass):
     def __init__(
         self,
         name: str = "WeightOnlyQuantizationPass",
-        config: dict[str, Any] | None = None,
+        config: dict[str, int | float | str | bool | bytes | list | dict | tuple | None]
+        | None = None,
     ) -> None:
         """Initialize the pass."""
         super().__init__(name, config)
@@ -74,7 +86,12 @@ class WeightOnlyQuantizationPass(QuantizationPass):
 class PruningPass(Pass):
     """Pass for Sparsity pruning."""
 
-    def __init__(self, name: str = "PruningPass", config: dict[str, Any] | None = None) -> None:
+    def __init__(
+        self,
+        name: str = "PruningPass",
+        config: dict[str, int | float | str | bool | bytes | list | dict | tuple | None]
+        | None = None,
+    ) -> None:
         """Initialize the pass."""
         super().__init__(name, config)
 
@@ -91,7 +108,12 @@ class PruningPass(Pass):
 class GraphFusionPass(Pass):
     """Pass for graph fusion."""
 
-    def __init__(self, name: str = "GraphFusionPass", config: dict[str, Any] | None = None) -> None:
+    def __init__(
+        self,
+        name: str = "GraphFusionPass",
+        config: dict[str, int | float | str | bool | bytes | list | dict | tuple | None]
+        | None = None,
+    ) -> None:
         """Initialize the pass."""
         super().__init__(name, config)
 
@@ -107,16 +129,16 @@ class MixedPrecisionPass(Pass):
     """Pass for mixed precision (FP16 / BFloat16)."""
 
     def __init__(
-        self, name: str = "MixedPrecisionPass", config: dict[str, Any] | None = None
+        self,
+        name: str = "MixedPrecisionPass",
+        config: dict[str, int | float | str | bool | bytes | list | dict | tuple | None]
+        | None = None,
     ) -> None:
         """Initialize the pass."""
         super().__init__(name, config)
 
     def run(self, model: OliveModel, context: PassContext) -> OliveModel:
         """Run the pass on the model."""
-        from onnx9000.core.dtypes import DType
-        from onnx9000.core.ir import Node
-
         target_type = self.config.get("dtype", "FLOAT16")
         for node in model.graph.nodes:
             if node.op_type in ["MatMul", "Gemm", "Conv"]:
@@ -128,7 +150,10 @@ class LayoutConversionPass(Pass):
     """Pass for LayoutConversion (NCHW <-> NHWC)."""
 
     def __init__(
-        self, name: str = "LayoutConversionPass", config: dict[str, Any] | None = None
+        self,
+        name: str = "LayoutConversionPass",
+        config: dict[str, int | float | str | bool | bytes | list | dict | tuple | None]
+        | None = None,
     ) -> None:
         """Initialize the pass."""
         super().__init__(name, config)
@@ -149,7 +174,10 @@ class OrtPerfTuningPass(Pass):
     """Pass for OrtPerfTuning (Thread/EP tuning suggestions)."""
 
     def __init__(
-        self, name: str = "OrtPerfTuningPass", config: dict[str, Any] | None = None
+        self,
+        name: str = "OrtPerfTuningPass",
+        config: dict[str, int | float | str | bool | bytes | list | dict | tuple | None]
+        | None = None,
     ) -> None:
         """Initialize the pass."""
         super().__init__(name, config)
@@ -169,7 +197,8 @@ class OrtTransformerOptimizationPass(Pass):
     def __init__(
         self,
         name: str = "OrtTransformerOptimizationPass",
-        config: dict[str, Any] | None = None,
+        config: dict[str, int | float | str | bool | bytes | list | dict | tuple | None]
+        | None = None,
     ) -> None:
         """Initialize the pass."""
         super().__init__(name, config)
@@ -186,7 +215,10 @@ class ConstantFoldingPass(Pass):
     """Run mathematical constant folding explicitly before quantization."""
 
     def __init__(
-        self, name: str = "ConstantFoldingPass", config: dict[str, Any] | None = None
+        self,
+        name: str = "ConstantFoldingPass",
+        config: dict[str, int | float | str | bool | bytes | list | dict | tuple | None]
+        | None = None,
     ) -> None:
         """Initialize the pass."""
         super().__init__(name, config)
@@ -205,7 +237,10 @@ class StripIdentityPass(Pass):
     """Strip Identity nodes explicitly before quantization."""
 
     def __init__(
-        self, name: str = "StripIdentityPass", config: dict[str, Any] | None = None
+        self,
+        name: str = "StripIdentityPass",
+        config: dict[str, int | float | str | bool | bytes | list | dict | tuple | None]
+        | None = None,
     ) -> None:
         """Initialize the pass."""
         super().__init__(name, config)
@@ -227,7 +262,8 @@ class StripUnusedInitializersPass(Pass):
     def __init__(
         self,
         name: str = "StripUnusedInitializersPass",
-        config: dict[str, Any] | None = None,
+        config: dict[str, int | float | str | bool | bytes | list | dict | tuple | None]
+        | None = None,
     ) -> None:
         """Initialize the pass."""
         super().__init__(name, config)
@@ -255,7 +291,8 @@ class ExtractSymbolicShapesPass(Pass):
     def __init__(
         self,
         name: str = "ExtractSymbolicShapesPass",
-        config: dict[str, Any] | None = None,
+        config: dict[str, int | float | str | bool | bytes | list | dict | tuple | None]
+        | None = None,
     ) -> None:
         """Initialize the pass."""
         super().__init__(name, config)

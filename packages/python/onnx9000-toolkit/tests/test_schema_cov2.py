@@ -12,8 +12,8 @@ def test_schema_load_from_json() -> None:
     assert "CustomOp" in reg.schemas
 
 
-def test_schema_coverage_misc():
-    """Docstring for D103."""
+def test_schema_coverage_misc() -> None:
+    """Verify that schema coverage misc behaves as expected."""
     import json
 
     from onnx9000.toolkit.script.schema import OpSchema, SchemaRegistry

@@ -155,21 +155,28 @@ export class MMdnn {
    * @returns An ONNX Graph mapping the MXNet structures.
    */
   static parseMXNet(jsonString: string): IModelGraph {
-    let data: any;
+    interface MxNetRawNode {
+      op?: string;
+      name?: string;
+      inputs?: Array<[number, ...number[]]>;
+    }
+    let data: { nodes?: Array<MxNetRawNode | null> };
     try {
-      data = JSON.parse(jsonString);
+      data = JSON.parse(jsonString) as { nodes?: Array<MxNetRawNode | null> };
     } catch {
       data = {};
     }
     const nodes: INode[] = [];
 
     if (data && Array.isArray(data.nodes)) {
-      data.nodes.forEach((node: any, idx: number) => {
-        if (!node || node.op === 'null') return;
+      data.nodes.forEach((node: MxNetRawNode | null, idx: number) => {
+        if (!node || node.op === 'null' || !node.op) return;
         nodes.push({
           name: node.name || `mx_node_${idx}`,
           opType: MMdnn.mapMXNetTypeToONNX(node.op),
-          inputs: Array.isArray(node.inputs) ? node.inputs.map((i: any[]) => `tensor_${i[0]}`) : [],
+          inputs: Array.isArray(node.inputs)
+            ? node.inputs.map((i: [number, ...number[]]) => `tensor_${i[0]}`)
+            : [],
           outputs: [`tensor_${idx}`],
           attributes: {},
         });

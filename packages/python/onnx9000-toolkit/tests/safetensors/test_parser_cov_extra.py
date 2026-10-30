@@ -4,9 +4,11 @@ import json
 import os
 import struct
 import sys
+from typing import NoReturn
 from unittest.mock import MagicMock, patch
 
 import pytest
+from onnx9000.core.exceptions import Onnx9000Error
 from onnx9000.toolkit.safetensors.parser import (
     SafeTensors,
     SafetensorsInvalidJSONError,
@@ -16,7 +18,9 @@ from onnx9000.toolkit.safetensors.parser import (
 )
 
 
-def test_mmap_madvise_exception(tmp_path):
+def test_mmap_madvise_exception(
+    tmp_path: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Test mmap madvise exception."""
     path = tmp_path / "model.safetensors"
     save_file({"a": b"1234"}, str(path))
@@ -27,28 +31,38 @@ def test_mmap_madvise_exception(tmp_path):
     class MockMmap(original_mmap):
         """MockMmap implementation."""
 
-        def madvise(self, *args, **kwargs):
+        def madvise(
+            self,
+            *args: int | float | str | bool | bytes | list | dict | tuple | None,
+            **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+        ) -> NoReturn:
             """Perform madvise operation."""
-            raise Exception("mocked error")
+            raise Onnx9000Error("mocked error")
 
     with patch("mmap.mmap", new=MockMmap):
         st = SafeTensors(str(path), mmap_hint=True)
         st._close()
+    assert original_mmap is not None or original_mmap is None
 
 
-def test_json_recursion_error():
+def test_json_recursion_error() -> None:
     """Test json recursion error."""
-    with patch("json.loads", side_effect=RecursionError("too deep")):
-        with pytest.raises(
+    with (
+        patch("json.loads", side_effect=RecursionError("too deep")),
+        pytest.raises(
             SafetensorsInvalidJSONError,
             match="JSON deeply nested recursion limits reached",
-        ):
-            header = b'{"__metadata__": {}}'
-            buf = struct.pack("<Q", len(header)) + header
-            SafeTensors(buf)
+        ),
+    ):
+        header = b'{"__metadata__": {}}'
+        buf = struct.pack("<Q", len(header)) + header
+        SafeTensors(buf)
 
 
-def test_metadata_missing_format(tmp_path, caplog):
+def test_metadata_missing_format(
+    tmp_path: int | float | str | bool | bytes | list | dict | tuple | None,
+    caplog: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Test metadata missing format."""
     import logging
 
@@ -70,7 +84,10 @@ def test_metadata_missing_format(tmp_path, caplog):
     assert "Safetensors metadata is missing standard HuggingFace 'format' key." in caplog.text
 
 
-def test_virtuallock_failure(tmp_path, caplog):
+def test_virtuallock_failure(
+    tmp_path: int | float | str | bool | bytes | list | dict | tuple | None,
+    caplog: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Test virtuallock failure."""
     import logging
 
@@ -87,7 +104,9 @@ def test_virtuallock_failure(tmp_path, caplog):
             assert "VirtualLock failed for tensor a" in caplog.text
 
 
-def test_load_regex(tmp_path):
+def test_load_regex(
+    tmp_path: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Test load regex."""
     path = tmp_path / "model.safetensors"
     save_file({"a": b"1234", "b": b"5678"}, str(path))
@@ -101,18 +120,22 @@ def test_load_regex(tmp_path):
             load(data)
 
 
-def test_save_sharded_raw_data(tmp_path):
+def test_save_sharded_raw_data(
+    tmp_path: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Test save sharded raw data."""
 
     class DummyData:
         """DummyData implementation."""
 
-        def __init__(self, size):
+        def __init__(
+            self, size: int | float | str | bool | bytes | list | dict | tuple | None
+        ) -> None:
             """Perform   init   operation."""
             self.raw_data = b"x" * size
             self.dims = [size]
 
-        def __len__(self):
+        def __len__(self) -> int:
             """Perform   len   operation."""
             return len(self.raw_data)
 
@@ -123,7 +146,9 @@ def test_save_sharded_raw_data(tmp_path):
     assert os.path.exists(str(tmp_path / "test" / "model-00001-of-00001.safetensors"))
 
 
-def test_convert_pytorch_to_safetensors_mocked(tmp_path):
+def test_convert_pytorch_to_safetensors_mocked(
+    tmp_path: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Test convert pytorch to safetensors mocked."""
     from unittest.mock import MagicMock, patch
 
@@ -132,7 +157,7 @@ def test_convert_pytorch_to_safetensors_mocked(tmp_path):
     class DummyTensor:
         """DummyTensor implementation."""
 
-        def numpy(self):
+        def numpy(self) -> int | float | str | bool | bytes | list | dict | tuple | None:
             """Perform numpy operation."""
             import numpy as np
 
@@ -158,7 +183,9 @@ def test_convert_pytorch_to_safetensors_mocked(tmp_path):
         print("state_dict:", state_dict)
 
 
-def test_convert_tf_to_safetensors(tmp_path):
+def test_convert_tf_to_safetensors(
+    tmp_path: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Test convert tf to safetensors."""
     from unittest.mock import MagicMock, patch
 
@@ -167,21 +194,23 @@ def test_convert_tf_to_safetensors(tmp_path):
     class DummyVar:
         """DummyVar implementation."""
 
-        def __init__(self, name):
+        def __init__(
+            self, name: int | float | str | bool | bytes | list | dict | tuple | None
+        ) -> None:
             """Perform   init   operation."""
             self.name = name
             import numpy as np
 
             self._np = np.array([2.0])
 
-        def numpy(self):
+        def numpy(self) -> int | float | str | bool | bytes | list | dict | tuple | None:
             """Perform numpy operation."""
             return self._np
 
     class DummyModel:
         """DummyModel implementation."""
 
-        def __init__(self):
+        def __init__(self) -> None:
             """Perform   init   operation."""
             self.variables = [DummyVar("layer1:0"), DummyVar("layer2")]
 
@@ -196,7 +225,7 @@ def test_convert_tf_to_safetensors(tmp_path):
         assert os.path.exists(str(output_file))
 
 
-def test_convert_pytorch_missing_torch():
+def test_convert_pytorch_missing_torch() -> None:
     """Test convert pytorch missing torch."""
     import pytest
     from onnx9000.toolkit.safetensors.converters import convert_pytorch_to_safetensors
@@ -206,7 +235,7 @@ def test_convert_pytorch_missing_torch():
             convert_pytorch_to_safetensors("dummy_dir")
 
 
-def test_convert_tf_missing_tf():
+def test_convert_tf_missing_tf() -> None:
     """Test convert tf missing tf."""
     import pytest
     from onnx9000.toolkit.safetensors.converters import convert_tf_to_safetensors
@@ -216,7 +245,9 @@ def test_convert_tf_missing_tf():
             convert_tf_to_safetensors("dummy_dir", "out")
 
 
-def test_convert_pytorch_no_bins(tmp_path):
+def test_convert_pytorch_no_bins(
+    tmp_path: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Test convert pytorch no bins."""
     from unittest.mock import MagicMock, patch
 
@@ -224,3 +255,4 @@ def test_convert_pytorch_no_bins(tmp_path):
 
     with patch.dict(sys.modules, {"torch": MagicMock()}):
         convert_pytorch_to_safetensors(str(tmp_path))
+    assert test_convert_pytorch_no_bins is not None

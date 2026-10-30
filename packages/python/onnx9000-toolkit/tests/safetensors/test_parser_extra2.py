@@ -1,18 +1,25 @@
 """Tests for parser extra2."""
 
-import os
-from unittest.mock import MagicMock, patch
+from typing import NoReturn
+from unittest.mock import patch
 
 import pytest
 from onnx9000.toolkit.safetensors.hub import cached_download, resolve_model_file
 from onnx9000.toolkit.safetensors.parser import SafeTensors
 
 
-def test_hub_extra():
-    """Docstring for D103."""
+def test_hub_extra() -> None:
+    """Verify that hub extra behaves as expected.
+
+    Raises:
+        HTTPError: If an invalid state or argument is encountered during execution.
+    """
 
     # 44-45
-    def mock_urlopen(*args, **kwargs):
+    def mock_urlopen(
+        *args: int | float | str | bool | bytes | list | dict | tuple | None,
+        **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> NoReturn:
         """Mock urlopen."""
         from urllib.error import HTTPError
 
@@ -25,8 +32,8 @@ def test_hub_extra():
     assert cached_download("https://huggingface.co/user/repo/blob/main/file") is None
 
 
-def test_get_onnx9000_tensor():
-    """Docstring for D103."""
+def test_get_onnx9000_tensor() -> None:
+    """Verify that get onnx9000 tensor behaves as expected."""
     parser = SafeTensors.__new__(SafeTensors)
     parser.tensors = {
         "t1": {"dtype": "F32", "shape": [2, 2], "data_offsets": [0, 16]},

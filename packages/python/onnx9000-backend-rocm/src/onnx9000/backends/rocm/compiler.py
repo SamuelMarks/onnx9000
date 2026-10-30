@@ -4,7 +4,8 @@ import logging
 import os
 import subprocess
 import tempfile
-from typing import Optional
+
+from onnx9000.core.exceptions import BackendExecutionError
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +35,7 @@ class ROCmCompiler:
             return b""
         except subprocess.CalledProcessError as e:
             logger.error(f"hipcc compilation failed: {e.stderr.decode('utf-8')}")
-            raise RuntimeError("ROCm Kernel compilation failed") from e
+            raise BackendExecutionError("ROCm Kernel compilation failed") from e
         finally:
             if os.path.exists(cpp_path):
                 os.remove(cpp_path)

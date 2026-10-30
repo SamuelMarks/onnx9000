@@ -1,21 +1,35 @@
 /**
+ * @fileoverview utils module for diffusers.
+ */
+/**
  * A PCG32 pseudo-random number generator that matches Python implementations
  * to ensure cross-platform seed determinism.
  */
+import { Onnx9000Error } from '@onnx9000/core';
+/** Represents the `PyTorchPCG` class. */
 export class PyTorchPCG {
+  /** Property `state` of `PyTorchPCG`. */
   state: bigint;
+  /** Property `inc` of `PyTorchPCG`. */
   inc: bigint;
 
+  /**
+   * Initializes a new `PyTorchPCG` instance.
+   * @param seed Parameter `seed`.
+   */
   constructor(seed: number | bigint) {
     this.state = BigInt(seed) & 0xffffffffffffffffn;
     this.inc = 1442695040888963407n;
     this.nextUint();
   }
 
+  /**
+   * Executes `nextUint` on `PyTorchPCG`.
+   * @returns Result of `nextUint`.
+   */
   nextUint(): number {
     const oldstate = this.state;
-    this.state =
-      (oldstate * 6364136223846793005n + this.inc) & 0xffffffffffffffffn;
+    this.state = (oldstate * 6364136223846793005n + this.inc) & 0xffffffffffffffffn;
     const xorshifted = Number(((oldstate >> 18n) ^ oldstate) >> 27n);
     const rot = Number(oldstate >> 59n);
     return ((xorshifted >>> rot) | (xorshifted << (-rot & 31))) >>> 0;
@@ -62,12 +76,18 @@ export function randn(shape: number[], generator: PyTorchPCG): number[] {
   return out.slice(0, size);
 }
 
+/** Represents the `ProgressBarConfig` class. */
 export class ProgressBarConfig {
+  /** Property `enabled` of `ProgressBarConfig`. */
   enabled: boolean = true;
 }
 
 export const globalProgressBarConfig = new ProgressBarConfig();
 
+/**
+ * Executes `setProgressBarConfig`.
+ * @param enabled Parameter `enabled`.
+ */
 export function setProgressBarConfig(enabled: boolean): void {
   globalProgressBarConfig.enabled = enabled;
 }
@@ -82,7 +102,7 @@ export async function fetchHubFile(
   const url = `https://huggingface.co/${repoId}/resolve/main/${filename}`;
   const res = await fetch(url);
   if (!res.ok) {
-    throw new Error(`Failed to fetch ${url}`);
+    throw new Onnx9000Error(`Failed to fetch ${url}`);
   }
   return await res.json();
 }
@@ -90,8 +110,6 @@ export async function fetchHubFile(
 /**
  * Provides native configuration parsing for `model_index.json`.
  */
-export async function parseModelIndex(
-  repoId: string,
-): Promise<ReturnType<typeof JSON.parse>> {
-  return await fetchHubFile(repoId, "model_index.json");
+export async function parseModelIndex(repoId: string): Promise<ReturnType<typeof JSON.parse>> {
+  return await fetchHubFile(repoId, 'model_index.json');
 }

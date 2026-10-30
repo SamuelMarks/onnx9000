@@ -1,7 +1,6 @@
 """Hardware-Aware Execution Pipelining & WebWorker Optimizations module."""
 
 import random
-from typing import Any
 
 from onnx9000.core.ir import Graph, Node, Tensor
 
@@ -53,7 +52,7 @@ class PipelineOptimizer:
     @staticmethod
     def communication_via_shared_array_buffer(
         partitions: list[Graph],
-    ) -> dict[str, Any]:
+    ) -> dict[str, int | float | str | bool | bytes | list | dict | tuple | None]:
         """Partition the graph into separate ir.Graph objects communicating via SharedArrayBuffer."""
         return {"type": "SharedArrayBuffer", "partitions": len(partitions)}
 
@@ -282,7 +281,9 @@ class PipelineOptimizer:
         return new_graph
 
     @staticmethod
-    def auto_tuner(graph: Graph, num_trials: int = 10) -> dict[str, Any]:
+    def auto_tuner(
+        graph: Graph, num_trials: int = 10
+    ) -> dict[str, int | float | str | bool | bytes | list | dict | tuple | None]:
         """Implement an auto-tuner in Python: running the graph via onnxruntime with different layouts/quantizations and recording latency."""
         best_latency = float("inf")
         best_config = {}
@@ -299,7 +300,9 @@ class PipelineOptimizer:
         return {"best_latency_ms": best_latency * 1000, "config": best_config}
 
     @staticmethod
-    def genetic_algorithm_auto_tuner(graph: Graph, generations: int = 5) -> dict[str, Any]:
+    def genetic_algorithm_auto_tuner(
+        graph: Graph, generations: int = 5
+    ) -> dict[str, int | float | str | bool | bytes | list | dict | tuple | None]:
         """Implement a genetic algorithm auto-tuner to find optimal layer-by-layer quantization schemes."""
         population_size = 10
         num_layers = len(graph.nodes)

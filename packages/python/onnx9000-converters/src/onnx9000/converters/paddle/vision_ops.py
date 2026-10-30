@@ -23,13 +23,13 @@ def _map_resize(
             scales_const = builder.add_constant(f"{node.name}_scales_empty", [], 1, [0])
             return builder.make_node(
                 "Resize",
-                inputs + [roi_const, scales_const] + target_size,
+                [*inputs, roi_const, scales_const, *target_size],
                 {"mode": mode},
                 node.name,
             )
         elif scale:
             return builder.make_node(
-                "Resize", inputs + [roi_const] + scale, {"mode": mode}, node.name
+                "Resize", [*inputs, roi_const, *scale], {"mode": mode}, node.name
             )
         else:
             out_h = builder.extract_attr(node, "out_h", 0)
@@ -41,7 +41,7 @@ def _map_resize(
                 )
                 return builder.make_node(
                     "Resize",
-                    inputs + [roi_const, scales_const, sizes_const],
+                    [*inputs, roi_const, scales_const, sizes_const],
                     {"mode": mode},
                     node.name,
                 )
@@ -50,7 +50,7 @@ def _map_resize(
                 f"{node.name}_scale_attr", [1.0, 1.0, scale_attr, scale_attr], 1, [4]
             )
             return builder.make_node(
-                "Resize", inputs + [roi_const, scale_const], {"mode": mode}, node.name
+                "Resize", [*inputs, roi_const, scale_const], {"mode": mode}, node.name
             )
 
     return _impl
@@ -67,7 +67,7 @@ def _map_generate_proposals(builder: PaddleToONNXGraphBuilder, node: PaddleNode)
     ]
     pre_nms_top_n = builder.extract_attr(node, "pre_nms_top_n", 6000)
     topk_k = builder.add_constant(f"{node.name}_topk_k", [pre_nms_top_n], 7, [1])
-    (topk_vals, topk_inds) = builder.make_node(
+    (_topk_vals, _topk_inds) = builder.make_node(
         "TopK",
         [scores_flat, topk_k],
         {},

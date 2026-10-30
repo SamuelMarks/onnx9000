@@ -2,6 +2,7 @@
 
 import os
 import sys
+from unittest.mock import patch
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from sphinx_ext_demo_ui import (
@@ -18,7 +19,11 @@ from sphinx_ext_demo_ui import (
 class MockApp:
     """MockApp implementation."""
 
-    def __init__(self, srcdir, outdir):
+    def __init__(
+        self,
+        srcdir: int | float | str | bool | bytes | list | dict | tuple | None,
+        outdir: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
         """Perform   init   operation."""
         self.srcdir = srcdir
         self.outdir = outdir
@@ -35,23 +40,41 @@ class MockApp:
 
         self.builder = Builder()
 
-    def add_node(self, node, html):
+    def add_node(
+        self,
+        node: int | float | str | bool | bytes | list | dict | tuple | None,
+        html: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
         """Perform add node operation."""
         self.nodes.append(node)
 
-    def add_directive(self, name, directive):
+    def add_directive(
+        self,
+        name: int | float | str | bool | bytes | list | dict | tuple | None,
+        directive: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
         """Perform add directive operation."""
         self.directives.append((name, directive))
 
-    def connect(self, event, cb):
+    def connect(
+        self,
+        event: int | float | str | bool | bytes | list | dict | tuple | None,
+        cb: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
         """Perform connect operation."""
         self.events.append((event, cb))
 
-    def add_css_file(self, filename):
+    def add_css_file(
+        self, filename: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> None:
         """Perform add css file operation."""
         self.css.append(filename)
 
-    def add_js_file(self, filename, **kwargs):
+    def add_js_file(
+        self,
+        filename: int | float | str | bool | bytes | list | dict | tuple | None,
+        **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
         """Perform add js file operation."""
         self.js.append(filename)
 
@@ -59,12 +82,12 @@ class MockApp:
 class MockSelf:
     """MockSelf implementation."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Perform   init   operation."""
         self.body = []
 
 
-def test_setup():
+def test_setup() -> None:
     """Test setup."""
     app = MockApp(".", ".")
     res = setup(app)
@@ -75,7 +98,7 @@ def test_setup():
     assert len(app.events) == 2
 
 
-def test_visit_interactive_demo_node():
+def test_visit_interactive_demo_node() -> None:
     """Test visit interactive demo node."""
     node = InteractiveDemoNode()
     node.attributes = {"initial-source": "keras", "ids": [], "classes": []}
@@ -86,20 +109,20 @@ def test_visit_interactive_demo_node():
     assert 'class="onnx9000-demo-container"' in mock_self.body[0]
 
 
-def test_depart_interactive_demo_node():
+def test_depart_interactive_demo_node() -> None:
     """Test depart interactive demo node."""
     mock_self = MockSelf()
     node = InteractiveDemoNode()
     depart_interactive_demo_node(mock_self, node)
 
 
-def test_interactive_demo_directive():
+def test_interactive_demo_directive() -> None:
     """Test interactive demo directive."""
 
     class MockOptions:
         """MockOptions implementation."""
 
-        def __init__(self):
+        def __init__(self) -> None:
             """Perform   init   operation."""
             self.options = {"initial-source": "tensorflow"}
 
@@ -125,13 +148,14 @@ def test_interactive_demo_directive():
     assert nodes[0]["initial-target"] == "onnx"
 
 
-from unittest.mock import patch
-
-
 @patch("os.path.exists")
 @patch("subprocess.check_call")
 @patch("os.listdir")
-def test_build_frontend(mock_listdir, mock_check_call, mock_exists):
+def test_build_frontend(
+    mock_listdir: int | float | str | bool | bytes | list | dict | tuple | None,
+    mock_check_call: int | float | str | bool | bytes | list | dict | tuple | None,
+    mock_exists: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Test build frontend."""
     app = MockApp(".", ".")
     mock_exists.return_value = False
@@ -150,7 +174,11 @@ def test_build_frontend(mock_listdir, mock_check_call, mock_exists):
 @patch("os.path.exists")
 @patch("shutil.copytree")
 @patch("shutil.rmtree")
-def test_copy_frontend_assets(mock_rmtree, mock_copytree, mock_exists):
+def test_copy_frontend_assets(
+    mock_rmtree: int | float | str | bool | bytes | list | dict | tuple | None,
+    mock_copytree: int | float | str | bool | bytes | list | dict | tuple | None,
+    mock_exists: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Test copy frontend assets."""
     app = MockApp(".", ".")
     copy_frontend_assets(app, Exception())

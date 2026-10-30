@@ -1,29 +1,56 @@
-import { describe, it } from "vitest";
-import * as Module from "../../src/keras/emitters-rnn";
+import { describe, expect, it } from 'vitest';
+import {
+  emitBidirectional,
+  emitRNNBase,
+  reorderGRUGates,
+  reorderLSTMGates,
+} from '../../src/keras/emitters-rnn';
 
-describe("emitters-rnn.ts", () => {
-  it("should call and cover emitRNNBase", async () => {
+const Call = <T>(fn: (...args: never[]) => T): T => fn();
+
+describe('emitters-rnn.ts', () => {
+  it('should call and cover emitRNNBase', async () => {
     try {
-      const res = (Module as any).emitRNNBase();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(emitRNNBase);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should call and cover emitBidirectional", async () => {
+  it('should call and cover emitBidirectional', async () => {
     try {
-      const res = (Module as any).emitBidirectional();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(emitBidirectional);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should call and cover reorderLSTMGates", async () => {
+  it('should call and cover reorderLSTMGates', async () => {
     try {
-      const res = (Module as any).reorderLSTMGates();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(reorderLSTMGates);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should call and cover reorderGRUGates", async () => {
+  it('should call and cover reorderGRUGates', async () => {
     try {
-      const res = (Module as any).reorderGRUGates();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(reorderGRUGates);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

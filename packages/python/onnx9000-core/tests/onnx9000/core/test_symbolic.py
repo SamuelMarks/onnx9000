@@ -1,72 +1,51 @@
+"""Unit tests for symbolic dimension evaluation in `onnx9000.core.symbolic`."""
+
+import ast
+
 import pytest
-from onnx9000.core.symbolic import *
+from onnx9000.core.exceptions import ShapeInferenceError
+from onnx9000.core.ir import DynamicDim
+from onnx9000.core.symbolic import (
+    _ast_to_str,
+    _is_one,
+    _is_same,
+    _is_zero,
+    _simplify_ast,
+    broadcast_shapes,
+    eval_expr,
+    evaluate_symbolic_expression,
+    simplify_dim,
+    simplify_expression,
+)
 
 
-def test_eval_expr():
-    try:
-        eval_expr()
-    except Exception:
-        pass
+def test_symbolic_evaluation_and_broadcasting() -> None:
+    """Verify eval_expr, evaluate_symbolic_expression, simplify_expression, and broadcast_shapes."""
+    tree = ast.parse("x + 2 * y", mode="eval").body
+    assert eval_expr(tree, {"x": 3, "y": 4}) == 11
 
+    assert evaluate_symbolic_expression("N * 2", {"N": 8}) == 16
+    assert evaluate_symbolic_expression("N + M", {"N": 8}) == "8 + M"
 
-def test_evaluate_symbolic_expression():
-    try:
-        evaluate_symbolic_expression()
-    except Exception:
-        pass
+    assert simplify_expression("(x * y) / y") == "x"
+    assert simplify_expression("x + 0") == "x"
+    assert simplify_expression("x * 1") == "x"
+    assert simplify_expression("x * 0") == "0"
 
+    c0 = ast.Constant(0)
+    c1 = ast.Constant(1)
+    assert _is_zero(c0) is True
+    assert _is_one(c1) is True
+    assert _is_same(c0, ast.Constant(0)) is True
 
-def test_simplify_expression():
-    try:
-        simplify_expression()
-    except Exception:
-        pass
+    simp = _simplify_ast(ast.parse("a + 0", mode="eval").body)
+    assert _ast_to_str(simp) == "a"
 
+    out_shape = broadcast_shapes((1, 4), (3, 1))
+    assert out_shape == (3, 4)
 
-def test__is_same():
-    try:
-        _is_same()
-    except Exception:
-        pass
+    with pytest.raises(ShapeInferenceError):
+        broadcast_shapes((2, 3), (4, 5))
 
-
-def test__is_zero():
-    try:
-        _is_zero()
-    except Exception:
-        pass
-
-
-def test__is_one():
-    try:
-        _is_one()
-    except Exception:
-        pass
-
-
-def test__simplify_ast():
-    try:
-        _simplify_ast()
-    except Exception:
-        pass
-
-
-def test__ast_to_str():
-    try:
-        _ast_to_str()
-    except Exception:
-        pass
-
-
-def test_broadcast_shapes():
-    try:
-        broadcast_shapes()
-    except Exception:
-        pass
-
-
-def test_simplify_dim():
-    try:
-        simplify_dim()
-    except Exception:
-        pass
+    assert simplify_dim(DynamicDim("B")) == "B"
+    assert simplify_dim(16) == 16

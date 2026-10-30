@@ -1,10 +1,8 @@
 """Tests for sphinx_demo extension."""
 
 import os
-import shutil
 from unittest.mock import MagicMock, patch
 
-from docutils import nodes
 from onnx9000.sphinx_demo import (
     InteractiveDemoDirective,
     InteractiveDemoNode,
@@ -23,7 +21,10 @@ def test_node_and_visitor() -> None:
     node["initial-target"] = "onnx"
 
     class MockTranslator:
-        def __init__(self):
+        """Represents mock translator."""
+
+        def __init__(self) -> None:
+            """Initialize MockTranslator with configured parameters and state."""
             self.body = []
 
     translator = MockTranslator()
@@ -43,7 +44,10 @@ def test_directive() -> None:
     """Test the directive logic."""
 
     class MockDirective(InteractiveDemoDirective):
-        def __init__(self):
+        """Represents mock directive inheriting from InteractiveDemoDirective."""
+
+        def __init__(self) -> None:
+            """Initialize MockDirective with configured parameters and state."""
             self.options = {"initial-source": "jax", "initial-target": "c"}
 
     directive = MockDirective()
@@ -56,7 +60,10 @@ def test_directive() -> None:
 
     # Defaults
     class MockDirectiveDefaults(InteractiveDemoDirective):
-        def __init__(self):
+        """Represents mock directive defaults inheriting from InteractiveDemoDirective."""
+
+        def __init__(self) -> None:
+            """Initialize MockDirectiveDefaults with configured parameters and state."""
             self.options = {}
 
     directive2 = MockDirectiveDefaults()
@@ -69,7 +76,11 @@ def test_directive() -> None:
 @patch("os.listdir")
 @patch("subprocess.check_call")
 @patch("os.path.exists")
-def test_build_frontend(mock_exists, mock_check_call, mock_listdir) -> None:
+def test_build_frontend(
+    mock_exists: int | float | str | bool | bytes | list | dict | tuple | None,
+    mock_check_call: int | float | str | bool | bytes | list | dict | tuple | None,
+    mock_listdir: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Test frontend build hook."""
     app = MagicMock()
     app.srcdir = "/fake/docs"
@@ -99,7 +110,16 @@ def test_build_frontend(mock_exists, mock_check_call, mock_listdir) -> None:
 
 @patch("os.listdir")
 @patch("os.path.exists")
-def test_build_frontend_adds_files(mock_exists, mock_listdir) -> None:
+def test_build_frontend_adds_files(
+    mock_exists: int | float | str | bool | bytes | list | dict | tuple | None,
+    mock_listdir: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
+    """Verify that build frontend adds files behaves as expected.
+
+    Args:
+        mock_exists: Parameter specifying mock exists.
+        mock_listdir: Parameter specifying mock listdir.
+    """
     app = MagicMock()
     app.srcdir = "/fake/docs"
     mock_exists.return_value = True
@@ -118,15 +138,31 @@ def test_build_frontend_adds_files(mock_exists, mock_listdir) -> None:
 @patch("os.listdir")
 @patch("os.path.exists")
 def test_copy_frontend_assets(
-    mock_exists, mock_listdir, mock_rmtree, mock_copytree, mock_copy2
+    mock_exists: int | float | str | bool | bytes | list | dict | tuple | None,
+    mock_listdir: int | float | str | bool | bytes | list | dict | tuple | None,
+    mock_rmtree: int | float | str | bool | bytes | list | dict | tuple | None,
+    mock_copytree: int | float | str | bool | bytes | list | dict | tuple | None,
+    mock_copy2: int | float | str | bool | bytes | list | dict | tuple | None,
 ) -> None:
+    """Verify that copy frontend assets behaves as expected.
+
+    Args:
+        mock_exists: Parameter specifying mock exists.
+        mock_listdir: Parameter specifying mock listdir.
+        mock_rmtree: Parameter specifying mock rmtree.
+        mock_copytree: Parameter specifying mock copytree.
+        mock_copy2: Parameter specifying mock copy2.
+
+    Returns:
+        Result of test copy frontend assets (None).
+    """
     app = MagicMock()
     app.srcdir = "/fake/docs"
     app.outdir = "/fake/docs/_build"
     app.builder.format = "html"
 
     # If exception -> return
-    copy_frontend_assets(app, Exception("err"))
+    copy_frontend_assets(app, RuntimeError("err"))
     mock_copytree.assert_not_called()
 
     # If not HTML -> return
@@ -141,7 +177,17 @@ def test_copy_frontend_assets(
     mock_exists.return_value = True
     mock_listdir.return_value = ["pyodide.asm.js", "pyodide.asm.wasm", "some_dir"]
 
-    def side_effect_isdir(path):
+    def side_effect_isdir(
+        path: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
+        """Execute side effect isdir operation.
+
+        Args:
+            path: Parameter specifying path.
+
+        Returns:
+            Result of side effect isdir.
+        """
         return path.endswith("some_dir")
 
     with patch("os.path.isdir", side_effect=side_effect_isdir):
@@ -154,6 +200,7 @@ def test_copy_frontend_assets(
 
 
 def test_setup() -> None:
+    """Verify that setup behaves as expected."""
     app = MagicMock()
     res = setup(app)
 

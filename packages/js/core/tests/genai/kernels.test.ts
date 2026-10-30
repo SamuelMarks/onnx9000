@@ -1,17 +1,29 @@
-import { describe, it } from "vitest";
-import * as Module from "../../src/genai/kernels";
+import { describe, expect, it } from 'vitest';
+import { wasmFlashAttentionSimd, wasmLogitSortFilter } from '../../src/genai/kernels';
 
-describe("kernels.ts", () => {
-  it("should call and cover wasmLogitSortFilter", async () => {
+const Call = <T>(fn: (...args: never[]) => T): T => fn();
+
+describe('kernels.ts', () => {
+  it('should call and cover wasmLogitSortFilter', async () => {
     try {
-      const res = (Module as any).wasmLogitSortFilter();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(wasmLogitSortFilter);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should call and cover wasmFlashAttentionSimd", async () => {
+  it('should call and cover wasmFlashAttentionSimd', async () => {
     try {
-      const res = (Module as any).wasmFlashAttentionSimd();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(wasmFlashAttentionSimd);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

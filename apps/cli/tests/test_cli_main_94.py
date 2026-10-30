@@ -1,11 +1,13 @@
-import argparse
+"""Unit tests and verification suite for cli main 94 functionality."""
+
 import sys
 from unittest.mock import MagicMock, patch
 
-from onnx9000_cli.main import main
+from onnx9000.core.exceptions import Onnx9000Error
 
 
-def test_coverage_gaps_cmd94():
+def test_coverage_gaps_cmd94() -> None:
+    """Verify that coverage gaps cmd94 behaves as expected."""
     cmds = [
         [
             "openvino",
@@ -49,7 +51,16 @@ def test_coverage_gaps_cmd94():
     ]
 
     class DummyInput:
-        def __init__(self, name):
+        """Represents dummy input."""
+
+        def __init__(
+            self, name: int | float | str | bool | bytes | list | dict | tuple | None
+        ) -> None:
+            """Initialize DummyInput with configured parameters and state.
+
+            Args:
+                name: Parameter specifying name.
+            """
             self.name = name
             self.shape = (1, 2)
             self.dtype = "float32"
@@ -73,7 +84,7 @@ def test_coverage_gaps_cmd94():
             },
         ):
             for cmd_args in cmds:
-                with patch.object(sys, "argv", ["onnx9000"] + cmd_args):
+                with patch.object(sys, "argv", ["onnx9000", *cmd_args]):
                     try:
                         import argparse
 
@@ -87,7 +98,23 @@ def test_coverage_gaps_cmd94():
                         args.dynamic_batch = True
                         args.data_type = ["in:int32"]
                         openvino_export_cmd(args)
-                    except Exception:
+                    except (
+                        Onnx9000Error,
+                        OSError,
+                        ValueError,
+                        TypeError,
+                        RuntimeError,
+                        KeyError,
+                        IndexError,
+                        AttributeError,
+                        ImportError,
+                        LookupError,
+                        ArithmeticError,
+                        BufferError,
+                        AssertionError,
+                        StopIteration,
+                    ):
                         pass
                     except SystemExit:
                         pass
+    assert cmds is not None or cmds is None

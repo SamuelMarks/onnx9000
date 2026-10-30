@@ -1,4 +1,4 @@
-"""Module providing core logic and structural definitions."""
+"""Unit tests and verification suite for rnn cov functionality."""
 
 
 def test_rnn_coverage_extra_2() -> None:
@@ -51,5 +51,5 @@ def test_lstm_list_len_2() -> None:
 
     lstm = LSTM(10, 20, bias=False)
     with patch("onnx9000.converters.frontend.utils.record_op", return_value=["a", "b"]):
-        (y2, h2) = lstm(None)
+        (_y2, h2) = lstm(None)
         assert h2 == ("b", "b")

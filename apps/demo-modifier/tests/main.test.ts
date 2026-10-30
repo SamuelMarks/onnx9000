@@ -1,32 +1,45 @@
-import { beforeEach, describe, expect, it } from "vitest";
+// @vitest-environment jsdom
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { initModifierDemo } from '../src/main.js';
 
-describe("demo", () => {
+describe('demo-modifier', () => {
   beforeEach(() => {
-    document.body.innerHTML = `
-      <textarea id="prompt"></textarea>
-      <button id="runBtn"></button>
-      <div id="output"></div>
-    `;
+    document.body.innerHTML =
+      '<input id="oldInput" value="input_0"/><input id="newInput" value="x"/><input id="batchSize" value="8"/><button id="btnInit"></button><button id="btnRename"></button><button id="btnBatch"></button><div id="output"></div>';
   });
 
-  it("should run flow", async () => {
-    // import to execute module top-level
-    try {
-      await import("../src/main.js");
-    } catch (_e) {}
+  it('should initialize, rename inputs, and override batch sizes', () => {
+    document.body.innerHTML = '';
+    initModifierDemo();
 
-    const btn = document.getElementById("runBtn");
-    const prompt = document.getElementById("prompt");
-    const _out = document.getElementById("output");
+    document.body.innerHTML =
+      '<input id="oldInput" value="input_0"/><input id="newInput" value="x"/><input id="batchSize" value="8"/><button id="btnInit"></button><button id="btnRename"></button><button id="btnBatch"></button><div id="output"></div>';
+    initModifierDemo();
 
-    if (btn) btn.click();
-    if (prompt && btn) {
-      prompt.value = "test";
-      btn.click();
-    }
+    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => undefined);
+    const btnInit = document.getElementById('btnInit') as HTMLButtonElement;
+    const btnRename = document.getElementById('btnRename') as HTMLButtonElement;
+    const btnBatch = document.getElementById('btnBatch') as HTMLButtonElement;
+    const batchInput = document.getElementById('batchSize') as HTMLInputElement;
+    const out = document.getElementById('output') as HTMLDivElement;
 
-    // allow some async code to run
-    await new Promise((r) => setTimeout(r, 100));
-    expect(true).toBe(true);
+    btnRename.click();
+    btnBatch.click();
+    expect(alertSpy).toHaveBeenCalledTimes(2);
+
+    btnInit.click();
+    expect(out.textContent).toContain('input_0 [1,3,224,224]');
+
+    btnRename.click();
+    expect(out.textContent).toContain('x [1,3,224,224]');
+
+    btnBatch.click();
+    expect(out.textContent).toContain('x [8,3,224,224]');
+
+    batchInput.value = 'N';
+    btnBatch.click();
+    expect(out.textContent).toContain('x [N,3,224,224]');
+
+    alertSpy.mockRestore();
   });
 });

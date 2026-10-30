@@ -1,4 +1,9 @@
-"""Test coverage for Keras 2 H5 model parser - additional gaps."""
+"""Test suite for validating the Keras 2 H5 model parser.
+
+This module provides additional test coverage for specific edge cases and gaps in
+the Keras H5 parser implementation, such as sequential model sequence resolution,
+handling of missing configuration metadata, and dataset weight collection.
+"""
 
 import json
 from unittest.mock import MagicMock, patch
@@ -8,8 +13,16 @@ import pytest
 from onnx9000.converters.tf.keras_h5_parser import KerasH5Parser
 
 
-def test_keras_h5_parser_sequential_gap():
-    """Verify parsing of a Keras sequential model with specific gaps (lines 120-121)."""
+def test_keras_h5_parser_sequential_gap() -> None:
+    """Verify parsing of a Keras sequential model with specific gaps.
+
+    This test checks that Keras sequential models with multiple dense layers
+    are parsed correctly, verifying that the previous layer name resolution
+    logic is triggered and functions as expected.
+
+    Returns:
+        None
+    """
     mock_file = MagicMock()
     # Sequential model config with multiple layers to trigger prev_layer_name logic
     model_config = {
@@ -33,8 +46,15 @@ def test_keras_h5_parser_sequential_gap():
         assert graph.nodes[1].op == "Dense"
 
 
-def test_keras_h5_parser_parse_empty():
-    """Verify parsing when model_config is missing."""
+def test_keras_h5_parser_parse_empty() -> None:
+    """Verify parsing behavior when the model configuration is missing from H5 file.
+
+    This test ensures that a ValueError is correctly raised when the parser
+    attempts to parse an H5 file that does not contain 'model_config' attributes.
+
+    Returns:
+        None
+    """
     mock_file = MagicMock()
     mock_file.attrs = {}
     mock_file.__contains__.return_value = False
@@ -45,26 +65,48 @@ def test_keras_h5_parser_parse_empty():
             parser.parse()
 
 
-def test_keras_h5_parser_get_weights_dataset():
-    """Verify collect_weights hits Dataset check (line 129)."""
+def test_keras_h5_parser_get_weights_dataset() -> None:
+    """Verify weight collection when traversing H5 dataset objects.
 
+    This test ensures that the `collect_weights` helper correctly identifies
+    dataset objects (triggering h5py.Dataset check) and extracts their values.
+
+    Returns:
+        None
+    """
     mock_file = MagicMock()
     mock_file.__contains__.side_effect = lambda x: x == "model_weights"
 
     class MockDataset:
-        """Mock dataset."""
+        """Mock dataset representation for simulating h5py.Dataset behavior in tests."""
 
-        def __getitem__(self, val):
-            """Getitem."""
+        def __getitem__(self, val: int | tuple[int, ...]) -> np.ndarray:
+            """Retrieve the value of the mock dataset.
+
+            Args:
+                val (int | tuple[int, ...]): Key or index to retrieve.
+
+            Returns:
+                np.ndarray: Simulated numpy array containing the weight data.
+            """
             return np.array([1.0])
 
     mock_ds = MockDataset()
-
     mock_lg = MagicMock()
 
-    def mock_visit(func):
+    def mock_visit(func: int | float | str | bool | bytes | list | dict | tuple | None) -> None:
+        """Simulate H5 group visit behavior by invoking the visitor callback.
+
+        This function mocks the H5 group `visititems` method, passing a simulated
+        weight dataset path and a dataset object to the callback.
+
+        Args:
+            func: Callback function to be executed for the visited item.
+
+        Returns:
+            None
+        """
         # The parser uses a lambda that calls collect_weights(obj, current_weights)
-        """Mock visit."""
         func("weight_0", mock_ds)
 
     mock_lg.visititems.side_effect = mock_visit

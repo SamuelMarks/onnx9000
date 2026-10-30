@@ -1,19 +1,14 @@
-import { describe, expect, it } from "vitest";
-import { Graph } from "../src/ir/graph.js";
-import { serializeModelProto } from "../src/parser/onnx_writer.js";
+import { describe, expect, it } from 'vitest';
+import { Graph, ValueInfo } from '../src/ir/graph.js';
+import { Node } from '../src/ir/node.js';
+import { serializeModelProto } from '../src/parser/onnx_writer.js';
 
-describe("onnx_writer", () => {
-  it("should serialize model proto", () => {
-    const g = new Graph("test");
-    g.nodes.push({
-      opType: "Add",
-      inputs: ["a", "b"],
-      outputs: ["c"],
-      attributes: {},
-      name: "n1",
-    } as any);
-    g.inputs.push({ name: "a", shape: [1], dtype: "float32" } as any);
-    g.outputs.push({ name: "c", shape: [1], dtype: "float32" } as any);
+describe('onnx_writer', () => {
+  it('should serialize model proto', () => {
+    const g = new Graph('test');
+    g.nodes.push(new Node('Add', ['a', 'b'], ['c'], {}, 'n1'));
+    g.inputs.push(new ValueInfo('a', [1], 'float32'));
+    g.outputs.push(new ValueInfo('c', [1], 'float32'));
 
     const bytes = serializeModelProto(g);
     expect(bytes).toBeDefined();

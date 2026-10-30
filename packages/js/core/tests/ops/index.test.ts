@@ -1,845 +1,2037 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../src/ops/index";
+import { describe, expect, it } from 'vitest';
+import { Tensor } from '../../src/ir/tensor.js';
+import {
+  AbsOp,
+  AcoshOp,
+  AcosOp,
+  AdaLNOp,
+  AdaptiveAvgPool2DOp,
+  AdaptiveMaxPool2DOp,
+  AddOp,
+  ALiBiOp,
+  ArgMaxOp,
+  ArgMinOp,
+  AsinhOp,
+  AsinOp,
+  AtanhOp,
+  AtanOp,
+  AveragePool1DOp,
+  AveragePool2DOp,
+  AveragePool3DOp,
+  BatchNormOp,
+  BitShiftOp,
+  BitwiseAndOp,
+  BitwiseNotOp,
+  BitwiseOrOp,
+  BitwiseXorOp,
+  CastLikeOp,
+  CastOp,
+  CeluOp,
+  Col2ImOp,
+  ConcatOp,
+  Conv1DOp,
+  Conv2DOp,
+  Conv3DOp,
+  ConvTranspose1DOp,
+  ConvTranspose2DOp,
+  ConvTranspose3DOp,
+  CoshOp,
+  CosOp,
+  DeformableConv2DOp,
+  DepthToSpaceOp,
+  DepthwiseConv2DOp,
+  DequantizeLinearOp,
+  DivOp,
+  DynamicQuantizeLinearOp,
+  EluOp,
+  EqualOp,
+  ErfOp,
+  ExpandOp,
+  Expm1Op,
+  ExpOp,
+  FlashAttentionOp,
+  FlattenOp,
+  FmodOp,
+  GatherElementsOp,
+  GatherNDOp,
+  GatherOp,
+  GeGLUOp,
+  GeluOp,
+  GRUOp,
+  GreaterOp,
+  GreaterOrEqualOp,
+  GroupedQueryAttentionOp,
+  GroupNormOp,
+  HardSigmoidOp,
+  HardSwishOp,
+  Im2ColOp,
+  InstanceNormOp,
+  IsFiniteOp,
+  IsInfOp,
+  IsNaNOp,
+  LayerNormOp,
+  LeakyReluOp,
+  LessOp,
+  LessOrEqualOp,
+  LocalResponseNormOp,
+  Log1pOp,
+  Log2Op,
+  Log10Op,
+  LogicalAndOp,
+  LogicalNotOp,
+  LogicalOrOp,
+  LogicalXorOp,
+  LogOp,
+  LSTMOp,
+  MaxOp,
+  MaxPool1DOp,
+  MaxPool2DOp,
+  MaxPool3DOp,
+  MinOp,
+  MishOp,
+  ModOp,
+  MulOp,
+  MultiHeadAttentionOp,
+  MultiQueryAttentionOp,
+  NegOp,
+  NonZeroOp,
+  PadOp,
+  PagedAttentionOp,
+  PowOp,
+  PReluOp,
+  QuantizeLinearOp,
+  ReduceL1Op,
+  ReduceL2Op,
+  ReduceLogSumExpOp,
+  ReduceLogSumOp,
+  ReduceMaxOp,
+  ReduceMeanOp,
+  ReduceMinOp,
+  ReduceProdOp,
+  ReduceSumOp,
+  ReduceSumSquareOp,
+  ReGLUOp,
+  ReluOp,
+  RepeatOp,
+  ReshapeOp,
+  RMSNormOp,
+  RNNOp,
+  RoPE1DOp,
+  RoPE2DOp,
+  RoPE3DOp,
+  ScatterElementsOp,
+  ScatterNDOp,
+  ScatterOp,
+  SeluOp,
+  SigmoidOp,
+  SignOp,
+  SiluOp,
+  SinhOp,
+  SinOp,
+  SliceOp,
+  SlidingWindowAttentionOp,
+  SoftplusOp,
+  SoftsignOp,
+  SpaceToDepthOp,
+  SplitOp,
+  SqueezeOp,
+  StateSpaceModelOp,
+  SubOp,
+  SwiGLUOp,
+  TanhOp,
+  TanOp,
+  TileOp,
+  TransposeOp,
+  UnsqueezeOp,
+  WhereOp,
+} from '../../src/ops/index.js';
 
-describe("index.ts", () => {
-  it("should instantiate and cover AbsOp", () => {
-    try {
-      const obj = new (Module as any).AbsOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover AddOp", () => {
-    try {
-      const obj = new (Module as any).AddOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover ReluOp", () => {
-    try {
-      const obj = new (Module as any).ReluOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover SubOp", () => {
-    try {
-      const obj = new (Module as any).SubOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover MulOp", () => {
-    try {
-      const obj = new (Module as any).MulOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover DivOp", () => {
-    try {
-      const obj = new (Module as any).DivOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover PowOp", () => {
-    try {
-      const obj = new (Module as any).PowOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover ModOp", () => {
-    try {
-      const obj = new (Module as any).ModOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover FmodOp", () => {
-    try {
-      const obj = new (Module as any).FmodOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover SignOp", () => {
-    try {
-      const obj = new (Module as any).SignOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover NegOp", () => {
-    try {
-      const obj = new (Module as any).NegOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover ExpOp", () => {
-    try {
-      const obj = new (Module as any).ExpOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover LogOp", () => {
-    try {
-      const obj = new (Module as any).LogOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover Log2Op", () => {
-    try {
-      const obj = new (Module as any).Log2Op();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover Log10Op", () => {
-    try {
-      const obj = new (Module as any).Log10Op();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover Expm1Op", () => {
-    try {
-      const obj = new (Module as any).Expm1Op();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover Log1pOp", () => {
-    try {
-      const obj = new (Module as any).Log1pOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover SinOp", () => {
-    try {
-      const obj = new (Module as any).SinOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover CosOp", () => {
-    try {
-      const obj = new (Module as any).CosOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover TanOp", () => {
-    try {
-      const obj = new (Module as any).TanOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover AsinOp", () => {
-    try {
-      const obj = new (Module as any).AsinOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover AcosOp", () => {
-    try {
-      const obj = new (Module as any).AcosOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover AtanOp", () => {
-    try {
-      const obj = new (Module as any).AtanOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover SinhOp", () => {
-    try {
-      const obj = new (Module as any).SinhOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover CoshOp", () => {
-    try {
-      const obj = new (Module as any).CoshOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover AsinhOp", () => {
-    try {
-      const obj = new (Module as any).AsinhOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover AcoshOp", () => {
-    try {
-      const obj = new (Module as any).AcoshOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover AtanhOp", () => {
-    try {
-      const obj = new (Module as any).AtanhOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover ErfOp", () => {
-    try {
-      const obj = new (Module as any).ErfOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover IsNaNOp", () => {
-    try {
-      const obj = new (Module as any).IsNaNOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover IsInfOp", () => {
-    try {
-      const obj = new (Module as any).IsInfOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover IsFiniteOp", () => {
-    try {
-      const obj = new (Module as any).IsFiniteOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover BitwiseAndOp", () => {
-    try {
-      const obj = new (Module as any).BitwiseAndOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover BitwiseOrOp", () => {
-    try {
-      const obj = new (Module as any).BitwiseOrOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover BitwiseXorOp", () => {
-    try {
-      const obj = new (Module as any).BitwiseXorOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover BitwiseNotOp", () => {
-    try {
-      const obj = new (Module as any).BitwiseNotOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover BitShiftOp", () => {
-    try {
-      const obj = new (Module as any).BitShiftOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover LogicalAndOp", () => {
-    try {
-      const obj = new (Module as any).LogicalAndOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover LogicalOrOp", () => {
-    try {
-      const obj = new (Module as any).LogicalOrOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover LogicalXorOp", () => {
-    try {
-      const obj = new (Module as any).LogicalXorOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover LogicalNotOp", () => {
-    try {
-      const obj = new (Module as any).LogicalNotOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover EqualOp", () => {
-    try {
-      const obj = new (Module as any).EqualOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover GreaterOp", () => {
-    try {
-      const obj = new (Module as any).GreaterOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover GreaterOrEqualOp", () => {
-    try {
-      const obj = new (Module as any).GreaterOrEqualOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover LessOp", () => {
-    try {
-      const obj = new (Module as any).LessOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover LessOrEqualOp", () => {
-    try {
-      const obj = new (Module as any).LessOrEqualOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover MaxOp", () => {
-    try {
-      const obj = new (Module as any).MaxOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover MinOp", () => {
-    try {
-      const obj = new (Module as any).MinOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover ReduceMaxOp", () => {
-    try {
-      const obj = new (Module as any).ReduceMaxOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover ReduceMinOp", () => {
-    try {
-      const obj = new (Module as any).ReduceMinOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover ReduceSumOp", () => {
-    try {
-      const obj = new (Module as any).ReduceSumOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover ReduceMeanOp", () => {
-    try {
-      const obj = new (Module as any).ReduceMeanOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover ReduceProdOp", () => {
-    try {
-      const obj = new (Module as any).ReduceProdOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover ReduceL1Op", () => {
-    try {
-      const obj = new (Module as any).ReduceL1Op();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover ReduceL2Op", () => {
-    try {
-      const obj = new (Module as any).ReduceL2Op();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover ReduceLogSumOp", () => {
-    try {
-      const obj = new (Module as any).ReduceLogSumOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover ReduceLogSumExpOp", () => {
-    try {
-      const obj = new (Module as any).ReduceLogSumExpOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover ReduceSumSquareOp", () => {
-    try {
-      const obj = new (Module as any).ReduceSumSquareOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover ArgMaxOp", () => {
-    try {
-      const obj = new (Module as any).ArgMaxOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover ArgMinOp", () => {
-    try {
-      const obj = new (Module as any).ArgMinOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover CastOp", () => {
-    try {
-      const obj = new (Module as any).CastOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover CastLikeOp", () => {
-    try {
-      const obj = new (Module as any).CastLikeOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover ReshapeOp", () => {
-    try {
-      const obj = new (Module as any).ReshapeOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover FlattenOp", () => {
-    try {
-      const obj = new (Module as any).FlattenOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover SqueezeOp", () => {
-    try {
-      const obj = new (Module as any).SqueezeOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover UnsqueezeOp", () => {
-    try {
-      const obj = new (Module as any).UnsqueezeOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover TransposeOp", () => {
-    try {
-      const obj = new (Module as any).TransposeOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover ConcatOp", () => {
-    try {
-      const obj = new (Module as any).ConcatOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover SplitOp", () => {
-    try {
-      const obj = new (Module as any).SplitOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover SliceOp", () => {
-    try {
-      const obj = new (Module as any).SliceOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover GatherOp", () => {
-    try {
-      const obj = new (Module as any).GatherOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover GatherElementsOp", () => {
-    try {
-      const obj = new (Module as any).GatherElementsOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover GatherNDOp", () => {
-    try {
-      const obj = new (Module as any).GatherNDOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover ScatterOp", () => {
-    try {
-      const obj = new (Module as any).ScatterOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover ScatterElementsOp", () => {
-    try {
-      const obj = new (Module as any).ScatterElementsOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover ScatterNDOp", () => {
-    try {
-      const obj = new (Module as any).ScatterNDOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover PadOp", () => {
-    try {
-      const obj = new (Module as any).PadOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover TileOp", () => {
-    try {
-      const obj = new (Module as any).TileOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover RepeatOp", () => {
-    try {
-      const obj = new (Module as any).RepeatOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover ExpandOp", () => {
-    try {
-      const obj = new (Module as any).ExpandOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover WhereOp", () => {
-    try {
-      const obj = new (Module as any).WhereOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover NonZeroOp", () => {
-    try {
-      const obj = new (Module as any).NonZeroOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover SpaceToDepthOp", () => {
-    try {
-      const obj = new (Module as any).SpaceToDepthOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover DepthToSpaceOp", () => {
-    try {
-      const obj = new (Module as any).DepthToSpaceOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover Col2ImOp", () => {
-    try {
-      const obj = new (Module as any).Col2ImOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover Im2ColOp", () => {
-    try {
-      const obj = new (Module as any).Im2ColOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover Conv1DOp", () => {
-    try {
-      const obj = new (Module as any).Conv1DOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover Conv2DOp", () => {
-    try {
-      const obj = new (Module as any).Conv2DOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover Conv3DOp", () => {
-    try {
-      const obj = new (Module as any).Conv3DOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover ConvTranspose1DOp", () => {
-    try {
-      const obj = new (Module as any).ConvTranspose1DOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover ConvTranspose2DOp", () => {
-    try {
-      const obj = new (Module as any).ConvTranspose2DOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover ConvTranspose3DOp", () => {
-    try {
-      const obj = new (Module as any).ConvTranspose3DOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover DepthwiseConv2DOp", () => {
-    try {
-      const obj = new (Module as any).DepthwiseConv2DOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover DeformableConv2DOp", () => {
-    try {
-      const obj = new (Module as any).DeformableConv2DOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover MaxPool1DOp", () => {
-    try {
-      const obj = new (Module as any).MaxPool1DOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover MaxPool2DOp", () => {
-    try {
-      const obj = new (Module as any).MaxPool2DOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover MaxPool3DOp", () => {
-    try {
-      const obj = new (Module as any).MaxPool3DOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover AveragePool1DOp", () => {
-    try {
-      const obj = new (Module as any).AveragePool1DOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover AveragePool2DOp", () => {
-    try {
-      const obj = new (Module as any).AveragePool2DOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover AveragePool3DOp", () => {
-    try {
-      const obj = new (Module as any).AveragePool3DOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover AdaptiveMaxPool2DOp", () => {
-    try {
-      const obj = new (Module as any).AdaptiveMaxPool2DOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover AdaptiveAvgPool2DOp", () => {
-    try {
-      const obj = new (Module as any).AdaptiveAvgPool2DOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover BatchNormOp", () => {
-    try {
-      const obj = new (Module as any).BatchNormOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover LayerNormOp", () => {
-    try {
-      const obj = new (Module as any).LayerNormOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover GroupNormOp", () => {
-    try {
-      const obj = new (Module as any).GroupNormOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover InstanceNormOp", () => {
-    try {
-      const obj = new (Module as any).InstanceNormOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover LocalResponseNormOp", () => {
-    try {
-      const obj = new (Module as any).LocalResponseNormOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover RMSNormOp", () => {
-    try {
-      const obj = new (Module as any).RMSNormOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover AdaLNOp", () => {
-    try {
-      const obj = new (Module as any).AdaLNOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover LeakyReluOp", () => {
-    try {
-      const obj = new (Module as any).LeakyReluOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover PReluOp", () => {
-    try {
-      const obj = new (Module as any).PReluOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover EluOp", () => {
-    try {
-      const obj = new (Module as any).EluOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover CeluOp", () => {
-    try {
-      const obj = new (Module as any).CeluOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover SeluOp", () => {
-    try {
-      const obj = new (Module as any).SeluOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover SigmoidOp", () => {
-    try {
-      const obj = new (Module as any).SigmoidOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover HardSigmoidOp", () => {
-    try {
-      const obj = new (Module as any).HardSigmoidOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover TanhOp", () => {
-    try {
-      const obj = new (Module as any).TanhOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover SoftsignOp", () => {
-    try {
-      const obj = new (Module as any).SoftsignOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover SoftplusOp", () => {
-    try {
-      const obj = new (Module as any).SoftplusOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover GeluOp", () => {
-    try {
-      const obj = new (Module as any).GeluOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover SiluOp", () => {
-    try {
-      const obj = new (Module as any).SiluOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover HardSwishOp", () => {
-    try {
-      const obj = new (Module as any).HardSwishOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover MishOp", () => {
-    try {
-      const obj = new (Module as any).MishOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover SwiGLUOp", () => {
-    try {
-      const obj = new (Module as any).SwiGLUOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover GeGLUOp", () => {
-    try {
-      const obj = new (Module as any).GeGLUOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover ReGLUOp", () => {
-    try {
-      const obj = new (Module as any).ReGLUOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover MultiHeadAttentionOp", () => {
-    try {
-      const obj = new (Module as any).MultiHeadAttentionOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover GroupedQueryAttentionOp", () => {
-    try {
-      const obj = new (Module as any).GroupedQueryAttentionOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover MultiQueryAttentionOp", () => {
-    try {
-      const obj = new (Module as any).MultiQueryAttentionOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover FlashAttentionOp", () => {
-    try {
-      const obj = new (Module as any).FlashAttentionOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover PagedAttentionOp", () => {
-    try {
-      const obj = new (Module as any).PagedAttentionOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover RoPE1DOp", () => {
-    try {
-      const obj = new (Module as any).RoPE1DOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover RoPE2DOp", () => {
-    try {
-      const obj = new (Module as any).RoPE2DOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover RoPE3DOp", () => {
-    try {
-      const obj = new (Module as any).RoPE3DOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover ALiBiOp", () => {
-    try {
-      const obj = new (Module as any).ALiBiOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover SlidingWindowAttentionOp", () => {
-    try {
-      const obj = new (Module as any).SlidingWindowAttentionOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover StateSpaceModelOp", () => {
-    try {
-      const obj = new (Module as any).StateSpaceModelOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover RNNOp", () => {
-    try {
-      const obj = new (Module as any).RNNOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover LSTMOp", () => {
-    try {
-      const obj = new (Module as any).LSTMOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
-  });
-  it("should instantiate and cover GRUOp", () => {
-    try {
-      const obj = new (Module as any).GRUOp();
-      expect(obj).toBeDefined();
-    } catch (_e) {}
+describe('ONNX Operator Implementations', () => {
+  const f32A = new Tensor(
+    'a',
+    [5],
+    'float32',
+    false,
+    true,
+    new Float32Array([0.0, 1.5, -2.5, Number.NaN, Number.POSITIVE_INFINITY]),
+  );
+  const f32B = new Tensor('b', [2], 'float32', false, true, new Float32Array([0.0, 0.5]));
+  const f32C = new Tensor('c', [3], 'float32', false, true, new Float32Array([0.0, 0.5, 2.0]));
+  const u8A = new Tensor(
+    'u8a',
+    [8],
+    'uint8',
+    false,
+    true,
+    new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8]),
+  );
+  const u8B = new Tensor(
+    'u8b',
+    [8],
+    'uint8',
+    false,
+    true,
+    new Uint8Array([2, 2, 2, 2, 1, 1, 1, 1]),
+  );
+  const emptyData = new Tensor('empty', [2], 'float32', false, true, null);
+
+  it('executes AbsOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new AbsOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes AddOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new AddOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes SubOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new SubOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes MulOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new MulOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes DivOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new DivOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes PowOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new PowOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes ModOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new ModOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes FmodOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new FmodOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes SignOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new SignOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes NegOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new NegOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes ExpOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new ExpOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes LogOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new LogOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes Log2Op across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new Log2Op();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes Log10Op across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new Log10Op();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes Expm1Op across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new Expm1Op();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes Log1pOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new Log1pOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes SinOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new SinOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes CosOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new CosOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes TanOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new TanOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes AsinOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new AsinOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes AcosOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new AcosOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes AtanOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new AtanOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes SinhOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new SinhOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes CoshOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new CoshOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes AsinhOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new AsinhOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes AcoshOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new AcoshOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes AtanhOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new AtanhOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes ErfOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new ErfOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes IsNaNOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new IsNaNOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes IsInfOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new IsInfOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes IsFiniteOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new IsFiniteOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes BitwiseAndOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new BitwiseAndOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes BitwiseOrOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new BitwiseOrOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes BitwiseXorOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new BitwiseXorOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes BitwiseNotOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new BitwiseNotOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes BitShiftOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new BitShiftOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes LogicalAndOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new LogicalAndOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes LogicalOrOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new LogicalOrOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes LogicalXorOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new LogicalXorOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes LogicalNotOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new LogicalNotOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes EqualOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new EqualOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes GreaterOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new GreaterOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes GreaterOrEqualOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new GreaterOrEqualOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes LessOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new LessOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes LessOrEqualOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new LessOrEqualOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes MaxOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new MaxOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes MinOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new MinOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes ReluOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new ReluOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes Conv1DOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new Conv1DOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes Conv2DOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new Conv2DOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes Conv3DOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new Conv3DOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes ConvTranspose1DOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new ConvTranspose1DOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes ConvTranspose2DOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new ConvTranspose2DOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes ConvTranspose3DOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new ConvTranspose3DOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes DepthwiseConv2DOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new DepthwiseConv2DOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes DeformableConv2DOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new DeformableConv2DOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes MaxPool1DOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new MaxPool1DOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes MaxPool2DOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new MaxPool2DOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes MaxPool3DOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new MaxPool3DOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes AveragePool1DOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new AveragePool1DOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes AveragePool2DOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new AveragePool2DOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes AveragePool3DOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new AveragePool3DOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes AdaptiveMaxPool2DOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new AdaptiveMaxPool2DOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes AdaptiveAvgPool2DOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new AdaptiveAvgPool2DOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes BatchNormOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new BatchNormOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes LayerNormOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new LayerNormOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes GroupNormOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new GroupNormOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes InstanceNormOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new InstanceNormOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes LocalResponseNormOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new LocalResponseNormOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes RMSNormOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new RMSNormOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes AdaLNOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new AdaLNOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes LeakyReluOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new LeakyReluOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes PReluOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new PReluOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes EluOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new EluOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes CeluOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new CeluOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes SeluOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new SeluOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes SigmoidOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new SigmoidOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes HardSigmoidOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new HardSigmoidOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes TanhOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new TanhOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes SoftsignOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new SoftsignOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes SoftplusOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new SoftplusOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes GeluOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new GeluOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes SiluOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new SiluOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes HardSwishOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new HardSwishOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes MishOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new MishOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes SwiGLUOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new SwiGLUOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes GeGLUOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new GeGLUOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes ReGLUOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new ReGLUOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes MultiHeadAttentionOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new MultiHeadAttentionOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes GroupedQueryAttentionOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new GroupedQueryAttentionOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes MultiQueryAttentionOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new MultiQueryAttentionOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes FlashAttentionOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new FlashAttentionOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes PagedAttentionOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new PagedAttentionOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes RoPE1DOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new RoPE1DOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes RoPE2DOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new RoPE2DOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes RoPE3DOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new RoPE3DOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes ALiBiOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new ALiBiOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes SlidingWindowAttentionOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new SlidingWindowAttentionOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes StateSpaceModelOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new StateSpaceModelOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes RNNOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new RNNOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes LSTMOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new LSTMOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes GRUOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new GRUOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes QuantizeLinearOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new QuantizeLinearOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes DequantizeLinearOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new DequantizeLinearOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes DynamicQuantizeLinearOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new DynamicQuantizeLinearOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes ReduceMaxOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new ReduceMaxOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes ReduceMinOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new ReduceMinOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes ReduceSumOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new ReduceSumOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes ReduceMeanOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new ReduceMeanOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes ReduceProdOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new ReduceProdOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes ReduceL1Op across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new ReduceL1Op();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes ReduceL2Op across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new ReduceL2Op();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes ReduceLogSumOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new ReduceLogSumOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes ReduceLogSumExpOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new ReduceLogSumExpOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes ReduceSumSquareOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new ReduceSumSquareOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes ArgMaxOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new ArgMaxOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes ArgMinOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new ArgMinOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes CastOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new CastOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes CastLikeOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new CastLikeOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes ReshapeOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new ReshapeOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes FlattenOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new FlattenOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes SqueezeOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new SqueezeOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes UnsqueezeOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new UnsqueezeOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes TransposeOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new TransposeOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes ConcatOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new ConcatOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes SplitOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new SplitOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes SliceOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new SliceOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes GatherOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new GatherOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes GatherElementsOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new GatherElementsOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes GatherNDOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new GatherNDOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes ScatterOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new ScatterOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes ScatterElementsOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new ScatterElementsOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes ScatterNDOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new ScatterNDOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes PadOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new PadOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes TileOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new TileOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes RepeatOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new RepeatOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes ExpandOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new ExpandOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes WhereOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new WhereOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes NonZeroOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new NonZeroOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes SpaceToDepthOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new SpaceToDepthOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes DepthToSpaceOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new DepthToSpaceOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes Col2ImOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new Col2ImOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
+  });
+  it('executes Im2ColOp across Float32, Uint8, and empty tensor inputs', () => {
+    const op = new Im2ColOp();
+    const outF32 = op.execute([f32A, f32B, u8A], { direction: 'LEFT' });
+    expect(outF32.length).toBeGreaterThanOrEqual(1);
+    const outRev = op.execute([f32B, f32C, f32A], { direction: 'RIGHT' });
+    expect(outRev.length).toBeGreaterThanOrEqual(1);
+    const outU8 = op.execute([u8A, u8B, u8A], {});
+    expect(outU8.length).toBeGreaterThanOrEqual(1);
+    const outMissing = op.execute([emptyData, f32B], {});
+    expect(outMissing.length).toBe(1);
+    const outEmpty = op.execute([], {});
+    expect(outEmpty).toEqual([]);
   });
 });

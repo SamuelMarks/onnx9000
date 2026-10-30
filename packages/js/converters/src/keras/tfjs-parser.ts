@@ -1,26 +1,34 @@
-// @ts-nocheck
+/**
+ * @fileoverview tfjs-parser module for converters.
+ */
 /**
  * Defines the supported mathematical data types natively supported by Web-Native machine learning layers.
  */
+import { ConversionError } from '@onnx9000/core';
+/** Type alias `DataType`. */
 export type DataType =
-  | "float32"
-  | "int32"
-  | "bool"
-  | "complex64"
-  | "string"
-  | "float16"
-  | "uint8"
-  | "int8"
-  | "int4"
-  | "uint4";
+  | 'float32'
+  | 'int32'
+  | 'bool'
+  | 'complex64'
+  | 'string'
+  | 'float16'
+  | 'uint8'
+  | 'int8'
+  | 'int4'
+  | 'uint4';
 
 /**
  * Represents a single weight entry in a TF.js manifest.
  */
 export interface WeightManifestEntry {
+  /** Property `name`. */
   name: string;
+  /** Property `shape`. */
   shape: number[];
+  /** Property `dtype`. */
   dtype: DataType;
+  /** Property `quantization`. */
   quantization?: {
     scale: number;
     min: number;
@@ -32,20 +40,16 @@ export interface WeightManifestEntry {
  * Represents a group of weight files (paths) and their associated manifests.
  */
 export interface WeightGroup {
+  /** Property `paths`. */
   paths: string[];
+  /** Property `weights`. */
   weights: WeightManifestEntry[];
 }
 
 /**
  * Union type for JSON primitive values.
  */
-export type JsonValue =
-  | string
-  | number
-  | boolean
-  | null
-  | JsonArray
-  | JsonObject;
+export type JsonValue = string | number | boolean | null | JsonArray | JsonObject;
 /**
  * Array type for JSON values.
  */
@@ -61,11 +65,17 @@ export interface JsonObject {
  * Represents a TensorFlow.js 'layers-model' (analogous to Keras H5 or SavedModel topologies).
  */
 export interface TFJSLayersModel {
-  format: "layers-model";
+  /** Property `format`. */
+  format: 'layers-model';
+  /** Property `generatedBy`. */
   generatedBy?: string;
+  /** Property `convertedBy`. */
   convertedBy?: string;
+  /** Property `modelTopology`. */
   modelTopology: JsonObject; // The raw Keras JSON config
+  /** Property `weightsManifest`. */
   weightsManifest: WeightGroup[];
+  /** Property `signature`. */
   signature?: JsonObject;
 }
 
@@ -73,13 +83,18 @@ export interface TFJSLayersModel {
  * Represents a TensorFlow.js 'graph-model' (lower level frozen execution graphs).
  */
 export interface TFJSGraphModel {
-  format: "graph-model";
+  /** Property `format`. */
+  format: 'graph-model';
+  /** Property `generatedBy`. */
   generatedBy?: string;
+  /** Property `convertedBy`. */
   convertedBy?: string;
+  /** Property `modelTopology`. */
   modelTopology: {
     node: JsonObject[];
     versions?: JsonObject;
   };
+  /** Property `weightsManifest`. */
   weightsManifest: WeightGroup[];
 }
 
@@ -98,14 +113,14 @@ export type TFJSModel = TFJSLayersModel | TFJSGraphModel;
  */
 export function parseTFJSModel(jsonText: string): TFJSModel {
   const parsed = JSON.parse(jsonText) as JsonObject;
-  if (parsed.format !== "layers-model" && parsed.format !== "graph-model") {
+  if (parsed.format !== 'layers-model' && parsed.format !== 'graph-model') {
     const top = parsed.modelTopology as JsonObject | undefined;
     if (top !== undefined && top.node !== undefined) {
-      parsed.format = "graph-model";
+      parsed.format = 'graph-model';
     } else if (top !== undefined && top.class_name !== undefined) {
-      parsed.format = "layers-model";
+      parsed.format = 'layers-model';
     } else {
-      throw new Error("Unsupported or unrecognized TF.js model format");
+      throw new ConversionError('Unsupported or unrecognized TF.js model format');
     }
   }
   const manifestArray = parsed.weightsManifest as JsonArray;
@@ -136,11 +151,9 @@ export function parseTFJSModel(jsonText: string): TFJSModel {
   });
 
   return {
-    format: parsed.format as "layers-model" | "graph-model",
-    generatedBy:
-      typeof parsed.generatedBy === "string" ? parsed.generatedBy : undefined,
-    convertedBy:
-      typeof parsed.convertedBy === "string" ? parsed.convertedBy : undefined,
+    format: parsed.format as 'layers-model' | 'graph-model',
+    generatedBy: typeof parsed.generatedBy === 'string' ? parsed.generatedBy : undefined,
+    convertedBy: typeof parsed.convertedBy === 'string' ? parsed.convertedBy : undefined,
     modelTopology: parsed.modelTopology as JsonObject,
     weightsManifest,
     signature: parsed.signature as JsonObject | undefined,

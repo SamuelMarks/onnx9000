@@ -1,7 +1,6 @@
 """Provides engine module functionality."""
 
 import logging
-from typing import Any, Optional
 
 from onnx9000.core.ir import Graph
 from onnx9000.optimizer.hummingbird.analysis import cast_parameters, flatten_ensemble
@@ -18,7 +17,12 @@ class TranspilationEngine:
     """Zero-dependency transpilation engine architecture."""
 
     def __init__(self, target: TargetHardware = TargetHardware.CPU, verbose: bool = False) -> None:
-        """Initialize the instance."""
+        """Initialize TranspilationEngine with configured parameters and state.
+
+        Args:
+            target: Parameter specifying target (TargetHardware).
+            verbose: Parameter specifying verbose (bool).
+        """
         self.target = target
         self.abstractions: list[TreeAbstractions] = []
         self.backends = {}
@@ -26,15 +30,17 @@ class TranspilationEngine:
         if self.verbose:
             logger.setLevel(logging.DEBUG)
 
-    def register_backend(self, name: str, backend_cls: Any) -> None:
+    def register_backend(
+        self, name: str, backend_cls: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> None:
         """Implement backend registry for extensibility."""
         self.backends[name] = backend_cls
 
     def transpile(
         self,
-        model_obj: Any,
+        model_obj: int | float | str | bool | bytes | list | dict | tuple | None,
         force_strategy: Strategy | None = None,
-        batch_size: Any = "N",
+        batch_size: int | float | str | bool | bytes | list | dict | tuple | None = "N",
         ensemble_weights: list[float] | None = None,
     ) -> Graph:
         """Transpiles traditional ML models into ONNX Graph based on selected strategy.
@@ -73,7 +79,7 @@ class TranspilationEngine:
             self._compile_gemm(g, casted, batch_size)
         elif strategy == Strategy.TREE_TRAVERSAL:
             self._compile_tree_traversal(g, casted, batch_size)
-        elif strategy == Strategy.PERFECT_TREE_TRAVERSAL:
+        else:
             self._compile_perfect_tree(g, casted, batch_size)
 
         return g
@@ -90,21 +96,36 @@ class TranspilationEngine:
         """Handle models with a mix of categorical and continuous features natively."""
         return None
 
-    def _compile_gemm(self, g: Graph, tree: TreeAbstractions, batch_size: Any) -> None:
+    def _compile_gemm(
+        self,
+        g: Graph,
+        tree: TreeAbstractions,
+        batch_size: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
         """Execute the compile gemm operation."""
         from onnx9000.optimizer.hummingbird.gemm import GemmCompiler
 
         compiler = GemmCompiler(tree, batch_size)
         compiler.compile(g)
 
-    def _compile_tree_traversal(self, g: Graph, tree: TreeAbstractions, batch_size: Any) -> None:
+    def _compile_tree_traversal(
+        self,
+        g: Graph,
+        tree: TreeAbstractions,
+        batch_size: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
         """Execute the compile tree traversal operation."""
         from onnx9000.optimizer.hummingbird.tree_traversal import TreeTraversalCompiler
 
         compiler = TreeTraversalCompiler(tree, batch_size)
         compiler.compile(g)
 
-    def _compile_perfect_tree(self, g: Graph, tree: TreeAbstractions, batch_size: Any) -> None:
+    def _compile_perfect_tree(
+        self,
+        g: Graph,
+        tree: TreeAbstractions,
+        batch_size: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
         """Execute the compile perfect tree operation."""
         from onnx9000.optimizer.hummingbird.perfect_tree import PerfectTreeCompiler
 

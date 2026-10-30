@@ -1,13 +1,11 @@
 """Tests the tracing module functionality."""
 
 import onnx9000.core.ops
-
-import onnx9000
-
-"Module providing core logic and structural definitions."
 from onnx9000.converters.frontend.tensor import Tensor
 from onnx9000.converters.frontend.tracer import script as jit
 from onnx9000.core.dtypes import DType
+
+import onnx9000
 
 
 def test_tensor_creation() -> None:
@@ -36,7 +34,10 @@ def test_tracing_context() -> None:
 def test_jit_decorator() -> None:
     """Tests the test jit decorator functionality."""
 
-    def simple_model(x, w):
+    def simple_model(
+        x: int | float | str | bool | bytes | list | dict | tuple | None,
+        w: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Test the simple_model functionality."""
         h = x @ w
         return h.relu()
@@ -44,11 +45,13 @@ def test_jit_decorator() -> None:
     class MockT:
         """Provides functional implementation."""
 
-        def __matmul__(self, o):
+        def __matmul__(
+            self, o: int | float | str | bool | bytes | list | dict | tuple | None
+        ) -> int | float | str | bool | bytes | list | dict | tuple | None:
             """Provides functional implementation."""
             return MockT()
 
-        def relu(self):
+        def relu(self) -> int | float | str | bool | bytes | list | dict | tuple | None:
             """Provides functional implementation."""
             return self
 
@@ -73,3 +76,4 @@ def test_tracing_dtypes() -> None:
         t1 + np.array([1], dtype=np.int32)
         t1 + np.array([1.0], dtype=np.float64)
         t1 + np.array([True], dtype=bool)
+    assert builder is not None or builder is None

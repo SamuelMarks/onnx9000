@@ -15,11 +15,11 @@ export class Tokenizer {
   /**
    * Load vocabulary from a parsed JSON manifest
    */
-  loadVocab(json: any): void {
+  loadVocab(json: { model?: { vocab?: Record<string, number> } }): void {
     if (json.model?.vocab) {
       for (const [token, id] of Object.entries(json.model.vocab)) {
-        this.vocab.set(token, id as number);
-        this.decodes.set(id as number, token);
+        this.vocab.set(token, id);
+        this.decodes.set(id, token);
       }
     }
   }
@@ -33,7 +33,7 @@ export class Tokenizer {
     const words = text.split(/(\s+)/);
     for (const w of words) {
       if (this.vocab.has(w)) {
-        tokens.push(this.vocab.get(w)!);
+        tokens.push(this.vocab.get(w));
       } else {
         // Fallback hash logic for stub
         let hash = 0;

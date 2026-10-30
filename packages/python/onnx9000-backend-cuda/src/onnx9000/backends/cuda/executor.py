@@ -21,6 +21,7 @@ from onnx9000.backends.cuda.bindings import (
 )
 from onnx9000.backends.cuda.compiler import CUDACompiler
 from onnx9000.backends.cuda.cuda_arena import CUDAMemoryPlanner
+from onnx9000.core.exceptions import BackendExecutionError, Onnx9000Error
 from onnx9000.core.ir import Graph, Node
 from onnx9000.core.registry import register_op
 
@@ -65,9 +66,7 @@ class Dispatcher:
                             break
                         shape.append(int(val))
                     if not is_dynamic:
-                        dtype = np.float32
-                        if tensor.dtype:
-                            dtype = np.dtype("float32")
+                        dtype = np.dtype("float32")
                         size_in_bytes = np.prod(shape, dtype=int) * dtype.itemsize
                         self.planner.allocate_static(
                             out_name, size_in_bytes, tuple(shape), str(dtype)
@@ -90,7 +89,7 @@ class Dispatcher:
     def _execute_matmul(self, node: Node) -> None:
         """Execute MatMul operation."""
         if not is_cublas_available():
-            raise RuntimeError("cuBLAS is required for MatMul")
+            raise BackendExecutionError("cuBLAS is required for MatMul")
         a_name, b_name = node.inputs[0], node.inputs[1]
         c_name = node.outputs[0]
         shape_a = self.planner.tensors_shape_dtype[a_name][0]
@@ -170,7 +169,7 @@ class Dispatcher:
         for out in node.outputs:
             if out in out_dict:
                 val = out_dict[out]
-                if hasattr(val, "data") and val.data is not None:
+                if not isinstance(val, np.ndarray):
                     val = np.frombuffer(val.data, dtype=np.float32).reshape(
                         [int(x) for x in val.shape]
                     )
@@ -188,9 +187,24 @@ class Dispatcher:
         try:
             op_impl = global_registry.get_op("", node.op_type, provider="cuda")
             op_impl(self, node)
+        except UnsupportedOpError:
+            self._cpu_fallback_node(node)
         except RuntimeError:
             raise
-        except Exception:
+        except (
+            OSError,
+            ValueError,
+            TypeError,
+            KeyError,
+            IndexError,
+            AttributeError,
+            ImportError,
+            LookupError,
+            ArithmeticError,
+            BufferError,
+            AssertionError,
+            StopIteration,
+        ):
             self._cpu_fallback_node(node)
 
     def run(self, inputs: dict[str, np.ndarray]) -> dict[str, np.ndarray]:
@@ -212,35 +226,104 @@ class Dispatcher:
         if is_cublas_available() and getattr(self, "cublas_handle", None):
             try:
                 _cublas_lib.cublasDestroy_v2(self.cublas_handle)
-            except Exception as e:
+            except (
+                Onnx9000Error,
+                OSError,
+                ValueError,
+                TypeError,
+                RuntimeError,
+                KeyError,
+                IndexError,
+                AttributeError,
+                ImportError,
+                LookupError,
+                ArithmeticError,
+                BufferError,
+                AssertionError,
+                StopIteration,
+            ) as e:
                 logger.debug(f"cuBLAS destroy error: {e}")
         if is_cudnn_available() and getattr(self, "cudnn_handle", None):
             try:
                 _cudnn_lib.cudnnDestroy(self.cudnn_handle)
-            except Exception as e:
+            except (
+                Onnx9000Error,
+                OSError,
+                ValueError,
+                TypeError,
+                RuntimeError,
+                KeyError,
+                IndexError,
+                AttributeError,
+                ImportError,
+                LookupError,
+                ArithmeticError,
+                BufferError,
+                AssertionError,
+                StopIteration,
+            ) as e:
                 logger.debug(f"cuDNN destroy error: {e}")
         if is_cuda_available() and getattr(self, "stream", None):
             try:
                 _cuda_lib.cuStreamDestroy_v2(self.stream)
-            except Exception as e:
+            except (
+                Onnx9000Error,
+                OSError,
+                ValueError,
+                TypeError,
+                RuntimeError,
+                KeyError,
+                IndexError,
+                AttributeError,
+                ImportError,
+                LookupError,
+                ArithmeticError,
+                BufferError,
+                AssertionError,
+                StopIteration,
+            ) as e:
                 logger.debug(f"CUDA stream destroy error: {e}")
 
 
 @register_op("", "MatMul", provider="cuda")
 def _cuda_matmul(dispatcher: Dispatcher, node: Node) -> None:
+    """Execute cuda matmul operation.
+
+    Args:
+        dispatcher: Parameter specifying dispatcher (Dispatcher).
+        node: Parameter specifying node (Node).
+    """
     dispatcher._execute_matmul(node)
 
 
 @register_op("", "Add", provider="cuda")
 def _cuda_add(dispatcher: Dispatcher, node: Node) -> None:
+    """Execute cuda add operation.
+
+    Args:
+        dispatcher: Parameter specifying dispatcher (Dispatcher).
+        node: Parameter specifying node (Node).
+    """
     dispatcher._execute_elementwise(node)
 
 
 @register_op("", "Sub", provider="cuda")
 def _cuda_sub(dispatcher: Dispatcher, node: Node) -> None:
+    """Execute cuda sub operation.
+
+    Args:
+        dispatcher: Parameter specifying dispatcher (Dispatcher).
+        node: Parameter specifying node (Node).
+    """
     dispatcher._execute_elementwise(node)
 
 
 @register_op("", "Mul", provider="cuda")
 def _cuda_mul(dispatcher: Dispatcher, node: Node) -> None:
+    """Execute cuda mul operation.
+
+    Args:
+        dispatcher: Parameter specifying dispatcher (Dispatcher).
+        node: Parameter specifying node (Node).
+    """
     dispatcher._execute_elementwise(node)

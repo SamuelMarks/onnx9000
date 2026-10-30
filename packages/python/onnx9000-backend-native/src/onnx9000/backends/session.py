@@ -1,18 +1,16 @@
 """InferenceSession orchestration logic routing Graph nodes to Execution Providers."""
 
 import logging
-from pathlib import Path
-from typing import Any, Optional, Union
 
 from onnx9000.core.dtypes import DType
-from onnx9000.core.exceptions import Onnx9000Error
+from onnx9000.core.exceptions import BackendExecutionError, Onnx9000Error
 from onnx9000.core.execution import (
     ExecutionContext,
     ExecutionProvider,
     RunOptions,
     SessionOptions,
 )
-from onnx9000.core.ir import Graph, Tensor
+from onnx9000.core.ir import AttributeValue, Graph, Shape, Tensor
 from onnx9000.core.utils import topological_sort
 
 logger = logging.getLogger(__name__)
@@ -29,7 +27,7 @@ class InferenceSessionError(Onnx9000Error):
 class NodeArg:
     """Abstraction for inputs/outputs properties."""
 
-    def __init__(self, name: str, shape: tuple[Any, ...], dtype: str) -> None:
+    def __init__(self, name: str, shape: Shape, dtype: str) -> None:
         """Initialize the NodeArg with standard properties."""
         self.name = name
         self.shape = shape
@@ -97,7 +95,7 @@ class InferenceSession:
     ) -> None:
         """Initialize the InferenceSession with the target graph and providers."""
         if not isinstance(graph, Graph):
-            raise TypeError(
+            raise BackendExecutionError(
                 "InferenceSession requires an IR Graph object. Parsers are decoupled from execution."
             )
         self.graph = graph
@@ -183,7 +181,7 @@ class InferenceSession:
         """Return names of execution providers."""
         return [p.__class__.__name__ for p in self.providers]
 
-    def get_provider_options(self) -> dict[str, dict[str, Any]]:
+    def get_provider_options(self) -> dict[str, dict[str, AttributeValue]]:
         """Return options for execution providers."""
         return {p.__class__.__name__: p.options for p in self.providers}
 
@@ -228,5 +226,5 @@ class InferenceSession:
     ) -> None:
         """Run with IOBinding."""
         outputs = self.run(list(iobinding.outputs.keys()), iobinding.inputs, run_options)
-        for key, tensor in zip(iobinding.outputs.keys(), outputs):
+        for key, tensor in zip(iobinding.outputs.keys(), outputs, strict=False):
             iobinding.outputs[key] = tensor

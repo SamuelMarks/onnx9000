@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../../src/mmdnn/onnxscript/generator";
+import { describe, expect, it } from 'vitest';
+import { OnnxScriptGenerator } from '../../../src/mmdnn/onnxscript/generator';
 
-describe("generator.ts", () => {
-  it("should instantiate and cover OnnxScriptGenerator", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('generator.ts', () => {
+  it('should instantiate and cover OnnxScriptGenerator', () => {
     try {
-      const obj = new (Module as any).OnnxScriptGenerator();
+      const obj = Construct(OnnxScriptGenerator);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

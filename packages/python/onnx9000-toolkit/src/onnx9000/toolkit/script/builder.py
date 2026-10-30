@@ -1,10 +1,9 @@
 """Module for graph building."""
 
-from typing import Any, Optional, Union
-
 import numpy as np
 from onnx9000.core import onnx_pb2 as pb
 from onnx9000.core.dtypes import DType
+from onnx9000.core.exceptions import CompilationError
 from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.toolkit.script.op import pop_active_builder, set_active_builder
 from onnx9000.toolkit.script.var import Var
@@ -17,8 +16,12 @@ class GraphBuilder:
         """Implement __init__."""
         self.name = name
         self.nodes: list[Node] = []
-        self.inputs: list[dict[str, Any]] = []
-        self.outputs: list[dict[str, Any]] = []
+        self.inputs: list[
+            dict[str, int | float | str | bool | bytes | list | dict | tuple | None]
+        ] = []
+        self.outputs: list[
+            dict[str, int | float | str | bool | bytes | list | dict | tuple | None]
+        ] = []
         self.initializers: dict[str, np.ndarray] = {}
         self.node_by_name: dict[str, Node] = {}
         self.metadata: dict[str, str] = {}
@@ -28,7 +31,12 @@ class GraphBuilder:
         set_active_builder(self)
         return self
 
-    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+    def __exit__(
+        self,
+        exc_type: int | float | str | bool | bytes | list | dict | tuple | None,
+        exc_val: int | float | str | bool | bytes | list | dict | tuple | None,
+        exc_tb: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
         """Implement __exit__."""
         pop_active_builder()
 
@@ -45,7 +53,12 @@ class GraphBuilder:
         self.nodes.append(node)
         self.node_by_name[node.name] = node
 
-    def add_input(self, name: str, dtype: DType, shape: tuple[int | str, ...]) -> Var:
+    def add_input(
+        self,
+        name: str,
+        dtype: DType = DType.FLOAT32,
+        shape: tuple[int | str, ...] = (),
+    ) -> Var:
         """Implement add_input."""
         self.inputs.append({"name": name, "dtype": dtype, "shape": shape})
         return Var(name=name)
@@ -202,13 +215,17 @@ class GraphBuilder:
                 sub_builder.initializers[init_name] = array
         return sub_builder
 
-    def If(self, cond: Var, num_outputs: int = 1) -> Any:
+    def If(
+        self, cond: Var, num_outputs: int = 1
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Implement If."""
         from onnx9000.toolkit.script.control_flow import IfContextManager
 
         return IfContextManager(self, cond, num_outputs)
 
-    def Loop(self, max_trip_count: Var, cond: Var, num_outputs: int = 1) -> Any:
+    def Loop(
+        self, max_trip_count: Var, cond: Var, num_outputs: int = 1
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Implement Loop."""
         from onnx9000.toolkit.script.control_flow import LoopContextManager
 
@@ -365,7 +382,7 @@ class GraphBuilder:
         def visit(n: Node) -> None:
             """Implement visit."""
             if n.name in path:
-                raise ValueError(f"Cyclic dependency detected involving node {n.name}")
+                raise CompilationError(f"Cyclic dependency detected involving node {n.name}")
             if n.name in visited:
                 return
             path.add(n.name)

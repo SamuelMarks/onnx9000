@@ -1,32 +1,24 @@
-import { beforeEach, describe, expect, it } from "vitest";
+// @vitest-environment jsdom
+import { beforeEach, describe, expect, it } from 'vitest';
+import { initGraphSurgeonDemo } from '../src/main.js';
 
-describe("demo", () => {
+describe('demo-graphsurgeon', () => {
   beforeEach(() => {
-    document.body.innerHTML = `
-      <textarea id="prompt"></textarea>
-      <button id="runBtn"></button>
-      <div id="output"></div>
-    `;
+    document.body.innerHTML = '<button id="mutate-btn"></button><div id="surgeon-output"></div>';
   });
 
-  it("should run flow", async () => {
-    // import to execute module top-level
-    try {
-      await import("../src/main.js");
-    } catch (_e) {}
+  it('should mutate graph and update output', () => {
+    document.body.innerHTML = '';
+    initGraphSurgeonDemo();
 
-    const btn = document.getElementById("runBtn");
-    const prompt = document.getElementById("prompt");
-    const _out = document.getElementById("output");
+    document.body.innerHTML = '<button id="mutate-btn"></button><div id="surgeon-output"></div>';
+    initGraphSurgeonDemo();
 
-    if (btn) btn.click();
-    if (prompt && btn) {
-      prompt.value = "test";
-      btn.click();
-    }
+    const btn = document.getElementById('mutate-btn') as HTMLButtonElement;
+    const out = document.getElementById('surgeon-output') as HTMLElement;
 
-    // allow some async code to run
-    await new Promise((r) => setTimeout(r, 100));
-    expect(true).toBe(true);
+    btn.click();
+    expect(out.innerText).toContain('Success! Graph structure modified.');
+    expect(btn.disabled).toBe(false);
   });
 });

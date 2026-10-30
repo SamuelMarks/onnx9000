@@ -1,6 +1,7 @@
-"""Advanced diagnostic utility for profiling MACs, FLOPs, parameters, and memory."""
+"""Implementation of profiler (onnx9000 / core / profiler.py) providing ProfilerResult, dtype_size, resolve_volume, get_attr."""
 
-from typing import Any, Union
+import time
+from functools import wraps
 
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Constant, DynamicDim, Graph, Node
@@ -28,7 +29,7 @@ def dtype_size(dtype: DType) -> int:
     return mapping.get(dtype, 4)
 
 
-def resolve_volume(shape: tuple, dynamic_overrides: dict[str, int] = None) -> int | str:
+def resolve_volume(shape: tuple, dynamic_overrides: dict[str, int] | None = None) -> int | str:
     """Execute the resolve volume operation."""
     if not shape:
         return 1
@@ -50,7 +51,11 @@ def resolve_volume(shape: tuple, dynamic_overrides: dict[str, int] = None) -> in
     return vol
 
 
-def get_attr(node: Node, name: str, default: Any = None) -> Any:
+def get_attr(
+    node: Node,
+    name: str,
+    default: int | float | str | bool | bytes | list | dict | tuple | None = None,
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
     """Execute the get attr operation."""
     for attr in node.attributes.values():
         if attr.name == name:
@@ -58,15 +63,17 @@ def get_attr(node: Node, name: str, default: Any = None) -> Any:
     return default
 
 
-import time
-from functools import wraps
-
-
-def profile_graph(func):
+def profile_graph(
+    func: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
     """Execute the profile graph operation."""
 
     @wraps(func)
-    def wrapper(graph, *args, **kwargs):
+    def wrapper(
+        graph: int | float | str | bool | bytes | list | dict | tuple | None,
+        *args: int | float | str | bool | bytes | list | dict | tuple | None,
+        **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Execute the wrapper operation."""
         start = time.perf_counter()
         res = profile(graph)
@@ -81,8 +88,8 @@ def profile_graph(func):
 class ProfilerResult:
     """Represents the Profiler Result class."""
 
-    def __init__(self):
-        """Initialize the instance."""
+    def __init__(self) -> None:
+        """Initialize ProfilerResult with configured parameters and state."""
         self.total_macs: int | str = 0
         self.total_flops: int | str = 0
         self.total_params: int = 0
@@ -101,7 +108,7 @@ class ProfilerResult:
         self.float64_count = 0
         self.int64_count = 0
 
-    def generate_suggestions(self):
+    def generate_suggestions(self) -> None:
         """Execute the generate suggestions operation."""
         if self.float64_count > 0:
             self.suggestions.append(
@@ -163,7 +170,7 @@ class ProfilerResult:
             "bottleneck": bottleneck,
         }
 
-    def print_parameter_pie_chart(self):
+    def print_parameter_pie_chart(self) -> None:
         """Execute the print parameter pie chart operation."""
         print("--- Parameter Distribution ---")
         if self.total_params == 0:
@@ -179,7 +186,7 @@ class ProfilerResult:
             pct = (count / self.total_params) * 100
             print(f"{op}: {pct:.1f}% ({count} Params)")
 
-    def print_activation_pie_chart(self):
+    def print_activation_pie_chart(self) -> None:
         """Execute the print activation pie chart operation."""
         print("--- Activation Distribution ---")
         if self.peak_activation_bytes == 0:
@@ -193,14 +200,14 @@ class ProfilerResult:
             pct = (count / self.peak_activation_bytes) * 100
             print(f"{op}: {pct:.1f}% ({count / 1e6:.2f} MB)")
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Execute repr magic method operation."""
         return (
             f"ProfilerResult(macs={self.total_macs}, flops={self.total_flops}, "
             f"params={self.total_params}, memory={self.total_memory_bytes / 1e6:.2f} MB)"
         )
 
-    def print_bottleneck_analysis(self, top_k: int = 5):
+    def print_bottleneck_analysis(self, top_k: int = 5) -> None:
         """Execute the print bottleneck analysis operation."""
         print(f"--- Top {top_k} Compute Bottlenecks ---")
         sorted_nodes = sorted(
@@ -213,7 +220,7 @@ class ProfilerResult:
                 f"{i + 1}. {n['name']} ({n['op_type']}) - FLOPs: {n['flops']} - Arithmetic Intensity: {n.get('arithmetic_intensity', 'N/A')}"
             )
 
-    def print_distribution_pie_chart(self):
+    def print_distribution_pie_chart(self) -> None:
         """Execute the print distribution pie chart operation."""
         print("--- MACs/FLOPs Distribution ---")
         op_types = {}
@@ -250,7 +257,7 @@ def _add_metric(a: int | str, b: int | str) -> int | str:
     return f"({a} + {b})"
 
 
-def profile(graph: Graph, dynamic_overrides: dict[str, int] = None) -> ProfilerResult:
+def profile(graph: Graph, dynamic_overrides: dict[str, int] | None = None) -> ProfilerResult:
     """Profiles the graph for MACs, FLOPs, Parameter count, and Memory usage."""
     infer_shapes_and_types(graph)
     res = ProfilerResult()
@@ -513,10 +520,7 @@ def profile(graph: Graph, dynamic_overrides: dict[str, int] = None) -> ProfilerR
                 "LayerNormalization",
                 "InstanceNormalization",
             ]:
-                if isinstance(out_vol, int):
-                    flops = out_vol * 4
-                else:
-                    flops = f"4 * {out_vol}"
+                flops = out_vol * 4 if isinstance(out_vol, int) else f"4 * {out_vol}"
 
             elif n.op_type in [
                 "ReduceMean",
@@ -551,8 +555,7 @@ def profile(graph: Graph, dynamic_overrides: dict[str, int] = None) -> ProfilerR
                     v = resolve_volume(graph.tensors[n.outputs[0]].shape, dynamic_overrides)
                     if isinstance(v, int):
                         write_bytes = v * dtype_size(graph.tensors[n.outputs[0]].dtype)
-                if isinstance(read_bytes, int) and isinstance(write_bytes, int):
-                    mem_bandwidth = read_bytes + write_bytes
+                mem_bandwidth = read_bytes + write_bytes
 
         # Precision tracking
         dt = DType.FLOAT32

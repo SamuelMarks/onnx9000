@@ -1,11 +1,11 @@
 """CNTK model parser."""
 
-from typing import Any  # pragma: no cover
-
 from onnx9000.converters.caffe.weights import ProtobufDecoder  # pragma: no cover
 
 
-def parse_cntk_model(data: bytes) -> dict[str, Any]:  # pragma: no cover
+def parse_cntk_model(
+    data: bytes,
+) -> dict[str, int | float | str | bool | bytes | list | dict | tuple | None]:  # pragma: no cover
     """Parse a CNTK v2 .model (protobuf) into a dictionary.
 
     Args:  # pragma: no cover

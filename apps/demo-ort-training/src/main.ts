@@ -1,18 +1,21 @@
-/* v8 ignore start */
+/**
+ * @fileoverview ORT Training Demo UI.
+ */
+
 /**
  * Initializes the ORT training demo.
  */
 export function initOrtTrainingDemo(): void {
-  document.getElementById("btn-run")?.addEventListener("click", () => {
-    const output = document.getElementById("output");
+  document.getElementById('btn-run')?.addEventListener('click', () => {
+    const output = document.getElementById('output');
     if (output) {
-      output.textContent = "Running...\n";
+      output.textContent = `Running...
+`;
       setTimeout(() => {
-        output.textContent += "[OK] ORT Training execution complete.";
-      }, 500);
+        output.textContent += '[OK] ORT Training execution complete.';
+      }, 50);
     }
   });
 }
-initOrtTrainingDemo();
 
-/* v8 ignore stop */
+initOrtTrainingDemo();

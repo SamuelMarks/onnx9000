@@ -2,9 +2,8 @@
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Any
 
-from onnx9000.core.ir import Graph, Tensor
+from onnx9000.core.ir import Graph
 
 
 @dataclass
@@ -20,9 +19,9 @@ class SessionOptions:
     intra_op_num_threads: int = 0
     log_severity_level: int = 2
     logid: str = ""
-    add_session_config_entry: dict[str, str] = field(default_factory=dict)
-    register_custom_ops_library: list[str] = field(default_factory=list)
-    free_dimension_overrides: dict[str, int] = field(default_factory=dict)
+    add_session_config_entry: dict = field(default_factory=dict)
+    register_custom_ops_library: list = field(default_factory=list)
+    free_dimension_overrides: dict = field(default_factory=dict)
 
 
 @dataclass
@@ -60,30 +59,28 @@ class ExecutionContext:
 
     options: SessionOptions
     device_id: int = 0
-    stream: Any = None
+    stream: int | float | str | bool | bytes | list | dict | tuple | None = None
 
 
 class ExecutionProvider(ABC):
     """Abstract base class for all hardware execution providers."""
 
-    def __init__(self, options: dict[str, Any]) -> None:
+    def __init__(self, options: dict) -> None:
         """Initialize the execution provider with specific options."""
         self.options = options
         self.device_id = int(options.get("device_id", 0))
 
     @abstractmethod
-    def get_supported_nodes(self, graph: Graph) -> list[str]:
+    def get_supported_nodes(self, graph: Graph) -> list:
         """Return a list of node names from the graph that this provider can execute."""
         return []
 
     @abstractmethod
-    def allocate_tensors(self, tensors: list[Tensor]) -> None:
+    def allocate_tensors(self, tensors: list) -> None:
         """Allocate necessary buffers for the provided tensors on the target device."""
         return None
 
     @abstractmethod
-    def execute(
-        self, graph: Graph, context: ExecutionContext, inputs: dict[str, Tensor]
-    ) -> dict[str, Tensor]:
+    def execute(self, graph: Graph, context: ExecutionContext, inputs: dict) -> dict:
         """Execute the graph (or a supported subgraph) and return the outputs."""
         return {}

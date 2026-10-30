@@ -1,4 +1,7 @@
 /**
+ * @fileoverview sanitize module for coreml.
+ */
+/**
  * CoreML serialization utility functions to maintain compatibility with Apple tooling.
  * @module
  */
@@ -9,15 +12,20 @@
  * @param str - The raw string to sanitize.
  * @returns The cleanly formatted string, or undefined if the input was not a string.
  */
-export function sanitizeMetadataString(
-  str: string | undefined,
-): string | undefined {
-  if (typeof str !== "string") return str;
+export function sanitizeMetadataString(str: string): string;
+export function sanitizeMetadataString<T>(str: T): T;
+/**
+ * Executes `sanitizeMetadataString`.
+ * @param str Parameter `str`.
+ * @returns Result of `sanitizeMetadataString`.
+ */
+export function sanitizeMetadataString(str: unknown): unknown {
+  if (typeof str !== 'string') return str;
   // Strip null terminators (\0) and ensure valid utf-8 strings for JSON serialization
   return str
-    .split("\0")
-    .join("")
-    .replace(/[\uFFFD\uFFFE\uFFFF]/g, "");
+    .split('\0')
+    .join('')
+    .replace(/[\uFFFD\uFFFE\uFFFF]/g, '');
 }
 
 /**
@@ -27,5 +35,5 @@ export function sanitizeMetadataString(
  */
 export function sanitizeFilename(name: string): string {
   // Ensure generated filenames for weights inside .mlpackage contain no illegal characters
-  return name.replace(/[^a-zA-Z0-9_\-.]/g, "_");
+  return name.replace(/[^a-zA-Z0-9_\-.]/g, '_');
 }

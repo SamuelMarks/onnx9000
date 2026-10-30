@@ -3,9 +3,9 @@
 import json
 import logging
 import struct
-from typing import Any, Union
 
 from onnx9000.core.dtypes import DType
+from onnx9000.core.exceptions import Onnx9000Error
 from onnx9000.core.ir import Constant, Graph, SparseTensor
 
 logger = logging.getLogger(__name__)
@@ -38,7 +38,9 @@ def get_byte_size(dtype: DType) -> int:
     return struct.calcsize(fmt)
 
 
-def unpack_data(data: bytes, dtype: DType) -> list[Any]:
+def unpack_data(
+    data: bytes, dtype: DType
+) -> list[int | float | str | bool | bytes | list | dict | tuple | None]:
     """Unpack raw bytes into a list of Python values based on DType."""
     if not data:
         return []
@@ -48,7 +50,9 @@ def unpack_data(data: bytes, dtype: DType) -> list[Any]:
     return list(struct.unpack(f"<{count}{fmt}", data))
 
 
-def pack_data(values: list[Any], dtype: DType) -> bytes:
+def pack_data(
+    values: list[int | float | str | bool | bytes | list | dict | tuple | None], dtype: DType
+) -> bytes:
     """Pack a list of Python values into raw bytes based on DType."""
     if not values:
         return b""
@@ -148,7 +152,9 @@ def dense_to_csr(tensor: Constant) -> SparseTensor:
         )
 
     if rows > 2**31 - 1 or cols > 2**31 - 1:
-        raise ValueError(f"Tensor dimensions {tensor.shape} exceed INT32 limits for CSR indexing.")
+        raise Onnx9000Error(
+            f"Tensor dimensions {tensor.shape} exceed INT32 limits for CSR indexing."
+        )
 
     values = unpack_data(tensor.data, tensor.dtype)
 
@@ -443,7 +449,7 @@ def sparse_to_dense(sparse_tensor: SparseTensor) -> Constant:
         total_size *= int(dim.value) if hasattr(dim, "value") else int(dim)
 
     dense_values = [0] * total_size
-    for idx, val in zip(indices, values):
+    for idx, val in zip(indices, values, strict=False):
         dense_values[idx] = val
 
     return Constant(
@@ -509,12 +515,9 @@ def profile(graph: Graph) -> dict:
                 for dim in tensor.shape:
                     total_elements *= int(dim.value) if hasattr(dim, "value") else int(dim)
 
-            theoretical_dense_size = total_elements * get_byte_size(tensor.dtype)
+            theoretical_dense_size = max(1, total_elements * get_byte_size(tensor.dtype))
             current_size = calculate_memory_usage(tensor)
-
-            sparsity = (
-                1.0 - (current_size / theoretical_dense_size) if theoretical_dense_size > 0 else 0.0
-            )
+            sparsity = 1.0 - (current_size / theoretical_dense_size)
 
             report["layers"].append(
                 {
@@ -528,7 +531,7 @@ def profile(graph: Graph) -> dict:
             report["total_dense_size"] += theoretical_dense_size
             report["total_sparse_size"] += current_size
 
-    if report["total_dense_size"] > 0:
+    if report["layers"]:
         report["overall_sparsity"] = 1.0 - (
             report["total_sparse_size"] / report["total_dense_size"]
         )
@@ -575,7 +578,7 @@ def evaluate_mse(original: Constant, pruned: Constant | SparseTensor) -> float:
     if not orig_vals:
         return 0.0
 
-    mse = sum((o - p) ** 2 for o, p in zip(orig_vals, pruned_vals)) / len(orig_vals)
+    mse = sum((o - p) ** 2 for o, p in zip(orig_vals, pruned_vals, strict=False)) / len(orig_vals)
     return float(mse)
 
 
@@ -595,10 +598,7 @@ def de_sparsify(graph: Graph) -> None:
 def convert_hf_sparse_to_onnx(graph: Graph) -> None:
     """Item 15: Support converting standard HuggingFace sparse models to ONNX native sparse models."""
     for name, tensor in list(graph.tensors.items()):
-        is_hf_sparse = False
-        if hasattr(tensor, "metadata_props"):
-            if "sparse_method" in tensor.metadata_props or "bitmask" in name:
-                is_hf_sparse = True
+        is_hf_sparse = "sparse_method" in tensor.metadata_props or "bitmask" in name
 
         if is_hf_sparse and isinstance(tensor, Constant):
             sparse_tensor = dense_to_coo(tensor)
@@ -611,10 +611,8 @@ def convert_hf_sparse_to_onnx(graph: Graph) -> None:
 
 def resolve_nm_metadata(graph: Graph) -> None:
     """Item 64: Resolve 2:4 sparse encoding metadata specifically for TensorRT / WebGPU injection."""
-    for name, tensor in graph.tensors.items():
+    for _name, tensor in graph.tensors.items():
         if isinstance(tensor, SparseTensor) and tensor.format == "NM":
-            if not hasattr(tensor, "metadata_props"):
-                tensor.metadata_props = {}
             tensor.metadata_props["sparse_encoding"] = "2:4"
             tensor.metadata_props["backend_injection"] = "tensorrt_webgpu"
 
@@ -623,16 +621,10 @@ def map_sparse_to_safetensors(graph: Graph) -> None:
     """Item 18: Support mapping sparse inputs correctly to safetensors external references."""
     for name, tensor in graph.tensors.items():
         if isinstance(tensor, SparseTensor):
-            if not hasattr(tensor, "metadata_props"):
-                tensor.metadata_props = {}
             tensor.metadata_props["safetensors_reference"] = f"sparse/{name}"
             if tensor.values:
-                if not hasattr(tensor.values, "metadata_props"):
-                    tensor.values.metadata_props = {}
                 tensor.values.metadata_props["safetensors_reference"] = f"sparse/{name}/values"
             if tensor.indices:
-                if not hasattr(tensor.indices, "metadata_props"):
-                    tensor.indices.metadata_props = {}
                 tensor.indices.metadata_props["safetensors_reference"] = f"sparse/{name}/indices"
 
 
@@ -654,23 +646,23 @@ def collapse_sparse_tensors(graph: Graph) -> None:
         tensor = graph.tensors[name]
         if isinstance(tensor, (Constant, SparseTensor)):
             is_all_zero = False
-            if isinstance(tensor, Constant) and tensor.data:
-                values = unpack_data(tensor.data, tensor.dtype)
-                if all(v == 0 for v in values):
-                    is_all_zero = True
-            elif isinstance(tensor, SparseTensor):
-                if not tensor.values or not tensor.values.data:
-                    is_all_zero = True
-                else:
-                    values = unpack_data(tensor.values.data, tensor.values.dtype)
+            if isinstance(tensor, Constant):
+                if tensor.data:
+                    values = unpack_data(tensor.data, tensor.dtype)
                     if all(v == 0 for v in values):
                         is_all_zero = True
+            elif not tensor.values or not tensor.values.data:
+                is_all_zero = True
+            else:
+                values = unpack_data(tensor.values.data, tensor.values.dtype)
+                if all(v == 0 for v in values):
+                    is_all_zero = True
 
             if is_all_zero:
                 if isinstance(tensor, Constant):
                     tensor.data = pack_data([0], tensor.dtype)
                     tensor.shape = (1,)
-                elif isinstance(tensor, SparseTensor):
+                else:
                     graph.tensors[name] = Constant(
                         name,
                         values=pack_data([0], tensor.dtype),
@@ -699,17 +691,17 @@ def analyze_topological_dead_ends(graph: Graph) -> list[str]:
     for name, tensor in graph.tensors.items():
         if isinstance(tensor, (Constant, SparseTensor)):
             is_all_zero = False
-            if isinstance(tensor, Constant) and tensor.data:
-                values = unpack_data(tensor.data, tensor.dtype)
-                if all(v == 0 for v in values):
-                    is_all_zero = True
-            elif isinstance(tensor, SparseTensor):
-                if not tensor.values or not tensor.values.data:
-                    is_all_zero = True
-                else:
-                    values = unpack_data(tensor.values.data, tensor.values.dtype)
+            if isinstance(tensor, Constant):
+                if tensor.data:
+                    values = unpack_data(tensor.data, tensor.dtype)
                     if all(v == 0 for v in values):
                         is_all_zero = True
+            elif not tensor.values or not tensor.values.data:
+                is_all_zero = True
+            else:
+                values = unpack_data(tensor.values.data, tensor.values.dtype)
+                if all(v == 0 for v in values):
+                    is_all_zero = True
             if is_all_zero:
                 dead_tensors.add(name)
 
@@ -721,9 +713,8 @@ def analyze_topological_dead_ends(graph: Graph) -> list[str]:
         if node.op_type in ["MatMul", "Conv", "Gemm"]:
             if len(node.inputs) > 1 and node.inputs[1] in dead_tensors:
                 is_dead = True
-        elif node.op_type in ["Relu", "Sigmoid", "Tanh"]:
-            if node.inputs[0] in dead_tensors:
-                is_dead = True
+        elif node.op_type in ["Relu", "Sigmoid", "Tanh"] and node.inputs[0] in dead_tensors:
+            is_dead = True
 
         if is_dead:
             dead_nodes.append(node.name)

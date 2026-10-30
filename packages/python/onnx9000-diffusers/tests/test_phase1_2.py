@@ -24,16 +24,20 @@ from onnx9000_diffusers.utils import PyTorchPCG, rand, randn
 
 
 @pytest.fixture(scope="session", autouse=True)
-def setup_dummy_model():
-    """Docstring for D103."""
+def setup_dummy_model() -> int | float | str | bool | bytes | list | dict | tuple | None:
+    """Execute setup dummy model operation."""
     os.makedirs(".cache", exist_ok=True)
     yield
     if os.path.exists(".cache"):
         shutil.rmtree(".cache")
 
 
-def test_diffusion_pipeline_phase1():
-    """Docstring for D103."""
+def test_diffusion_pipeline_phase1() -> None:
+    """Verify that diffusion pipeline phase1 behaves as expected.
+
+    Returns:
+        Result of test diffusion pipeline phase1.
+    """
     os.makedirs(".cache", exist_ok=True)
     with open(".cache/hf-internal-testing--tiny-stable-diffusion-torch_model_index.json", "w") as f:
         f.write('{"_class_name": "StableDiffusionPipeline"}')
@@ -47,13 +51,17 @@ def test_diffusion_pipeline_phase1():
 
     called_steps = []
 
-    def callback(step, timestep, latents):
+    def callback(
+        step: int | float | str | bool | bytes | list | dict | tuple | None,
+        timestep: int | float | str | bool | bytes | list | dict | tuple | None,
+        latents: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
         """Callback."""
         called_steps.append(step)
 
     pipeline.scheduler = DDIMScheduler()
 
-    async def run():
+    async def run() -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Run."""
         return await pipeline("dummy prompt", num_inference_steps=2, callback_on_step_end=callback)
 
@@ -63,13 +71,13 @@ def test_diffusion_pipeline_phase1():
     assert len(latents) == 1 * 4 * 64 * 64
 
 
-def test_pipeline_abort():
-    """Docstring for D103."""
+def test_pipeline_abort() -> None:
+    """Verify that pipeline abort behaves as expected."""
     pipeline = DiffusionPipeline({"_class_name": "Dummy"}, EulerDiscreteScheduler())
     signal = AbortSignal()
     signal.abort()
 
-    async def run():
+    async def run() -> None:
         """Run."""
         await pipeline("dummy", num_inference_steps=2, abort_signal=signal)
 
@@ -77,8 +85,8 @@ def test_pipeline_abort():
         asyncio.run(run())
 
 
-def test_schedulers_phase2():
-    """Docstring for D103."""
+def test_schedulers_phase2() -> None:
+    """Verify that schedulers phase2 behaves as expected."""
     schedulers = [
         DDIMScheduler(),
         DDPMScheduler(),
@@ -104,8 +112,8 @@ def test_schedulers_phase2():
         assert len(prev) == 3
 
 
-def test_utils_prng():
-    """Docstring for D103."""
+def test_utils_prng() -> None:
+    """Verify that utils prng behaves as expected."""
     gen1 = PyTorchPCG(123)
     gen2 = PyTorchPCG(123)
 

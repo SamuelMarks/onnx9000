@@ -4,10 +4,11 @@ Provides tracing and PyTorch-like interfaces to define and capture
 computation graphs from native Python execution.
 """
 
-from typing import Any, Optional
+from typing import Optional
 
 import numpy as np
 from onnx9000.core.dtypes import DType
+from onnx9000.core.exceptions import ConversionError, Onnx9000Error
 
 
 class Node:
@@ -16,9 +17,10 @@ class Node:
     def __init__(
         self,
         op_type: str,
-        inputs: list[Any],
-        outputs: list[Any],
-        attributes: dict[str, Any] | None = None,
+        inputs: list[int | float | str | bool | bytes | list | dict | tuple | None],
+        outputs: list[int | float | str | bool | bytes | list | dict | tuple | None],
+        attributes: dict[str, int | float | str | bool | bytes | list | dict | tuple | None]
+        | None = None,
         name: str | None = None,
         domain: str = "",
     ) -> None:
@@ -42,7 +44,7 @@ class Tensor:
         dtype: DType | None = None,
         name: str | None = None,
         domain: str = "",
-        data: Any | None = None,
+        data: int | float | str | bool | bytes | list | dict | tuple | None | None = None,
         is_buffer: bool = False,
     ) -> None:
         """Initialize the frontend builder or trace context."""
@@ -51,7 +53,22 @@ class Tensor:
             if not isinstance(data, np.ndarray):
                 try:
                     data = np.asarray(data)
-                except Exception:
+                except (
+                    Onnx9000Error,
+                    OSError,
+                    ValueError,
+                    TypeError,
+                    RuntimeError,
+                    KeyError,
+                    IndexError,
+                    AttributeError,
+                    ImportError,
+                    LookupError,
+                    ArithmeticError,
+                    BufferError,
+                    AssertionError,
+                    StopIteration,
+                ):
                     data = None
             if isinstance(data, np.ndarray):
                 if shape is None:
@@ -100,58 +117,85 @@ class Tensor:
         """Return a string representation of the tensor, including its name, shape, and dtype."""
         return f"Tensor(name={self.name}, shape={self.shape}, dtype={self.dtype})"
 
-    def _op(self, op_type: str, *args, **kwargs) -> Any:
+    def _op(
+        self,
+        op_type: str,
+        *args: int | float | str | bool | bytes | list | dict | tuple | None,
+        **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Apply a unary or binary operation to the tensor, generating a new tensor."""
         from onnx9000.converters.frontend.utils import record_op
 
-        inputs = [self] + list(args)
+        inputs = [self, *list(args)]
         return record_op(op_type, inputs, attributes=kwargs)
 
-    def __add__(self, other: Any) -> "Tensor":
+    def __add__(
+        self, other: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> "Tensor":
         """Perform element-wise addition with another tensor or scalar."""
         return self._op("Add", other)
 
-    def __radd__(self, other: Any) -> "Tensor":
+    def __radd__(
+        self, other: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> "Tensor":
         """Perform element-wise addition with another tensor or scalar (right-sided)."""
         return self._op("Add", other)
 
-    def __sub__(self, other: Any) -> "Tensor":
+    def __sub__(
+        self, other: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> "Tensor":
         """Perform element-wise subtraction with another tensor or scalar."""
         return self._op("Sub", other)
 
-    def __rsub__(self, other: Any) -> "Tensor":
+    def __rsub__(
+        self, other: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> "Tensor":
         """Perform element-wise subtraction with another tensor or scalar (right-sided)."""
         from onnx9000.converters.frontend.utils import record_op
 
         return record_op("Sub", [other, self])
 
-    def __mul__(self, other: Any) -> "Tensor":
+    def __mul__(
+        self, other: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> "Tensor":
         """Perform element-wise multiplication with another tensor or scalar."""
         return self._op("Mul", other)
 
-    def __matmul__(self, other: Any) -> "Tensor":
+    def __matmul__(
+        self, other: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> "Tensor":
         """Perform matrix multiplication with another tensor."""
         return self._op("MatMul", other)
 
-    def __rmul__(self, other: Any) -> "Tensor":
+    def __rmul__(
+        self, other: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> "Tensor":
         """Perform element-wise multiplication with another tensor or scalar (right-sided)."""
         return self._op("Mul", other)
 
-    def __truediv__(self, other: Any) -> "Tensor":
+    def __truediv__(
+        self, other: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> "Tensor":
         """Perform element-wise true division with another tensor or scalar."""
         return self._op("Div", other)
 
-    def __rtruediv__(self, other: Any) -> "Tensor":
+    def __rtruediv__(
+        self, other: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> "Tensor":
         """Perform element-wise true division with another tensor or scalar (right-sided)."""
         from onnx9000.converters.frontend.utils import record_op
 
         return record_op("Div", [other, self])
 
-    def __pow__(self, other: Any) -> "Tensor":
+    def __pow__(
+        self, other: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> "Tensor":
         """Raise the tensor to the power of another tensor or scalar."""
         return self._op("Pow", other)
 
-    def __mod__(self, other: Any) -> "Tensor":
+    def __mod__(
+        self, other: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> "Tensor":
         """Perform element-wise modulo with another tensor or scalar."""
         return self._op("Mod", other)
 
@@ -163,27 +207,39 @@ class Tensor:
         """Return the element-wise absolute value of the tensor."""
         return self._op("Abs")
 
-    def __getitem__(self, idx: Any) -> "Tensor":
+    def __getitem__(
+        self, idx: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> "Tensor":
         """Return a slice or element of the tensor based on the provided index."""
         return self._op("Gather", idx)
 
-    def __setitem__(self, idx: Any, value: Any) -> None:
+    def __setitem__(
+        self,
+        idx: int | float | str | bool | bytes | list | dict | tuple | None,
+        value: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
         """Implement the __setitem__ operation for the tensor."""
         self._op("ScatterND", value, indices=idx)
 
     def __bool__(self) -> bool:
         """Implement the __bool__ operation for the tensor."""
-        raise RuntimeError("Data-dependent control flow is not supported")
+        raise ConversionError("Data-dependent control flow is not supported")
 
-    def __and__(self, other: Any) -> "Tensor":
+    def __and__(
+        self, other: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> "Tensor":
         """Implement the __and__ operation for the tensor."""
         return self._op("And", other)
 
-    def __or__(self, other: Any) -> "Tensor":
+    def __or__(
+        self, other: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> "Tensor":
         """Implement the __or__ operation for the tensor."""
         return self._op("Or", other)
 
-    def __xor__(self, other: Any) -> "Tensor":
+    def __xor__(
+        self, other: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> "Tensor":
         """Implement the __xor__ operation for the tensor."""
         return self._op("Xor", other)
 
@@ -191,47 +247,79 @@ class Tensor:
         """Implement the __invert__ operation for the tensor."""
         return self._op("Not")
 
-    def __eq__(self, other: Any) -> "Tensor":
+    def __eq__(
+        self, other: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> "Tensor":
         """Return a boolean tensor containing element-wise equality."""
         return self._op("Equal", other)
 
-    def __ne__(self, other: Any) -> "Tensor":
+    def __ne__(
+        self, other: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> "Tensor":
         """Return a boolean tensor containing element-wise inequality."""
         return self._op("Not", self._op("Equal", other))
 
-    def __lt__(self, other: Any) -> "Tensor":
+    def __lt__(
+        self, other: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> "Tensor":
         """Return a boolean tensor indicating if elements are strictly less than another."""
         return self._op("Less", other)
 
-    def __le__(self, other: Any) -> "Tensor":
+    def __le__(
+        self, other: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> "Tensor":
         """Return a boolean tensor indicating if elements are less than or equal to another."""
         return self._op("LessOrEqual", other)
 
-    def __gt__(self, other: Any) -> "Tensor":
+    def __gt__(
+        self, other: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> "Tensor":
         """Return a boolean tensor indicating if elements are strictly greater than another."""
         return self._op("Greater", other)
 
-    def __ge__(self, other: Any) -> "Tensor":
+    def __ge__(
+        self, other: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> "Tensor":
         """Return a boolean tensor indicating if elements are greater than or equal to another."""
         return self._op("GreaterOrEqual", other)
 
-    def sum(self, dim=None, keepdim=False) -> "Tensor":
+    def sum(
+        self,
+        dim: int | float | str | bool | bytes | list | dict | tuple | None = None,
+        keepdim: int | float | str | bool | bytes | list | dict | tuple | None = False,
+    ) -> "Tensor":
         """Return the sum of all elements in the tensor, or along a specified dimension."""
         return self._op("ReduceSum", axes=dim, keepdims=keepdim)
 
-    def mean(self, dim=None, keepdim=False) -> "Tensor":
+    def mean(
+        self,
+        dim: int | float | str | bool | bytes | list | dict | tuple | None = None,
+        keepdim: int | float | str | bool | bytes | list | dict | tuple | None = False,
+    ) -> "Tensor":
         """Return the mean of all elements in the tensor, or along a specified dimension."""
         return self._op("ReduceMean", axes=dim, keepdims=keepdim)
 
-    def max(self, dim=None, keepdim=False) -> "Tensor":
+    def max(
+        self,
+        dim: int | float | str | bool | bytes | list | dict | tuple | None = None,
+        keepdim: int | float | str | bool | bytes | list | dict | tuple | None = False,
+    ) -> "Tensor":
         """Return the maximum value of all elements in the tensor, or along a specified dimension."""
         return self._op("ReduceMax", axes=dim, keepdims=keepdim)
 
-    def min(self, dim=None, keepdim=False) -> "Tensor":
+    def min(
+        self,
+        dim: int | float | str | bool | bytes | list | dict | tuple | None = None,
+        keepdim: int | float | str | bool | bytes | list | dict | tuple | None = False,
+    ) -> "Tensor":
         """Return the minimum value of all elements in the tensor, or along a specified dimension."""
         return self._op("ReduceMin", axes=dim, keepdims=keepdim)
 
-    def transpose(self, dim0, dim1) -> "Tensor":
+    def transpose(
+        self,
+        dim0: int | float | str | bool | bytes | list | dict | tuple | None,
+        dim1: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> "Tensor":
         """Transposes the tensor by swapping two specified dimensions."""
         ndim = len(self.shape)
         if ndim == 0:
@@ -243,31 +331,47 @@ class Tensor:
             (perm[dim0], perm[dim1]) = (perm[dim1], perm[dim0])
         return self._op("Transpose", perm=perm)
 
-    def reshape(self, shape) -> "Tensor":
+    def reshape(
+        self, shape: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> "Tensor":
         """Return a new tensor with the same data but a different shape."""
         return self._op("Reshape", shape)
 
-    def view(self, *shape) -> "Tensor":
+    def view(
+        self, *shape: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> "Tensor":
         """Return a new view of the tensor with a different shape. Semantically similar to reshape."""
         return self.reshape(shape)
 
-    def squeeze(self, dim=None) -> "Tensor":
+    def squeeze(
+        self, dim: int | float | str | bool | bytes | list | dict | tuple | None = None
+    ) -> "Tensor":
         """Return a tensor with all dimensions of size 1 removed, or a specific dimension removed."""
         return self._op("Squeeze", axes=dim)
 
-    def unsqueeze(self, dim) -> "Tensor":
+    def unsqueeze(
+        self, dim: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> "Tensor":
         """Return a new tensor with a dimension of size one inserted at the specified position."""
         return self._op("Unsqueeze", axes=dim)
 
-    def flatten(self, start_dim=0, end_dim=-1) -> "Tensor":
+    def flatten(
+        self,
+        start_dim: int | float | str | bool | bytes | list | dict | tuple | None = 0,
+        end_dim: int | float | str | bool | bytes | list | dict | tuple | None = -1,
+    ) -> "Tensor":
         """Flattens the tensor into a 1D tensor."""
         return self._op("Flatten", axis=start_dim)
 
-    def expand(self, *sizes) -> "Tensor":
+    def expand(
+        self, *sizes: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> "Tensor":
         """Implement the expand operation for the tensor."""
         return self._op("Expand", sizes)
 
-    def broadcast_to(self, shape) -> "Tensor":
+    def broadcast_to(
+        self, shape: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> "Tensor":
         """Implement the broadcast_to operation for the tensor."""
         return self.expand(*shape)
 
@@ -275,11 +379,17 @@ class Tensor:
         """Return a contiguous in memory tensor containing the same data."""
         return self
 
-    def type(self, dtype) -> "Tensor":
+    def type(
+        self, dtype: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> "Tensor":
         """Implement the type operation for the tensor."""
         return self._op("Cast", to=dtype)
 
-    def to(self, *args, **kwargs) -> "Tensor":
+    def to(
+        self,
+        *args: int | float | str | bool | bytes | list | dict | tuple | None,
+        **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> "Tensor":
         """Perform Tensor dtype and/or device conversion."""
         return self
 
@@ -343,19 +453,33 @@ class Tensor:
         """Return a new tensor with the Gaussian Error Linear Unit (GELU) applied to the elements."""
         return self._op("Gelu")
 
-    def softmax(self, dim=None) -> "Tensor":
+    def softmax(
+        self, dim: int | float | str | bool | bytes | list | dict | tuple | None = None
+    ) -> "Tensor":
         """Apply the softmax function to an n-dimensional input tensor along a specified dimension."""
         return self._op("Softmax", axis=dim)
 
-    def log_softmax(self, dim=None) -> "Tensor":
+    def log_softmax(
+        self, dim: int | float | str | bool | bytes | list | dict | tuple | None = None
+    ) -> "Tensor":
         """Apply the log-softmax function to an n-dimensional input tensor along a specified dimension."""
         return self._op("LogSoftmax", axis=dim)
 
-    def where(self, condition, y) -> "Tensor":
+    def where(
+        self,
+        condition: int | float | str | bool | bytes | list | dict | tuple | None,
+        y: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> "Tensor":
         """Implement the where operation for the tensor."""
         return self._op("Where", condition, y)
 
-    def clip(self, min=None, max=None, min_val=None, max_val=None) -> "Tensor":
+    def clip(
+        self,
+        min: int | float | str | bool | bytes | list | dict | tuple | None = None,
+        max: int | float | str | bool | bytes | list | dict | tuple | None = None,
+        min_val: int | float | str | bool | bytes | list | dict | tuple | None = None,
+        max_val: int | float | str | bool | bytes | list | dict | tuple | None = None,
+    ) -> "Tensor":
         """Implement the clip operation for the tensor."""
         return self._op(
             "Clip",
@@ -363,27 +487,52 @@ class Tensor:
             max if max is not None else max_val,
         )
 
-    def clamp(self, min=None, max=None, min_val=None, max_val=None) -> "Tensor":
+    def clamp(
+        self,
+        min: int | float | str | bool | bytes | list | dict | tuple | None = None,
+        max: int | float | str | bool | bytes | list | dict | tuple | None = None,
+        min_val: int | float | str | bool | bytes | list | dict | tuple | None = None,
+        max_val: int | float | str | bool | bytes | list | dict | tuple | None = None,
+    ) -> "Tensor":
         """Implement the clamp operation for the tensor."""
         return self.clip(min if min is not None else min_val, max if max is not None else max_val)
 
-    def argmax(self, dim=None, keepdim=False) -> "Tensor":
+    def argmax(
+        self,
+        dim: int | float | str | bool | bytes | list | dict | tuple | None = None,
+        keepdim: int | float | str | bool | bytes | list | dict | tuple | None = False,
+    ) -> "Tensor":
         """Return the indices of the maximum values along an axis."""
         return self._op("ArgMax", axis=dim, keepdims=keepdim)
 
-    def argmin(self, dim=None, keepdim=False) -> "Tensor":
+    def argmin(
+        self,
+        dim: int | float | str | bool | bytes | list | dict | tuple | None = None,
+        keepdim: int | float | str | bool | bytes | list | dict | tuple | None = False,
+    ) -> "Tensor":
         """Return the indices of the minimum values along an axis."""
         return self._op("ArgMin", axis=dim, keepdims=keepdim)
 
-    def gather(self, dim, index) -> "Tensor":
+    def gather(
+        self,
+        dim: int | float | str | bool | bytes | list | dict | tuple | None,
+        index: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> "Tensor":
         """Implement the gather operation for the tensor."""
         return self._op("Gather", index, axis=dim)
 
-    def scatter(self, dim, index, src) -> "Tensor":
+    def scatter(
+        self,
+        dim: int | float | str | bool | bytes | list | dict | tuple | None,
+        index: int | float | str | bool | bytes | list | dict | tuple | None,
+        src: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> "Tensor":
         """Implement the scatter operation for the tensor."""
         return self._op("Scatter", index, src, axis=dim)
 
-    def masked_select(self, mask) -> "Tensor":
+    def masked_select(
+        self, mask: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> "Tensor":
         """Implement the masked_select operation for the tensor."""
         return self._op("MaskedSelect", mask)
 
@@ -391,7 +540,7 @@ class Tensor:
         """Implement the nonzero operation for the tensor."""
         return self._op("NonZero")
 
-    def item(self) -> Any:
+    def item(self) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Return the value of this tensor as a standard Python number. This only works for tensors with one element."""
         return self.data.item() if self.data is not None else None
 
@@ -403,7 +552,9 @@ class Tensor:
         """Return the tensor as a NumPy array."""
         return self.data if self.data is not None else None
 
-    def requires_grad_(self, requires_grad=True) -> "Tensor":
+    def requires_grad_(
+        self, requires_grad: int | float | str | bool | bytes | list | dict | tuple | None = True
+    ) -> "Tensor":
         """Implement the requires_grad operation for the tensor."""
         return self
 
@@ -439,7 +590,11 @@ class Tensor:
 class Parameter(Tensor):
     """Subclass of Tensor denoting trainable weights or fixed initializers."""
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(
+        self,
+        *args: int | float | str | bool | bytes | list | dict | tuple | None,
+        **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
         """Initialize Parameter."""
         super().__init__(*args, **kwargs)
         self.requires_grad = kwargs.get("requires_grad", True)

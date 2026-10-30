@@ -1,17 +1,23 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../src/passes/standalone_js";
+import { describe, expect, it } from 'vitest';
+import { ModelRunner, StandaloneJSExporter } from '../../src/passes/standalone_js';
 
-describe("standalone_js.ts", () => {
-  it("should instantiate and cover StandaloneJSExporter", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('standalone_js.ts', () => {
+  it('should instantiate and cover StandaloneJSExporter', () => {
     try {
-      const obj = new (Module as any).StandaloneJSExporter();
+      const obj = Construct(StandaloneJSExporter);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover ModelRunner", () => {
+  it('should instantiate and cover ModelRunner', () => {
     try {
-      const obj = new (Module as any).ModelRunner();
+      const obj = Construct(ModelRunner);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

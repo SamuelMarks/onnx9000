@@ -3,47 +3,70 @@
  * Provides index functionality for the transformers package.
  */
 export interface TokenizerConfig {
-  padding?: boolean | "max_length" | "longest";
-  truncation?: boolean | "only_first" | "only_second" | "longest_first";
+  /** Property `padding`. */
+  padding?: boolean | 'max_length' | 'longest';
+  /** Property `truncation`. */
+  truncation?: boolean | 'only_first' | 'only_second' | 'longest_first';
+  /** Property `max_length`. */
   max_length?: number;
+  /** Property `stride`. */
   stride?: number;
+  /** Property `return_tensors`. */
   return_tensors?: string;
+  /** Property `return_attention_mask`. */
   return_attention_mask?: boolean;
+  /** Property `return_token_type_ids`. */
   return_token_type_ids?: boolean;
+  /** Property `return_overflowing_tokens`. */
   return_overflowing_tokens?: boolean;
+  /** Property `return_special_tokens_mask`. */
   return_special_tokens_mask?: boolean;
+  /** Property `return_offsets_mapping`. */
   return_offsets_mapping?: boolean;
+  /** Property `bos_token`. */
   bos_token?: string;
+  /** Property `eos_token`. */
   eos_token?: string;
+  /** Property `unk_token`. */
   unk_token?: string;
+  /** Property `sep_token`. */
   sep_token?: string;
+  /** Property `pad_token`. */
   pad_token?: string;
+  /** Property `cls_token`. */
   cls_token?: string;
+  /** Property `mask_token`. */
   mask_token?: string;
   [key: string]: ReturnType<typeof JSON.parse>;
 }
 
+/** Represents the `PreTrainedTokenizer` class. */
 export class PreTrainedTokenizer {
+  /** Property `config` of `PreTrainedTokenizer`. */
   config: TokenizerConfig;
 
+  /**
+   * Initializes a new `PreTrainedTokenizer` instance.
+   * @param config Parameter `config`.
+   */
   constructor(config: TokenizerConfig = {}) {
     this.config = config;
   }
 
-  encode(
-    text: string | string[],
-    options: TokenizerConfig = {},
-  ): ReturnType<typeof JSON.parse> {
+  /**
+   * Executes `encode` on `PreTrainedTokenizer`.
+   * @param text Parameter `text`.
+   * @param options Parameter `options`.
+   * @returns Result of `encode`.
+   */
+  encode(text: string | string[], options: TokenizerConfig = {}): ReturnType<typeof JSON.parse> {
     // Handle options
     const padding = options.padding ?? this.config.padding;
     const truncation = options.truncation ?? this.config.truncation;
     const max_length = options.max_length ?? this.config.max_length;
-    const _return_tensors =
-      options.return_tensors ?? this.config.return_tensors;
+    const _return_tensors = options.return_tensors ?? this.config.return_tensors;
     const return_attention_mask =
-      options.return_attention_mask ??
-      this.config.return_attention_mask ??
-      true;
+      options.return_attention_mask ?? this.config.return_attention_mask ?? true;
 
     const texts = Array.isArray(text) ? text : [text];
     const input_ids = texts.map((t) => this._encode_single(t));
@@ -56,7 +79,7 @@ export class PreTrainedTokenizer {
       attention_mask = attention_mask.map((arr) => arr.slice(0, max_length));
     }
 
-    if (padding === "max_length" && max_length) {
+    if (padding === 'max_length' && max_length) {
       padded_ids = padded_ids.map((arr) => {
         const padLen = Math.max(0, max_length - arr.length);
         return [...arr, ...Array(padLen).fill(0)];
@@ -71,86 +94,143 @@ export class PreTrainedTokenizer {
       input_ids: Array.isArray(text) ? padded_ids : padded_ids[0],
     };
     if (return_attention_mask) {
-      result.attention_mask = Array.isArray(text)
-        ? attention_mask
-        : attention_mask[0];
+      result.attention_mask = Array.isArray(text) ? attention_mask : attention_mask[0];
     }
     return result;
   }
 
+  /**
+   * Executes `_encode_single` on `PreTrainedTokenizer`.
+   * @param text Parameter `text`.
+   * @returns Result of `_encode_single`.
+   */
   _encode_single(text: string): number[] {
-    return text.split("").map((c) => c.charCodeAt(0));
+    return text.split('').map((c) => c.charCodeAt(0));
   }
 
+  /**
+   * Executes `decode` on `PreTrainedTokenizer`.
+   * @param ids Parameter `ids`.
+   * @param options Parameter `options`.
+   * @returns Result of `decode`.
+   */
   decode(ids: number[], options: ReturnType<typeof JSON.parse> = {}): string {
-    const { skip_special_tokens = false, clean_up_tokenization_spaces = true } =
+    const { skip_special_tokens: _skip = false, clean_up_tokenization_spaces: _clean = true } =
       options;
-    return ids.map((id) => String.fromCharCode(id)).join("");
+    return ids.map((id) => String.fromCharCode(id)).join('');
   }
 
-  batch_decode(
-    batch_ids: number[][],
-    options: ReturnType<typeof JSON.parse> = {},
-  ): string[] {
+  /**
+   * Executes `batch_decode` on `PreTrainedTokenizer`.
+   * @param batch_ids Parameter `batch_ids`.
+   * @param options Parameter `options`.
+   * @returns Result of `batch_decode`.
+   */
+  batch_decode(batch_ids: number[][], options: ReturnType<typeof JSON.parse> = {}): string[] {
     return batch_ids.map((ids) => this.decode(ids, options));
   }
 }
 
+/** Represents the `PreTrainedTokenizerFast` class. */
 export class PreTrainedTokenizerFast extends PreTrainedTokenizer {
+  /** Property `tokenizerJson` of `PreTrainedTokenizerFast`. */
   tokenizerJson: ReturnType<typeof JSON.parse>;
 
-  constructor(
-    tokenizerJson: ReturnType<typeof JSON.parse>,
-    config: TokenizerConfig = {},
-  ) {
+  /**
+   * Initializes a new `PreTrainedTokenizerFast` instance.
+   * @param tokenizerJson Parameter `tokenizerJson`.
+   * @param config Parameter `config`.
+   */
+  constructor(tokenizerJson: ReturnType<typeof JSON.parse>, config: TokenizerConfig = {}) {
     super(config);
     this.tokenizerJson = tokenizerJson;
   }
 
+  /**
+   * Executes `_encode_single` on `PreTrainedTokenizerFast`.
+   * @param text Parameter `text`.
+   * @returns Result of `_encode_single`.
+   */
   override _encode_single(text: string): number[] {
-    if (this.tokenizerJson?.model?.type === "BPE") {
+    if (this.tokenizerJson?.model?.type === 'BPE') {
       return this.wasmBpe(text);
-    } else if (this.tokenizerJson?.model?.type === "WordPiece") {
+    } else if (this.tokenizerJson?.model?.type === 'WordPiece') {
       return this.wasmWordPiece(text);
-    } else if (this.tokenizerJson?.model?.type === "Unigram") {
+    } else if (this.tokenizerJson?.model?.type === 'Unigram') {
       return this.wasmUnigram(text);
     }
     return super._encode_single(text);
   }
 
+  /**
+   * Executes `wasmBpe` on `PreTrainedTokenizerFast`.
+   * @param text Parameter `text`.
+   * @returns Result of `wasmBpe`.
+   */
   wasmBpe(text: string): number[] {
-    return text.split("").map((c) => c.charCodeAt(0) + 100);
+    return text.split('').map((c) => c.charCodeAt(0) + 100);
   }
 
+  /**
+   * Executes `wasmWordPiece` on `PreTrainedTokenizerFast`.
+   * @param text Parameter `text`.
+   * @returns Result of `wasmWordPiece`.
+   */
   wasmWordPiece(text: string): number[] {
-    return text.split("").map((c) => c.charCodeAt(0) + 200);
+    return text.split('').map((c) => c.charCodeAt(0) + 200);
   }
 
+  /**
+   * Executes `wasmUnigram` on `PreTrainedTokenizerFast`.
+   * @param text Parameter `text`.
+   * @returns Result of `wasmUnigram`.
+   */
   wasmUnigram(text: string): number[] {
-    return text.split("").map((c) => c.charCodeAt(0) + 300);
+    return text.split('').map((c) => c.charCodeAt(0) + 300);
   }
 
+  /**
+   * Executes `word_ids` on `PreTrainedTokenizerFast`.
+   * @param _batch_index Parameter `_batch_index`.
+   * @returns Result of `word_ids`.
+   */
   word_ids(_batch_index: number = 0): number[] {
     return [];
   }
+  /**
+   * Executes `char_to_token` on `PreTrainedTokenizerFast`.
+   * @param _char_index Parameter `_char_index`.
+   * @param _batch_index Parameter `_batch_index`.
+   * @returns Result of `char_to_token`.
+   */
   char_to_token(_char_index: number, _batch_index: number = 0): number {
     return 0;
   }
-  token_to_chars(
-    _token_index: number,
-    _batch_index: number = 0,
-  ): [number, number] {
+  /**
+   * Executes `token_to_chars` on `PreTrainedTokenizerFast`.
+   * @param _token_index Parameter `_token_index`.
+   * @param _batch_index Parameter `_batch_index`.
+   * @returns Result of `token_to_chars`.
+   */
+  token_to_chars(_token_index: number, _batch_index: number = 0): [number, number] {
     return [0, 0];
   }
 }
 
+/** Represents the `AutoTokenizer` class. */
 export class AutoTokenizer {
+  /**
+   * Executes `fromPretrained` on `AutoTokenizer`.
+   * @param _modelId Parameter `_modelId`.
+   * @param _options Parameter `_options`.
+   * @returns Result of `fromPretrained`.
+   */
   static async fromPretrained(
     _modelId: string,
     _options: ReturnType<typeof JSON.parse> = {},
   ): Promise<ReturnType<typeof JSON.parse>> {
     const config = { padding: false, truncation: false };
-    const tokenizerJson = { model: { type: "BPE" } };
+    const tokenizerJson = { model: { type: 'BPE' } };
     const tok = new PreTrainedTokenizerFast(tokenizerJson, config);
     // Bind old stub methods for tests
     (tok as ReturnType<typeof JSON.parse>).encode_old = tok.encode;
@@ -159,7 +239,7 @@ export class AutoTokenizer {
       text: string | string[],
       opts: ReturnType<typeof JSON.parse> = {},
     ): ReturnType<typeof JSON.parse> {
-      if (typeof text === "string" && !opts.return_tensors) {
+      if (typeof text === 'string' && !opts.return_tensors) {
         // legacy signature
         if (!text) return [];
         return text.split(/\s+/).map((w) => w.charCodeAt(0));
@@ -174,8 +254,8 @@ export class AutoTokenizer {
       opts: ReturnType<typeof JSON.parse> = {},
     ): string {
       if (!opts.skip_special_tokens && !opts.clean_up_tokenization_spaces) {
-        if (!tokens || tokens.length === 0) return "";
-        return tokens.map((t) => String.fromCharCode(t)).join(" ");
+        if (!tokens || tokens.length === 0) return '';
+        return tokens.map((t) => String.fromCharCode(t)).join(' ');
       }
       return this.decode_old(tokens, opts);
     }.bind(tok) as ReturnType<typeof JSON.parse>;
@@ -184,10 +264,18 @@ export class AutoTokenizer {
   }
 }
 
+/** Represents the `BPEEncoder` class. */
 export class BPEEncoder {
+  /** Property `vocab` of `BPEEncoder`. */
   public vocab: Record<string, number>;
+  /** Property `merges` of `BPEEncoder`. */
   public merges: Map<string, number>;
 
+  /**
+   * Initializes a new `BPEEncoder` instance.
+   * @param vocab Parameter `vocab`.
+   * @param merges Parameter `merges`.
+   */
   constructor(vocab: Record<string, number>, merges: [string, string][]) {
     this.vocab = vocab;
     this.merges = new Map();
@@ -197,8 +285,13 @@ export class BPEEncoder {
     }
   }
 
+  /**
+   * Executes `encode` on `BPEEncoder`.
+   * @param text Parameter `text`.
+   * @returns Result of `encode`.
+   */
   encode(text: string): number[] {
-    const chars = text.split("");
+    const chars = text.split('');
     const out = [];
     for (const c of chars) {
       if (this.vocab[c] !== undefined) {

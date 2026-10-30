@@ -1,20 +1,54 @@
-"""Mae."""
+"""Masked Autoencoder (MAE) with a Vision Transformer (ViT) backbone.
 
-from typing import Any
+This module implements a Masked Autoencoder (MAE) architecture using a Vision Transformer
+backbone. It includes the encoder, decoder, and specialized utility functions for param
+initialization, patching, masking, and feature reconstruction for self-supervised learning
+on vision tasks.
+"""
 
 from onnx9000.core.ir import Tensor, Variable
 from onnx9000.core.models.vit import Block, PatchEmbed
-from onnx9000.core.ops import add, concat, flatten, gather, reshape, scatter_nd
-from onnx9000.core.primitives import ConvND, Gemm, LayerNormalization
+from onnx9000.core.ops import add, concat, gather, scatter_nd
+from onnx9000.core.primitives import Gemm, LayerNormalization
 
 
 def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:
-    """Get param."""
+    """Get or create a parameter Variable with the specified shape and data type.
+
+    Args:
+        name (str): The unique identifier name for the parameter.
+        shape (list[int]): The shape/dimensions of the parameter tensor.
+        dtype (int, optional): The ONNX data type code of the parameter. Defaults to 1 (float32).
+
+    Returns:
+        Variable: An initialized Variable object representing the parameter.
+
+    """
     return Variable(name=name, shape=shape, dtype=dtype)
 
 
 class MaskedAutoencoderViT:
-    """Masked Autoencoder with VisionTransformer backbone."""
+    """Masked Autoencoder with a Vision Transformer (ViT) backbone.
+
+    This class implements the full Masked Autoencoder (MAE) model. It supports patch
+    embedding of input images, masking a subset of patches, encoding the unmasked patches,
+    and reconstructing the original patches using a lightweight decoder.
+
+    Attributes:
+        img_size (int): The height and width of the input square image.
+        patch_size (int): The height and width of each square patch.
+        num_patches (int): The total number of patches in an image.
+        embed_dim (int): The channel/embedding dimension of the encoder transformer.
+        decoder_embed_dim (int): The channel/embedding dimension of the decoder transformer.
+        patch_embed (PatchEmbed): The module that embeds image patches.
+        blocks (list[Block]): The sequence of transformer blocks for the encoder.
+        norm (LayerNormalization): The normalization layer for the encoder.
+        decoder_embed (Gemm): The projection layer from encoder dimension to decoder dimension.
+        decoder_blocks (list[Block]): The sequence of transformer blocks for the decoder.
+        decoder_norm (LayerNormalization): The normalization layer for the decoder.
+        decoder_pred (Gemm): The projection layer from decoder dimension to the original pixel space.
+
+    """
 
     def __init__(
         self,
@@ -28,9 +62,32 @@ class MaskedAutoencoderViT:
         decoder_depth: int = 8,
         decoder_num_heads: int = 16,
         mlp_ratio: float = 4.0,
-        norm_layer: Any = LayerNormalization,
-    ):
-        """Init."""
+        norm_layer: int
+        | float
+        | str
+        | bool
+        | bytes
+        | list
+        | dict
+        | tuple
+        | None = LayerNormalization,
+    ) -> None:
+        """Initializes the Masked Autoencoder with Vision Transformer (MAE-ViT) model.
+
+        Args:
+            img_size (int): Height and width of the input image. Defaults to 224.
+            patch_size (int): Size of each square patch. Defaults to 16.
+            in_chans (int): Number of input image channels. Defaults to 3.
+            embed_dim (int): Embedding dimension of the encoder. Defaults to 1024.
+            depth (int): Depth (number of layers) of the encoder transformer. Defaults to 24.
+            num_heads (int): Number of attention heads in the encoder. Defaults to 16.
+            decoder_embed_dim (int): Embedding dimension of the decoder. Defaults to 512.
+            decoder_depth (int): Depth (number of layers) of the decoder. Defaults to 8.
+            decoder_num_heads (int): Number of attention heads in the decoder. Defaults to 16.
+            mlp_ratio (float): Ratio of MLP hidden dim to embedding dim. Defaults to 4.0.
+            norm_layer (Union[int, float, str, bool, bytes, list, dict, tuple, None]): Normalization layer class. Defaults to LayerNormalization.
+
+        """
         self.img_size = img_size
         self.patch_size = patch_size
         self.num_patches = (img_size // patch_size) ** 2
@@ -64,8 +121,24 @@ class MaskedAutoencoderViT:
         self.decoder_pred = Gemm(trans_b=1)
 
     def forward_encoder(self, x: Tensor, mask_indices: Tensor) -> tuple[Tensor, Tensor]:
+        """Runs the encoder forward pass of the MAE.
+
+        This method projects the input image to patches, adds the positional embeddings,
+        gathers only the unmasked patches according to the mask indices, prepends the
+        class (CLS) token with its positional embedding, and runs the sequence through the
+        encoder transformer blocks and normalization layer.
+
+        Args:
+            x (Tensor): Input image tensor of shape [B, C, H, W].
+            mask_indices (Tensor): Indices of the unmasked/kept patches to keep, of shape [B, kept_len].
+
+        Returns:
+            tuple[Tensor, Tensor]: A tuple containing:
+                - Tensor: The encoded latent representations of shape [B, 1 + kept_len, embed_dim].
+                - Tensor: The original mask indices propagated forward.
+
+        """
         # Embed patches
-        """Forward encoder."""
         x = self.patch_embed(x)
 
         # Add pos embed w/o cls token
@@ -108,8 +181,23 @@ class MaskedAutoencoderViT:
         return x, mask_indices
 
     def forward_decoder(self, x: Tensor, mask_indices: Tensor) -> Tensor:
+        """Runs the decoder forward pass of the MAE.
+
+        This method projects the latent representation back to the decoder embedding dimension,
+        scatters the kept patches and the placeholder mask tokens back to their original sequence positions
+        (unmasking the sequence), appends the class token, adds the decoder positional embeddings,
+        passes the full sequence through the decoder transformer blocks, and finally projects the features
+        to predict the original pixel values of the patches.
+
+        Args:
+            x (Tensor): Latent representation tensor from the encoder of shape [B, 1 + kept_len, embed_dim].
+            mask_indices (Tensor): Indices of the kept/unmasked patches of shape [B, kept_len] used to scatter the tokens.
+
+        Returns:
+            Tensor: Predicted patch pixel values of shape [B, num_patches, patch_size**2 * 3].
+
+        """
         # Embed tokens
-        """Forward decoder."""
         x = self.decoder_embed(
             x,
             get_param("decoder_embed.weight", [self.decoder_embed_dim, self.embed_dim]),
@@ -172,14 +260,37 @@ class MaskedAutoencoderViT:
         return x
 
     def __call__(self, x: Tensor, mask_indices: Tensor) -> Tensor:
-        """Call."""
+        """Executes the full forward pass of the MAE (encoding followed by decoding).
+
+        Args:
+            x (Tensor): Input image tensor of shape [B, C, H, W].
+            mask_indices (Tensor): Indices of the kept/unmasked patches of shape [B, kept_len].
+
+        Returns:
+            Tensor: Reconstructed patch pixel predictions of shape [B, num_patches, patch_size**2 * 3].
+
+        """
         latent, mask_indices = self.forward_encoder(x, mask_indices)
         pred = self.forward_decoder(latent, mask_indices)
         return pred
 
 
-def mae_vit_base_patch16(**kwargs: Any) -> MaskedAutoencoderViT:
-    """Mae vit base patch16."""
+def mae_vit_base_patch16(
+    **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> MaskedAutoencoderViT:
+    """Instantiates a standard MAE ViT-Base model with a patch size of 16.
+
+    This helper function configures a standard Masked Autoencoder with a ViT-Base encoder
+    (12 layers, embedding dimension of 768, 12 attention heads) and a corresponding
+    standard MAE decoder (8 layers, embedding dimension of 512, 16 attention heads).
+
+    Args:
+        **kwargs (Union[int, float, str, bool, bytes, list, dict, tuple, None]): Additional keyword arguments to pass to the MaskedAutoencoderViT constructor.
+
+    Returns:
+        MaskedAutoencoderViT: An instance of MaskedAutoencoderViT configured with base hyperparameters.
+
+    """
     return MaskedAutoencoderViT(
         patch_size=16,
         embed_dim=768,

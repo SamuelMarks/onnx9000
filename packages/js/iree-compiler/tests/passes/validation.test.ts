@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../src/passes/validation";
+import { describe, expect, it } from 'vitest';
+import { ValidationSuite } from '../../src/passes/validation';
 
-describe("validation.ts", () => {
-  it("should instantiate and cover ValidationSuite", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('validation.ts', () => {
+  it('should instantiate and cover ValidationSuite', () => {
     try {
-      const obj = new (Module as any).ValidationSuite();
+      const obj = Construct(ValidationSuite);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

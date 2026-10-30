@@ -36,9 +36,7 @@ graph = load("model.onnx")
 
 engine = TranspilationEngine()
 transpiled_graph = engine.transpile(
-    graph,
-    strategy=Strategy.PERFECT_TREE,
-    hardware=TargetHardware.WEBGPU
+    graph, strategy=Strategy.PERFECT_TREE, hardware=TargetHardware.WEBGPU
 )
 
 transpiled_graph.save("model_tensor.onnx")

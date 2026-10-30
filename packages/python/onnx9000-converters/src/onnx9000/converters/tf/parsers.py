@@ -2,7 +2,6 @@
 
 import logging
 from dataclasses import dataclass, field
-from typing import Any
 
 TF_TO_ONNX_VERSION_MAPPING = {
     "1.15.0": 11,
@@ -22,7 +21,9 @@ class TFNode:
     name: str
     op: str
     inputs: list[str] = field(default_factory=list)
-    attr: dict[str, Any] = field(default_factory=dict)
+    attr: dict[str, int | float | str | bool | bytes | list | dict | tuple | None] = field(
+        default_factory=dict
+    )
 
 
 @dataclass
@@ -202,8 +203,6 @@ class ProtobufParser:
                 op = self.read_string()
             elif field_num == 3:
                 inputs.append(self.read_string())
-            elif field_num == 4:
-                self.skip_field(wire_type)
             else:
                 self.skip_field(wire_type)
         return TFNode(name=name, op=op, inputs=inputs, attr=attr)
@@ -245,7 +244,7 @@ class ProtobufParser:
         elif wire_type == 2:
             length = self.read_varint()
             self.offset += length
-        elif wire_type == 5:
+        else:
             self.offset += 4
 
 
@@ -326,7 +325,7 @@ def load_h5_model(data: bytes) -> TFGraph:
     return KerasH5Parser(data=data).parse()
 
 
-def load_keras_v3(data: Any) -> TFGraph:
+def load_keras_v3(data: int | float | str | bool | bytes | list | dict | tuple | None) -> TFGraph:
     """Execute the load keras v3 operation.
 
     Args:

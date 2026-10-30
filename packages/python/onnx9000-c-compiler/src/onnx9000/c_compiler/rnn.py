@@ -12,7 +12,7 @@ def generate_rnn(
     r_name: str,
     out_name: str,
     op_type: str,
-):
+) -> None:
     """Generate C code for RNN, LSTM, or GRU operations."""
     b.emit(f"/* {op_type} (Native stateful struct logic) */")
     b.emit("{")
@@ -64,7 +64,7 @@ def generate_attention(
     bias_name: str,
     mask_name: str,
     out_name: str,
-):
+) -> None:
     """Generate C code for the Attention operation.
 
     Args:

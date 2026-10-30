@@ -1,32 +1,28 @@
-import { beforeEach, describe, expect, it } from "vitest";
+// @vitest-environment jsdom
+import { beforeEach, describe, expect, it } from 'vitest';
+import { initAutogradDemo } from '../src/main.js';
 
-describe("demo", () => {
+describe('demo-autograd', () => {
   beforeEach(() => {
-    document.body.innerHTML = `
-      <textarea id="prompt"></textarea>
-      <button id="runBtn"></button>
-      <div id="output"></div>
-    `;
+    document.body.innerHTML = '<button id="grad-btn"></button><div id="autograd-output"></div>';
   });
 
-  it("should run flow", async () => {
-    // import to execute module top-level
-    try {
-      await import("../src/main.js");
-    } catch (_e) {}
+  it('should build backward graph and update output', async () => {
+    document.body.innerHTML = '';
+    initAutogradDemo();
 
-    const btn = document.getElementById("runBtn");
-    const prompt = document.getElementById("prompt");
-    const _out = document.getElementById("output");
+    document.body.innerHTML = '<button id="grad-btn"></button><div id="autograd-output"></div>';
+    initAutogradDemo();
 
-    if (btn) btn.click();
-    if (prompt && btn) {
-      prompt.value = "test";
-      btn.click();
-    }
+    const btn = document.getElementById('grad-btn') as HTMLButtonElement;
+    const out = document.getElementById('autograd-output') as HTMLElement;
 
-    // allow some async code to run
-    await new Promise((r) => setTimeout(r, 100));
-    expect(true).toBe(true);
+    btn.click();
+    await new Promise((r) => setTimeout(r, 150));
+
+    expect(out.innerText).toContain(
+      'Success! Augmented ONNX graph now computes forward pass + gradients.',
+    );
+    expect(btn.disabled).toBe(true);
   });
 });

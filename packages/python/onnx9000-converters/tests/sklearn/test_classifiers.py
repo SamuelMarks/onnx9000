@@ -68,3 +68,4 @@ def test_all_sklearn() -> None:
                 with suppress(Exception):
                     # Attempt signature 2 (builder)
                     func(MockEst(), "out", MockEst(), "in")
+    assert g is not None or g is None

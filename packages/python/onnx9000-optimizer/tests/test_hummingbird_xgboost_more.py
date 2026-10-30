@@ -15,7 +15,9 @@ from onnx9000.optimizer.hummingbird.xgboost_catboost_parser import (
 class MockBooster:
     """Represents the Mock Booster class."""
 
-    def get_dump(self, dump_format="json"):
+    def get_dump(
+        self, dump_format: int | float | str | bool | bytes | list | dict | tuple | None = "json"
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Execute the get dump operation."""
         return [
             '{"nodeid": 0, "depth": 0, "split": "f0", "split_condition": 1.0, "yes": 1, "no": 2, "missing": 1, "children": [{"nodeid": 1, "leaf": 0.0}, {"nodeid": 2, "leaf": 1.0}]}'
@@ -25,11 +27,11 @@ class MockBooster:
 class MockEstimator:
     """Represents the Mock Estimator class."""
 
-    def __init__(self):
-        """Initialize the instance."""
+    def __init__(self) -> None:
+        """Initialize MockEstimator with configured parameters and state."""
         return None
 
-    def get_booster(self):
+    def get_booster(self) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Execute the get booster operation."""
         return MockBooster()
 
@@ -40,7 +42,7 @@ class MockEstimatorEmpty:
     __dummy__ = True
 
 
-def test_xgboost_stubs():
+def test_xgboost_stubs() -> None:
     """Tests the xgboost stubs functionality."""
     res1 = parse_xgb_classifier(MockEstimator())
     assert len(res1) == 1

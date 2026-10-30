@@ -1,14 +1,20 @@
 /**
+ * @fileoverview ui module for tfjs-shim.
+ */
+/**
  * A custom element that demonstrates a comparative benchmark between standard TF.js and the onnx9000 shim.
  * It provides an interactive UI with two panels showing the code for both approaches and a button to run the comparison.
  */
 export class TfjsShimDemoElement extends HTMLElement {
+  /** Property `root` of `TfjsShimDemoElement`. */
+  private readonly root: ShadowRoot;
+
   /**
    * Initializes the TfjsShimDemoElement by attaching a shadow DOM.
    */
   constructor() {
     super();
-    this.attachShadow({ mode: "open" });
+    this.root = this.attachShadow({ mode: 'open' });
   }
 
   /**
@@ -16,7 +22,7 @@ export class TfjsShimDemoElement extends HTMLElement {
    * Renders the HTML structure and sets up the click event listener for the benchmark button.
    */
   connectedCallback() {
-    this.shadowRoot!.innerHTML = `
+    this.root.innerHTML = `
       <style>
         :host { display: block; padding: 20px; font-family: sans-serif; background: #fff; color: #333; }
         .container { display: flex; gap: 20px; }
@@ -51,18 +57,16 @@ tf.add(a, b).print();
       </div>
     `;
 
-    this.shadowRoot
-      ?.querySelector("#run-btn")
-      ?.addEventListener("click", () => {
-        const results = this.shadowRoot?.querySelector("#results");
-        if (results) {
-          results.textContent = `Running...
+    this.shadowRoot?.querySelector('#run-btn')?.addEventListener('click', () => {
+      const results = this.shadowRoot?.querySelector('#results');
+      if (results) {
+        results.textContent = `Running...
 TF.js (WebGL): 14ms
 onnx9000 (WebGPU): 2ms
 
 Results match!`;
-        }
-      });
+      }
+    });
   }
 }
-customElements.define("tfjs-shim-demo", TfjsShimDemoElement);
+customElements.define('tfjs-shim-demo', TfjsShimDemoElement);

@@ -2,16 +2,24 @@
  * @fileoverview GraphValidator.ts
  * Provides GraphValidator functionality for the modifier package.
  */
-import type { DType, Graph, Node, Shape } from "@onnx9000/core";
+import type { DType, Graph, Node, Shape } from '@onnx9000/core';
 
+/** Interface `GraphValidationResult` definition. */
 export interface GraphValidationResult {
+  /** Property `isValid`. */
   isValid: boolean;
+  /** Property `danglingNodes`. */
   danglingNodes: string[]; // Node names
+  /** Property `unresolvedInputs`. */
   unresolvedInputs: string[]; // Edge names
+  /** Property `cyclicDependencies`. */
   cyclicDependencies: string[]; // Node names in cycle
+  /** Property `typeMismatches`. */
   typeMismatches: string[]; // Details
 
+  /** Property `missingShapes`. */
   missingShapes: string[]; // Inputs lacking defined shape properties
+  /** Property `dimensionMismatches`. */
   dimensionMismatches: string[]; // Details
 }
 
@@ -20,13 +28,22 @@ export interface GraphValidationResult {
  * Checks for dangling nodes, type mismatches, and cycles.
  */
 export class GraphValidator {
+  /** Property `graph` of `GraphValidator`. */
   graph: Graph;
 
+  /**
+   * Initializes a new `GraphValidator` instance.
+   * @param graph Parameter `graph`.
+   */
   constructor(graph: Graph) {
     this.graph = graph;
   }
 
   // 26. Implement a fast, synchronous verify() method
+  /**
+   * Executes `verify` on `GraphValidator`.
+   * @returns Result of `verify`.
+   */
   verify(): GraphValidationResult {
     const result: GraphValidationResult = {
       isValid: true,
@@ -61,10 +78,7 @@ export class GraphValidator {
     for (const node of this.graph.nodes) {
       let consumed = false;
       for (const out of node.outputs) {
-        if (
-          consumedEdges.has(out) ||
-          this.graph.outputs.some((o) => o.name === out)
-        ) {
+        if (consumedEdges.has(out) || this.graph.outputs.some((o) => o.name === out)) {
           consumed = true;
           break;
         }
@@ -78,7 +92,7 @@ export class GraphValidator {
     for (const node of this.graph.nodes) {
       for (const inp of node.inputs) {
         // empty strings are often used for optional inputs in ONNX
-        if (inp !== "" && !producedEdges.has(inp)) {
+        if (inp !== '' && !producedEdges.has(inp)) {
           result.unresolvedInputs.push(inp);
         }
       }
@@ -139,9 +153,9 @@ export class GraphValidator {
     }
 
     for (const node of this.graph.nodes) {
-      if (node.opType === "MatMul" && node.inputs.length === 2) {
-        const shapeA = shapes.get(node.inputs[0]!);
-        const shapeB = shapes.get(node.inputs[1]!);
+      if (node.opType === 'MatMul' && node.inputs.length === 2) {
+        const shapeA = shapes.get(node.inputs[0] as string);
+        const shapeB = shapes.get(node.inputs[1] as string);
         if (shapeA && shapeB && shapeA.length >= 2 && shapeB.length >= 2) {
           const kA = shapeA[shapeA.length - 1];
           const kB = shapeB[shapeB.length - 2];
@@ -149,21 +163,17 @@ export class GraphValidator {
             kA !== kB &&
             kA !== -1 &&
             kB !== -1 &&
-            typeof kA === "number" &&
-            typeof kB === "number"
+            typeof kA === 'number' &&
+            typeof kB === 'number'
           ) {
-            result.dimensionMismatches.push(
-              `MatMul ${node.name}: ${kA} != ${kB}`,
-            );
+            result.dimensionMismatches.push(`MatMul ${node.name}: ${kA} != ${kB}`);
           }
         }
 
-        const typeA = dtypes.get(node.inputs[0]!);
-        const typeB = dtypes.get(node.inputs[1]!);
+        const typeA = dtypes.get(node.inputs[0] as string);
+        const typeB = dtypes.get(node.inputs[1] as string);
         if (typeA && typeB && typeA !== typeB) {
-          result.typeMismatches.push(
-            `MatMul ${node.name}: ${typeA} != ${typeB}`,
-          );
+          result.typeMismatches.push(`MatMul ${node.name}: ${typeA} != ${typeB}`);
         }
       }
     }

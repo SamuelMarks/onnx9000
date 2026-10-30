@@ -5,7 +5,10 @@ from onnx9000.toolkit.training.autograd.compiler import AOTBuilder
 
 
 def compile_training_graph(
-    model: Graph, loss_fn, optimizer_fn, learning_rate: str = "learning_rate"
+    model: Graph,
+    loss_fn: int | float | str | bool | bytes | list | dict | tuple | None,
+    optimizer_fn: int | float | str | bool | bytes | list | dict | tuple | None,
+    learning_rate: str = "learning_rate",
 ) -> Graph:
     """Expose Python API for compiling the training graph.
 
@@ -16,4 +19,4 @@ def compile_training_graph(
     return builder.build_training_graph(loss_fn, optimizer_fn, learning_rate)
 
 
-__all__ = ["compile_training_graph", "AOTBuilder"]
+__all__ = ["AOTBuilder", "compile_training_graph"]

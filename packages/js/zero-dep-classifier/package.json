@@ -11,5 +11,8 @@
     "typescript": "^5.9.3",
     "vitest": "^1.6.0"
   },
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "@onnx9000/core": "workspace:*"
+  }
 }

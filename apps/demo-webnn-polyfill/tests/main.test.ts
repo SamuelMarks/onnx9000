@@ -1,32 +1,51 @@
-import { beforeEach, describe, expect, it } from "vitest";
+// @vitest-environment jsdom
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { initWebnnDemo } from '../src/main.js';
 
-describe("demo", () => {
+describe('demo-webnn-polyfill', () => {
   beforeEach(() => {
-    document.body.innerHTML = `
-      <textarea id="prompt"></textarea>
-      <button id="runBtn"></button>
-      <div id="output"></div>
-    `;
+    document.body.innerHTML = '<button id="run-btn"></button><div id="webnn-output"></div>';
   });
 
-  it("should run flow", async () => {
-    // import to execute module top-level
-    try {
-      await import("../src/main.js");
-    } catch (_e) {}
+  it('should execute WebNN graph and handle missing navigator.ml or errors', async () => {
+    document.body.innerHTML = '';
+    initWebnnDemo();
 
-    const btn = document.getElementById("runBtn");
-    const prompt = document.getElementById("prompt");
-    const _out = document.getElementById("output");
+    document.body.innerHTML = '<button id="run-btn"></button><div id="webnn-output"></div>';
+    initWebnnDemo();
 
-    if (btn) btn.click();
-    if (prompt && btn) {
-      prompt.value = "test";
-      btn.click();
-    }
+    const runBtn = document.getElementById('run-btn') as HTMLButtonElement;
+    const out = document.getElementById('webnn-output') as HTMLElement;
 
-    // allow some async code to run
-    await new Promise((r) => setTimeout(r, 100));
-    expect(true).toBe(true);
+    runBtn.click();
+    await new Promise((r) => setTimeout(r, 50));
+    expect(out.innerText).toContain('Success! WebNN API execution complete.');
+
+    const winRecord = window as never as Record<string, unknown>;
+    const savedBuilder = winRecord.MLGraphBuilder;
+    delete winRecord.MLGraphBuilder;
+    runBtn.click();
+    await new Promise((r) => setTimeout(r, 50));
+    expect(out.innerText).toContain('Success! WebNN API execution complete.');
+    winRecord.MLGraphBuilder = savedBuilder;
+
+    const navRecord = navigator as never as Record<
+      string,
+      { createContext: () => Promise<unknown> } | undefined
+    >;
+    const savedMl = navRecord.ml;
+    navRecord.ml = {
+      createContext: vi.fn().mockRejectedValueOnce('Non-error rejection'),
+    };
+    runBtn.click();
+    await new Promise((r) => setTimeout(r, 50));
+    expect(out.innerText).toContain('Error: Non-error rejection');
+
+    delete navRecord.ml;
+    runBtn.click();
+    await new Promise((r) => setTimeout(r, 50));
+    expect(out.innerText).toContain('Error: WebNN polyfill failed to inject navigator.ml');
+
+    navRecord.ml = savedMl;
   });
 });

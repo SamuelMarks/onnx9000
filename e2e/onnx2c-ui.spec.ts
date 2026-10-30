@@ -4,7 +4,7 @@ test.describe('onnx2c-ui', () => {
   test.beforeEach(async ({ page }) => {
     try {
       await page.goto('/onnx2c-ui.html');
-    } catch (_e) {
+    } catch {
       test.skip();
     }
   });

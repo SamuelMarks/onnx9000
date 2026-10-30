@@ -1,5 +1,19 @@
-// @ts-nocheck
-type PyodideInterface = object;
+/**
+ * @fileoverview KerasPythonParser module for sphinx-demo-ui.
+ */
+export interface PyodideInterface {
+  /**
+   * Method `runPythonAsync`.
+   * @param code Parameter `code`.
+   */
+  runPythonAsync(code: string): Promise<string>;
+}
+
+/** Interface `WindowWithPyodide` definition. */
+interface WindowWithPyodide {
+  /** Property `loadPyodide`. */
+  loadPyodide?: (options: { indexURL: string }) => Promise<PyodideInterface>;
+}
 
 /**
  * Utility to parse simple Keras Python scripts into Keras model.json format
@@ -8,7 +22,9 @@ type PyodideInterface = object;
  * downloads unless Python is actually utilized.
  */
 export class KerasPythonParser {
+  /** Property `pyodideInstance` of `KerasPythonParser`. */
   private static pyodideInstance: PyodideInterface | null = null;
+  /** Property `isLoading` of `KerasPythonParser`. */
   private static isLoading = false;
 
   /**
@@ -31,7 +47,8 @@ export class KerasPythonParser {
     console.log('[stdout] Fetching Pyodide runtime (lazily loaded on first Python execution)...');
 
     try {
-      if (!(window as object).loadPyodide) {
+      const win = window as never as WindowWithPyodide;
+      if (!win.loadPyodide) {
         // Dynamically inject script
         const script = document.createElement('script');
         script.src = 'https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js';
@@ -41,18 +58,20 @@ export class KerasPythonParser {
           script.onerror = reject;
         });
       }
-      KerasPythonParser.pyodideInstance = await (window as object).loadPyodide({
-        indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.26.4/full/'
-      });
+      if (win.loadPyodide) {
+        KerasPythonParser.pyodideInstance = await win.loadPyodide({
+          indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.26.4/full/',
+        });
+      }
       console.log('[stdout] Pyodide runtime loaded successfully.');
-    } catch (e: any) {
+    } catch (e) {
       console.error('[stderr] Pyodide initialization failed:', e);
       throw e;
     } finally {
       KerasPythonParser.isLoading = false;
     }
 
-    return KerasPythonParser.pyodideInstance;
+    return KerasPythonParser.pyodideInstance as PyodideInterface;
   }
 
   /**

@@ -4,18 +4,23 @@ import os
 import struct
 import tempfile
 
-from onnx9000.toolkit.gguf.parser import GGUFError, GGUFParser
+from onnx9000.toolkit.gguf.parser import GGUFParser
 
 
-def write_string(f, s: str):
-    """Docstring for D103."""
+def write_string(f: int | float | str | bool | bytes | list | dict | tuple | None, s: str) -> None:
+    """Execute write string operation.
+
+    Args:
+        f: Parameter specifying f.
+        s: Parameter specifying s (str).
+    """
     b = s.encode("utf-8")
     f.write(struct.pack("<Q", len(b)))
     f.write(b)
 
 
-def test_gguf_parser():
-    """Docstring for D103."""
+def test_gguf_parser() -> None:
+    """Verify that gguf parser behaves as expected."""
     with tempfile.NamedTemporaryFile(delete=False) as f:
         # Magic
         f.write(b"GGUF")
@@ -57,7 +62,7 @@ def test_gguf_parser():
             assert parser.magic == b"GGUF"
             assert parser.version == 2
             assert parser.metadata["general.alignment"] == 32
-            assert "test_tensor" in parser.keys()
+            assert "test_tensor" in parser
             tensor = parser.get_onnx9000_tensor("test_tensor")
             assert tensor.name == "test_tensor"
             assert tensor.shape == (2, 2)

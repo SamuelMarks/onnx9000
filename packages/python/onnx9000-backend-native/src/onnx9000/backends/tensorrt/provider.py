@@ -1,41 +1,49 @@
-"""TensorRT execution provider implementation for onnx9000."""
+"""TensorRT execution provider implementation for ONNX9000."""
 
 import logging
 import os
+
+from onnx9000.core.ir import Graph, Tensor
 
 logger = logging.getLogger("onnx9000.tensorrt.provider")
 
 
 class TensorrtExecutionProvider:
-    """TensorRT Execution Provider natively integrates onnx9000 graphs with.
+    """TensorRT Execution Provider integrating ONNX9000 graphs with NVIDIA TensorRT via FFI."""
 
-    NVIDIA TensorRT for accelerated GPU inference using zero-build FFI.
-    """
+    def __init__(self, fallback: bool = False) -> None:
+        """Initialize the execution provider and engine cache directory.
 
-    def __init__(self, fallback: bool = False):
-        """Initialize the execution provider, selecting the primary target device.
-
-        And mapping the local model engine cache directory.
+        Args:
+            fallback: Whether to fall back to CPU/WebGPU for unsupported operators.
         """
-        self.device = "cuda:0"
-        self.fallback = fallback
-        self.engine_cache_dir = os.path.expanduser("~/.cache/onnx9000/trt_engines/")
+        self.device: str = "cuda:0"
+        self.fallback: bool = fallback
+        self.engine_cache_dir: str = os.path.expanduser("~/.cache/onnx9000/trt_engines/")
         os.makedirs(self.engine_cache_dir, exist_ok=True)
 
-    def partition_graph(self, graph: object) -> list:
-        """Partition the ONNX graph logically to separate nodes supported by TRT.
+    def partition_graph(self, graph: Graph) -> list[Graph]:
+        """Partition the ONNX graph into discrete subgraphs supported by TensorRT.
 
-        From those requiring CPU/WebGPU fallbacks. Returns a list of discrete subgraphs.
+        Args:
+            graph: The ONNX9000 Graph to partition.
+
+        Returns:
+            List of partitioned subgraphs.
         """
         return [graph]
 
-    def run(self, session: object, inputs: dict) -> dict:
-        """Execute the compiled TensorRT engines sequentially or asynchronously.
+    def run(self, session: Graph | str | None, inputs: dict[str, Tensor]) -> dict[str, Tensor]:
+        """Execute compiled TensorRT engines and return output tensors.
 
-        Mapping PyTorch or CuPy tensors directly via DLPack memory boundaries.
-        Returns the populated output tensors natively.
+        Args:
+            session: Active TensorRT session or Graph handle.
+            inputs: Dictionary mapping input names to Tensor instances.
+
+        Returns:
+            Dictionary mapping output names to populated Tensor instances.
         """
-        outputs = {}
+        outputs: dict[str, Tensor] = {}
         for key, tensor in inputs.items():
             outputs[key] = tensor
         return outputs

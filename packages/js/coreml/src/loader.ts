@@ -3,12 +3,19 @@
  * Provides loader functionality for the coreml package.
  */
 
-import { BufferReader } from "@onnx9000/core";
-import { MILFunction, Program } from "./mil/ast.js";
-import { type Model, parseModel } from "./schema.js";
+import { BufferReader, Onnx9000Error } from '@onnx9000/core';
+import { MILFunction, Program } from './mil/ast.js';
+import { type Model, parseModel } from './schema.js';
 
+/** Represents the `MLPackageLoader` class. */
 export class MLPackageLoader {
   // 216. Implement .mlmodel and .mlpackage loader/unzipper in JS
+  /**
+   * Executes `loadFromZip` on `MLPackageLoader`.
+   * @param jszipInstance Parameter `jszipInstance`.
+   * @param zipData Parameter `zipData`.
+   * @returns Result of `loadFromZip`.
+   */
   static async loadFromZip(
     jszipInstance: ReturnType<typeof JSON.parse>,
     zipData: Uint8Array,
@@ -17,30 +24,33 @@ export class MLPackageLoader {
     await zip.loadAsync(zipData);
 
     // Read model
-    const modelFile = zip.file("Data/com.apple.CoreML/model.mlmodel");
-    if (!modelFile) throw new Error("model.mlmodel not found in package");
-    const modelBytes = await modelFile.async("uint8array");
+    const modelFile = zip.file('Data/com.apple.CoreML/model.mlmodel');
+    if (!modelFile) throw new Onnx9000Error('model.mlmodel not found in package');
+    const modelBytes = await modelFile.async('uint8array');
 
     const reader = new BufferReader(modelBytes);
     const model = await parseModel(reader);
 
     // Read weights
-    const weightFile = zip.file("Data/com.apple.CoreML/weights/weight.bin");
-    const weights = weightFile
-      ? await weightFile.async("uint8array")
-      : new Uint8Array(0);
+    const weightFile = zip.file('Data/com.apple.CoreML/weights/weight.bin');
+    const weights = weightFile ? await weightFile.async('uint8array') : new Uint8Array(0);
 
     return { model, weights };
   }
 
   // 217. Parse MILSpec.Program back into the TypeScript AST representation
+  /**
+   * Executes `parseMILProgram` on `MLPackageLoader`.
+   * @param model Parameter `model`.
+   * @returns Result of `parseMILProgram`.
+   */
   static parseMILProgram(model: Model): Program {
     const prog = new Program();
 
     // Mock parsing MILSpec to Program AST
     if (model.mlProgram) {
       // iterate over model.mlProgram.functions and reconstruct the `MILFunction` / `Block` objects
-      const fn = new MILFunction("main", [], []);
+      const fn = new MILFunction('main', [], []);
       prog.addFunction(fn);
     }
 

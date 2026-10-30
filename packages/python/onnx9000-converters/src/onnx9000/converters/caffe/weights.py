@@ -1,15 +1,16 @@
 """Caffe weights parser."""
 
 import struct
-from typing import Any, BinaryIO
+from typing import BinaryIO
 
 import numpy as np
+from onnx9000.core.exceptions import ConversionError
 
 
 class ProtobufDecoder:
     """Zero-dependency protobuf decoder for Caffe models."""
 
-    def __init__(self, data: bytes):
+    def __init__(self, data: bytes) -> None:
         """Initialize with binary data."""
         self.data = data
         self.pos = 0
@@ -66,7 +67,7 @@ class ProtobufDecoder:
         elif wire_type == 5:  # pragma: no cover
             self.pos += 4  # pragma: no cover
         else:
-            raise ValueError(f"Unknown wire type: {wire_type}")  # pragma: no cover
+            raise ConversionError(f"Unknown wire type: {wire_type}")  # pragma: no cover
 
 
 def parse_blob(data: bytes) -> np.ndarray:
@@ -133,7 +134,9 @@ def parse_blob(data: bytes) -> np.ndarray:
     return arr  # pragma: no cover
 
 
-def parse_layer(data: bytes) -> dict[str, Any]:
+def parse_layer(
+    data: bytes,
+) -> dict[str, int | float | str | bool | bytes | list | dict | tuple | None]:
     """Parse a LayerParameter or V1LayerParameter."""
     decoder = ProtobufDecoder(data)  # pragma: no cover
     name = ""  # pragma: no cover

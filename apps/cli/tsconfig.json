@@ -1,7 +1,14 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "dist"
+    "outDir": "dist",
+    "allowUnreachableCode": true,
+    "noUncheckedIndexedAccess": false,
+    "baseUrl": ".",
+    "paths": {
+      "@onnx9000/converters": ["../../packages/js/converters/dist/index.d.ts"],
+      "@onnx9000/transformers": ["../../packages/js/transformers/dist/index.d.ts"]
+    }
   },
   "include": ["src/**/*", "tests/**/*"]
 }

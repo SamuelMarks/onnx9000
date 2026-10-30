@@ -1,12 +1,11 @@
 """Tests for sharding advanced."""
 
-import pytest
-from onnx9000.core.ir import Attribute, Graph, Node, Tensor
+from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.core.sharding import PartitionSpec, SPMDLoweringPass
 
 
-def test_tp_sliced():
-    """Docstring for D103."""
+def test_tp_sliced() -> None:
+    """Verify that tp sliced behaves as expected."""
     graph = Graph("test")
     x = Tensor("x", shape=(4, 4), dtype=1)
     w = Tensor("w", shape=(4, 4), dtype=1)
@@ -20,8 +19,8 @@ def test_tp_sliced():
     assert graph.nodes[0].outputs[0].sharding == PartitionSpec(None, "tp")
 
 
-def test_tp_allreduce():
-    """Docstring for D103."""
+def test_tp_allreduce() -> None:
+    """Verify that tp allreduce behaves as expected."""
     graph = Graph("test")
     x = Tensor("x", shape=(4, 4), dtype=1)
     w = Tensor("w", shape=(4, 4), dtype=1)
@@ -39,8 +38,8 @@ def test_tp_allreduce():
     assert graph.nodes[1].attributes["op"].value == "sum"
 
 
-def test_ep():
-    """Docstring for D103."""
+def test_ep() -> None:
+    """Verify that ep behaves as expected."""
     graph = Graph("test")
     x = Tensor("x", shape=(4, 4), dtype=1)
     x.sharding = PartitionSpec("ep", None, None)
@@ -57,8 +56,8 @@ def test_ep():
     assert graph.nodes[2].op_type == "AllToAll"
 
 
-def test_pp():
-    """Docstring for D103."""
+def test_pp() -> None:
+    """Verify that pp behaves as expected."""
     graph = Graph("test")
     x = Tensor("x", shape=(4, 4), dtype=1)
     out = Tensor("out", shape=(4, 4), dtype=1)
@@ -75,8 +74,8 @@ def test_pp():
     assert graph.nodes[2].op_type == "Recv"
 
 
-def test_cp():
-    """Docstring for D103."""
+def test_cp() -> None:
+    """Verify that cp behaves as expected."""
     graph = Graph("test")
     q = Tensor("q", shape=(4, 4), dtype=1)
     q.sharding = PartitionSpec(None, "cp", None)
@@ -95,8 +94,8 @@ def test_cp():
     assert graph.nodes[2].op_type == "Send"
 
 
-def test_fsdp():
-    """Docstring for D103."""
+def test_fsdp() -> None:
+    """Verify that fsdp behaves as expected."""
     graph = Graph("test")
     x = Tensor("x", shape=(4, 4), dtype=1)
     w = Tensor("w", shape=(4, 4), dtype=1, is_initializer=True)

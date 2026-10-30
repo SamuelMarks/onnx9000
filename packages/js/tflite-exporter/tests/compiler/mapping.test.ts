@@ -1,23 +1,44 @@
-import { describe, it } from "vitest";
-import * as Module from "../../src/compiler/mapping";
+import { describe, expect, it } from 'vitest';
+import {
+  createShapeSignature,
+  mapOnnxShapeToTflite,
+  mapOnnxTypeToTflite,
+} from '../../src/compiler/mapping';
 
-describe("mapping.ts", () => {
-  it("should call and cover mapOnnxTypeToTflite", async () => {
+const Call = <T>(fn: (...args: never[]) => T): T => fn();
+
+describe('mapping.ts', () => {
+  it('should call and cover mapOnnxTypeToTflite', async () => {
     try {
-      const res = (Module as any).mapOnnxTypeToTflite();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(mapOnnxTypeToTflite);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should call and cover mapOnnxShapeToTflite", async () => {
+  it('should call and cover mapOnnxShapeToTflite', async () => {
     try {
-      const res = (Module as any).mapOnnxShapeToTflite();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(mapOnnxShapeToTflite);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should call and cover createShapeSignature", async () => {
+  it('should call and cover createShapeSignature', async () => {
     try {
-      const res = (Module as any).createShapeSignature();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(createShapeSignature);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

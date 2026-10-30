@@ -4,8 +4,8 @@ import numpy as np
 from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
 
 
-def test_cf_gather_scatter_seq():
-    """Docstring for D103."""
+def test_cf_gather_scatter_seq() -> None:
+    """Verify that cf gather scatter seq behaves as expected."""
     cf = ConstantFoldingPass()
 
     # Gather

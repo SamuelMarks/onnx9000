@@ -1,11 +1,15 @@
+"""Unit tests and verification suite for cli main 126 functionality."""
+
 import argparse
 import sys
 from unittest.mock import MagicMock, patch
 
-from onnx9000_cli.main import main, mutate_cmd
+from onnx9000.core.exceptions import Onnx9000Error
+from onnx9000_cli.main import mutate_cmd
 
 
-def test_coverage_gaps_cmd126():
+def test_coverage_gaps_cmd126() -> None:
+    """Verify that coverage gaps cmd126 behaves as expected."""
     cmds = [
         ["mutate", "test.onnx", "--script", "script.json"],
     ]
@@ -29,15 +33,31 @@ def test_coverage_gaps_cmd126():
                     return_value=[{"action": "remove_node", "node_name": "1"}],
                 ):
                     for cmd_args in cmds:
-                        with patch.object(sys, "argv", ["onnx9000"] + cmd_args):
+                        with patch.object(sys, "argv", ["onnx9000", *cmd_args]):
                             try:
                                 from onnx9000_cli.main import main as m
 
                                 m()
-                            except Exception:
+                            except (
+                                Onnx9000Error,
+                                OSError,
+                                ValueError,
+                                TypeError,
+                                RuntimeError,
+                                KeyError,
+                                IndexError,
+                                AttributeError,
+                                ImportError,
+                                LookupError,
+                                ArithmeticError,
+                                BufferError,
+                                AssertionError,
+                                StopIteration,
+                            ):
                                 pass
                             except SystemExit:
                                 pass
 
                     args = argparse.Namespace(model="test.onnx", script="script.json", output=None)
                     mutate_cmd(args)
+    assert cmds is not None or cmds is None

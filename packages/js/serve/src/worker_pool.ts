@@ -13,29 +13,45 @@
 // 129. Implement Round-Robin request routing across the active worker pool.
 // 130. Manage PM2 clustering compatibility gracefully.
 
+import { BackendError } from '@onnx9000/core';
+/** Represents the `WorkerPool` class. */
 export class WorkerPool {
+  /** Property `workers` of `WorkerPool`. */
   private workers: ReturnType<typeof JSON.parse>[] = [];
 
+  /**
+   * Initializes a new `WorkerPool` instance.
+   * @param maxWorkers Parameter `maxWorkers`.
+   */
   constructor(public maxWorkers: number = 4) {
-    if (typeof process !== "undefined" && process.env) {
+    if (typeof process !== 'undefined' && process.env) {
       // Node.js environment simulation
-      this.maxWorkers = require("node:os").cpus().length || this.maxWorkers;
+      this.maxWorkers = require('node:os').cpus().length;
     }
   }
 
+  /**
+   * Executes `init` on `WorkerPool`.
+   * @returns Result of `init`.
+   */
   public init() {
     for (let i = 0; i < this.maxWorkers; i++) {
       this.spawnWorker(i);
     }
   }
 
+  /**
+   * Executes `spawnWorker` on `WorkerPool`.
+   * @param id Parameter `id`.
+   * @returns Result of `spawnWorker`.
+   */
   private spawnWorker(id: number) {
     const worker = {
       id,
       postMessage: (msg: ReturnType<typeof JSON.parse>) => {
         // Worker message handling
         setTimeout(() => {
-          this.handleWorkerMessage({ id, msg: { status: "done", data: msg } });
+          this.handleWorkerMessage({ id, msg: { status: 'done', data: msg } });
         }, 10);
       },
       terminate: () => undefined,
@@ -43,17 +59,28 @@ export class WorkerPool {
     this.workers.push(worker);
   }
 
+  /**
+   * Executes `handleWorkerMessage` on `WorkerPool`.
+   * @param _event Parameter `_event`.
+   * @returns Result of `handleWorkerMessage`.
+   */
   private handleWorkerMessage(_event: ReturnType<typeof JSON.parse>) {
     // resolve tasks
   }
 
+  /**
+   * Executes `execute` on `WorkerPool`.
+   * @param model Parameter `model`.
+   * @param data Parameter `data`.
+   * @returns Result of `execute`.
+   */
   public async execute(
     model: string,
     data: SharedArrayBuffer,
   ): Promise<ReturnType<typeof JSON.parse>> {
     // 129. Round-robin
     const worker = this.workers.shift();
-    if (!worker) throw new Error("No available workers");
+    if (!worker) throw new BackendError('No available workers');
 
     this.workers.push(worker); // rotate
 

@@ -143,6 +143,7 @@ apps/cli/configs/
 apps/cli/o/
 apps/cli/out/
 apps/cli/test.xml
+/test.xml
 
 # Auto-generated scripts
 fix_*.py
@@ -254,6 +255,7 @@ playwright.config.d.ts.map
 !apps/sphinx-demo-ui/src/jsfive.d.ts
 !packages/js/backend-web/src/providers/webnn/webnn.d.ts
 !packages/js/converters/src/keras/jsfive.d.ts
+!packages/js/tensorrt/src/ffi-napi.d.ts
 !packages/js/core/debug.js
 !packages/js/openvino/bin/cli.js
 

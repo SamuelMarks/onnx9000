@@ -1,10 +1,13 @@
+"""Unit tests and verification suite for cli ecosystem final functionality."""
+
 import argparse
 from unittest.mock import mock_open, patch
 
 from onnx9000_cli.main import diffusers_cmd, tensorrt_cmd
 
 
-def test_tensorrt_cmd():
+def test_tensorrt_cmd() -> None:
+    """Verify that tensorrt cmd behaves as expected."""
     args = argparse.Namespace(model="dummy.onnx")
     with patch("builtins.print") as mock_print:
         tensorrt_cmd(args)
@@ -12,7 +15,8 @@ def test_tensorrt_cmd():
     mock_print.assert_any_call("import tensorrt as trt")
 
 
-def test_diffusers_cmd_stdout():
+def test_diffusers_cmd_stdout() -> None:
+    """Verify that diffusers cmd stdout behaves as expected."""
     args = argparse.Namespace(model="dummy", prompt="cat", output=None)
     with patch("builtins.print") as mock_print:
         diffusers_cmd(args)
@@ -20,7 +24,8 @@ def test_diffusers_cmd_stdout():
     mock_print.assert_any_call("Generated image tensor successfully [1, 3, 512, 512]")
 
 
-def test_diffusers_cmd_file():
+def test_diffusers_cmd_file() -> None:
+    """Verify that diffusers cmd file behaves as expected."""
     args = argparse.Namespace(model="dummy", prompt="cat", output="out.png")
     m_open = mock_open()
     with patch("builtins.open", m_open):
@@ -29,7 +34,8 @@ def test_diffusers_cmd_file():
     m_open().write.assert_called_once_with("Generated tensor mock")
 
 
-def test_tvm_cmd():
+def test_tvm_cmd() -> None:
+    """Verify that tvm cmd behaves as expected."""
     args = argparse.Namespace(model="dummy.onnx", target="llvm")
     with (
         patch("onnx9000.tvm.build_module.build") as mock_build,

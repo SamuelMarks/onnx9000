@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { describe, expect, it } from 'vitest';
 import { OliveConfigPanel } from '../src/components/OliveConfigPanel.js';
 

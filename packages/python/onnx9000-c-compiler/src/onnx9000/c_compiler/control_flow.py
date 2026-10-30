@@ -4,7 +4,9 @@ from onnx9000.c_compiler.ast_builder import C89Builder
 from onnx9000.core.ir import Node
 
 
-def generate_if(b: C89Builder, node: Node, cond_name: str, then_branch: str, else_branch: str):
+def generate_if(
+    b: C89Builder, node: Node, cond_name: str, then_branch: str, else_branch: str
+) -> None:
     """Generate C if/else block for ONNX If nodes."""
     b.emit(f"/* {node.op_type} */")
     b.emit(f"if ({cond_name}[0]) {{")
@@ -22,7 +24,9 @@ def generate_if(b: C89Builder, node: Node, cond_name: str, then_branch: str, els
     b.emit("}")
 
 
-def generate_loop(b: C89Builder, node: Node, max_trip_count: str, cond: str, body_graph: str):
+def generate_loop(
+    b: C89Builder, node: Node, max_trip_count: str, cond: str, body_graph: str
+) -> None:
     """Generate C while loop for ONNX Loop nodes."""
     b.emit(f"/* {node.op_type} */")
     b.emit("{")

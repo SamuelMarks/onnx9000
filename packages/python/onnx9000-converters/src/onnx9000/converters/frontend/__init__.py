@@ -1,13 +1,13 @@
-"""Module providing core logic and structural definitions."""
+"""Module implementing init utilities and definitions for onnx9000 / converters / frontend."""
 
 from .codegen import generate_jax, generate_keras, generate_pytorch
 from .models import GPT2, MobileNetV2, ResNet18
 
 __all__ = [
-    "ResNet18",
-    "MobileNetV2",
     "GPT2",
-    "generate_pytorch",
-    "generate_keras",
+    "MobileNetV2",
+    "ResNet18",
     "generate_jax",
+    "generate_keras",
+    "generate_pytorch",
 ]

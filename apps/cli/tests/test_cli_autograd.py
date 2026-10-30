@@ -1,10 +1,13 @@
+"""Unit tests and verification suite for cli autograd functionality."""
+
 import argparse
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 from onnx9000_cli.main import autograd_cmd
 
 
-def test_autograd_cmd_default_output():
+def test_autograd_cmd_default_output() -> None:
+    """Verify that autograd cmd default output behaves as expected."""
     args = argparse.Namespace(model="dummy.onnx", output=None)
     with (
         patch("builtins.print") as mock_print,
@@ -23,7 +26,8 @@ def test_autograd_cmd_default_output():
         mock_print.assert_any_call("Autograd complete.")
 
 
-def test_autograd_cmd_custom_output():
+def test_autograd_cmd_custom_output() -> None:
+    """Verify that autograd cmd custom output behaves as expected."""
     args = argparse.Namespace(model="dummy.onnx", output="custom.onnx")
     with (
         patch("builtins.print"),

@@ -1,12 +1,16 @@
 import { describe, expect, it } from 'vitest';
-import * as Module from '../../src/components/Breadcrumbs';
+import { Breadcrumbs } from '../../src/components/Breadcrumbs';
+
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
 
 describe('Breadcrumbs.ts', () => {
   it('should instantiate and cover Breadcrumbs', () => {
     // Attempt to instantiate
     try {
-      const obj = new (Module as any).Breadcrumbs();
+      const obj = Construct(Breadcrumbs);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

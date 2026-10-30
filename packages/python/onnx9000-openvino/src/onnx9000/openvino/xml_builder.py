@@ -1,6 +1,6 @@
 """Provides XML building utilities."""
 
-from typing import Optional, Union
+from typing import Union
 
 
 class XmlNode:
@@ -11,7 +11,7 @@ class XmlNode:
         name: str,
         attributes: dict[str, str] | None = None,
         children: list[Union["XmlNode", str]] | None = None,
-    ):
+    ) -> None:
         """Initialize the XML node."""
         self.name = name
         self.attributes = attributes or {}
@@ -70,17 +70,21 @@ class XmlNode:
 class XmlBuilder:
     """Builds an XML document."""
 
-    def set_root(self, node):
+    def set_root(
+        self, node: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Set the root node."""
         self.root = node
         return self
 
-    def set_declaration(self, decl):
+    def set_declaration(
+        self, decl: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Set the XML declaration."""
         self.declaration = decl
         return self
 
-    def __init__(self, root_name: str | None = None):
+    def __init__(self, root_name: str | None = None) -> None:
         """Initialize the builder."""
         self.root: XmlNode | None = XmlNode(root_name) if root_name else None
         self.declaration = '<?xml version="1.0" ?>'

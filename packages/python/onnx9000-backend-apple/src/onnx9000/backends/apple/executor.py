@@ -31,6 +31,14 @@ class Dispatcher:
 
     def _init_memory(self) -> None:
         """Plan memory for the graph."""
+        for inp in self.graph.inputs:
+            inp_name = getattr(inp, "name", inp)
+            tensor = self.graph.tensors.get(inp_name) if isinstance(inp_name, str) else inp
+            if tensor and hasattr(tensor, "shape"):
+                shape = tuple(int(getattr(dim, "value", dim)) for dim in tensor.shape)
+                dtype = np.dtype("float32")
+                size_in_bytes = int(np.prod(shape)) * dtype.itemsize
+                self.planner.allocate_static(str(inp_name), size_in_bytes, shape, str(dtype))
         for node in self.graph.nodes:
             for out_name in node.outputs:
                 tensor = self.graph.tensors.get(out_name)
@@ -42,10 +50,15 @@ class Dispatcher:
         self.planner.build_arena()
         for init_name in self.graph.initializers:
             tensor = self.graph.tensors.get(init_name)
-            if tensor and tensor.data is not None:
-                shape = tuple(int(getattr(dim, "value", dim)) for dim in tensor.shape)
-                self.planner.allocate_dynamic(init_name, len(tensor.data), shape, "float32")
-                self.planner.set_tensor(init_name, memoryview(tensor.data), shape, "float32")
+            if tensor:
+                raw_data = getattr(tensor, "_data", None) or getattr(tensor, "data", None)
+                if raw_data is not None:
+                    shape = tuple(int(getattr(dim, "value", dim)) for dim in tensor.shape)
+                    raw_bytes = (
+                        raw_data.tobytes() if hasattr(raw_data, "tobytes") else bytes(raw_data)
+                    )
+                    self.planner.allocate_dynamic(init_name, len(raw_bytes), shape, "float32")
+                    self.planner.set_tensor(init_name, memoryview(raw_bytes), shape, "float32")
 
     def _get_tensor(self, name: str) -> np.ndarray:
         """Execute the get tensor operation."""
@@ -59,7 +72,7 @@ class Dispatcher:
         c_name = node.outputs[0]
         a_data = self._get_tensor(a_name)
         b_data = self._get_tensor(b_name)
-        if is_accelerate_available():
+        if is_accelerate_available() and _accelerate_lib is not None:
             shape_a = a_data.shape
             shape_b = b_data.shape
             m = shape_a[0]
@@ -87,12 +100,12 @@ class Dispatcher:
         a_ptr = a_data.ctypes.data_as(ctypes.POINTER(ctypes.c_float))
         b_ptr = b_data.ctypes.data_as(ctypes.POINTER(ctypes.c_float))
         c_ptr = c_data.ctypes.data_as(ctypes.POINTER(ctypes.c_float))
-        if is_accelerate_available():
+        if is_accelerate_available() and _accelerate_lib is not None:
             if op_type == "Add":
                 _accelerate_lib.vDSP_vadd(a_ptr, 1, b_ptr, 1, c_ptr, 1, size)
             elif op_type == "Sub":
                 _accelerate_lib.vDSP_vsub(b_ptr, 1, a_ptr, 1, c_ptr, 1, size)
-            elif op_type == "Mul":
+            else:
                 _accelerate_lib.vDSP_vmul(a_ptr, 1, b_ptr, 1, c_ptr, 1, size)
             self._set_tensor_safe(c_name, c_data)
         else:
@@ -107,11 +120,9 @@ class Dispatcher:
         for out in node.outputs:
             if out in out_dict:
                 val = out_dict[out]
-                if hasattr(val, "data") and val.data is not None:
-                    # it's a Tensor
-                    import numpy as np
-
-                    val = np.frombuffer(val.data, dtype=np.float32).reshape(
+                if not isinstance(val, np.ndarray):
+                    raw_data = getattr(val, "_data", None) or getattr(val, "data", None)
+                    val = np.frombuffer(raw_data, dtype=np.float32).reshape(
                         [int(x) for x in val.shape]
                     )
                 self._set_tensor_safe(out, val)
@@ -130,12 +141,27 @@ class Dispatcher:
         try:
             op_impl = global_registry.get_op("", node.op_type, provider="apple")
             op_impl(self, node)
-        except RuntimeError:  # pragma: no cover
-            raise  # pragma: no cover
-        except Exception:
+        except UnsupportedOpError:
+            self._cpu_fallback_node(node)
+        except RuntimeError:
+            raise
+        except (
+            OSError,
+            ValueError,
+            TypeError,
+            KeyError,
+            IndexError,
+            AttributeError,
+            ImportError,
+            LookupError,
+            ArithmeticError,
+            BufferError,
+            AssertionError,
+            StopIteration,
+        ):
             self._cpu_fallback_node(node)
 
-    def run(self, inputs: dict[str, np.ndarray]) -> dict[str, np.ndarray]:
+    def run(self, inputs: dict) -> dict:
         """Execute the graph."""
         for name, data in inputs.items():
             self._set_tensor_safe(name, data)
@@ -150,19 +176,43 @@ class Dispatcher:
 
 @register_op("", "MatMul", provider="apple")
 def _apple_matmul(dispatcher: Dispatcher, node: Node) -> None:
+    """Execute apple matmul operation.
+
+    Args:
+        dispatcher: Parameter specifying dispatcher (Dispatcher).
+        node: Parameter specifying node (Node).
+    """
     dispatcher._execute_matmul(node)
 
 
 @register_op("", "Add", provider="apple")
 def _apple_add(dispatcher: Dispatcher, node: Node) -> None:
+    """Execute apple add operation.
+
+    Args:
+        dispatcher: Parameter specifying dispatcher (Dispatcher).
+        node: Parameter specifying node (Node).
+    """
     dispatcher._execute_elementwise(node, "Add")
 
 
 @register_op("", "Sub", provider="apple")
 def _apple_sub(dispatcher: Dispatcher, node: Node) -> None:
+    """Execute apple sub operation.
+
+    Args:
+        dispatcher: Parameter specifying dispatcher (Dispatcher).
+        node: Parameter specifying node (Node).
+    """
     dispatcher._execute_elementwise(node, "Sub")
 
 
 @register_op("", "Mul", provider="apple")
 def _apple_mul(dispatcher: Dispatcher, node: Node) -> None:
+    """Execute apple mul operation.
+
+    Args:
+        dispatcher: Parameter specifying dispatcher (Dispatcher).
+        node: Parameter specifying node (Node).
+    """
     dispatcher._execute_elementwise(node, "Mul")

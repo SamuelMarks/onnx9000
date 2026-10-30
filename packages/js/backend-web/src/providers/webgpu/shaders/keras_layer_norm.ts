@@ -1,4 +1,7 @@
 /**
+ * @fileoverview keras_layer_norm module for backend-web.
+ */
+/**
  * WGSL Shader for Keras LayerNormalization.
  * @returns The WGSL shader source code.
  */

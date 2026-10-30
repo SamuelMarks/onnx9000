@@ -1,25 +1,25 @@
-/* v8 ignore start */
-import { DiffusionPipeline } from "@onnx9000/diffusers/src/pipeline.js";
+/**
+ * @fileoverview Diffusers Pipeline Demo UI.
+ */
+import { DiffusionPipeline } from '@onnx9000/diffusers';
 
 /**
  * Initializes the Diffusers demo.
  */
 export function initDiffusersDemo(): void {
-  const runBtn = document.getElementById("run-btn") as HTMLButtonElement;
-  const out = document.getElementById("output") as HTMLElement;
+  const runBtn = document.getElementById('run-btn') as HTMLButtonElement | null;
+  const out = document.getElementById('output') as HTMLElement | null;
+
   if (!runBtn || !out) return;
 
-  runBtn.addEventListener("click", async () => {
-    out.innerText = "Initializing Pipeline...";
-    try {
-      const _pipe = new DiffusionPipeline();
-      out.innerText += "\nPipeline initialized. Generating mock tensor...";
-      out.innerText += "\nImage tensor generated successfully [1, 3, 512, 512]";
-    } catch (e: any) {
-      out.innerText = `Error: ${e.message}`;
-    }
+  runBtn.addEventListener('click', () => {
+    out.innerText = 'Initializing Pipeline...';
+    const _pipe = new DiffusionPipeline();
+    out.innerText += `
+Pipeline initialized. Generating mock tensor...`;
+    out.innerText += `
+Image tensor generated successfully [1, 3, 512, 512]`;
   });
 }
-initDiffusersDemo();
 
-/* v8 ignore stop */
+initDiffusersDemo();

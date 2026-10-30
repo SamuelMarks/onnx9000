@@ -3,13 +3,23 @@
 Translates ONNX operations to equivalent C++ bindings and memory buffers.
 """
 
+from onnx9000.backends.codegen.generator import Generator
+from onnx9000.core.dtypes import to_cpp_type
 from onnx9000.core.ir import Node
 from onnx9000.core.registry import global_registry as registry
 
 
 @registry.register_op("", "If")
-def generate_if(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implement the generate_if method or operation."""
+def generate_if(node: Node, ctx: Generator) -> str:
+    """Generate target source code for the if operator.
+
+    Args:
+        node: Parameter specifying node (Node).
+        ctx: Parameter specifying ctx ('onnx9000.backends.codegen.Generator').
+
+    Returns:
+        Result of generate if (str).
+    """
     cond_var = ctx.get_tensor_name(node.inputs[0])
 
     then_graph = node.attributes.get("then_branch")
@@ -38,11 +48,7 @@ def generate_if(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
         out = ctx.get_tensor_name(out_name)
         tensor_info = ctx.graph.tensors[out_name]
         offset = ctx.tensor_offsets.get(node.outputs[0], 0)
-        cpp_type = "float"
-        if tensor_info.dtype is not None:
-            from onnx9000.core.dtypes import to_cpp_type
-
-            cpp_type = to_cpp_type(tensor_info.dtype)
+        cpp_type = to_cpp_type(tensor_info.dtype) if tensor_info.dtype is not None else "float"
         out_blocks.append(
             f"\\n        // Dummy output allocation for If\\n        /* preallocated */ // MOCK SIZE\\n        onnx9000::Tensor<{cpp_type}> {out}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {{1}});\\n        std::fill({out}.data, {out}.data + 1, static_cast<{cpp_type}>(0));\\n        "
         )
@@ -50,8 +56,16 @@ def generate_if(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
 
 
 @registry.register_op("", "Loop")
-def generate_loop(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
-    """Implement the generate_loop method or operation."""
+def generate_loop(node: Node, ctx: Generator) -> str:
+    """Generate target source code for the loop operator.
+
+    Args:
+        node: Parameter specifying node (Node).
+        ctx: Parameter specifying ctx ('onnx9000.backends.codegen.Generator').
+
+    Returns:
+        Result of generate loop (str).
+    """
     max_trip_count = (
         ctx.get_tensor_name(node.inputs[0]) if len(node.inputs) > 0 and node.inputs[0] else None
     )
@@ -84,11 +98,7 @@ def generate_loop(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str
         out = ctx.get_tensor_name(out_name)
         tensor_info = ctx.graph.tensors[out_name]
         offset = ctx.tensor_offsets.get(node.outputs[0], 0)
-        cpp_type = "float"
-        if tensor_info.dtype is not None:
-            from onnx9000.core.dtypes import to_cpp_type
-
-            cpp_type = to_cpp_type(tensor_info.dtype)
+        cpp_type = to_cpp_type(tensor_info.dtype) if tensor_info.dtype is not None else "float"
         out_blocks.append(
             f"\\n        // Dummy output allocation for Loop\\n        /* preallocated */ // MOCK SIZE\\n        onnx9000::Tensor<{cpp_type}> {out}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {{1}});\\n        std::fill({out}.data, {out}.data + 1, static_cast<{cpp_type}>(0));\\n        "
         )

@@ -1,12 +1,15 @@
 """CPU Execution Provider."""
 
-import logging
-from typing import Any
+from __future__ import annotations
 
+import logging
+
+import numpy as np
 from onnx9000.backends.cpu.ops import OP_REGISTRY
 from onnx9000.backends.cpu.ops_ml import ML_OP_REGISTRY
+from onnx9000.core.dtypes import DType
 from onnx9000.core.execution import ExecutionContext, ExecutionProvider
-from onnx9000.core.ir import Graph, Tensor
+from onnx9000.core.ir import DynamicDim, Graph, Tensor
 
 logger = logging.getLogger(__name__)
 
@@ -26,11 +29,8 @@ class CPUExecutionProvider(ExecutionProvider):
         """Mock allocation logic for generic CPU arrays."""
         return
 
-    def _to_numpy(self, tensor: Tensor) -> Any:
-        """Execute the to numpy operation."""
-        import numpy as np
-        from onnx9000.core.dtypes import DType
-
+    def _to_numpy(self, tensor: Tensor) -> np.ndarray:
+        """Convert an IR Tensor to a NumPy ndarray."""
         if tensor.data is None:
             return np.empty(tensor.shape, dtype=np.float32)
         if isinstance(tensor.data, np.ndarray):
@@ -49,15 +49,15 @@ class CPUExecutionProvider(ExecutionProvider):
         }
         np_dtype = dtype_mapping.get(tensor.dtype, np.float32)
         arr = np.frombuffer(tensor.data, dtype=np_dtype)
-        return arr.reshape([int(x) if hasattr(x, "value") else int(x) for x in tensor.shape])
+        return arr.reshape(
+            [int(x.value) if isinstance(x, DynamicDim) else int(x) for x in tensor.shape]
+        )
 
     def execute(
         self, graph: Graph, context: ExecutionContext, inputs: dict[str, Tensor]
     ) -> dict[str, Tensor]:
         """Evaluate nodes sequentially."""
-        import numpy as np
-
-        results = {}
+        results: dict[str, Tensor] = {}
         from onnx9000.core.utils import topological_sort
 
         nodes = topological_sort(graph)
@@ -84,7 +84,7 @@ class CPUExecutionProvider(ExecutionProvider):
                         t = Tensor(
                             out_name,
                             tuple(out_tensors[i].shape),
-                            inputs[list(inputs.keys())[0]].dtype if inputs else None,
+                            inputs[next(iter(inputs.keys()))].dtype if inputs else None,
                             data=out_tensors[i],
                         )
                         results[out_name] = t

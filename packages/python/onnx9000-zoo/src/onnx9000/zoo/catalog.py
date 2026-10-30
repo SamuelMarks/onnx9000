@@ -1,13 +1,12 @@
-import hashlib
-import os
+"""Implementation of catalog (onnx9000 / zoo / catalog.py) providing ZooCatalog."""
+
 import sqlite3
-from typing import Any, Optional
 
 
 class ZooCatalog:
     """Distributed SQLite indexer for tracking exact Git SHAs and tensor hash digests."""
 
-    def __init__(self, db_path: str = ":memory:"):
+    def __init__(self, db_path: str = ":memory:") -> None:
         """Initialize the ZooCatalog.
 
         Args:
@@ -58,7 +57,9 @@ class ZooCatalog:
         )
         self.conn.commit()
 
-    def get_model(self, model_id: str) -> dict[str, Any] | None:
+    def get_model(
+        self, model_id: str
+    ) -> dict[str, int | float | str | bool | bytes | list | dict | tuple | None] | None:
         """Retrieve a model from the catalog.
 
         Args:
@@ -83,7 +84,9 @@ class ZooCatalog:
             }
         return None
 
-    def list_models(self, hub: str | None = None) -> list[dict[str, Any]]:
+    def list_models(
+        self, hub: str | None = None
+    ) -> list[dict[str, int | float | str | bool | bytes | list | dict | tuple | None]]:
         """List all models in the catalog, optionally filtered by hub.
 
         Args:

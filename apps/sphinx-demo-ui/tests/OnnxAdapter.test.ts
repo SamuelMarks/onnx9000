@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { describe, expect, it } from 'vitest';
 import { OnnxAdapter } from '../src/core/OnnxAdapter.js';
 
@@ -7,7 +6,7 @@ describe('OnnxAdapter', () => {
     const elements = OnnxAdapter.toCytoscape({
       inputs: [{ name: 'in', type: 'f32' }],
       outputs: [{ name: 'out', type: 'f32' }],
-      nodes: [{ id: 'n1', name: 'n1', opType: 'Identity', inputs: ['in'], outputs: ['out'] }]
+      nodes: [{ id: 'n1', name: 'n1', opType: 'Identity', inputs: ['in'], outputs: ['out'] }],
     });
     expect(elements.length).toBeGreaterThan(0);
   });

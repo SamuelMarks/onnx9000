@@ -1,4 +1,4 @@
-"""Module providing reduction ops functionality."""
+"""Module providing TensorFlow to ONNX reduction operator mappings."""
 
 from collections.abc import Callable
 

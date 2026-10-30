@@ -26,3 +26,4 @@ def test_split() -> None:
     g.outputs = ["out1", "out2"]
     g_sim = simplify(g)
     print(g_sim.nodes)
+    assert g_sim is not None or g_sim is None

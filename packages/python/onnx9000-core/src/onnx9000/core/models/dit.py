@@ -1,6 +1,14 @@
-"""Dit."""
+"""Diffusion Transformer (DiT) model implementation for ONNX9000.
 
-from typing import Any
+This module implements the Diffusion Transformer (DiT) architecture, which replaces
+the traditional U-Net backbone in diffusion models with a transformer operating on
+latent patches. It supports Adaptive Layer Normalization (AdaLN-Zero) block structures,
+patch embeddings, and conditional timestep embedding projections.
+
+Reference:
+    Peebles, W., & Xie, S. (2023). Scalable Diffusion Models with Transformers.
+    IEEE/CVF International Conference on Computer Vision (ICCV).
+"""
 
 from onnx9000.core.ir import Tensor, Variable
 from onnx9000.core.models.vit import PatchEmbed
@@ -9,15 +17,47 @@ from onnx9000.core.primitives import Gelu, Gemm, LayerNormalization, MultiHeadAt
 
 
 def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:
-    """Get param."""
+    """Retrieves or registers a model parameter.
+
+    This utility helps initialize and retrieve a Parameter variable with the specified
+    name, shape, and data type inside the ONNX9000 model graph structure.
+
+    Args:
+        name (str): The identifier name of the parameter variable.
+        shape (list[int]): The shape of the parameter tensor.
+        dtype (int): The data type of the parameter (defaults to 1).
+
+    Returns:
+        Variable: The registered parameter variable with the given properties.
+    """
     return Variable(name=name, shape=shape, dtype=dtype)
 
 
 class DiTBlock:
-    """Diffusion Transformer Block with AdaLN-Zero."""
+    """Diffusion Transformer Block with AdaLN-Zero.
 
-    def __init__(self, hidden_size: int, num_heads: int, mlp_ratio: float = 4.0, prefix: str = ""):
-        """Init."""
+    This block implements a transformer layer consisting of Multi-Head Self-Attention
+    and MLP sub-layers, both modulated using Adaptive Layer Normalization (AdaLN-Zero)
+    parameters derived from condition embeddings.
+    """
+
+    def __init__(
+        self, hidden_size: int, num_heads: int, mlp_ratio: float = 4.0, prefix: str = ""
+    ) -> None:
+        """Initializes the DiTBlock layer.
+
+        Sets up layer normalizations, attention modules, MLP projection matrices, and
+        adaptive layer normalization modulations.
+
+        Args:
+            hidden_size (int): The size of the hidden/embedding dimension.
+            num_heads (int): The number of attention heads in the MultiHeadAttention layer.
+            mlp_ratio (float): The ratio of MLP hidden dimension to hidden size. Defaults to 4.0.
+            prefix (str): Prefix string prepend to parameter names. Defaults to "".
+
+        Returns:
+            None
+        """
         self.prefix = prefix
         self.hidden_size = hidden_size
         self.norm1 = LayerNormalization((hidden_size,), epsilon=1e-6)
@@ -31,8 +71,20 @@ class DiTBlock:
 
     def __call__(self, x: Tensor, c: Tensor) -> Tensor:
         # c is the timestep/condition embedding [B, hidden_size]
-        """Call."""
-        from onnx9000.core.ops import split, squeeze
+        """Applies the forward transformation of the DiT block.
+
+        Applies Multi-Head Self-Attention and MLP transformations on the input,
+        incorporating modulation parameters computed from the condition embedding.
+
+        Args:
+            x (Tensor): The input latent token sequence of shape [B, S, D], where
+                B is the batch size, S is the sequence length, and D is the hidden size.
+            c (Tensor): The conditioning timestep/condition embedding of shape [B, D].
+
+        Returns:
+            Tensor: The processed token sequence tensor of shape [B, S, D].
+        """
+        from onnx9000.core.ops import split
 
         # AdaLN-Zero mapping
         # We need 6 chunks: shift_msa, scale_msa, gate_msa, shift_mlp, scale_mlp, gate_mlp
@@ -51,7 +103,7 @@ class DiTBlock:
         shift_msa, scale_msa, gate_msa, shift_mlp, scale_mlp, gate_mlp = chunks
 
         # Needs unsqueeze to broadcast across sequence length
-        from onnx9000.core.ops import record_op, unsqueeze
+        from onnx9000.core.ops import record_op
 
         axis_tensor = record_op("Constant", [], {"value": [1], "dtype": 7})
         shift_msa = record_op("Unsqueeze", [shift_msa, axis_tensor])
@@ -114,7 +166,13 @@ class DiTBlock:
 
 
 class DiT:
-    """Di t."""
+    """Diffusion Transformer (DiT) model.
+
+    This class defines the full DiT architecture. It converts a batch of input images
+    to patch embeddings, injects positional embeddings, embeds timesteps, and sequentially
+    passes them through multiple DiT Blocks before finalizing with a modulated layer
+    normalization and linear projection.
+    """
 
     def __init__(
         self,
@@ -125,8 +183,21 @@ class DiT:
         depth: int = 28,
         num_heads: int = 16,
         mlp_ratio: float = 4.0,
-    ):
-        """Init."""
+    ) -> None:
+        """Initializes the DiT model.
+
+        Args:
+            input_size (int): Height and width of the input image. Defaults to 32.
+            patch_size (int): The spatial size of each image patch. Defaults to 2.
+            in_channels (int): The number of channels in the input image. Defaults to 4.
+            hidden_size (int): The embedding size/hidden dimension of the transformer. Defaults to 1152.
+            depth (int): The number of DiTBlocks in the transformer architecture. Defaults to 28.
+            num_heads (int): The number of attention heads. Defaults to 16.
+            mlp_ratio (float): The expansion ratio of the MLP hidden layer. Defaults to 4.0.
+
+        Returns:
+            None
+        """
         self.hidden_size = hidden_size
         self.patch_embed = PatchEmbed(
             input_size, patch_size, in_channels, hidden_size, prefix="x_embedder"
@@ -144,7 +215,19 @@ class DiT:
         self.out_channels = in_channels * patch_size * patch_size
 
     def __call__(self, x: Tensor, t: Tensor) -> Tensor:
-        """Call."""
+        """Applies the forward pass of the DiT model.
+
+        Converts input latents to patch tokens, incorporates positions and timestep embeddings,
+        passes them through all transformer layers, and projects the final output back to latent space.
+
+        Args:
+            x (Tensor): Input image latent tensor of shape [B, C, H, W], where B is batch size,
+                C is channels, and H, W are spatial dimensions.
+            t (Tensor): Input timestep embedding tensor of shape [B, 1] or [B].
+
+        Returns:
+            Tensor: The predicted noise or latent projection tensor of shape [B, S, out_channels].
+        """
         x = self.patch_embed(x)
 
         pos_embed = get_param("pos_embed", [1, self.patch_embed.num_patches, self.hidden_size])
@@ -193,6 +276,16 @@ class DiT:
         return x
 
 
-def dit_xl_2(**kwargs: Any) -> DiT:
-    """Dit xl 2."""
+def dit_xl_2(**kwargs: int | float | str | bool | bytes | list | dict | tuple | None) -> DiT:
+    """Helper function to create a Diffusion Transformer XL/2 configuration.
+
+    This function instantiates a standard DiT-XL/2 model with a hidden size of 1152,
+    a depth of 28 blocks, and 16 attention heads.
+
+    Args:
+        **kwargs (Union[int, float, str, bool, bytes, list, dict, tuple, None]): Additional keyword arguments to customize the DiT initialization.
+
+    Returns:
+        DiT: The initialized DiT model configured with DiT-XL/2 parameters.
+    """
     return DiT(hidden_size=1152, depth=28, num_heads=16, **kwargs)

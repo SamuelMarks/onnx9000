@@ -28,7 +28,7 @@ export class PluginManager {
       this.plugins.forEach((p) => {
         if (p.onModelLoad) {
           try {
-            p.onModelLoad(this.activeModel!);
+            p.onModelLoad(this.activeModel);
           } catch (e) {
             logger.error(`Plugin ${p.name} failed onModelLoad hook: ${e}`);
           }

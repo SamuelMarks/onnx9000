@@ -1,32 +1,62 @@
-import { beforeEach, describe, expect, it } from "vitest";
+// @vitest-environment jsdom
+import * as ireeCli from '@onnx9000/iree-compiler';
+import * as ireeVm from '@onnx9000/iree-runtime';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { initIreeDemo } from '../src/main.js';
 
-describe("demo", () => {
+describe('demo-iree', () => {
   beforeEach(() => {
-    document.body.innerHTML = `
-      <textarea id="prompt"></textarea>
-      <button id="runBtn"></button>
-      <div id="output"></div>
-    `;
+    document.body.innerHTML =
+      '<button id="compile-btn"></button><button id="run-btn"></button><div id="compile-output"></div><div id="run-output"></div>';
   });
 
-  it("should run flow", async () => {
-    // import to execute module top-level
-    try {
-      await import("../src/main.js");
-    } catch (_e) {}
+  it('should compile and run IREE WebVM bytecode and handle errors', async () => {
+    document.body.innerHTML = '';
+    initIreeDemo();
 
-    const btn = document.getElementById("runBtn");
-    const prompt = document.getElementById("prompt");
-    const _out = document.getElementById("output");
+    document.body.innerHTML =
+      '<button id="compile-btn"></button><button id="run-btn"></button><div id="compile-output"></div><div id="run-output"></div>';
+    initIreeDemo();
 
-    if (btn) btn.click();
-    if (prompt && btn) {
-      prompt.value = "test";
-      btn.click();
-    }
+    const compileBtn = document.getElementById('compile-btn') as HTMLButtonElement;
+    const runBtn = document.getElementById('run-btn') as HTMLButtonElement;
+    const compileOut = document.getElementById('compile-output') as HTMLElement;
+    const runOut = document.getElementById('run-output') as HTMLElement;
 
-    // allow some async code to run
-    await new Promise((r) => setTimeout(r, 100));
-    expect(true).toBe(true);
+    runBtn.click();
+
+    compileBtn.click();
+    await new Promise((r) => setTimeout(r, 30));
+    expect(compileOut.innerText).toContain('Compilation successful.');
+
+    runBtn.click();
+    await new Promise((r) => setTimeout(r, 30));
+    expect(runOut.innerText).toContain('Execution successful!');
+
+    const compileSpy = vi
+      .spyOn(ireeCli, 'compileModel')
+      .mockRejectedValueOnce(new Error('Bad MLIR'));
+    compileBtn.click();
+    await new Promise((r) => setTimeout(r, 30));
+    expect(compileOut.innerText).toContain('Compiler Error: Bad MLIR');
+
+    compileSpy.mockRejectedValueOnce('Raw compile err');
+    compileBtn.click();
+    await new Promise((r) => setTimeout(r, 30));
+    expect(compileOut.innerText).toContain('Compiler Error: Raw compile err');
+    compileSpy.mockRestore();
+
+    const runSpy = vi
+      .spyOn(ireeVm.WVMInterpreter.prototype, 'runAsync')
+      .mockRejectedValueOnce(new Error('VM Trap'));
+    runBtn.click();
+    await new Promise((r) => setTimeout(r, 30));
+    expect(runOut.innerText).toContain('Runtime Error: VM Trap');
+
+    runSpy.mockRejectedValueOnce('Raw VM Trap');
+    runBtn.click();
+    await new Promise((r) => setTimeout(r, 30));
+    expect(runOut.innerText).toContain('Runtime Error: Raw VM Trap');
+    runSpy.mockRestore();
   });
 });

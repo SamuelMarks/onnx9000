@@ -1,218 +1,114 @@
-import pytest
-from onnx9000.core.primitives import *
+"""Unit tests for ONNX9000 core primitives in `onnx9000.core.primitives`."""
+
+from onnx9000.core.ir import Tensor
+from onnx9000.core.primitives import (
+    RNN,
+    AlibiBias,
+    BaseActivation,
+    BaseNorm,
+    BatchNormalization,
+    ConvFamily,
+    ConvND,
+    DepthwiseConv,
+    FlashAttention,
+    Gelu,
+    Gemm,
+    GroupedQueryAttention,
+    GroupNorm,
+    InstanceNorm,
+    LayerNormalization,
+    LeakyRelu,
+    MatMul,
+    Mish,
+    MultiHeadAttention,
+    Relu,
+    RMSNorm,
+    RoPE,
+    Sigmoid,
+    Silu,
+    StateSpace,
+    Swish,
+    Tanh,
+)
 
 
-def test_BaseNorm():
-    try:
-        obj = BaseNorm()
-        assert obj is not None
-    except Exception:
-        pass
+def test_normalization_primitives() -> None:
+    """Verify BaseNorm, BatchNormalization, LayerNormalization, RMSNorm, GroupNorm, and InstanceNorm."""
+    x = Tensor("x", (1, 8, 4, 4), 1)
+    scale = Tensor("scale", (8,), 1)
+    bias = Tensor("bias", (8,), 1)
+    mean = Tensor("mean", (8,), 1)
+    var = Tensor("var", (8,), 1)
+
+    bn_base = BaseNorm(epsilon=1e-5)
+    assert bn_base(x) is x
+
+    bn = BatchNormalization(num_features=8)
+    assert isinstance(bn(x, scale, bias, mean, var), Tensor)
+
+    ln = LayerNormalization(normalized_shape=(8,))
+    assert isinstance(ln(x, scale, bias), Tensor)
+
+    rms = RMSNorm(normalized_shape=(8,))
+    assert isinstance(rms(x, scale), Tensor)
+
+    gn = GroupNorm(num_groups=2, num_channels=8)
+    assert isinstance(gn(x, scale, bias), Tensor)
+
+    inst_norm = InstanceNorm(num_features=8)
+    assert isinstance(inst_norm(x, scale, bias), Tensor)
 
 
-def test_BatchNormalization():
-    try:
-        obj = BatchNormalization()
-        assert obj is not None
-    except Exception:
-        pass
+def test_activation_primitives() -> None:
+    """Verify BaseActivation, Relu, Sigmoid, Tanh, LeakyRelu, Gelu, Silu, Swish, and Mish."""
+    x = Tensor("x", (1, 8), 1)
+
+    act_base = BaseActivation()
+    assert act_base(x) is x
+    assert isinstance(act_base.generate_lut(), Tensor)
+
+    for act in [Relu(), Sigmoid(), Tanh(), LeakyRelu(0.1), Gelu(), Silu(), Swish(), Mish()]:
+        assert isinstance(act(x), Tensor)
 
 
-def test_LayerNormalization():
-    try:
-        obj = LayerNormalization()
-        assert obj is not None
-    except Exception:
-        pass
+def test_conv_linear_attention_and_recurrent_primitives() -> None:
+    """Verify ConvFamily, ConvND, DepthwiseConv, MatMul, Gemm, Attention, RoPE, AlibiBias, StateSpace, and RNN."""
+    x = Tensor("x", (1, 8, 8, 8), 1)
+    w = Tensor("w", (8, 8, 3, 3), 1)
+    b = Tensor("b", (8,), 1)
 
+    cf = ConvFamily(8, 8, 3)
+    assert cf(x, w, b) is x
 
-def test_RMSNorm():
-    try:
-        obj = RMSNorm()
-        assert obj is not None
-    except Exception:
-        pass
+    conv2d = ConvND(2, 8, 8, 3, stride=1, padding=1)
+    assert isinstance(conv2d(x, w, b), Tensor)
 
+    dw = DepthwiseConv(2, 8, 3, padding=1)
+    assert isinstance(dw(x, w, b), Tensor)
 
-def test_GroupNorm():
-    try:
-        obj = GroupNorm()
-        assert obj is not None
-    except Exception:
-        pass
+    mm = MatMul()
+    assert isinstance(mm(x, x), Tensor)
 
+    gemm = Gemm(trans_b=1)
+    assert isinstance(gemm(x, x, b), Tensor)
 
-def test_InstanceNorm():
-    try:
-        obj = InstanceNorm()
-        assert obj is not None
-    except Exception:
-        pass
+    mha = MultiHeadAttention(num_heads=2)
+    assert isinstance(mha(x, x, x, mask=x), Tensor)
 
+    fa = FlashAttention(num_heads=2)
+    assert isinstance(fa(x, x, x, mask=x), Tensor)
 
-def test_BaseActivation():
-    try:
-        obj = BaseActivation()
-        assert obj is not None
-    except Exception:
-        pass
+    gqa = GroupedQueryAttention(num_heads=4, num_kv_heads=2)
+    assert isinstance(gqa(x, x, x, mask=x), Tensor)
 
+    rope = RoPE(dim=8)
+    assert isinstance(rope(x, b), Tensor)
 
-def test_Relu():
-    try:
-        obj = Relu()
-        assert obj is not None
-    except Exception:
-        pass
+    alibi = AlibiBias(num_heads=4)
+    assert isinstance(alibi(x), Tensor)
 
+    ssm = StateSpace(d_model=8, d_state=4, d_conv=3)
+    assert isinstance(ssm(x, x, x, x, x, x), Tensor)
 
-def test_Sigmoid():
-    try:
-        obj = Sigmoid()
-        assert obj is not None
-    except Exception:
-        pass
-
-
-def test_Tanh():
-    try:
-        obj = Tanh()
-        assert obj is not None
-    except Exception:
-        pass
-
-
-def test_LeakyRelu():
-    try:
-        obj = LeakyRelu()
-        assert obj is not None
-    except Exception:
-        pass
-
-
-def test_Gelu():
-    try:
-        obj = Gelu()
-        assert obj is not None
-    except Exception:
-        pass
-
-
-def test_Silu():
-    try:
-        obj = Silu()
-        assert obj is not None
-    except Exception:
-        pass
-
-
-def test_Swish():
-    try:
-        obj = Swish()
-        assert obj is not None
-    except Exception:
-        pass
-
-
-def test_Mish():
-    try:
-        obj = Mish()
-        assert obj is not None
-    except Exception:
-        pass
-
-
-def test_ConvFamily():
-    try:
-        obj = ConvFamily()
-        assert obj is not None
-    except Exception:
-        pass
-
-
-def test_ConvND():
-    try:
-        obj = ConvND()
-        assert obj is not None
-    except Exception:
-        pass
-
-
-def test_DepthwiseConv():
-    try:
-        obj = DepthwiseConv()
-        assert obj is not None
-    except Exception:
-        pass
-
-
-def test_MatMul():
-    try:
-        obj = MatMul()
-        assert obj is not None
-    except Exception:
-        pass
-
-
-def test_Gemm():
-    try:
-        obj = Gemm()
-        assert obj is not None
-    except Exception:
-        pass
-
-
-def test_MultiHeadAttention():
-    try:
-        obj = MultiHeadAttention()
-        assert obj is not None
-    except Exception:
-        pass
-
-
-def test_FlashAttention():
-    try:
-        obj = FlashAttention()
-        assert obj is not None
-    except Exception:
-        pass
-
-
-def test_GroupedQueryAttention():
-    try:
-        obj = GroupedQueryAttention()
-        assert obj is not None
-    except Exception:
-        pass
-
-
-def test_RoPE():
-    try:
-        obj = RoPE()
-        assert obj is not None
-    except Exception:
-        pass
-
-
-def test_AlibiBias():
-    try:
-        obj = AlibiBias()
-        assert obj is not None
-    except Exception:
-        pass
-
-
-def test_StateSpace():
-    try:
-        obj = StateSpace()
-        assert obj is not None
-    except Exception:
-        pass
-
-
-def test_RNN():
-    try:
-        obj = RNN()
-        assert obj is not None
-    except Exception:
-        pass
+    rnn = RNN(hidden_size=8)
+    assert isinstance(rnn(x, w, w), Tensor)

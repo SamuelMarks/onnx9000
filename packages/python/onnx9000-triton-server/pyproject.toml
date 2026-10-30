@@ -1,10 +1,15 @@
 [project]
 name = "onnx9000-triton-server"
 version = "1.0.0"
+description = "KServe v2 HTTP/gRPC model repository configuration and inference handler for ONNX9000"
+dependencies = []
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
 [tool.hatch.build.targets.wheel]
-packages = ["src/onnx9000_triton_server"]
+packages = ["src/onnx9000", "src/onnx9000_triton_server"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -2,33 +2,49 @@
  * @fileoverview progressive.ts
  * Provides progressive functionality for the backend-web package.
  */
-import type { Tensor } from "@onnx9000/core";
-import type { SessionOptions } from "./session.js";
 
+import type { Tensor } from '@onnx9000/core';
+import { BackendError } from '@onnx9000/core';
+import type { SessionOptions } from './session.js';
+
+/** Interface `ProgressiveLoadOptions` definition. */
 export interface ProgressiveLoadOptions extends SessionOptions {
+  /** Property `maxChunkSize`. */
   maxChunkSize?: number;
 }
 
+/** Represents the `ProgressiveSession` class. */
 export class ProgressiveSession {
+  /** Property `url` of `ProgressiveSession`. */
   private url: string;
+  /** Property `options` of `ProgressiveSession`. */
   private options: ProgressiveLoadOptions;
+  /** Property `isLoaded` of `ProgressiveSession`. */
   public isLoaded: boolean = false;
 
+  /**
+   * Initializes a new `ProgressiveSession` instance.
+   * @param url Parameter `url`.
+   * @param options Parameter `options`.
+   */
   constructor(url: string, options: ProgressiveLoadOptions) {
     this.url = url;
     this.options = options;
   }
 
+  /**
+   * Executes `run` on `ProgressiveSession`.
+   * @param _inputs Parameter `_inputs`.
+   * @returns Result of `run`.
+   */
   async run(_inputs: Record<string, Tensor>): Promise<Record<string, Tensor>> {
     // 1. Metadata Fetch: Simulated fetching of first few KB
     // 2. Layer-on-Demand: Request specific ranges
     // 3. Weight Streaming: Stream to WebGPU
 
     // Validate we can "fetch" conceptually (mock implementation)
-    if (!this.url.startsWith("http") && !this.url.startsWith("/")) {
-      throw new Error(
-        "Progressive loading requires a valid HTTP URL or absolute path.",
-      );
+    if (!this.url.startsWith('http') && !this.url.startsWith('/')) {
+      throw new BackendError('Progressive loading requires a valid HTTP URL or absolute path.');
     }
 
     if (!this.isLoaded) {

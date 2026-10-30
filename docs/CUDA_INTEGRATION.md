@@ -18,7 +18,9 @@ When running models via the Python API, simply specify the `CUDAExecutionProvide
 import onnxruntime as ort
 
 options = ort.SessionOptions()
-session = ort.InferenceSession("model.onnx", sess_options=options, providers=['CUDAExecutionProvider'])
+session = ort.InferenceSession(
+    "model.onnx", sess_options=options, providers=["CUDAExecutionProvider"]
+)
 
 # Run inference on NVIDIA GPU
 result = session.run(None, {"input": input_data})

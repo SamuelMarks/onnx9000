@@ -2,18 +2,29 @@
  * @fileoverview serializer.ts
  * Provides serializer functionality for the converters package.
  */
-// @ts-nocheck
-import type { Tensor } from "@onnx9000/core";
-import { zipSync } from "fflate";
+import type { Tensor } from '@onnx9000/core';
+import { zipSync } from 'fflate';
 
+/** Represents the `PickleBuilder` class. */
 class PickleBuilder {
+  /** Property `chunks` of `PickleBuilder`. */
   private chunks: Uint8Array[] = [];
 
+  /**
+   * Executes `write` on `PickleBuilder`.
+   * @param b Parameter `b`.
+   * @returns Result of `write`.
+   */
   write(b: Uint8Array | number[]) {
     if (b instanceof Uint8Array) this.chunks.push(b);
     else this.chunks.push(new Uint8Array(b));
   }
 
+  /**
+   * Executes `writeString` on `PickleBuilder`.
+   * @param s Parameter `s`.
+   * @returns Result of `writeString`.
+   */
   writeString(s: string) {
     const enc = new TextEncoder().encode(s);
     if (enc.length <= 255) {
@@ -28,11 +39,21 @@ class PickleBuilder {
     }
   }
 
+  /**
+   * Executes `writeAscii` on `PickleBuilder`.
+   * @param s Parameter `s`.
+   * @returns Result of `writeAscii`.
+   */
   writeAscii(s: string) {
     const enc = new TextEncoder().encode(s);
     this.write(enc);
   }
 
+  /**
+   * Executes `writeInt` on `PickleBuilder`.
+   * @param val Parameter `val`.
+   * @returns Result of `writeInt`.
+   */
   writeInt(val: number) {
     if (val >= 0 && val <= 255) {
       this.write([0x4b, val]);
@@ -55,6 +76,11 @@ class PickleBuilder {
     }
   }
 
+  /**
+   * Executes `writeTuple` on `PickleBuilder`.
+   * @param arr Parameter `arr`.
+   * @returns Result of `writeTuple`.
+   */
   writeTuple(arr: number[]) {
     this.write([0x28]); // MARK
     for (const val of arr) {
@@ -63,6 +89,10 @@ class PickleBuilder {
     this.write([0x74]); // TUPLE
   }
 
+  /**
+   * Executes `getBuffer` on `PickleBuilder`.
+   * @returns Result of `getBuffer`.
+   */
   getBuffer(): Uint8Array {
     let total = 0;
     for (const c of this.chunks) total += c.length;
@@ -76,74 +106,84 @@ class PickleBuilder {
   }
 }
 
+/** Represents the `PyTorchSerializer` class. */
 export class PyTorchSerializer {
+  /**
+   * Executes `getStorageClass` on `PyTorchSerializer`.
+   * @param dtype Parameter `dtype`.
+   * @returns Result of `getStorageClass`.
+   */
   static getStorageClass(dtype: string): string {
     switch (dtype) {
-      case "float32":
-        return "FloatStorage";
-      case "float64":
-        return "DoubleStorage";
-      case "float16":
-        return "HalfStorage";
-      case "bfloat16":
-        return "BFloat16Storage";
-      case "int32":
-        return "IntStorage";
-      case "int64":
-        return "LongStorage";
-      case "int16":
-        return "ShortStorage";
-      case "int8":
-        return "CharStorage";
-      case "uint8":
-        return "ByteStorage";
-      case "bool":
-        return "BoolStorage";
+      case 'float32':
+        return 'FloatStorage';
+      case 'float64':
+        return 'DoubleStorage';
+      case 'float16':
+        return 'HalfStorage';
+      case 'bfloat16':
+        return 'BFloat16Storage';
+      case 'int32':
+        return 'IntStorage';
+      case 'int64':
+        return 'LongStorage';
+      case 'int16':
+        return 'ShortStorage';
+      case 'int8':
+        return 'CharStorage';
+      case 'uint8':
+        return 'ByteStorage';
+      case 'bool':
+        return 'BoolStorage';
       default:
-        return "FloatStorage";
+        return 'FloatStorage';
     }
   }
 
+  /**
+   * Executes `serialize` on `PyTorchSerializer`.
+   * @param tensors Parameter `tensors`.
+   * @returns Result of `serialize`.
+   */
   static serialize(tensors: Tensor[]): Uint8Array {
     const files: Record<string, Uint8Array> = {};
-    files["archive/byteorder"] = new TextEncoder().encode("little");
-    files["archive/version"] = new TextEncoder().encode("3");
+    files['archive/byteorder'] = new TextEncoder().encode('little');
+    files['archive/version'] = new TextEncoder().encode('3');
 
     const pkl = new PickleBuilder();
     pkl.write([0x80, 0x02]); // PROTO 2
     pkl.write([0x7d, 0x28]); // EMPTY_DICT, MARK
 
-    for (let i = 0; i < tensors.length; i++) {
-      const t = tensors[i];
+    for (const [i, t] of tensors.entries()) {
       if (!t) continue;
       const storageType = PyTorchSerializer.getStorageClass(t.dtype);
       const dataStr = i.toString();
       const numElements = t.size;
 
-      let shape = t.shape.map((s) => (typeof s === "number" ? s : 1));
+      let shape = t.shape.map((s) => (typeof s === 'number' ? s : 1));
       if (shape.length === 0) shape = [1];
 
       const stride = new Array(shape.length).fill(1);
       for (let j = shape.length - 2; j >= 0; j--) {
-        stride[j] = stride[j + 1] * (shape[j + 1] || 1);
+        stride[j] = stride[j + 1] * (shape[j + 1] as number);
       }
 
       pkl.writeString(t.name);
-      pkl.writeAscii("ctorch._utils\n_rebuild_tensor_v2\n");
+      pkl.writeAscii('ctorch._utils\n_rebuild_tensor_v2\n');
       pkl.write([0x28, 0x28]); // MARK, MARK
-      pkl.writeString("storage");
+      pkl.writeString('storage');
       pkl.writeAscii(`ctorch\n${storageType}\n`);
       pkl.writeString(dataStr);
-      pkl.writeString("cpu");
+      pkl.writeString('cpu');
       pkl.writeInt(numElements);
-      pkl.writeAscii("tQ"); // TUPLE, BINPERSID
+      pkl.writeAscii('tQ'); // TUPLE, BINPERSID
       pkl.writeInt(0); // offset
 
       pkl.writeTuple(shape);
       pkl.writeTuple(stride);
 
       pkl.write([0x89]); // requires_grad=False
-      pkl.writeAscii("ccollections\nOrderedDict\n)RtR"); // collections.OrderedDict() -> rebuild_tensor
+      pkl.writeAscii('ccollections\nOrderedDict\n)RtR'); // collections.OrderedDict() -> rebuild_tensor
 
       if (t.data) {
         files[`archive/data/${dataStr}`] = new Uint8Array(
@@ -153,16 +193,16 @@ export class PyTorchSerializer {
         );
       } else {
         let bpe = 4;
-        if (["float64", "int64"].includes(t.dtype)) bpe = 8;
-        if (["float16", "bfloat16", "int16"].includes(t.dtype)) bpe = 2;
-        if (["int8", "uint8", "bool"].includes(t.dtype)) bpe = 1;
+        if (['float64', 'int64'].includes(t.dtype)) bpe = 8;
+        if (['float16', 'bfloat16', 'int16'].includes(t.dtype)) bpe = 2;
+        if (['int8', 'uint8', 'bool'].includes(t.dtype)) bpe = 1;
         files[`archive/data/${dataStr}`] = new Uint8Array(numElements * bpe);
       }
     }
 
-    pkl.writeAscii("u."); // SETITEMS, STOP
+    pkl.writeAscii('u.'); // SETITEMS, STOP
 
-    files["archive/data.pkl"] = pkl.getBuffer();
+    files['archive/data.pkl'] = pkl.getBuffer();
 
     return zipSync(files, { level: 0 }); // level: 0 means NO COMPRESSION, required by torch.load
   }

@@ -1,9 +1,8 @@
-"""Module providing core logic and structural definitions."""
+"""Implementation of ast parser (converters / frontend / ast_parser.py) providing ScriptCompiler."""
 
 import ast
 import inspect
 from collections.abc import Callable
-from typing import Any
 
 from onnx9000.converters.frontend.builder import GraphBuilder
 from onnx9000.converters.frontend.tensor import Node, Tensor
@@ -13,13 +12,29 @@ class ScriptCompiler(ast.NodeVisitor):
     """Class ScriptCompiler implementation."""
 
     def __init__(self, func: Callable) -> None:
-        """Implement the __init__ method."""
+        """Initialize ScriptCompiler with configured parameters and state.
+
+        Args:
+            func: Parameter specifying func (Callable).
+        """
         self.func = func
-        self.env: dict[str, Any] = {}
+        self.env: dict[str, int | float | str | bool | bytes | list | dict | tuple | None] = {}
         self.builder = GraphBuilder(name=func.__name__)
 
-    def compile(self, *args, **kwargs) -> GraphBuilder:
-        """Implement the compile method."""
+    def compile(
+        self,
+        *args: int | float | str | bool | bytes | list | dict | tuple | None,
+        **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> GraphBuilder:
+        """Execute compile on ScriptCompiler.
+
+        Args:
+            *args: Variadic positional arguments for args.
+            **kwargs: Variadic keyword arguments for kwargs.
+
+        Returns:
+            Result of compile (GraphBuilder).
+        """
         source = inspect.getsource(self.func)
         import textwrap
 
@@ -35,12 +50,20 @@ class ScriptCompiler(ast.NodeVisitor):
         return self.builder
 
     def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
-        """Implement the visit_FunctionDef method."""
+        """Execute visit function def on ScriptCompiler.
+
+        Args:
+            node: Parameter specifying node (ast.FunctionDef).
+        """
         for stmt in node.body:
             self.visit(stmt)
 
     def visit_Return(self, node: ast.Return) -> None:
-        """Implement the visit_Return method."""
+        """Execute visit return on ScriptCompiler.
+
+        Args:
+            node: Parameter specifying node (ast.Return).
+        """
         if node.value:
             val = self.visit(node.value)
             if isinstance(val, Tensor):
@@ -49,10 +72,13 @@ class ScriptCompiler(ast.NodeVisitor):
                 for v in val:
                     if isinstance(v, Tensor):
                         self.builder.outputs.append(v)
-        return None
 
     def visit_If(self, node: ast.If) -> None:
-        """Implement the visit_If method."""
+        """Execute visit if on ScriptCompiler.
+
+        Args:
+            node: Parameter specifying node (ast.If).
+        """
         cond = self.visit(node.test)
         then_builder = GraphBuilder(name=f"{self.builder.name}_then")
         else_builder = GraphBuilder(name=f"{self.builder.name}_else")
@@ -69,29 +95,73 @@ class ScriptCompiler(ast.NodeVisitor):
             self.visit(stmt)
 
     def visit_For(self, node: ast.For) -> None:
-        """Implement the visit_For method."""
+        """Execute visit for on ScriptCompiler.
+
+        Args:
+            node: Parameter specifying node (ast.For).
+        """
         self.visit(node.iter)
         for stmt in node.body:
             self.visit(stmt)
 
     def visit_While(self, node: ast.While) -> None:
-        """Implement the visit_While method."""
+        """Execute visit while on ScriptCompiler.
+
+        Args:
+            node: Parameter specifying node (ast.While).
+        """
         self.visit(node.test)
         for stmt in node.body:
             self.visit(stmt)
 
-    def visit_Name(self, node: ast.Name):
-        """Implement the visit_Name method."""
+    def visit_Name(
+        self, node: ast.Name
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
+        """Execute visit name on ScriptCompiler.
+
+        Args:
+            node: Parameter specifying node (ast.Name).
+
+        Returns:
+            Result of visit name.
+        """
         return self.env.get(node.id, None)
 
-    def generic_visit(self, node):
-        """Implement the generic_visit method."""
+    def generic_visit(
+        self, node: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
+        """Execute generic visit on ScriptCompiler.
+
+        Args:
+            node: Parameter specifying node.
+
+        Returns:
+            Result of generic visit.
+        """
         return super().generic_visit(node)
 
-    def visit_Tuple(self, node: ast.Tuple):
-        """Implement the visit_Tuple method."""
+    def visit_Tuple(
+        self, node: ast.Tuple
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
+        """Execute visit tuple on ScriptCompiler.
+
+        Args:
+            node: Parameter specifying node (ast.Tuple).
+
+        Returns:
+            Result of visit tuple.
+        """
         return tuple(self.visit(e) for e in node.elts)
 
-    def visit_List(self, node: ast.List):
-        """Implement the visit_List method."""
+    def visit_List(
+        self, node: ast.List
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
+        """Execute visit list on ScriptCompiler.
+
+        Args:
+            node: Parameter specifying node (ast.List).
+
+        Returns:
+            Result of visit list.
+        """
         return [self.visit(e) for e in node.elts]

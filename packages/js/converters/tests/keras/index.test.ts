@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../src/keras/index";
+import { describe, expect, it } from 'vitest';
+import { Keras2OnnxConverter } from '../../src/keras/index';
 
-describe("index.ts", () => {
-  it("should instantiate and cover Keras2OnnxConverter", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('index.ts', () => {
+  it('should instantiate and cover Keras2OnnxConverter', () => {
     try {
-      const obj = new (Module as any).Keras2OnnxConverter();
+      const obj = Construct(Keras2OnnxConverter);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

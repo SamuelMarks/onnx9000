@@ -2,14 +2,18 @@
  * @fileoverview WorkerManager.ts
  * Provides WorkerManager functionality for the Sphinx Demo UI.
  */
-// @ts-nocheck
 import { globalEventBus } from './EventBus';
 import { LogLevel } from './Logger';
 
+/** Interface `WorkerMessage` definition. */
 export interface WorkerMessage {
+  /** Property `id`. */
   id: string;
+  /** Property `type`. */
   type: string;
+  /** Property `payload`. */
   payload?: object;
+  /** Property `error`. */
   error?: string;
 }
 
@@ -18,15 +22,27 @@ export interface WorkerMessage {
  * while handling strict timeouts and graceful termination.
  */
 export class WorkerManager {
+  /** Property `instance` of `WorkerManager`. */
   private static instance: WorkerManager;
+  /** Property `worker` of `WorkerManager`. */
   private worker: Worker | null = null;
+  /** Property `pendingRequests` of `WorkerManager`. */
   private pendingRequests: Map<
     string,
-    { resolve: (val: object) => void; reject: (err: object) => void; timeout: object }
+    {
+      resolve: (val: unknown) => void;
+      reject: (err: unknown) => void;
+      timeout: ReturnType<typeof setTimeout>;
+    }
   > = new Map();
 
+  /** Initializes a new `WorkerManager` instance. */
   private constructor() {}
 
+  /**
+   * Executes `getInstance` on `WorkerManager`.
+   * @returns Result of `getInstance`.
+   */
   public static getInstance(): WorkerManager {
     if (!WorkerManager.instance) {
       WorkerManager.instance = new WorkerManager();
@@ -50,8 +66,8 @@ export class WorkerManager {
 
     this.worker.onmessage = (e: MessageEvent) => {
       const msg: WorkerMessage = e.data;
-      if (this.pendingRequests.has(msg.id)) {
-        const req = this.pendingRequests.get(msg.id)!;
+      const req = this.pendingRequests.get(msg.id);
+      if (req) {
         clearTimeout(req.timeout);
 
         if (msg.error) {
@@ -67,7 +83,7 @@ export class WorkerManager {
           globalEventBus.emit('CONSOLE_LOG', {
             level: LogLevel.INFO,
             message: msg.payload,
-            timestamp: new Date()
+            timestamp: new Date(),
           });
         }
       }
@@ -90,7 +106,11 @@ export class WorkerManager {
    * @param payload - The data.
    * @param timeoutMs - Maximum execution time before aborting.
    */
-  public execute(type: string, payload: object, timeoutMs: number = 30000): Promise<object> {
+  public execute<T = unknown>(
+    type: string,
+    payload: unknown,
+    timeoutMs: number = 30000,
+  ): Promise<T> {
     return new Promise((resolve, reject) => {
       if (!this.worker) {
         return reject(new Error('Worker not initialized.'));
@@ -110,7 +130,11 @@ export class WorkerManager {
         }
       }, timeoutMs);
 
-      this.pendingRequests.set(id, { resolve, reject, timeout });
+      this.pendingRequests.set(id, {
+        resolve: resolve as (val: unknown) => void,
+        reject,
+        timeout,
+      });
 
       this.worker.postMessage({ id, type, payload });
     });

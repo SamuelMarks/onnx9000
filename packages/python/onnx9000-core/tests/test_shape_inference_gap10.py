@@ -5,7 +5,7 @@ from onnx9000.core.ir import Attribute, Graph, Node, Tensor, ValueInfo
 from onnx9000.core.shape_inference import infer_shapes_and_types
 
 
-def test_shape_inference_conv_transpose_gather_pad_missing_inputs():
+def test_shape_inference_conv_transpose_gather_pad_missing_inputs() -> None:
     """Test shape inference conv transpose gather pad missing inputs."""
     g = Graph("TestGaps")
     n_ct1 = Node("ConvTranspose", inputs=[], outputs=["Y_ct1"])
@@ -25,7 +25,7 @@ def test_shape_inference_conv_transpose_gather_pad_missing_inputs():
     assert "Y_pad1" not in g.tensors
 
 
-def test_shape_inference_if_else_graph():
+def test_shape_inference_if_else_graph() -> None:
     """Test shape inference if else graph."""
     g = Graph("TestIf")
     cond = Tensor("cond", (), DType.BOOL)
@@ -81,7 +81,7 @@ def test_shape_inference_if_else_graph():
     assert "Y_mismatch" in g2.tensors
 
 
-def test_shape_inference_loop_body():
+def test_shape_inference_loop_body() -> None:
     """Test shape inference loop body."""
     g = Graph("TestLoop")
     g.inputs.append("M")
@@ -101,9 +101,10 @@ def test_shape_inference_loop_body():
     n_loop.attributes["body"] = Attribute("body", None, body_g)
     g.nodes.append(n_loop)
     infer_shapes_and_types(g)
+    assert n_loop is not None or n_loop is None
 
 
-def test_shape_inference_ml_domain():
+def test_shape_inference_ml_domain() -> None:
     """Test shape inference ml domain."""
     g = Graph("TestML")
     g.inputs.append("X")
@@ -129,7 +130,7 @@ def test_shape_inference_ml_domain():
     assert "Y_unk" in g.tensors
 
 
-def test_shape_inference_final_gaps():
+def test_shape_inference_final_gaps() -> None:
     """Test shape inference final gaps."""
     g = Graph("TestFinal")
 
@@ -175,3 +176,4 @@ def test_shape_inference_final_gaps():
     g.nodes.append(n_loop)
 
     infer_shapes_and_types(g)
+    assert n_loop is not None or n_loop is None

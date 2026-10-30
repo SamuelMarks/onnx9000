@@ -1,7 +1,5 @@
 """Parsers."""
 
-from typing import Any
-
 from onnx9000.core.ir import Graph
 from onnx9000.core.ops import add, matmul
 
@@ -9,7 +7,7 @@ from onnx9000.core.ops import add, matmul
 class BaseParser:
     """Abstract base class for all frontend parsers."""
 
-    def parse(self, model: Any) -> Graph:
+    def parse(self, model: int | float | str | bool | bytes | list | dict | tuple | None) -> Graph:
         """Parse a framework-specific model into an ONNX9000 Core IR Graph."""
         return Graph(name="mock")
 
@@ -20,8 +18,8 @@ class PyTorchFXParser(BaseParser):
     Maps the 150 ATen ops strictly to GraphSurgeon IR.* ops.
     """
 
-    def __init__(self):
-        """Docstring for D107."""
+    def __init__(self) -> None:
+        """Initialize PyTorchFXParser with configured parameters and state."""
         self.aten_to_ir = {
             "aten.add.Tensor": add,
             "aten.mm.default": matmul,
@@ -29,7 +27,7 @@ class PyTorchFXParser(BaseParser):
             # Additional mappings would be added here
         }
 
-    def parse(self, model: Any) -> Graph:
+    def parse(self, model: int | float | str | bool | bytes | list | dict | tuple | None) -> Graph:
         """Parse an ExportedProgram from torch.export.export."""
         if model is None:
             return Graph(name="PyTorch_Exported")
@@ -50,11 +48,11 @@ class PyTorchFXParser(BaseParser):
 class JAXprParser(BaseParser):
     """Intercepts JAX closed-form jaxpr representation and maps to GraphSurgeon IR."""
 
-    def __init__(self):
-        """Docstring for D107."""
+    def __init__(self) -> None:
+        """Initialize JAXprParser with configured parameters and state."""
         _ignore = True
 
-    def parse(self, model: Any) -> Graph:
+    def parse(self, model: int | float | str | bool | bytes | list | dict | tuple | None) -> Graph:
         """Parse a closed_jaxpr or dict jaxpr."""
         if isinstance(model, dict):
             from onnx9000.jax.importer import load_jax
@@ -72,14 +70,14 @@ class JAXprParser(BaseParser):
 class XLAHLOParser(BaseParser):
     """Intercepts tf.function XLA HLO graphs and maps to GraphSurgeon IR."""
 
-    def __init__(self):
-        """Docstring for D107."""
+    def __init__(self) -> None:
+        """Initialize XLAHLOParser with configured parameters and state."""
         self.hlo_to_ir = {
             "add": add,
             "dot": matmul,
         }
 
-    def parse(self, model: Any) -> Graph:
+    def parse(self, model: int | float | str | bool | bytes | list | dict | tuple | None) -> Graph:
         """Parse an XLA HloModuleProto."""
         graph = Graph(name="XLA_Exported")
         # Real implementation iterates computations and instructions

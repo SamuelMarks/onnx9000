@@ -2,7 +2,8 @@
 
 import ctypes
 import logging
-from typing import Optional
+
+from onnx9000.core.exceptions import BackendExecutionError
 
 logger = logging.getLogger(__name__)
 
@@ -39,12 +40,12 @@ class MetalMemoryPlanner:
     def get_tensor_ptr(self, name: str) -> ctypes.c_void_p:
         """Retrieve the Metal buffer pointer for a given tensor."""
         if name in self.dynamic_allocations:
-            return self.dynamic_allocations[name][0]  # pragma: no cover
+            return self.dynamic_allocations[name][0]
         if name in self.offsets and self.arena_ptr is not None:
             (offset, _) = self.offsets[name]
             addr = self.arena_ptr.value + offset if self.arena_ptr.value else 0
             return ctypes.c_void_p(addr)
-        raise RuntimeError(f"Tensor {name} not found in Metal memory planner")  # pragma: no cover
+        raise BackendExecutionError(f"Tensor {name} not found in Metal memory planner")
 
     def set_tensor(
         self, name: str, host_data: memoryview, shape: tuple[int, ...], dtype: str
@@ -56,13 +57,13 @@ class MetalMemoryPlanner:
         if name in self.offsets and self.arena_ptr is not None:
             (offset, size) = self.offsets[name]
             if size_bytes > size:
-                buf = bytearray(host_data)  # pragma: no cover
-                buffer_info = (ctypes.c_char * len(buf)).from_buffer(buf)  # pragma: no cover
-                if not hasattr(self, "_dynamic_keep_alive"):  # pragma: no cover
-                    self._dynamic_keep_alive = []  # pragma: no cover
-                self._dynamic_keep_alive.append(buf)  # pragma: no cover
-                ptr = ctypes.addressof(buffer_info)  # pragma: no cover
-                self.dynamic_allocations[name] = (  # pragma: no cover
+                buf = bytearray(host_data)
+                buffer_info = (ctypes.c_char * len(buf)).from_buffer(buf)
+                if not hasattr(self, "_dynamic_keep_alive"):
+                    self._dynamic_keep_alive = []
+                self._dynamic_keep_alive.append(buf)
+                ptr = ctypes.addressof(buffer_info)
+                self.dynamic_allocations[name] = (
                     ctypes.c_void_p(ptr),
                     size_bytes,
                 )
@@ -89,7 +90,7 @@ class MetalMemoryPlanner:
             addr = self.arena_ptr.value + offset if self.arena_ptr.value else 0
             buf = (ctypes.c_char * size_bytes).from_address(addr)
             return memoryview(buf)
-        raise RuntimeError(f"Tensor {name} not found.")  # pragma: no cover
+        raise BackendExecutionError(f"Tensor {name} not found.")
 
     def cleanup(self) -> None:
         """Free all explicitly allocated Metal buffers."""

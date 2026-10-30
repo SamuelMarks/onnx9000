@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { describe, expect, it } from 'vitest';
 import { globalEventBus } from '../src/core/EventBus.js';
 import { Logger } from '../src/core/Logger.js';
@@ -9,7 +8,7 @@ describe('Logger', () => {
     logger.startIntercepting();
 
     let caughtLog = false;
-    globalEventBus.on('CONSOLE_LOG', (entry: any) => {
+    globalEventBus.on('CONSOLE_LOG', (entry: { message: string }) => {
       if (entry.message.includes('test_intercept')) {
         caughtLog = true;
       }

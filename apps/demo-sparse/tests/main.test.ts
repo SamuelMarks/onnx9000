@@ -1,32 +1,26 @@
-import { beforeEach, describe, expect, it } from "vitest";
+// @vitest-environment jsdom
+import { beforeEach, describe, expect, it } from 'vitest';
+import { initSparseDemo } from '../src/main.js';
 
-describe("demo", () => {
+describe('demo-sparse', () => {
   beforeEach(() => {
-    document.body.innerHTML = `
-      <textarea id="prompt"></textarea>
-      <button id="runBtn"></button>
-      <div id="output"></div>
-    `;
+    document.body.innerHTML = '<button id="prune-btn"></button><div id="sparse-output"></div>';
   });
 
-  it("should run flow", async () => {
-    // import to execute module top-level
-    try {
-      await import("../src/main.js");
-    } catch (_e) {}
+  it('should execute sparse pruning flow and update output', async () => {
+    document.body.innerHTML = '';
+    initSparseDemo();
 
-    const btn = document.getElementById("runBtn");
-    const prompt = document.getElementById("prompt");
-    const _out = document.getElementById("output");
+    document.body.innerHTML = '<button id="prune-btn"></button><div id="sparse-output"></div>';
+    initSparseDemo();
 
-    if (btn) btn.click();
-    if (prompt && btn) {
-      prompt.value = "test";
-      btn.click();
-    }
+    const btn = document.getElementById('prune-btn') as HTMLButtonElement;
+    const out = document.getElementById('sparse-output') as HTMLElement;
 
-    // allow some async code to run
-    await new Promise((r) => setTimeout(r, 100));
-    expect(true).toBe(true);
+    btn.click();
+    await new Promise((r) => setTimeout(r, 150));
+
+    expect(out.innerText).toContain('Sparsification successful!');
+    expect(btn.disabled).toBe(true);
   });
 });

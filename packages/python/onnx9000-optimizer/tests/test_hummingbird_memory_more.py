@@ -8,7 +8,7 @@ from onnx9000.optimizer.hummingbird.memory import (
 from onnx9000.optimizer.hummingbird.strategies import Strategy, TargetHardware
 
 
-def test_estimate_peak_vram():
+def test_estimate_peak_vram() -> None:
     """Tests the estimate peak vram functionality."""
     t = TreeAbstractions()
     t.add_node(1, 0.5, 1, 2, 0.0)
@@ -27,7 +27,7 @@ def test_estimate_peak_vram():
     assert v4 == 0
 
 
-def test_select_optimal_strategy():
+def test_select_optimal_strategy() -> None:
     """Tests the select optimal strategy functionality."""
     t = TreeAbstractions()
     t.add_node(1, 0.5, 1, 2, 0.0)

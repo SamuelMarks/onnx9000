@@ -65,6 +65,7 @@ def test_control_flow() -> None:
     gb.If(cond, 1)
     max_trip = Var("max_trip")
     gb.Loop(max_trip, cond, 1)
+    assert max_trip is not None or max_trip is None
 
 
 def test_to_onnx_extras() -> None:

@@ -1,17 +1,21 @@
+"""Unit tests for zero-copy memory mapping in `onnx9000.core.memory`."""
+
+import tempfile
+
 import pytest
-from onnx9000.core.memory import *
+from onnx9000.core.memory import MemoryMapError, mmap_tensor_data
 
 
-def test_MemoryMapError():
-    try:
-        obj = MemoryMapError()
-        assert obj is not None
-    except Exception:
-        pass
+def test_memory_mmap() -> None:
+    """Verify MemoryMapError and mmap_tensor_data."""
+    err = MemoryMapError("map fail")
+    assert "map fail" in str(err)
 
+    with tempfile.NamedTemporaryFile() as tf:
+        tf.write(b"0123456789abcdef")
+        tf.flush()
+        mv = mmap_tensor_data(tf.name, 4, 8)
+        assert bytes(mv) == b"456789ab"
 
-def test_mmap_tensor_data():
-    try:
-        mmap_tensor_data()
-    except Exception:
-        pass
+        with pytest.raises(MemoryMapError):
+            mmap_tensor_data(tf.name, 0, 100)

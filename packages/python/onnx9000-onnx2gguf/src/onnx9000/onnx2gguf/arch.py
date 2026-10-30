@@ -1,13 +1,14 @@
 """Module providing onnx2gguf functionality."""
 
-from typing import Any
-
+from onnx9000.core.exceptions import GGUFError
 from onnx9000.core.ir import Graph
 
 from .llama import extract_llama_metadata
 
 
-def extract_metadata(graph: Graph, arch_override: str = None) -> dict[str, Any]:
+def extract_metadata(
+    graph: Graph, arch_override: str | None = None
+) -> dict[str, int | float | str | bool | bytes | list | dict | tuple | None]:
     """Extract metadata."""
     arch = arch_override or infer_architecture(graph)
     infer_architecture(graph)
@@ -25,7 +26,7 @@ def extract_metadata(graph: Graph, arch_override: str = None) -> dict[str, Any]:
         "command-r",
         "bert",
     ]:
-        raise ValueError(f"Unsupported strict architecture mapping: {arch_override}")
+        raise GGUFError(f"Unsupported strict architecture mapping: {arch_override}")
     if arch == "unknown":
         return {}
     meta = extract_llama_metadata(graph)

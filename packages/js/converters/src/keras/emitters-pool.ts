@@ -2,17 +2,29 @@
  * @fileoverview emitters-pool.ts
  * Provides emitters-pool functionality for the converters package.
  */
-// @ts-nocheck
-import type { OnnxNodeBuilder } from "./emitters.js";
+import type { OnnxNodeBuilder } from './emitters.js';
 
+/** Interface `PoolOptions` definition. */
 export interface PoolOptions {
+  /** Property `poolSize`. */
   poolSize: number[];
+  /** Property `strides`. */
   strides: number[];
-  padding: "valid" | "same";
+  /** Property `padding`. */
+  padding: 'valid' | 'same';
 }
 
+/**
+ * Executes `emitPool`.
+ * @param poolType Parameter `poolType`.
+ * @param inputName Parameter `inputName`.
+ * @param outputName Parameter `outputName`.
+ * @param name Parameter `name`.
+ * @param options Parameter `options`.
+ * @returns Result of `emitPool`.
+ */
 export function emitPool(
-  poolType: "Max" | "Average",
+  poolType: 'Max' | 'Average',
   inputName: string,
   outputName: string,
   name: string,
@@ -21,21 +33,20 @@ export function emitPool(
   const attributes = [];
   if (options.poolSize)
     attributes.push({
-      name: "kernel_shape",
+      name: 'kernel_shape',
       ints: options.poolSize,
-      type: "INTS",
+      type: 'INTS',
     });
-  if (options.strides)
-    attributes.push({ name: "strides", ints: options.strides, type: "INTS" });
+  if (options.strides) attributes.push({ name: 'strides', ints: options.strides, type: 'INTS' });
   attributes.push({
-    name: "auto_pad",
-    s: options.padding === "same" ? "SAME_UPPER" : "VALID",
-    type: "STRING",
+    name: 'auto_pad',
+    s: options.padding === 'same' ? 'SAME_UPPER' : 'VALID',
+    type: 'STRING',
   });
 
   return [
     {
-      opType: poolType === "Max" ? "MaxPool" : "AveragePool",
+      opType: poolType === 'Max' ? 'MaxPool' : 'AveragePool',
       inputs: [inputName],
       outputs: [outputName],
       name,
@@ -44,12 +55,23 @@ export function emitPool(
   ];
 }
 
+/** Interface `GlobalPoolOptions` definition. */
 export interface GlobalPoolOptions {
+  /** Property `keepDims`. */
   keepDims: boolean;
 }
 
+/**
+ * Executes `emitGlobalPool`.
+ * @param poolType Parameter `poolType`.
+ * @param inputName Parameter `inputName`.
+ * @param outputName Parameter `outputName`.
+ * @param name Parameter `name`.
+ * @param options Parameter `options`.
+ * @returns Result of `emitGlobalPool`.
+ */
 export function emitGlobalPool(
-  poolType: "Max" | "Average",
+  poolType: 'Max' | 'Average',
   inputName: string,
   outputName: string,
   name: string,
@@ -59,7 +81,7 @@ export function emitGlobalPool(
   const poolOut = options.keepDims ? outputName : `${name}_pool`;
 
   nodes.push({
-    opType: poolType === "Max" ? "GlobalMaxPool" : "GlobalAveragePool",
+    opType: poolType === 'Max' ? 'GlobalMaxPool' : 'GlobalAveragePool',
     inputs: [inputName],
     outputs: [poolOut],
     name,
@@ -83,7 +105,7 @@ export function emitGlobalPool(
     // or we specify axes if we know rank.
     // For the sake of matching the spec: "Handle Keras keepdims=False ... by inserting ONNX Squeeze"
     nodes.push({
-      opType: "Squeeze",
+      opType: 'Squeeze',
       inputs: [poolOut], // if opset 13+, axes is second input. But we use general builder.
       outputs: [outputName],
       name: `${name}_squeeze`,

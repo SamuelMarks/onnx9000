@@ -1,7 +1,6 @@
 """Provides the OliveModel abstraction."""
 
 from dataclasses import dataclass
-from typing import Any, Optional
 
 from onnx9000.core.ir import Graph
 
@@ -11,7 +10,7 @@ class OliveModel:
     """Class OliveModel implementation."""
 
     graph: Graph
-    metadata: dict[str, Any] | None = None
+    metadata: dict[str, int | float | str | bool | bytes | list | dict | tuple | None] | None = None
 
     def __post_init__(self) -> None:
         """Initialize defaults."""

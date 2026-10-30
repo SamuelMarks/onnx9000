@@ -52,13 +52,11 @@ def _map_conv(op_type: str) -> Callable:
 
     def _impl(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
         """Execute the  impl operation."""
-        inputs = []
-        if "Input" in node.inputs:
-            inputs.extend(node.inputs["Input"])
-        if "Filter" in node.inputs:
-            inputs.extend(node.inputs["Filter"])
-        if "Bias" in node.inputs:
-            inputs.extend(node.inputs["Bias"])
+        inputs = (
+            node.inputs.get("Input", [])
+            + node.inputs.get("Filter", [])
+            + node.inputs.get("Bias", [])
+        )
         attrs = {
             "strides": builder.extract_list_attr(node, "strides"),
             "pads": builder.extract_list_attr(node, "paddings"),
@@ -100,7 +98,7 @@ def _map_adaptive_pool(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> l
     pooling_type = builder.extract_attr(node, "pooling_type", "max")
     pool_size = builder.extract_list_attr(node, "pool_size")
     inputs = node.inputs.get("X", [])
-    if pool_size == [1, 1] or pool_size == [1, 1, 1] or (not pool_size):
+    if pool_size in ([1, 1], [1, 1, 1]) or not pool_size:
         onnx_op = "GlobalMaxPool" if pooling_type == "max" else "GlobalAveragePool"
         return builder.make_node(onnx_op, inputs, {}, node.name)
     else:
@@ -131,11 +129,7 @@ def _map_batch_norm(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list
 
 def _map_layer_norm(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
     """Execute the  map layer norm operation."""
-    inputs = node.inputs.get("X", [])
-    if "Scale" in node.inputs:
-        inputs.extend(node.inputs["Scale"])
-    if "Bias" in node.inputs:
-        inputs.extend(node.inputs["Bias"])
+    inputs = node.inputs.get("X", []) + node.inputs.get("Scale", []) + node.inputs.get("Bias", [])
     epsilon = builder.extract_attr(node, "epsilon", 1e-05)
     return builder.make_node("LayerNormalization", inputs, {"epsilon": epsilon}, node.name)
 
@@ -218,7 +212,7 @@ def _map_relu6(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]
     inputs = node.inputs.get("X", [])
     zero = builder.add_constant(f"{node.name}_zero", 0.0, 1, ())
     six = builder.add_constant(f"{node.name}_six", 6.0, 1, ())
-    return builder.make_node("Clip", inputs + [zero, six], {}, node.name)
+    return builder.make_node("Clip", [*inputs, zero, six], {}, node.name)
 
 
 def _map_leaky_relu(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
@@ -275,7 +269,7 @@ def _map_silu(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
     """Execute the  map silu operation."""
     inputs = node.inputs.get("X", [])
     sig = builder.make_node("Sigmoid", inputs, {}, f"{node.name}_sig")[0]
-    return builder.make_node("Mul", inputs + [sig], {}, node.name)
+    return builder.make_node("Mul", [*inputs, sig], {}, node.name)
 
 
 def _map_hard_swish(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
@@ -314,7 +308,7 @@ def _map_pad(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
     value = builder.extract_attr(node, "pad_value", 0.0)
     val_const = builder.add_constant(f"{node.name}_val", value, 1, ())
     return builder.make_node(
-        "Pad", inputs + [pads_const, val_const], {"mode": "constant"}, node.name
+        "Pad", [*inputs, pads_const, val_const], {"mode": "constant"}, node.name
     )
 
 
@@ -328,21 +322,13 @@ def _map_l2_normalize(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> li
 
 def _map_roi_align(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
     """Execute the  map roi align operation."""
-    inputs = []
-    if "X" in node.inputs:
-        inputs.extend(node.inputs["X"])
-    if "ROIs" in node.inputs:
-        inputs.extend(node.inputs["ROIs"])
+    inputs = node.inputs.get("X", []) + node.inputs.get("ROIs", [])
     return builder.make_node("RoiAlign", inputs, {}, node.name)
 
 
 def _map_roi_pool(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
     """Execute the  map roi pool operation."""
-    inputs = []
-    if "X" in node.inputs:
-        inputs.extend(node.inputs["X"])
-    if "ROIs" in node.inputs:
-        inputs.extend(node.inputs["ROIs"])
+    inputs = node.inputs.get("X", []) + node.inputs.get("ROIs", [])
     return builder.make_node("MaxRoiPool", inputs, {}, node.name)
 
 
@@ -351,14 +337,15 @@ def _map_deformable_conv(builder: PaddleToONNXGraphBuilder, node: PaddleNode) ->
     return builder.make_node("DeformConv", node.inputs.get("X", []), {}, node.name)
 
 
-def _map_custom(op_name: str):
+def _map_custom(op_name: str) -> int | float | str | bool | bytes | list | dict | tuple | None:
     """Execute the map custom operation."""
 
-    def _impl(builder, node):
+    def _impl(
+        builder: int | float | str | bool | bytes | list | dict | tuple | None,
+        node: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Execute the impl operation."""
-        inputs = node.inputs.get("X", [])
-        if "Y" in node.inputs:
-            inputs.extend(node.inputs["Y"])
+        inputs = node.inputs.get("X", []) + node.inputs.get("Y", [])
         return builder.make_node(op_name, inputs, {}, node.name)
 
     return _impl

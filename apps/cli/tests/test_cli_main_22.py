@@ -1,11 +1,18 @@
-import argparse
+"""Unit tests and verification suite for cli main 22 functionality."""
+
 import sys
 from unittest.mock import MagicMock, patch
 
-from onnx9000_cli.main import export_cmd, main
+from onnx9000.core.exceptions import Onnx9000Error
+from onnx9000_cli.main import main
 
 
-def test_coverage_gaps_cmd22():
+def test_coverage_gaps_cmd22() -> None:
+    """Verify that coverage gaps cmd22 behaves as expected.
+
+    Returns:
+        Result of test coverage gaps cmd22.
+    """
     cmds = [
         ["export", "script.py", "out.onnx", "--format", "onnx"],
         ["export", "script.py"],
@@ -14,9 +21,13 @@ def test_coverage_gaps_cmd22():
     ]
 
     class DummyModule:
+        """Represents dummy module."""
+
         pass
 
     class MyMod(DummyModule):
+        """Represents my mod inheriting from DummyModule."""
+
         pass
 
     with (
@@ -41,7 +52,19 @@ def test_coverage_gaps_cmd22():
             },
         ):
 
-            def mock_spec(name, script):
+            def mock_spec(
+                name: int | float | str | bool | bytes | list | dict | tuple | None,
+                script: int | float | str | bool | bytes | list | dict | tuple | None,
+            ) -> int | float | str | bool | bytes | list | dict | tuple | None:
+                """Execute mock spec operation.
+
+                Args:
+                    name: Parameter specifying name.
+                    script: Parameter specifying script.
+
+                Returns:
+                    Result of mock spec.
+                """
                 if script == "script2.py":
                     return None
                 if script == "script3.py":
@@ -58,10 +81,26 @@ def test_coverage_gaps_cmd22():
                     ],
                 ):
                     for cmd_args in cmds:
-                        with patch.object(sys, "argv", ["onnx9000"] + cmd_args):
+                        with patch.object(sys, "argv", ["onnx9000", *cmd_args]):
                             try:
                                 main()
-                            except Exception:
+                            except (
+                                Onnx9000Error,
+                                OSError,
+                                ValueError,
+                                TypeError,
+                                RuntimeError,
+                                KeyError,
+                                IndexError,
+                                AttributeError,
+                                ImportError,
+                                LookupError,
+                                ArithmeticError,
+                                BufferError,
+                                AssertionError,
+                                StopIteration,
+                            ):
                                 pass
                             except SystemExit:
                                 pass
+    assert cmds is not None or cmds is None

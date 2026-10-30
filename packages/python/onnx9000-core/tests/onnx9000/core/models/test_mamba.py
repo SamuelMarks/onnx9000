@@ -1,32 +1,19 @@
-import pytest
-from onnx9000.core.models.mamba import *
+"""Unit tests for Mamba SSM model in `onnx9000.core.models.mamba`."""
+
+from onnx9000.core.ir import Tensor, Variable
+from onnx9000.core.models.mamba import Mamba, MambaBlock, get_param, mamba_130m
 
 
-def test_MambaBlock():
-    try:
-        obj = MambaBlock()
-        assert obj is not None
-    except Exception:
-        pass
+def test_mamba_model() -> None:
+    """Verify MambaBlock, Mamba, and mamba_130m."""
+    assert isinstance(get_param("w", [8]), Variable)
 
+    blk = MambaBlock(d_model=32, d_state=8, d_conv=4, expand=2, prefix="b0")
+    x = Tensor("x", (1, 10, 32), 1)
+    assert isinstance(blk(x), Tensor)
 
-def test_Mamba():
-    try:
-        obj = Mamba()
-        assert obj is not None
-    except Exception:
-        pass
-
-
-def test_get_param():
-    try:
-        get_param()
-    except Exception:
-        pass
-
-
-def test_mamba_130m():
-    try:
-        mamba_130m()
-    except Exception:
-        pass
+    model = Mamba(vocab_size=100, d_model=32, n_layer=1, d_state=8)
+    assert isinstance(model, Mamba)
+    ids = Tensor("ids", (1, 10), 7)
+    assert isinstance(model(ids), Tensor)
+    assert isinstance(mamba_130m(), Mamba)

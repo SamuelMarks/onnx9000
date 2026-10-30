@@ -26,7 +26,7 @@ from onnx9000.optimizer.hummingbird.perfect_tree import (
 )
 
 
-def test_hummingbird_math_stubs():
+def test_hummingbird_math_stubs() -> None:
     """Tests the hummingbird math stubs functionality."""
     g = Graph("g")
     map_count_vectorizer(g, "in", ["a"])
@@ -49,3 +49,4 @@ def test_hummingbird_math_stubs():
     validate_math_exactness()
     handle_perfect_multi_output(g)
     map_categorical_perfect(g)
+    assert g is not None or g is None

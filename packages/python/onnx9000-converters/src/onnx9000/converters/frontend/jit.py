@@ -6,7 +6,6 @@ computation graphs from native Python execution.
 
 from collections.abc import Callable
 from functools import wraps
-from typing import Any
 
 from onnx9000.converters.frontend.builder import GraphBuilder, Tracing
 from onnx9000.converters.frontend.tensor import Tensor
@@ -19,8 +18,19 @@ def jit(fn: Callable) -> Callable:
     """
 
     @wraps(fn)
-    def wrapper(*args: Any, **kwargs: Any) -> Any:
-        """Implement the wrapper method."""
+    def wrapper(
+        *args: int | float | str | bool | bytes | list | dict | tuple | None,
+        **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
+        """Execute wrapper operation.
+
+        Args:
+            *args: Variadic positional arguments for args.
+            **kwargs: Variadic keyword arguments for kwargs.
+
+        Returns:
+            Result of wrapper (Union[int, float, str, bool, bytes, list, dict, tuple, None]).
+        """
         "Provides wrapper functionality and verification."
         builder = GraphBuilder(name=fn.__name__)
         for arg in args:

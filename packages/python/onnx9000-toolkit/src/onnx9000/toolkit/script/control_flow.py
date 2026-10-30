@@ -1,7 +1,5 @@
 """Context managers for building ONNX control flow operations like If and Loop."""
 
-from typing import Any, Union
-
 from onnx9000.toolkit.script.builder import GraphBuilder
 from onnx9000.toolkit.script.op import If, Loop, pop_active_builder, set_active_builder
 from onnx9000.toolkit.script.var import Var
@@ -19,7 +17,12 @@ class BranchContext:
         set_active_builder(self.builder)
         return self.builder
 
-    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+    def __exit__(
+        self,
+        exc_type: int | float | str | bool | bytes | list | dict | tuple | None,
+        exc_val: int | float | str | bool | bytes | list | dict | tuple | None,
+        exc_tb: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
         """Exit the branch context, restoring the previously active builder."""
         pop_active_builder()
 

@@ -8,13 +8,25 @@ class _DropoutNd(Module):
     """Class _DropoutNd implementation."""
 
     def __init__(self, p: float = 0.5, inplace: bool = False) -> None:
-        """Implement the __init__ method."""
+        """Initialize _DropoutNd with configured parameters and state.
+
+        Args:
+            p: Parameter specifying p (float).
+            inplace: Parameter specifying inplace (bool).
+        """
         super().__init__()
         self.p = p
         self.inplace = inplace
 
     def forward(self, input: Tensor) -> Tensor:
-        """Implement the forward method."""
+        """Execute forward on _DropoutNd.
+
+        Args:
+            input: Parameter specifying input (Tensor).
+
+        Returns:
+            Result of forward (Tensor).
+        """
         from onnx9000.converters.frontend.utils import record_op
 
         if not self.training or self.p == 0.0:
@@ -29,7 +41,12 @@ class Dropout(_DropoutNd):
     """Dropout layer."""
 
     def __init__(self, p: float = 0.5, inplace: bool = False) -> None:
-        """Initialize."""
+        """Initialize Dropout with configured parameters and state.
+
+        Args:
+            p: Parameter specifying p (float).
+            inplace: Parameter specifying inplace (bool).
+        """
         super().__init__(p=p, inplace=inplace)  # pragma: no cover  # pragma: no cover
 
 
@@ -37,7 +54,12 @@ class Dropout1d(_DropoutNd):
     """Dropout1d layer."""
 
     def __init__(self, p: float = 0.5, inplace: bool = False) -> None:
-        """Initialize."""
+        """Initialize Dropout1d with configured parameters and state.
+
+        Args:
+            p: Parameter specifying p (float).
+            inplace: Parameter specifying inplace (bool).
+        """
         super().__init__(p=p, inplace=inplace)  # pragma: no cover  # pragma: no cover
 
 
@@ -45,7 +67,12 @@ class Dropout2d(_DropoutNd):
     """Dropout2d layer."""
 
     def __init__(self, p: float = 0.5, inplace: bool = False) -> None:
-        """Initialize."""
+        """Initialize Dropout2d with configured parameters and state.
+
+        Args:
+            p: Parameter specifying p (float).
+            inplace: Parameter specifying inplace (bool).
+        """
         super().__init__(p=p, inplace=inplace)  # pragma: no cover  # pragma: no cover
 
 
@@ -53,5 +80,10 @@ class Dropout3d(_DropoutNd):
     """Dropout3d layer."""
 
     def __init__(self, p: float = 0.5, inplace: bool = False) -> None:
-        """Initialize."""
+        """Initialize Dropout3d with configured parameters and state.
+
+        Args:
+            p: Parameter specifying p (float).
+            inplace: Parameter specifying inplace (bool).
+        """
         super().__init__(p=p, inplace=inplace)  # pragma: no cover  # pragma: no cover

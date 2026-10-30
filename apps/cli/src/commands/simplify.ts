@@ -1,5 +1,8 @@
+/**
+ * @fileoverview simplify module for cli.
+ */
 export function handleSimplifyCommand(args: string[]) {
-  if (args.length === 0 || args.includes("-h") || args.includes("--help")) {
+  if (args.length === 0 || args.includes('-h') || args.includes('--help')) {
     console.log(`Usage: onnx9000 simplify <model.onnx> [options] 
  
 Simplify ONNX graph by folding constants and eliminating dead code. 
@@ -9,16 +12,16 @@ Simplify ONNX graph by folding constants and eliminating dead code.
     return;
   }
 
-  const model = args[0] || "";
+  const model = args[0] as string;
 
-  let output = model.replace(".onnx", "_sim.onnx");
-  const oIndex = args.indexOf("-o");
+  let output = model.replace('.onnx', '_sim.onnx');
+  const oIndex = args.indexOf('-o');
   if (oIndex !== -1 && oIndex + 1 < args.length) {
-    output = args[oIndex + 1];
+    output = args[oIndex + 1] as string;
   }
 
-  console.log(`Loading ONNX model ${model || ""}...`);
+  console.log(`Loading ONNX model ${model}...`);
   console.log(`Simplifying graph...`);
   console.log(`Saving simplified model to ${output}...`);
-  console.log("Graph simplification complete.");
+  console.log('Graph simplification complete.');
 }

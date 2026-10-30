@@ -15,7 +15,7 @@ def generate_activation(
     out_name: str,
     op_type: str,
     use_math_h: bool = True,
-):
+) -> None:
     """Generate Activation loops like Relu, Sigmoid, Tanh, Gelu."""
     b.emit(f"/* {op_type} */")
     b.emit("{")
@@ -48,7 +48,7 @@ def generate_activation(
         beta = get_attribute(node, "beta", 0.5)
         b.emit(f"float s_val = {alpha}f * val + {beta}f;")
         b.emit(f"{out_name}[i] = s_val < 0.0f ? 0.0f : (s_val > 1.0f ? 1.0f : s_val);")
-    elif op_type == "Gelu":  # pragma: no cover
+    elif op_type == "Gelu":
         # Taylor series approximation of GELU if math.h intrinsics missing or for fast approximate
         b.emit("// Taylor series decomposition for GELU approximate")
         b.emit("float x = val;")
@@ -63,7 +63,7 @@ def generate_activation(
             b.emit("float t5 = t3 * t2;")
             b.emit("float tanh_out = tanh_in - 0.3333333f * t3 + 0.1333333f * t5;")
         b.emit(f"{out_name}[i] = 0.5f * x * (1.0f + tanh_out);")
-    elif op_type == "Swish":  # pragma: no cover
+    elif op_type == "Swish":
         # Swish(x) = x * Sigmoid(x)
         b.emit("// Taylor series decomposition for Swish")
         b.emit("float x = val;")
@@ -74,7 +74,7 @@ def generate_activation(
             b.emit("float sig = 0.5f + 0.25f * x - 0.0208333f * x * x * x;")
             b.emit("sig = sig < 0.0f ? 0.0f : (sig > 1.0f ? 1.0f : sig);")
         b.emit(f"{out_name}[i] = x * sig;")
-    elif op_type == "Mish":  # pragma: no cover
+    elif op_type == "Mish":
         # Mish(x) = x * Tanh(Softplus(x))
         b.emit("// Taylor series decomposition for Mish")
         b.emit("float x = val;")
@@ -94,32 +94,7 @@ def generate_activation(
         exp_func = "expf" if use_math_h else "ONNX9000_FALLBACK_EXPF"
         log_func = "logf" if use_math_h else "ONNX9000_FALLBACK_LOGF"
         b.emit(f"{out_name}[i] = {log_func}({exp_func}(val) + 1.0f);")
-    elif op_type == "Gelu":  # pragma: no cover
-        # Using Tanh approximation
-        exp_func = "expf" if use_math_h else "ONNX9000_FALLBACK_EXPF"
-        b.emit("float c = 0.7978845608f * (val + 0.044715f * val * val * val);")
-        if use_math_h:
-            b.emit(f"{out_name}[i] = 0.5f * val * (1.0f + tanhf(c));")
-        else:
-            b.emit(f"float e = {exp_func}(-2.0f * c);")
-            b.emit("float t = (1.0f - e) / (1.0f + e);")
-            b.emit(f"{out_name}[i] = 0.5f * val * (1.0f + t);")
-    elif op_type == "Swish":  # pragma: no cover
-        exp_func = "expf" if use_math_h else "ONNX9000_FALLBACK_EXPF"
-        b.emit(f"float sig = 1.0f / (1.0f + {exp_func}(-val));")
-        b.emit(f"{out_name}[i] = val * sig;")
-    elif op_type == "Mish":  # pragma: no cover
-        exp_func = "expf" if use_math_h else "ONNX9000_FALLBACK_EXPF"
-        # softplus = log(1 + exp(x))
-        if use_math_h:
-            b.emit("float sp = log1pf(expf(val));")
-            b.emit(f"{out_name}[i] = val * tanhf(sp);")
-        else:
-            b.emit(f"float sp = log(1.0f + {exp_func}(val));")
-            b.emit(f"float e2 = {exp_func}(-2.0f * sp);")
-            b.emit("float th = (1.0f - e2) / (1.0f + e2);")
-            b.emit(f"{out_name}[i] = val * th;")
-    elif op_type == "Clip":  # pragma: no cover
+    elif op_type == "Clip":
         min_name = None
         max_name = None
         if len(node.inputs) > 1 and node.inputs[1] and str(node.inputs[1]) != "":
@@ -139,7 +114,7 @@ def generate_activation(
             b.emit(f"{out_name}[i] = val > {max_name}[0] ? {max_name}[0] : val;")
         else:
             b.emit(f"{out_name}[i] = val;")
-    elif op_type == "PRelu":  # pragma: no cover
+    elif op_type == "PRelu":
         if len(node.inputs) > 1:
             slope_name = node.inputs[1]
             slope_name = slope_name.name if hasattr(slope_name, "name") else slope_name
@@ -163,7 +138,7 @@ def generate_softmax(
     out_name: str,
     use_math_h: bool = True,
     is_log: bool = False,
-):
+) -> None:
     """Generate Softmax and LogSoftmax."""
     b.emit(f"/* {'Log' if is_log else ''}Softmax */")
     b.emit("{")
@@ -253,7 +228,7 @@ def generate_normalization(
     bias_name: str,
     out_name: str,
     norm_type: str,
-):
+) -> None:
     """Generate BatchNormalization, InstanceNormalization, LayerNormalization."""
     b.emit(f"/* {norm_type} */")
     b.emit("{")
@@ -294,7 +269,7 @@ def generate_normalization(
         b.pop_indent()
         b.emit("}")
 
-    elif norm_type == "LayerNormalization":
+    else:
         axis = get_attribute(node, "axis", -1)
         if axis < 0:
             axis += len(in_shape)

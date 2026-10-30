@@ -52,7 +52,7 @@ test.describe('Pipeline B - MLIR & IREE Compiler Flow', () => {
   });
 
   test('should verify compiler warnings appear in Console tab when processing', async ({
-    page
+    page,
   }) => {
     // Navigate to Console tab
     // Navigate to Console tab
@@ -68,7 +68,7 @@ test.describe('Pipeline B - MLIR & IREE Compiler Flow', () => {
         bus.emit('CONSOLE_LOG', {
           level: 'warn',
           message: 'Warning: onnx-mlir ignored unroll pragma on MatMul',
-          timestamp: new Date()
+          timestamp: new Date(),
         });
       } else {
         // Create the console output div if it doesn't exist

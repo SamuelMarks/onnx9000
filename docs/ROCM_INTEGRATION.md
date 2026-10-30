@@ -18,7 +18,9 @@ When running models via the Python API, simply specify the `ROCMExecutionProvide
 import onnxruntime as ort
 
 options = ort.SessionOptions()
-session = ort.InferenceSession("model.onnx", sess_options=options, providers=['ROCMExecutionProvider'])
+session = ort.InferenceSession(
+    "model.onnx", sess_options=options, providers=["ROCMExecutionProvider"]
+)
 
 # Run inference on AMD GPU
 result = session.run(None, {"input": input_data})

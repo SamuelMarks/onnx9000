@@ -5,7 +5,7 @@ from onnx9000.core.ir import Attribute, Graph, Node, Tensor
 from onnx9000.core.shape_inference import infer_shapes_and_types
 
 
-def test_infer_shapes_conv_transpose():
+def test_infer_shapes_conv_transpose() -> None:
     """Tests the infer shapes conv transpose functionality."""
     g = Graph("test")
     g.add_tensor(Tensor("X", shape=(1, 64, 112, 112), dtype=DType.FLOAT32))
@@ -27,7 +27,7 @@ def test_infer_shapes_conv_transpose():
     assert g.tensors["Y"].shape == (1, 32, 223, 223)
 
 
-def test_infer_shapes_gather():
+def test_infer_shapes_gather() -> None:
     """Tests the infer shapes gather functionality."""
     g = Graph("test")
     g.add_tensor(Tensor("X", shape=(10, 20, 30), dtype=DType.FLOAT32))
@@ -44,7 +44,7 @@ def test_infer_shapes_gather():
     assert g.tensors["Y"].shape == (10, 5, 5, 30)
 
 
-def test_infer_shapes_slice():
+def test_infer_shapes_slice() -> None:
     """Tests the infer shapes slice functionality."""
     g = Graph("test")
     g.add_tensor(Tensor("X", shape=(10, 20, 30), dtype=DType.FLOAT32))
@@ -65,7 +65,7 @@ def test_infer_shapes_slice():
     assert g.tensors["Y"].shape == (6, 20, 15)
 
 
-def test_infer_shapes_concat():
+def test_infer_shapes_concat() -> None:
     """Tests the infer shapes concat functionality."""
     g = Graph("test")
     g.add_tensor(Tensor("A", shape=(10, 20), dtype=DType.FLOAT32))
@@ -82,7 +82,7 @@ def test_infer_shapes_concat():
     assert g.tensors["Y"].shape == (10, 50)
 
 
-def test_infer_shapes_split():
+def test_infer_shapes_split() -> None:
     """Tests the infer shapes split functionality."""
     g = Graph("test")
     g.add_tensor(Tensor("X", shape=(10, 50), dtype=DType.FLOAT32))
@@ -102,7 +102,7 @@ def test_infer_shapes_split():
     assert g.tensors["Y2"].shape == (10, 30)
 
 
-def test_infer_shapes_tile():
+def test_infer_shapes_tile() -> None:
     """Tests the infer shapes tile functionality."""
     g = Graph("test")
     g.add_tensor(Tensor("X", shape=(10, 20), dtype=DType.FLOAT32))
@@ -116,7 +116,7 @@ def test_infer_shapes_tile():
     assert g.tensors["Y"].shape == (20, 60)
 
 
-def test_infer_shapes_pad():
+def test_infer_shapes_pad() -> None:
     """Tests the infer shapes pad functionality."""
     g = Graph("test")
     g.add_tensor(Tensor("X", shape=(10, 20), dtype=DType.FLOAT32))
@@ -130,7 +130,7 @@ def test_infer_shapes_pad():
     assert g.tensors["Y"].shape == (14, 26)
 
 
-def test_infer_shapes_topk():
+def test_infer_shapes_topk() -> None:
     """Tests the infer shapes topk functionality."""
     g = Graph("test")
     g.add_tensor(Tensor("X", shape=(10, 20), dtype=DType.FLOAT32))

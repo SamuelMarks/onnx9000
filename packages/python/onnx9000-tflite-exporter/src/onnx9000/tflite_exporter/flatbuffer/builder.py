@@ -1,7 +1,8 @@
 """Minimal FlatBuffer builder implementation for TFLite export."""
 
 import struct
-from typing import Optional, Union
+
+from onnx9000.core.exceptions import CompilationError
 
 
 class FlatBufferBuilder:
@@ -37,8 +38,7 @@ class FlatBufferBuilder:
 
     def prep(self, size: int, additional_bytes: int) -> None:
         """Prepare to write an element of `size` after `additional_bytes` have been written."""
-        if size > self.minalign:
-            self.minalign = size
+        self.minalign = max(self.minalign, size)
         align_size = (~(len(self.bb) - self.space + additional_bytes) + 1) & (size - 1)
         while self.space < align_size + size + additional_bytes:
             self.grow_buffer()
@@ -141,10 +141,7 @@ class FlatBufferBuilder:
 
     def create_string(self, s: str | bytes | bytearray) -> int:
         """Create a string or binary buffer."""
-        if isinstance(s, str):
-            utf8 = s.encode("utf-8")
-        else:
-            utf8 = bytes(s)
+        utf8 = s.encode("utf-8") if isinstance(s, str) else bytes(s)
         self.add_int8(0)
         self.start_vector(1, len(utf8), 1)
         self.space -= len(utf8)
@@ -206,7 +203,7 @@ class FlatBufferBuilder:
     def end_object(self) -> int:
         """End an object."""
         if self.vtable is None:
-            raise ValueError("FlatBufferBuilder: end_object called without start_object")
+            raise CompilationError("FlatBufferBuilder: end_object called without start_object")
         self.add_int32(0)
         vtableloc = self.offset()
 

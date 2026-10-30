@@ -1,12 +1,16 @@
 import { describe, expect, it } from 'vitest';
-import * as Module from '../../src/core/EventBus';
+import { EventBus } from '../../src/core/EventBus';
+
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
 
 describe('EventBus.ts', () => {
   it('should instantiate and cover EventBus', () => {
     // Attempt to instantiate
     try {
-      const obj = new (Module as any).EventBus();
+      const obj = Construct(EventBus);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

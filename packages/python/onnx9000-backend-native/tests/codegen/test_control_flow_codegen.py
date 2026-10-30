@@ -5,7 +5,7 @@ from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Node, Tensor
 
 
-def test_if_codegen():
+def test_if_codegen() -> None:
     """Test if codegen."""
     g = Graph("TestIf")
     g.inputs = ["cond"]
@@ -38,7 +38,7 @@ def test_if_codegen():
     assert "Neg" in code
 
 
-def test_loop_codegen():
+def test_loop_codegen() -> None:
     """Test loop codegen."""
     g = Graph("TestLoop")
     g.inputs = ["M", "cond"]

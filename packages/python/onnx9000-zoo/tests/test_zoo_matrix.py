@@ -1,6 +1,6 @@
-import pytest
+"""Unit tests and verification suite for zoo matrix functionality."""
 
-#
+import pytest
 from onnx9000.core.codegen.triton import TritonExporter
 from onnx9000.core.ir import Graph, Node
 from onnx9000.core.surgeon import (
@@ -332,6 +332,14 @@ SCIENTIFIC_MODELS = ["XGBoost", "GCN", "AlphaFold 2", "RT-1"]
 
 
 def mock_graph_for_model(model_name: str) -> Graph:
+    """Execute mock graph for model operation.
+
+    Args:
+        model_name: Parameter specifying model name (str).
+
+    Returns:
+        Result of mock graph for model (Graph).
+    """
     g = Graph(name=model_name)
     g.nodes = []
 
@@ -399,7 +407,14 @@ def mock_graph_for_model(model_name: str) -> Graph:
         SCIENTIFIC_MODELS,
     ],
 )
-def test_model_zoo_matrix_parsing(model_group):
+def test_model_zoo_matrix_parsing(
+    model_group: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
+    """Verify that model zoo matrix parsing behaves as expected.
+
+    Args:
+        model_group: Parameter specifying model group.
+    """
     for model_name in model_group:
         g = mock_graph_for_model(model_name)
 
@@ -412,7 +427,8 @@ def test_model_zoo_matrix_parsing(model_group):
         assert len(g.nodes) > 0
 
 
-def test_triton_export_on_llms():
+def test_triton_export_on_llms() -> None:
+    """Verify that triton export on llms behaves as expected."""
     for model_name in LLM_MODELS:
         g = mock_graph_for_model(model_name)
         triton_code = TritonExporter(g).export()
@@ -420,17 +436,17 @@ def test_triton_export_on_llms():
         assert "_kernel(" in triton_code
 
 
-def test_c_compiler_on_vision():
+def test_c_compiler_on_vision() -> None:
     # Test that C compiler doesn't crash on standard vision ops
+    """Verify that c compiler on vision behaves as expected."""
     for model_name in VISION_MODELS:
-        mock_graph_for_model(model_name)
-        # We don't enforce full generation since we don't have ValueInfos,
-        # but compiling the instance shouldn't crash
-        assert True
-        #
+        g = mock_graph_for_model(model_name)
+        assert g.name == model_name
+        assert len(g.nodes) > 0
 
 
-def test_snapshot_codegen():
+def test_snapshot_codegen() -> None:
+    """Verify that snapshot codegen behaves as expected."""
     from onnx9000.core.codegen.flax import ONNXToFlaxNNXVisitor
     from onnx9000.core.codegen.keras import ONNXToKerasVisitor
     from onnx9000.core.codegen.pytorch import ONNXToPyTorchVisitor

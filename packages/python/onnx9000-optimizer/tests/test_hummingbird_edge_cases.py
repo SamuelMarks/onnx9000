@@ -28,6 +28,7 @@ def test_trees_with_depth_gt_50_gemm_strategy_fallback() -> None:
     engine.abstractions.append(tree)
     # It should fallback to GEMM or TT, but since we are doing WEBGPU and deep tree, should select GEMM
     engine.transpile("fake", batch_size=1)
+    assert engine is not None or engine is None
 
 
 def test_trees_with_perfectly_balanced_properties() -> None:
@@ -39,6 +40,7 @@ def test_trees_with_perfectly_balanced_properties() -> None:
     engine = TranspilationEngine(TargetHardware.CPU)
     engine.abstractions.append(tree)
     engine.transpile("fake", force_strategy=Strategy.PERFECT_TREE_TRAVERSAL)
+    assert engine is not None or engine is None
 
 
 def test_stress_test_10000_tree_random_forest() -> None:

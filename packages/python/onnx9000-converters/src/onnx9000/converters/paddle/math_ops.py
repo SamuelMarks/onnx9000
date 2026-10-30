@@ -43,11 +43,7 @@ def _map_simple_binary(op_type: str) -> Callable:
 
     def _impl(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
         """Execute the  impl operation."""
-        inputs = []
-        if "X" in node.inputs:
-            inputs.extend(node.inputs["X"])
-        if "Y" in node.inputs:
-            inputs.extend(node.inputs["Y"])
+        inputs = node.inputs.get("X", []) + node.inputs.get("Y", [])
         return builder.make_node(op_type, inputs, {}, node.name)
 
     return _impl
@@ -66,11 +62,7 @@ def _map_simple_unary(op_type: str) -> Callable:
 
 def _map_floordiv(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
     """Execute the  map floordiv operation."""
-    inputs = []
-    if "X" in node.inputs:
-        inputs.extend(node.inputs["X"])
-    if "Y" in node.inputs:
-        inputs.extend(node.inputs["Y"])
+    inputs = node.inputs.get("X", []) + node.inputs.get("Y", [])
     div_out = builder.make_node("Div", inputs, {}, f"{node.name}_div")[0]
     return builder.make_node("Floor", [div_out], {}, node.name)
 
@@ -79,7 +71,7 @@ def _map_log1p(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]
     """Execute the  map log1p operation."""
     inputs = node.inputs.get("X", [])
     one = builder.add_constant(f"{node.name}_one", 1.0, 1, ())
-    add_out = builder.make_node("Add", inputs + [one], {}, f"{node.name}_add")[0]
+    add_out = builder.make_node("Add", [*inputs, one], {}, f"{node.name}_add")[0]
     return builder.make_node("Log", [add_out], {}, node.name)
 
 
@@ -112,7 +104,7 @@ def _map_scale(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]
     bias = builder.extract_attr(node, "bias", 0.0)
     scale_const = builder.add_constant(f"{node.name}_scale", scale, 1, ())
     bias_const = builder.add_constant(f"{node.name}_bias", bias, 1, ())
-    mul_out = builder.make_node("Mul", inputs + [scale_const], {}, f"{node.name}_mul")[0]
+    mul_out = builder.make_node("Mul", [*inputs, scale_const], {}, f"{node.name}_mul")[0]
     return builder.make_node("Add", [mul_out, bias_const], {}, node.name)
 
 
@@ -141,9 +133,7 @@ def _map_custom(op_name: str) -> Callable:
 
     def _impl(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
         """Execute the  impl operation."""
-        inputs = node.inputs.get("X", [])
-        if "Y" in node.inputs:
-            inputs.extend(node.inputs["Y"])
+        inputs = node.inputs.get("X", []) + node.inputs.get("Y", [])
         return builder.make_node(op_name, inputs, {}, node.name)
 
     return _impl

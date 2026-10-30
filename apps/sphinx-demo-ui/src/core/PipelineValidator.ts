@@ -1,8 +1,11 @@
-// @ts-nocheck
+/**
+ * @fileoverview PipelineValidator module for sphinx-demo-ui.
+ */
 /**
  * Utility to validate transitions between pipeline states.
  */
 export class PipelineValidator {
+  /** Property `VALID_TRANSITIONS` of `PipelineValidator`. */
   private static VALID_TRANSITIONS: Record<string, string[]> = {
     '.onnx': ['onnx-simplifier', 'olive', 'onnx-mlir', 'onnx2c', 'ort-web'],
     mlir: ['iree-compiler'],
@@ -18,7 +21,7 @@ export class PipelineValidator {
     lightgbm: ['.onnx'],
     xgboost: ['.onnx'],
     catboost: ['.onnx'],
-    sparkml: ['.onnx']
+    sparkml: ['.onnx'],
   };
 
   /**

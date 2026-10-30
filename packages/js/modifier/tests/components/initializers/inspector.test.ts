@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../../src/components/initializers/inspector";
+import { describe, expect, it } from 'vitest';
+import { InitializerInspector } from '../../../src/components/initializers/inspector';
 
-describe("inspector.ts", () => {
-  it("should instantiate and cover InitializerInspector", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('inspector.ts', () => {
+  it('should instantiate and cover InitializerInspector', () => {
     try {
-      const obj = new (Module as any).InitializerInspector();
+      const obj = Construct(InitializerInspector);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

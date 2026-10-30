@@ -1,12 +1,12 @@
 """CoreML Protobuf parser for pure-Python ONNX conversion."""
 
-from typing import Any
-
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Attribute, Graph, Node, ValueInfo
 
 
-def parse_coreml_model(coreml_model: Any) -> Graph:
+def parse_coreml_model(
+    coreml_model: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> Graph:
     """Parse a CoreML protobuf model and return an ONNX Graph."""
     graph = Graph("CoreML_Model")
     graph.opset_imports = {"": 14, "ai.onnx.ml": 3}

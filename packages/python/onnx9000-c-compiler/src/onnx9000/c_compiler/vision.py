@@ -15,7 +15,7 @@ def generate_nms(
     iou_threshold: str,
     score_threshold: str,
     out_name: str,
-):
+) -> None:
     """Generate C code for the Non-Maximum Suppression (NMS) operation.
 
     Args:
@@ -47,7 +47,7 @@ def generate_resize(
     in_tensor: Tensor,
     in_name: str,
     out_name: str,
-):
+) -> None:
     """Generate C code for the Resize operation.
 
     Args:

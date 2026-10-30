@@ -1,8 +1,17 @@
-(globalThis as any).self = globalThis;
-(globalThis as any).postMessage = () => undefined;
+const g = globalThis as typeof globalThis & {
+  self: unknown;
+  postMessage: () => void;
+  workerInstances: unknown[];
+  Worker: unknown;
+  Blob: unknown;
+  File: unknown;
+};
 
-Object.defineProperty(globalThis, "navigator", {
-  value: { userAgent: "node.js" },
+g.self = globalThis;
+g.postMessage = () => undefined;
+
+Object.defineProperty(globalThis, 'navigator', {
+  value: { userAgent: 'node.js' },
   writable: true,
 });
 
@@ -49,40 +58,40 @@ const mockContext = {
   createPattern: () => ({}),
 };
 
-if (typeof HTMLCanvasElement !== "undefined") {
-  (HTMLCanvasElement as any).prototype.getContext = () => mockContext;
+if (typeof HTMLCanvasElement !== 'undefined') {
+  (HTMLCanvasElement.prototype as { getContext: unknown }).getContext = () => mockContext;
 }
 
-(globalThis as any).workerInstances = [];
+g.workerInstances = [];
 class MockWorker {
   constructor() {
-    (globalThis as any).workerInstances.push(this);
+    g.workerInstances.push(this);
   }
-  onmessage: object;
-  onerror: object;
-  postMessage(_data: object) {
+  onmessage: ((ev: { data: unknown }) => void) | null = null;
+  onerror: ((ev: unknown) => void) | null = null;
+  postMessage(_data: unknown) {
     if (this.onmessage) {
       this.onmessage({
         data: {
-          type: "PARSE_SUCCESS",
+          type: 'PARSE_SUCCESS',
           layout: {
             nodes: [
               {
-                id: "1",
-                name: "AddNode",
-                opType: "Add",
-                type: "node",
+                id: '1',
+                name: 'AddNode',
+                opType: 'Add',
+                type: 'node',
               },
-              { id: "input_X", name: "X", type: "input" },
+              { id: 'input_X', name: 'X', type: 'input' },
               {
-                id: "output_Y",
-                name: "Y",
-                type: "output",
+                id: 'output_Y',
+                name: 'Y',
+                type: 'output',
               },
               {
-                id: "constant_W",
-                name: "W",
-                type: "constant",
+                id: 'constant_W',
+                name: 'W',
+                type: 'constant',
               },
             ],
             edges: [],
@@ -90,22 +99,22 @@ class MockWorker {
           graph: {
             nodes: [
               {
-                name: "AddNode",
-                opType: "Add",
-                inputs: ["X", "W"],
-                outputs: ["Y"],
+                name: 'AddNode',
+                opType: 'Add',
+                inputs: ['X', 'W'],
+                outputs: ['Y'],
                 attributes: {
-                  attr1: { type: "FLOAT", value: 1.0 },
+                  attr1: { type: 'FLOAT', value: 1.0 },
                 },
-                domain: "",
+                domain: '',
               },
             ],
             tensors: {
-              W: { name: "W", dtype: "float32", shape: [1], size: 1 },
+              W: { name: 'W', dtype: 'float32', shape: [1], size: 1 },
             },
-            inputs: [{ name: "X", dtype: "float32", shape: [1] }],
-            outputs: [{ name: "Y", dtype: "float32", shape: [1] }],
-            initializers: ["W"],
+            inputs: [{ name: 'X', dtype: 'float32', shape: [1] }],
+            outputs: [{ name: 'Y', dtype: 'float32', shape: [1] }],
+            initializers: ['W'],
           },
         },
       });
@@ -113,17 +122,17 @@ class MockWorker {
   }
   terminate() {}
 }
-(globalThis as any).Worker = MockWorker;
+g.Worker = MockWorker;
 
-if (typeof Blob === "undefined") {
-  (globalThis as any).Blob = class Blob {
-    constructor(public parts: object[]) {}
+if (typeof Blob === 'undefined') {
+  g.Blob = class Blob {
+    constructor(public parts: unknown[]) {}
   };
 }
-if (typeof File === "undefined") {
-  (globalThis as any).File = class File extends Blob {
+if (typeof File === 'undefined') {
+  g.File = class File extends Blob {
     constructor(
-      parts: object[],
+      parts: BlobPart[],
       public name: string,
     ) {
       super(parts);
@@ -138,4 +147,4 @@ global.Path2D = class Path2D {
   closePath() {}
   bezierCurveTo() {}
   rect() {}
-};
+} as typeof Path2D;

@@ -1,17 +1,50 @@
 import { globalEvents } from '../core/State';
 import { BaseComponent } from './BaseComponent';
 
-declare const require: any;
-declare const monaco: any;
+interface MonacoModel {
+  id?: string;
+}
+
+interface MonacoEditorInstance {
+  getValue(): string;
+  setValue(val: string): void;
+  getModel(): MonacoModel | null;
+  onDidChangeModelContent(cb: () => void): void;
+  onDidChangeCursorPosition(
+    cb: (e: { position: { lineNumber: number; column: number } }) => void,
+  ): void;
+  createDecorationsCollection(
+    decorations: Array<{
+      range: unknown;
+      options: { className: string; hoverMessage: { value: string } };
+    }>,
+  ): void;
+}
+
+declare const require: {
+  config(cfg: { paths: Record<string, string> }): void;
+  (deps: string[], cb: () => void): void;
+};
+declare const monaco: {
+  Range: new (startLine: number, startCol: number, endLine: number, endCol: number) => unknown;
+  editor: {
+    create(container: HTMLElement, options: Record<string, unknown>): MonacoEditorInstance;
+    setTheme(theme: string): void;
+    setModelLanguage(model: MonacoModel | null, lang: string): void;
+  };
+};
 
 export class CodeEditor extends BaseComponent {
-  private editorInstance: any = null;
-  private debounceTimer: any = null;
+  private editorInstance: MonacoEditorInstance | null = null;
+  private debounceTimer: ReturnType<typeof setTimeout> | null = null;
 
   mount(): void {
     // 307. Verify Monaco editor web workers are loaded securely via blob URLs.
-    if (typeof (window as any).MonacoEnvironment === 'undefined') {
-      (window as any).MonacoEnvironment = {
+    const win = window as Window & {
+      MonacoEnvironment?: { getWorkerUrl: (workerId: string, label: string) => string };
+    };
+    if (typeof win.MonacoEnvironment === 'undefined') {
+      win.MonacoEnvironment = {
         getWorkerUrl: (_workerId: string, _label: string) => {
           const proxy = `self.MonacoEnvironment = { baseUrl: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/' }; importScripts('https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/base/worker/workerMain.js');`;
           return URL.createObjectURL(new Blob([proxy], { type: 'text/javascript' }));

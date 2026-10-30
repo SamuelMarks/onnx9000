@@ -1,13 +1,13 @@
-import { Graph } from "@onnx9000/core";
-import { describe, expect, it, vi } from "vitest";
-import { compileGraphToTFLite } from "../src/compiler/subgraph.js";
+import { Graph } from '@onnx9000/core';
+import { describe, expect, it, vi } from 'vitest';
+import { compileGraphToTFLite } from '../src/compiler/subgraph.js';
 
-vi.mock("../src/compiler/layout.js", () => ({
+vi.mock('../src/compiler/layout.js', () => ({
   LayoutOptimizer: class {
     optimize() {}
   },
 }));
-vi.mock("../quantization/quantizer", () => ({
+vi.mock('../quantization/quantizer', () => ({
   Quantizer: class {
     quantize() {}
     getQuantizationOffset() {
@@ -15,7 +15,7 @@ vi.mock("../quantization/quantizer", () => ({
     }
   },
 }));
-vi.mock("../optimizations/edgetpu", () => ({
+vi.mock('../optimizations/edgetpu', () => ({
   EdgeTPUOptimizer: class {
     optimize() {
       return [];
@@ -23,10 +23,10 @@ vi.mock("../optimizations/edgetpu", () => ({
   },
 }));
 
-describe("subgraph", () => {
-  it("should compile", () => {
-    const g = new Graph("test");
-    const exp: any = {
+describe('subgraph', () => {
+  it('should compile', () => {
+    const g = new Graph('test');
+    const exp = {
       builder: {
         startVector: vi.fn(),
         addInt32: vi.fn(),
@@ -39,7 +39,7 @@ describe("subgraph", () => {
       getOrAddOperatorCode: vi.fn().mockReturnValue(0),
     };
 
-    const res = compileGraphToTFLite(g, exp);
+    const res = compileGraphToTFLite(g, exp as never as Parameters<typeof compileGraphToTFLite>[1]);
     expect(res).toBeDefined();
   });
 });

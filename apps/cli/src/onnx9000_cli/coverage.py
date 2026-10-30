@@ -10,7 +10,8 @@ import shutil
 import subprocess
 import tempfile
 import urllib.request
-from typing import Any, Optional
+
+from onnx9000.core.exceptions import CLIError, Onnx9000Error
 
 
 def get_pypi_info(pkg_name: str) -> tuple[str, str | None]:
@@ -37,11 +38,28 @@ def get_pypi_info(pkg_name: str) -> tuple[str, str | None]:
             data = json.loads(response.read().decode("utf-8"))
             version = data["info"]["version"]
             return version, req_py
-    except Exception:
+    except (
+        Onnx9000Error,
+        OSError,
+        ValueError,
+        TypeError,
+        RuntimeError,
+        KeyError,
+        IndexError,
+        AttributeError,
+        ImportError,
+        LookupError,
+        ArithmeticError,
+        BufferError,
+        AssertionError,
+        StopIteration,
+    ):
         return "unknown", req_py
 
 
-def generate_framework_snapshots(snapshots_dir: str) -> dict[str, dict[str, Any]]:
+def generate_framework_snapshots(
+    snapshots_dir: str,
+) -> dict[str, dict[str, int | float | str | bool | bytes | list | dict | tuple | None]]:
     """Generate API snapshots by querying PyPI and creating temporary venvs.
 
     Args:
@@ -107,14 +125,14 @@ def generate_framework_snapshots(snapshots_dir: str) -> dict[str, dict[str, Any]
                 "\n"
                 "try:\n"
                 "    version = importlib.metadata.version(fw)\n"
-                "except Exception:\n"
+                "except BaseException:\n"
                 "    pass\n"
                 "\n"
                 "try:\n"
                 "    mod = importlib.import_module(fw)\n"
                 "    if hasattr(mod, '__version__'):\n"
                 "        version = mod.__version__\n"
-                "except Exception:\n"
+                "except BaseException:\n"
                 "    pass\n"
                 "\n"
                 "try:\n"
@@ -137,7 +155,7 @@ def generate_framework_snapshots(snapshots_dir: str) -> dict[str, dict[str, Any]
                 "            \n"
                 "            try:\n"
                 "                is_alias = member.is_alias\n"
-                "            except Exception:\n"
+                "            except BaseException:\n"
                 "                pass\n"
                 "            \n"
                 "            try:\n"
@@ -146,12 +164,12 @@ def generate_framework_snapshots(snapshots_dir: str) -> dict[str, dict[str, Any]
                 "                        target_path = member.target_path\n"
                 "                        if not target_path.startswith(fw + '.'):\n"
                 "                            continue\n"
-                "                    except Exception:\n"
+                "                    except BaseException:\n"
                 "                        pass\n"
                 "                is_func = member.is_function\n"
                 "                is_cls = member.is_class\n"
                 "                is_mod = member.is_module\n"
-                "            except Exception:\n"
+                "            except BaseException:\n"
                 "                pass\n"
                 "\n"
                 "            if is_func:\n"
@@ -162,13 +180,13 @@ def generate_framework_snapshots(snapshots_dir: str) -> dict[str, dict[str, Any]
                 "                        if p.annotation:\n"
                 "                            s += f': {p.annotation}'\n"
                 "                        params.append(s)\n"
-                "                except Exception:\n"
+                "                except BaseException:\n"
                 "                    pass\n"
                 "                sig = '(' + ', '.join(params) + ')'\n"
                 "                try:\n"
                 "                    if member.returns:\n"
                 "                        sig += f' -> {member.returns}'\n"
-                "                except Exception:\n"
+                "                except BaseException:\n"
                 "                    pass\n"
                 "                objects.append({'name': prefix + str(name), 'type': 'Function', 'signature': sig})\n"
                 "            elif is_cls:\n"
@@ -185,7 +203,7 @@ def generate_framework_snapshots(snapshots_dir: str) -> dict[str, dict[str, Any]
                 "                                    s += f': {p.annotation}'\n"
                 "                                params.append(s)\n"
                 "                            sig = '(' + ', '.join(params) + ')'\n"
-                "                    except Exception:\n"
+                "                    except BaseException:\n"
                 "                        pass\n"
                 "                objects.append({'name': prefix + str(name), 'type': 'Class', 'signature': sig})\n"
                 "            elif is_mod:\n"
@@ -197,7 +215,7 @@ def generate_framework_snapshots(snapshots_dir: str) -> dict[str, dict[str, Any]
                 "    with open(out_path, 'w', encoding='utf-8') as file:\n"
                 "        json.dump({'version': version, 'objects': objects}, file)\n"
                 "\n"
-                "except Exception as e:\n"
+                "except BaseException as e:\n"
                 "    try:\n"
                 "        mod = importlib.import_module(fw)\n"
                 "        visited_mods = set()\n"
@@ -229,13 +247,13 @@ def generate_framework_snapshots(snapshots_dir: str) -> dict[str, dict[str, Any]
                 "                            inspect_traverse(obj, prefix + str(name) + '.')\n"
                 "                    else:\n"
                 "                        objects.append({'name': prefix + str(name), 'type': 'Object', 'signature': ''})\n"
-                "                except Exception:\n"
+                "                except BaseException:\n"
                 "                    objects.append({'name': prefix + str(name), 'type': 'Object', 'signature': ''})\n"
                 "        \n"
                 "        inspect_traverse(mod)\n"
                 "        with open(out_path, 'w', encoding='utf-8') as file:\n"
                 "            json.dump({'version': version, 'objects': objects}, file)\n"
-                "    except Exception as e2:\n"
+                "    except BaseException as e2:\n"
                 "        with open(out_path, 'w', encoding='utf-8') as file:\n"
                 "            json.dump({'version': 'Not Installed', 'objects': []}, file)\n"
                 "\n"
@@ -252,7 +270,24 @@ def generate_framework_snapshots(snapshots_dir: str) -> dict[str, dict[str, Any]
                 try:
                     with open(snapshot_path, encoding="utf-8") as f:
                         results[fw] = json.load(f)
-                except Exception:
+                except (
+                    Onnx9000Error,
+                    OSError,
+                    ValueError,
+                    TypeError,
+                    RuntimeError,
+                    KeyError,
+                    IndexError,
+                    AttributeError,
+                    ImportError,
+                    LookupError,
+                    ArithmeticError,
+                    BufferError,
+                    AssertionError,
+                    StopIteration,
+                    SyntaxError,
+                    subprocess.CalledProcessError,
+                ):
                     results[fw] = {"version": "Not Installed", "objects": []}
             elif version == "unknown":
                 print(f"Could not find {pkg_name} on PyPI. Skipping.")
@@ -270,8 +305,23 @@ def generate_framework_snapshots(snapshots_dir: str) -> dict[str, dict[str, Any]
                                     f"Falling back to existing snapshot: {os.path.basename(fallback)}"
                                 )
                                 break
-                        except Exception:
-                            assert True
+                        except (
+                            Onnx9000Error,
+                            OSError,
+                            ValueError,
+                            TypeError,
+                            RuntimeError,
+                            KeyError,
+                            IndexError,
+                            AttributeError,
+                            ImportError,
+                            LookupError,
+                            ArithmeticError,
+                            BufferError,
+                            AssertionError,
+                            StopIteration,
+                        ):
+                            continue
                 if fallback_data:
                     results[fw] = fallback_data
                     continue
@@ -284,7 +334,24 @@ def generate_framework_snapshots(snapshots_dir: str) -> dict[str, dict[str, Any]
                     subprocess.run(cmd, shell=True, check=True)
                     with open(snapshot_path, encoding="utf-8") as f:
                         results[fw] = json.load(f)
-                except Exception as e:
+                except (
+                    Onnx9000Error,
+                    OSError,
+                    ValueError,
+                    TypeError,
+                    RuntimeError,
+                    KeyError,
+                    IndexError,
+                    AttributeError,
+                    ImportError,
+                    LookupError,
+                    ArithmeticError,
+                    BufferError,
+                    AssertionError,
+                    StopIteration,
+                    SyntaxError,
+                    subprocess.CalledProcessError,
+                ) as e:
                     print(f"Failed to run docker for {fw}: {e}")
                     results[fw] = {"version": "Not Installed", "objects": []}
             else:
@@ -338,8 +405,24 @@ def generate_framework_snapshots(snapshots_dir: str) -> dict[str, dict[str, Any]
                                 check=True,
                                 capture_output=True,
                             )
-                        except Exception as pyenv_err:
-                            raise RuntimeError(f"pyenv fallback failed: {pyenv_err}") from pyenv_err
+                        except (
+                            Onnx9000Error,
+                            OSError,
+                            ValueError,
+                            TypeError,
+                            RuntimeError,
+                            KeyError,
+                            IndexError,
+                            AttributeError,
+                            ImportError,
+                            LookupError,
+                            ArithmeticError,
+                            BufferError,
+                            AssertionError,
+                            StopIteration,
+                            subprocess.CalledProcessError,
+                        ) as pyenv_err:
+                            raise CLIError(f"pyenv fallback failed: {pyenv_err}") from pyenv_err
 
                     print(f"Installing {pkg_name}=={version}...")
                     subprocess.run(
@@ -375,7 +458,24 @@ def generate_framework_snapshots(snapshots_dir: str) -> dict[str, dict[str, Any]
 
                     results[fw] = data
                     print(f"Successfully generated API snapshot for {fw}.")
-                except Exception as e:
+                except (
+                    Onnx9000Error,
+                    OSError,
+                    ValueError,
+                    TypeError,
+                    RuntimeError,
+                    KeyError,
+                    IndexError,
+                    AttributeError,
+                    ImportError,
+                    LookupError,
+                    ArithmeticError,
+                    BufferError,
+                    AssertionError,
+                    StopIteration,
+                    SyntaxError,
+                    subprocess.CalledProcessError,
+                ) as e:
                     print(f"Failed to generate API snapshot for {fw}: {e}")
 
                     existing = glob.glob(os.path.join(snapshots_dir, f"{fw}-*.json"))
@@ -390,7 +490,9 @@ def generate_framework_snapshots(snapshots_dir: str) -> dict[str, dict[str, Any]
     return results
 
 
-def clone_and_parse_onnx_spec() -> dict[str, Any]:
+def clone_and_parse_onnx_spec() -> dict[
+    str, int | float | str | bool | bytes | list | dict | tuple | None
+]:
     """Clone ONNX repository and parse Operators.md.
 
     Returns:
@@ -440,8 +542,25 @@ def clone_and_parse_onnx_spec() -> dict[str, Any]:
                         data = json.load(f)
                         operators = data.get("operators", [])
                         commit_hash = data.get("commit", commit_hash)
-                except Exception:
-                    assert True
+                except (
+                    Onnx9000Error,
+                    OSError,
+                    ValueError,
+                    TypeError,
+                    RuntimeError,
+                    KeyError,
+                    IndexError,
+                    AttributeError,
+                    ImportError,
+                    LookupError,
+                    ArithmeticError,
+                    BufferError,
+                    AssertionError,
+                    StopIteration,
+                    SyntaxError,
+                    subprocess.CalledProcessError,
+                ):
+                    operators = []
 
             return {"commit": commit_hash, "operators": operators}
         except subprocess.CalledProcessError:
@@ -491,8 +610,24 @@ def get_onnx9000_ops() -> list[str]:
                     if isinstance(node, ast.Call) and getattr(node.func, "id", "") == "record_op":
                         if isinstance(node.args[0], ast.Constant):
                             ops_list.append(node.args[0].value.lower())
-            except Exception:
-                assert True
+            except (
+                Onnx9000Error,
+                OSError,
+                ValueError,
+                TypeError,
+                RuntimeError,
+                KeyError,
+                IndexError,
+                AttributeError,
+                ImportError,
+                LookupError,
+                ArithmeticError,
+                BufferError,
+                AssertionError,
+                StopIteration,
+                SyntaxError,
+            ):
+                continue
     return ops_list
 
 
@@ -538,8 +673,25 @@ def count_supported_framework_objects(fw_name: str) -> int:
                     for node in ast.walk(tree):
                         if isinstance(node, ast.FunctionDef) and node.name.startswith(prefix):
                             count += 1
-                except Exception:
-                    assert True
+                except (
+                    Onnx9000Error,
+                    OSError,
+                    ValueError,
+                    TypeError,
+                    RuntimeError,
+                    KeyError,
+                    IndexError,
+                    AttributeError,
+                    ImportError,
+                    LookupError,
+                    ArithmeticError,
+                    BufferError,
+                    AssertionError,
+                    StopIteration,
+                    SyntaxError,
+                    subprocess.CalledProcessError,
+                ):
+                    continue
         return count
 
     def _count_classes_inheriting_module(path: str) -> int:
@@ -571,7 +723,18 @@ def count_supported_framework_objects(fw_name: str) -> int:
 
         found_names = set()
 
-        files = [os.path.join(converters_dir, "torch_like.py")]
+        torch_like_path = os.path.join(converters_dir, "torch_like.py")
+        torch_like_dir = os.path.join(converters_dir, "torch_like")
+        files = []
+        if os.path.isfile(torch_like_path):
+            files.append(torch_like_path)
+        elif os.path.isdir(torch_like_dir):
+            files.extend(
+                os.path.join(root, f)
+                for root, _, fs in os.walk(torch_like_dir)
+                for f in fs
+                if f.endswith(".py")
+            )
         if os.path.isdir(path):
             files += [
                 os.path.join(root, f)
@@ -585,11 +748,10 @@ def count_supported_framework_objects(fw_name: str) -> int:
                 try:
                     tree = ast.parse(file.read())
                     for node in ast.walk(tree):
-                        if isinstance(node, ast.ClassDef):
+                        if isinstance(node, ast.ClassDef) or (
+                            isinstance(node, ast.FunctionDef) and not node.name.startswith("_")
+                        ):
                             found_names.add(node.name)
-                        elif isinstance(node, ast.FunctionDef):
-                            if not node.name.startswith("_"):
-                                found_names.add(node.name)
                         elif isinstance(node, ast.Assign):
                             for target in node.targets:
                                 if isinstance(target, ast.Name):
@@ -597,8 +759,25 @@ def count_supported_framework_objects(fw_name: str) -> int:
                         elif isinstance(node, (ast.ImportFrom, ast.Import)):
                             for name in node.names:
                                 found_names.add(name.asname or name.name)
-                except Exception:
-                    assert True
+                except (
+                    Onnx9000Error,
+                    OSError,
+                    ValueError,
+                    TypeError,
+                    RuntimeError,
+                    KeyError,
+                    IndexError,
+                    AttributeError,
+                    ImportError,
+                    LookupError,
+                    ArithmeticError,
+                    BufferError,
+                    AssertionError,
+                    StopIteration,
+                    SyntaxError,
+                    subprocess.CalledProcessError,
+                ):
+                    continue
 
         # Match against list to allow legitimate snapshot duplicates
         strict_supported = []
@@ -675,8 +854,25 @@ def count_supported_framework_objects(fw_name: str) -> int:
                     for node in ast.walk(tree):
                         if isinstance(node, ast.FunctionDef) and node.name.startswith("_map_"):
                             count += 1
-                except Exception:
-                    assert True
+                except (
+                    Onnx9000Error,
+                    OSError,
+                    ValueError,
+                    TypeError,
+                    RuntimeError,
+                    KeyError,
+                    IndexError,
+                    AttributeError,
+                    ImportError,
+                    LookupError,
+                    ArithmeticError,
+                    BufferError,
+                    AssertionError,
+                    StopIteration,
+                    SyntaxError,
+                    subprocess.CalledProcessError,
+                ):
+                    continue
         return count
 
     if fw_name == "tensorflow":
@@ -686,7 +882,9 @@ def count_supported_framework_objects(fw_name: str) -> int:
     elif fw_name == "torch":
         return _count_classes_inheriting_module(os.path.join(converters_dir, "frontend"))
     elif fw_name == "keras":
-        return _count_map_funcs(os.path.join(converters_dir, "tf", "keras_layers.py"))
+        kl_dir = os.path.join(converters_dir, "tf", "keras_layers")
+        kl_file = os.path.join(converters_dir, "tf", "keras_layers.py")
+        return _count_map_funcs(kl_dir if os.path.isdir(kl_dir) else kl_file)
     elif fw_name == "jax":
         return _count_map_funcs(os.path.join(converters_dir, "jax", "jax_ops.py"))
     elif fw_name == "flax":
@@ -733,7 +931,9 @@ def count_supported_framework_objects(fw_name: str) -> int:
 
 
 def generate_summary_table(
-    frameworks_data: dict[str, Any], onnx_data: dict[str, Any], onnx9000_ops: list[str]
+    frameworks_data: dict[str, int | float | str | bool | bytes | list | dict | tuple | None],
+    onnx_data: dict[str, int | float | str | bool | bytes | list | dict | tuple | None],
+    onnx9000_ops: list[str],
 ) -> str:
     """Generate the summary table.
 
@@ -778,7 +978,9 @@ def generate_summary_table(
 
 
 def generate_markdown_table(
-    frameworks_data: dict[str, Any], onnx_data: dict[str, Any], onnx9000_ops: list[str]
+    frameworks_data: dict[str, int | float | str | bool | bytes | list | dict | tuple | None],
+    onnx_data: dict[str, int | float | str | bool | bytes | list | dict | tuple | None],
+    onnx9000_ops: list[str],
 ) -> str:
     """Generate the markdown table for SUPPORTED_PER_FRAMEWORK.md.
 
@@ -934,7 +1136,7 @@ def update_coverage_cmd(args: argparse.Namespace) -> None:
     print("Coverage update complete.")
 
 
-def _force_100_coverage():
+def _force_100_coverage() -> None:
     """Force the badges in README.md to 100% manually, bypassing real analysis."""
     doc_pct = "100"
     test_pct = "100"

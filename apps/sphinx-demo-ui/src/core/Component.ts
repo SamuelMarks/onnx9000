@@ -1,10 +1,16 @@
-// @ts-nocheck
+/**
+ * @fileoverview Component module for sphinx-demo-ui.
+ */
 /**
  * Base Component class for pure Vanilla JS DOM UI architecture.
  * Provides a highly controlled, lightweight lifecycle: mount, render, and unmount.
  */
+import { Onnx9000Error } from '@onnx9000/core';
+/** Represents the `Component` class. */
 export abstract class Component<T extends HTMLElement = HTMLElement> {
+  /** Property `element` of `Component`. */
   public element!: T;
+  /** Property `cleanupFunctions` of `Component`. */
   private cleanupFunctions: Array<() => void> = [];
 
   /**
@@ -21,8 +27,8 @@ export abstract class Component<T extends HTMLElement = HTMLElement> {
    */
   public mount(parent: HTMLElement): void {
     if (!this.element) {
-      throw new Error(
-        'Component element not initialized. Did you forget to set this.element in the constructor?'
+      throw new Onnx9000Error(
+        'Component element not initialized. Did you forget to set this.element in the constructor?',
       );
     }
     parent.appendChild(this.element);
@@ -36,8 +42,8 @@ export abstract class Component<T extends HTMLElement = HTMLElement> {
    */
   public replace(oldElement: HTMLElement): void {
     if (!this.element) {
-      throw new Error(
-        'Component element not initialized. Did you forget to set this.element in the constructor?'
+      throw new Onnx9000Error(
+        'Component element not initialized. Did you forget to set this.element in the constructor?',
       );
     }
     if (oldElement.parentNode) {
@@ -81,7 +87,7 @@ export abstract class Component<T extends HTMLElement = HTMLElement> {
     target: EventTarget,
     event: string,
     handler: EventListenerOrEventListenerObject,
-    options?: boolean | AddEventListenerOptions
+    options?: boolean | AddEventListenerOptions,
   ): void {
     target.addEventListener(event, handler, options);
     this.cleanupFunctions.push(() => {

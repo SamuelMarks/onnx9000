@@ -5,7 +5,7 @@ from onnx9000.core.ir import Attribute, Graph, Node, Tensor
 from onnx9000.core.shape_inference import infer_shapes_and_types
 
 
-def test_gemm_incompatible_batch():
+def test_gemm_incompatible_batch() -> None:
     """Tests the gemm incompatible batch functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("a", (2, 3, 2), DType.FLOAT32))
@@ -16,7 +16,7 @@ def test_gemm_incompatible_batch():
     assert list(g.tensors["y"].shape) == [5, 3, 4]
 
 
-def test_gemm_1d():
+def test_gemm_1d() -> None:
     """Tests the gemm 1d functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("a", (3,), DType.FLOAT32))
@@ -27,7 +27,7 @@ def test_gemm_1d():
     assert g.tensors["y"].shape == ()
 
 
-def test_cast_shape_size():
+def test_cast_shape_size() -> None:
     """Tests the cast shape size functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (2, 3), DType.FLOAT32))
@@ -44,7 +44,7 @@ def test_cast_shape_size():
     assert g.tensors["y_size"].dtype == DType.INT64
 
 
-def test_reshape_no_shape_input():
+def test_reshape_no_shape_input() -> None:
     """Tests the reshape no shape input functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (2, 3), DType.FLOAT32))

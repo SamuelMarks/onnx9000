@@ -13,7 +13,7 @@ class DummyPipeline:
     """Represents the Dummy Pipeline class."""
 
     def __init__(self) -> None:
-        """Initialize the instance."""
+        """Initialize DummyPipeline with configured parameters and state."""
         self.steps = [("step1", DummyEstimator())]
 
 
@@ -31,7 +31,7 @@ class FeatureUnion:
     """Represents the Feature Union class."""
 
     def __init__(self) -> None:
-        """Initialize the instance."""
+        """Initialize FeatureUnion with configured parameters and state."""
         self.transformer_list = [("t1", DummyEstimator()), ("t2", DummyEstimator())]
 
 
@@ -47,7 +47,7 @@ class ColumnTransformer:
     """Represents the Column Transformer class."""
 
     def __init__(self) -> None:
-        """Initialize the instance."""
+        """Initialize ColumnTransformer with configured parameters and state."""
         self.transformers_ = [("t1", DummyEstimator(), [0, 1])]
         self.remainder = "drop"
 
@@ -64,7 +64,7 @@ class DummyScaler:
     """Represents the Dummy Scaler class."""
 
     def __init__(self) -> None:
-        """Initialize the instance."""
+        """Initialize DummyScaler with configured parameters and state."""
         import numpy as np
 
         self.mean_ = np.array([0.0])
@@ -84,7 +84,7 @@ class DummyLinear:
     """Represents the Dummy Linear class."""
 
     def __init__(self) -> None:
-        """Initialize the instance."""
+        """Initialize DummyLinear with configured parameters and state."""
         import numpy as np
 
         self.coef_ = np.array([[1.0]])
@@ -105,7 +105,7 @@ class DummySearch:
     """Represents the Dummy Search class."""
 
     def __init__(self) -> None:
-        """Initialize the instance."""
+        """Initialize DummySearch with configured parameters and state."""
         self.best_estimator_ = DummyLinear()
         self.best_estimator_.__class__.__name__ = "LogisticRegression"
 

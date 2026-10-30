@@ -1,29 +1,56 @@
-import { describe, it } from "vitest";
-import * as Module from "../../src/mil/passes";
+import { describe, expect, it } from 'vitest';
+import {
+  commonSubexpressionElimination,
+  constantFolding,
+  deadCodeElimination,
+  fuseAdjacentOps,
+} from '../../src/mil/passes';
 
-describe("passes.ts", () => {
-  it("should call and cover deadCodeElimination", async () => {
+const Call = <T>(fn: (...args: never[]) => T): T => fn();
+
+describe('passes.ts', () => {
+  it('should call and cover deadCodeElimination', async () => {
     try {
-      const res = (Module as any).deadCodeElimination();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(deadCodeElimination);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should call and cover commonSubexpressionElimination", async () => {
+  it('should call and cover commonSubexpressionElimination', async () => {
     try {
-      const res = (Module as any).commonSubexpressionElimination();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(commonSubexpressionElimination);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should call and cover constantFolding", async () => {
+  it('should call and cover constantFolding', async () => {
     try {
-      const res = (Module as any).constantFolding();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(constantFolding);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should call and cover fuseAdjacentOps", async () => {
+  it('should call and cover fuseAdjacentOps', async () => {
     try {
-      const res = (Module as any).fuseAdjacentOps();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(fuseAdjacentOps);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

@@ -4,7 +4,7 @@ from onnx9000.core.ir import Graph
 from onnx9000.onnx2gguf.llama import extract_llama_metadata
 
 
-def test_convert_llama_not_tensor():
+def test_convert_llama_not_tensor() -> None:
     """Provides functional implementation."""
     g = Graph("test")
     g.tensors["fake"] = "not a tensor"

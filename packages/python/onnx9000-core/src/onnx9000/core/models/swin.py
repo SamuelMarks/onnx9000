@@ -1,9 +1,7 @@
 """Swin."""
 
-from typing import Any
-
 from onnx9000.core.ir import Tensor, Variable
-from onnx9000.core.ops import add, concat, flatten, reshape, roll
+from onnx9000.core.ops import add, roll
 from onnx9000.core.primitives import Gelu, Gemm, LayerNormalization, MultiHeadAttention
 
 
@@ -22,8 +20,16 @@ class WindowAttention:
         num_heads: int,
         qkv_bias: bool = True,
         prefix: str = "",
-    ):
-        """Init."""
+    ) -> None:
+        """Initialize WindowAttention with configured parameters and state.
+
+        Args:
+            dim: Parameter specifying dim (int).
+            window_size: Parameter specifying window size (tuple[int, int]).
+            num_heads: Parameter specifying num heads (int).
+            qkv_bias: Parameter specifying qkv bias (bool).
+            prefix: Parameter specifying prefix (str).
+        """
         self.prefix = prefix
         self.dim = dim
         self.window_size = window_size
@@ -40,7 +46,14 @@ class WindowAttention:
         # In actual swin, the rel_pos_bias is added inside attention (to attn_weight).
         # We can pass it as mask to MultiHeadAttention if supported, but let's just
         # assume our MHA can take an alibi-like bias or we skip it for the high-level AST.
-        """Call."""
+        """Invoke WindowAttention with the provided inputs and keyword arguments.
+
+        Args:
+            x: Parameter specifying x (Tensor).
+
+        Returns:
+            Result of call (Tensor).
+        """
         x = self.attn(x, x, x)
         x = self.proj(
             x,
@@ -63,8 +76,19 @@ class SwinTransformerBlock:
         mlp_ratio: float = 4.0,
         qkv_bias: bool = True,
         prefix: str = "",
-    ):
-        """Init."""
+    ) -> None:
+        """Initialize SwinTransformerBlock with configured parameters and state.
+
+        Args:
+            dim: Parameter specifying dim (int).
+            input_resolution: Parameter specifying input resolution (tuple[int, int]).
+            num_heads: Parameter specifying num heads (int).
+            window_size: Parameter specifying window size (int).
+            shift_size: Parameter specifying shift size (int).
+            mlp_ratio: Parameter specifying mlp ratio (float).
+            qkv_bias: Parameter specifying qkv bias (bool).
+            prefix: Parameter specifying prefix (str).
+        """
         self.prefix = prefix
         self.dim = dim
         self.input_resolution = input_resolution
@@ -91,7 +115,14 @@ class SwinTransformerBlock:
         self.mlp_fc2 = Gemm(trans_b=1)
 
     def __call__(self, x: Tensor) -> Tensor:
-        """Call."""
+        """Invoke SwinTransformerBlock with the provided inputs and keyword arguments.
+
+        Args:
+            x: Parameter specifying x (Tensor).
+
+        Returns:
+            Result of call (Tensor).
+        """
         identity = x
         x = self.norm1(
             x,
@@ -145,13 +176,22 @@ class SwinTransformer:
     def __init__(
         self,
         embed_dim: int = 96,
-        depths: list[int] = None,
-        num_heads: list[int] = None,
+        depths: list[int] | None = None,
+        num_heads: list[int] | None = None,
         window_size: int = 7,
         mlp_ratio: float = 4.0,
         num_classes: int = 1000,
-    ):
-        """Init."""
+    ) -> None:
+        """Initialize SwinTransformer with configured parameters and state.
+
+        Args:
+            embed_dim: Parameter specifying embed dim (int).
+            depths: Parameter specifying depths (list[int]).
+            num_heads: Parameter specifying num heads (list[int]).
+            window_size: Parameter specifying window size (int).
+            mlp_ratio: Parameter specifying mlp ratio (float).
+            num_classes: Parameter specifying num classes (int).
+        """
         if num_heads is None:
             num_heads = [3, 6, 12, 24]
         if depths is None:
@@ -200,7 +240,14 @@ class SwinTransformer:
         self.head = Gemm(trans_b=1)
 
     def __call__(self, x: Tensor) -> Tensor:
-        """Call."""
+        """Invoke SwinTransformer with the provided inputs and keyword arguments.
+
+        Args:
+            x: Parameter specifying x (Tensor).
+
+        Returns:
+            Result of call (Tensor).
+        """
         x = self.patch_embed(x)
 
         for block in self.layers:
@@ -222,6 +269,8 @@ class SwinTransformer:
         return x
 
 
-def swin_t(**kwargs: Any) -> SwinTransformer:
+def swin_t(
+    **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> SwinTransformer:
     """Swin t."""
     return SwinTransformer(**kwargs)

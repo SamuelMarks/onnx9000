@@ -4,7 +4,7 @@ from onnx9000.core.ir import DynamicDim, Graph, Tensor
 from onnx9000.optimizer.olive.pruning_ops import Pruner
 
 
-def test_pruner(tmp_path) -> None:
+def test_pruner(tmp_path: int | float | str | bool | bytes | list | dict | tuple | None) -> None:
     """Tests the pruner functionality."""
     g = Graph("test")
     g.metadata = {}

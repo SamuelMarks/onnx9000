@@ -5,7 +5,7 @@ from onnx9000.core.ir import Constant, Graph, Node, ValueInfo, Variable
 from onnx9000.optimizer.simplifier.api import simplify
 
 
-def test_compare_mathematical_output_with_pytorch_mock():
+def test_compare_mathematical_output_with_pytorch_mock() -> None:
     """Test the mathematical consistency of the simplifier using a mock comparison."""
     # 1e-5 atol mathematical consistency test.
     graph = Graph("Consistency_Test")

@@ -1,10 +1,13 @@
-"""Module providing core logic and structural definitions."""
+"""Unit tests and verification suite for conv functionality."""
 
-from onnx9000.converters.frontend.nn.conv import ConvTranspose1d, ConvTranspose2d
-
-"Test Conv."
 from onnx9000.converters.frontend.builder import GraphBuilder, Tracing
-from onnx9000.converters.frontend.nn.conv import Conv1d, Conv2d, Conv3d
+from onnx9000.converters.frontend.nn.conv import (
+    Conv1d,
+    Conv2d,
+    Conv3d,
+    ConvTranspose1d,
+    ConvTranspose2d,
+)
 from onnx9000.converters.frontend.tensor import Tensor
 from onnx9000.core.dtypes import DType
 

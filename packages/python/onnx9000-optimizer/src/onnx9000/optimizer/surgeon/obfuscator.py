@@ -22,7 +22,7 @@ def obfuscate_names(graph: Graph) -> Graph:
 
     # Update graph.tensors dict
     new_tensors = {}
-    for name, tensor in graph.tensors.items():
+    for _name, tensor in graph.tensors.items():
         new_tensors[tensor.name] = tensor
     graph.tensors = new_tensors
 

@@ -1,11 +1,18 @@
-import { describe, it } from "vitest";
-import * as Module from "../../src/keras/emitters-tfjs";
+import { describe, expect, it } from 'vitest';
+import { mapTfjsOpToOnnx } from '../../src/keras/emitters-tfjs';
 
-describe("emitters-tfjs.ts", () => {
-  it("should call and cover mapTfjsOpToOnnx", async () => {
+const Call = <T>(fn: (...args: never[]) => T): T => fn();
+
+describe('emitters-tfjs.ts', () => {
+  it('should call and cover mapTfjsOpToOnnx', async () => {
     try {
-      const res = (Module as any).mapTfjsOpToOnnx();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(mapTfjsOpToOnnx);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

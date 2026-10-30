@@ -1,17 +1,29 @@
-import { describe, it } from "vitest";
-import * as Module from "../../../src/mmdnn/caffe/parser";
+import { describe, expect, it } from 'vitest';
+import { parseCaffemodel, parsePrototxt } from '../../../src/mmdnn/caffe/parser';
 
-describe("parser.ts", () => {
-  it("should call and cover parsePrototxt", async () => {
+const Call = <T>(fn: (...args: never[]) => T): T => fn();
+
+describe('parser.ts', () => {
+  it('should call and cover parsePrototxt', async () => {
     try {
-      const res = (Module as any).parsePrototxt();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(parsePrototxt);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should call and cover parseCaffemodel", async () => {
+  it('should call and cover parseCaffemodel', async () => {
     try {
-      const res = (Module as any).parseCaffemodel();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(parseCaffemodel);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

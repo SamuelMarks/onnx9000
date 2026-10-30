@@ -3,6 +3,14 @@
  * Provides keras_mlir functionality for the iree-compiler package.
  */
 export class KerasToMLIRCompiler {
+  /**
+   * Executes `emitTosaConv2D` on `KerasToMLIRCompiler`.
+   * @param input Parameter `input`.
+   * @param weights Parameter `weights`.
+   * @param bias Parameter `bias`.
+   * @param options Parameter `options`.
+   * @returns Result of `emitTosaConv2D`.
+   */
   public emitTosaConv2D(
     input: string,
     weights: string,
@@ -19,6 +27,13 @@ export class KerasToMLIRCompiler {
         `;
   }
 
+  /**
+   * Executes `emitLinalgDense` on `KerasToMLIRCompiler`.
+   * @param input Parameter `input`.
+   * @param weights Parameter `weights`.
+   * @param bias Parameter `bias`.
+   * @returns Result of `emitLinalgDense`.
+   */
   public emitLinalgDense(input: string, weights: string, bias: string) {
     // Lower Keras structures to linalg dialect for advanced affine loop transformations.
     return `
@@ -27,6 +42,13 @@ export class KerasToMLIRCompiler {
         `;
   }
 
+  /**
+   * Executes `emitScfIf` on `KerasToMLIRCompiler`.
+   * @param condition Parameter `condition`.
+   * @param trueBranch Parameter `trueBranch`.
+   * @param falseBranch Parameter `falseBranch`.
+   * @returns Result of `emitScfIf`.
+   */
   public emitScfIf(condition: string, trueBranch: string, falseBranch: string) {
     // Convert Keras dynamic control flow (tf.cond in Lambda layers) into stablehlo.custom_call or scf.if MLIR dialects.
     return `
@@ -40,6 +62,12 @@ export class KerasToMLIRCompiler {
         `;
   }
 
+  /**
+   * Executes `emitScfWhile` on `KerasToMLIRCompiler`.
+   * @param condBlock Parameter `condBlock`.
+   * @param bodyBlock Parameter `bodyBlock`.
+   * @returns Result of `emitScfWhile`.
+   */
   public emitScfWhile(condBlock: string, bodyBlock: string) {
     // Map Keras tf.while_loop (from custom RNNs) to MLIR scf.while loops.
     return `

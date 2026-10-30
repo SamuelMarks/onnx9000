@@ -9,7 +9,9 @@ from onnx9000.core.ir import Graph
 class MockCppModel:
     """Represents the Mock Cpp Model class."""
 
-    def forward(self, *args):
+    def forward(
+        self, *args: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Execute the forward operation."""
         if len(args) == 1:
             return args[0]

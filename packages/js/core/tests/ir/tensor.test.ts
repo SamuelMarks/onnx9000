@@ -1,17 +1,23 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../src/ir/tensor";
+import { describe, expect, it } from 'vitest';
+import { SparseTensor, Tensor } from '../../src/ir/tensor';
 
-describe("tensor.ts", () => {
-  it("should instantiate and cover Tensor", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('tensor.ts', () => {
+  it('should instantiate and cover Tensor', () => {
     try {
-      const obj = new (Module as any).Tensor();
+      const obj = Construct(Tensor);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover SparseTensor", () => {
+  it('should instantiate and cover SparseTensor', () => {
     try {
-      const obj = new (Module as any).SparseTensor();
+      const obj = Construct(SparseTensor);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

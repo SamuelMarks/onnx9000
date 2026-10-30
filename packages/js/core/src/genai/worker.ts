@@ -1,4 +1,7 @@
 /**
+ * @fileoverview worker module for core.
+ */
+/**
  * Supported payload types for worker messages.
  */
 export type WorkerMessagePayload =

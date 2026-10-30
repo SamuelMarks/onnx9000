@@ -2,14 +2,15 @@
  * @fileoverview WasmManager.ts
  * Provides WasmManager functionality for the Sphinx Demo UI.
  */
-// @ts-nocheck
+import { Onnx9000Error } from '@onnx9000/core';
 import { globalEventBus } from './EventBus';
 
+/** Enumeration `WasmState`. */
 export enum WasmState {
   IDLE = 'IDLE',
   LOADING = 'LOADING',
   LOADED = 'LOADED',
-  ERROR = 'ERROR'
+  ERROR = 'ERROR',
 }
 
 /**
@@ -17,13 +18,19 @@ export enum WasmState {
  * and instantiating heavy WASM binaries.
  */
 export class WasmManager {
+  /** Property `instance` of `WasmManager`. */
   private static instance: WasmManager;
+  /** Property `_state` of `WasmManager`. */
   private _state: WasmState = WasmState.IDLE;
+  /** Property `_progress` of `WasmManager`. */
   private _progress: number = 0; // 0 to 100
+  /** Property `_error` of `WasmManager`. */
   private _error: string | null = null;
   /* private _module: WebAssembly.Module | null = null; */
+  /** Property `_instance` of `WasmManager`. */
   private _instance: WebAssembly.Instance | null = null;
 
+  /** Initializes a new `WasmManager` instance. */
   private constructor() {}
 
   /**
@@ -89,7 +96,7 @@ export class WasmManager {
     try {
       const response = await fetch(url);
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Onnx9000Error(`HTTP error! status: ${response.status}`);
       }
 
       const contentLength = response.headers.get('content-length');
@@ -98,7 +105,7 @@ export class WasmManager {
 
       const body = response.body;
       if (!body) {
-        throw new Error('ReadableStream not supported by browser.');
+        throw new Onnx9000Error('ReadableStream not supported by browser.');
       }
 
       const reader = body.getReader();
@@ -122,8 +129,8 @@ export class WasmManager {
           }
           globalEventBus.emit('WASM_PROGRESS', {
             progress: this._progress,
-            loaded: loaded || 0,
-            total: total || 0
+            loaded,
+            total,
           });
         }
       }
@@ -142,8 +149,8 @@ export class WasmManager {
 
       const instance = await WebAssembly.instantiate(module, {
         env: {
-          abort: () => console.error('WASM abort')
-        }
+          abort: () => console.error('WASM abort'),
+        },
       });
       this._instance = instance;
 
@@ -151,13 +158,13 @@ export class WasmManager {
       this._state = WasmState.LOADED;
       globalEventBus.emit('WASM_PROGRESS', {
         progress: this._progress,
-        loaded: loaded || 0,
-        total: total || 0
+        loaded,
+        total,
       });
       globalEventBus.emit('WASM_STATE_CHANGED', this._state);
       globalEventBus.emit('WASM_LOADED', this._instance);
-    } catch (err: any) {
-      this._error = err.message || 'Failed to load WASM binary';
+    } catch (err) {
+      this._error = (err instanceof Error ? err.message : '') || 'Failed to load WASM binary';
       this._state = WasmState.ERROR;
       globalEventBus.emit('WASM_STATE_CHANGED', this._state);
     }

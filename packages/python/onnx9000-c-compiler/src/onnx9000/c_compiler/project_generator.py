@@ -34,20 +34,20 @@ int main(int argc, char** argv) {{
     uint8_t arena[1024]; /* Dummy arena size for now */
     float input[1]; /* Dummy input */
     float output[1]; /* Dummy output */
-    
+
     (void)argc;
     (void)argv;
-    
+
     if ({prefix}init(&ctx, arena) != 0) {{
         printf("Failed to initialize model.\\n");
         return 1;
     }}
-    
+
     if ({prefix}predict(&ctx, input, output) != 0) {{
         printf("Failed to run prediction.\\n");
         return 1;
     }}
-    
+
     printf("Prediction ran successfully.\\n");
     return 0;
 }}

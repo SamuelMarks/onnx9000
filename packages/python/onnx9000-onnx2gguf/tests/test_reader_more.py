@@ -7,7 +7,7 @@ import pytest
 from onnx9000.onnx2gguf.reader import GGUFReader
 
 
-def test_reader_unknown_value_type():
+def test_reader_unknown_value_type() -> None:
     """Provides functional implementation."""
     buf = io.BytesIO()
     buf.write(b"GGUF")
@@ -27,7 +27,7 @@ def test_reader_unknown_value_type():
         GGUFReader(buf)
 
 
-def test_reader_read_val_unknown():
+def test_reader_read_val_unknown() -> None:
     """Provides functional implementation."""
     buf = io.BytesIO()
     buf.write(b"GGUF")
@@ -41,7 +41,7 @@ def test_reader_read_val_unknown():
         reader._read_val("INVALID_TYPE")
 
 
-def test_reader_unknown_tensor_type():
+def test_reader_unknown_tensor_type() -> None:
     """Provides functional implementation."""
     buf = io.BytesIO()
     buf.write(b"GGUF")

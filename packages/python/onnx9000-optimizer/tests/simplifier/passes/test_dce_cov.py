@@ -5,7 +5,7 @@ from onnx9000.core.ir import Graph, Node, Tensor, ValueInfo
 from onnx9000.optimizer.simplifier.passes.dce import DCEPass
 
 
-def test_dce_run_once_missing():
+def test_dce_run_once_missing() -> None:
     """Test dce run once missing."""
     g = Graph("TestDCE")
     g.inputs = ["X", "UnusedIn"]

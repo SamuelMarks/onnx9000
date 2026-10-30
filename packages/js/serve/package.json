@@ -2,8 +2,10 @@
   "name": "@onnx9000/serve",
   "version": "1.0.0",
   "description": "Edge-native inference server for ONNX models (KServe / OpenAI APIs)",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
+    "build": "tsc",
     "test": "vitest run --passWithNoTests",
     "lint": "oxlint -c $(git rev-parse --show-toplevel)/oxlintrc.json"
   },

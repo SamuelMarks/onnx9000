@@ -5,6 +5,8 @@ import os
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
+from onnx9000.core.exceptions import SafetensorsError
+
 
 def _get_cache_dir() -> str:
     """Get the default Hugging Face cache directory.
@@ -50,7 +52,7 @@ def resolve_model_file(repo_id: str, revision: str = "main") -> str:
 def cached_download(
     url: str,
     force_download: bool = False,
-    expected_sha256: str = None,
+    expected_sha256: str | None = None,
     revision: str = "main",
 ) -> str:
     """Emulate huggingface_hub cached_download paths if the library is not installed.
@@ -123,11 +125,11 @@ def cached_download(
                 final_hash = hasher.hexdigest()
                 if final_hash != expected_sha256:
                     os.remove(cached_path)
-                    raise RuntimeError(
+                    raise SafetensorsError(
                         f"Hash validation failed for {url}. Expected {expected_sha256}, got {final_hash}."
                     )
 
     except HTTPError as e:
-        raise RuntimeError(f"Failed to download {url}: {e}")
+        raise SafetensorsError(f"Failed to download {url}: {e}") from e
 
     return cached_path

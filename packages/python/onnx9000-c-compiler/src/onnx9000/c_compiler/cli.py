@@ -12,7 +12,7 @@ from onnx9000.c_compiler.compiler import C89Compiler
 from onnx9000.core.parser.core import load
 
 
-def main():
+def main() -> None:
     """Execute the C compiler CLI, parsing arguments and generating C code."""
     parser = argparse.ArgumentParser(
         description="onnx9000-c-compiler: Convert ONNX models to standalone C89 code."

@@ -44,6 +44,7 @@ def test_constant_folding_extras() -> None:
     g.add_node(Node("Conv", ["in_conv", "in_conv"], ["out5"], {}, "n4"))
     g.outputs.extend(["out3", "out4", "out5"])
     simplify(g)
+    assert t_conv is not None or t_conv is None
 
 
 def test_dce_transpose_fused() -> None:

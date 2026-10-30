@@ -1,12 +1,27 @@
 """Module providing core logic and structural definitions for the Core IR."""
 
+from __future__ import annotations
+
 import ctypes
 import logging
-from typing import Any, Optional, Union
+from collections.abc import Callable, Sequence
+from typing import TypeAlias
 
 from onnx9000.core.dtypes import DType
+from onnx9000.core.exceptions import Onnx9000Error
 
 logger = logging.getLogger(__name__)
+_RUNTIME_TYPES = (Callable, Sequence)
+
+ShapeDim: TypeAlias = "int | str | DynamicDim"
+Shape: TypeAlias = "tuple[ShapeDim, ...] | list[ShapeDim]"
+AttributeValue: TypeAlias = (
+    "int | float | str | bytes | bytearray | memoryview | SparseTensor | Tensor | Graph"
+    " | list[int] | list[float] | list[str] | list[bytes] | list[SparseTensor] | list[Tensor] | list[Graph] | None"
+)
+JsonScalar: TypeAlias = str | int | float | bool | None
+JsonValue: TypeAlias = JsonScalar | list["JsonValue"] | dict[str, "JsonValue"]
+JsonDict: TypeAlias = dict[str, JsonValue]
 
 
 class DLDataType(ctypes.Structure):
@@ -70,18 +85,22 @@ class DynamicDim:
         """Return the string value of the dimension."""
         return str(self.value)
 
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: DynamicDim | int | str | None) -> bool:
         """Check equality with another DynamicDim or value."""
         if isinstance(other, DynamicDim):
             return self.value == other.value
         return False
+
+    def to_dict(self) -> JsonDict:
+        """Serialize the DynamicDim to a JSON-compatible dictionary."""
+        return {"value": self.value}
 
 
 class Attribute:
     """Represents an attribute of a Node."""
 
     @staticmethod
-    def infer_type(value: Any) -> str:
+    def infer_type(value: AttributeValue) -> str:
         """Infer the ONNX attribute type from a Python value.
 
         Args:
@@ -120,7 +139,12 @@ class Attribute:
                 return "GRAPHS"
         return "UNKNOWN"
 
-    def __init__(self, name: str, attr_type: str | None = None, value: Any = None) -> None:
+    def __init__(
+        self,
+        name: str,
+        attr_type: str | None = None,
+        value: AttributeValue = None,
+    ) -> None:
         """Initialize an Attribute.
 
         Args:
@@ -137,7 +161,7 @@ class Attribute:
         """Return a string representation of the Attribute."""
         return f"Attribute(name={self.name}, type={self.attr_type}, value={self.value})"
 
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: Attribute | str | int | float | None) -> bool:
         """Check equality with another Attribute."""
         if not isinstance(other, Attribute):
             return False
@@ -147,11 +171,21 @@ class Attribute:
             and (self.value == other.value)
         )
 
+    def to_dict(self) -> JsonDict:
+        """Serialize the Attribute to a JSON-compatible dictionary."""
+        return {
+            "name": self.name,
+            "attr_type": self.attr_type,
+            "value": str(self.value)
+            if not isinstance(self.value, (int, float, str, bool, type(None)))
+            else self.value,
+        }
+
 
 class ValueInfo:
     """Represents metadata about a Tensor (name, shape, and type)."""
 
-    def __init__(self, name: str, shape: tuple[int | DynamicDim, ...], dtype: DType) -> None:
+    def __init__(self, name: str, shape: Shape, dtype: DType | None) -> None:
         """Initialize ValueInfo.
 
         Args:
@@ -168,6 +202,14 @@ class ValueInfo:
         """Return a string representation of the ValueInfo."""
         return f"ValueInfo(name={self.name}, shape={self.shape}, dtype={self.dtype})"
 
+    def to_dict(self) -> JsonDict:
+        """Serialize the ValueInfo to a JSON-compatible dictionary."""
+        return {
+            "name": self.name,
+            "shape": [d.value if isinstance(d, DynamicDim) else d for d in self.shape],
+            "dtype": str(self.dtype),
+        }
+
 
 class Tensor:
     """Base Internal Representation of a Tensor."""
@@ -175,11 +217,11 @@ class Tensor:
     def __init__(
         self,
         name: str,
-        shape=None,
-        dtype=None,
-        is_initializer=False,
-        requires_grad=True,
-        data=None,
+        shape: Shape | None = None,
+        dtype: DType | None = None,
+        is_initializer: bool = False,
+        requires_grad: bool = True,
+        data: bytes | memoryview | bytearray | Sequence[int | float] | None = None,
     ) -> None:
         """Initialize a Tensor.
 
@@ -195,14 +237,16 @@ class Tensor:
         self.name = name
         self.inputs: list[Node] = []
         self.outputs: list[Node] = []
-        self.shape: tuple[int | DynamicDim, ...] = shape or ()
+        self.shape: Shape = shape or ()
         self.dtype: DType | None = dtype
         self.is_initializer: bool = is_initializer
         self.requires_grad: bool = requires_grad
-        self.data: bytes | memoryview | bytearray | None = data
+        self.data: bytes | memoryview | bytearray | Sequence[int | float] | None = data
+        self.values: bytes | memoryview | bytearray | Sequence[int | float] | None = None
         self.sharding: tuple[str | None, ...] | None = None
         self.buffer_id: int | None = None
         self.lifespan: tuple[int, int] = (-1, -1)
+        self.metadata_props: dict[str, str] = {}
 
     def __repr__(self) -> str:
         """Return a string representation of the Tensor."""
@@ -212,7 +256,7 @@ class Tensor:
         """Return the hash of the Tensor object."""
         return object.__hash__(self)
 
-    def copy(self) -> "Tensor":
+    def copy(self) -> Tensor:
         """Return a deep copy of the Tensor.
 
         Returns:
@@ -247,6 +291,19 @@ class Tensor:
             n.inputs = [i for i in n.inputs if i is not self]
         self.outputs.clear()
 
+    def to_dict(self) -> JsonDict:
+        """Serialize the Tensor metadata to a JSON-compatible dictionary."""
+        return {
+            "name": self.name,
+            "shape": [d.value if isinstance(d, DynamicDim) else d for d in self.shape],
+            "dtype": str(self.dtype),
+            "is_initializer": self.is_initializer,
+            "requires_grad": self.requires_grad,
+            "data": f"[Buffer: {len(self.data)} bytes]"
+            if isinstance(self.data, (bytes, bytearray, memoryview))
+            else str(self.data),
+        }
+
 
 class SparseTensor(Tensor):
     """Internal Representation of a Sparse Tensor."""
@@ -254,12 +311,12 @@ class SparseTensor(Tensor):
     def __init__(
         self,
         name: str,
-        values: Optional["Constant"] = None,
-        indices: Optional["Constant"] = None,
+        values: Constant | None = None,
+        indices: Constant | None = None,
         dims: tuple[int | DynamicDim, ...] | None = None,
         format: str = "COO",
-        row_ptr: Optional["Constant"] = None,
-        col_indices: Optional["Constant"] = None,
+        row_ptr: Constant | None = None,
+        col_indices: Constant | None = None,
         block_dims: tuple[int, ...] | None = None,
     ) -> None:
         """Initialize a SparseTensor.
@@ -289,7 +346,7 @@ class SparseTensor(Tensor):
         """Return a string representation of the SparseTensor."""
         return f"ir.SparseTensor(name={self.name}, shape={self.shape}, format={self.format})"
 
-    def copy(self) -> "SparseTensor":
+    def copy(self) -> SparseTensor:
         """Return a deep copy of the SparseTensor.
 
         Returns:
@@ -382,12 +439,12 @@ class Constant(Tensor):
         return f"ir.Constant(name={self.name}, shape={self.shape}, dtype={self.dtype})"
 
     @property
-    def values(self):
+    def values(self) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Get the raw data bytes of the constant."""
         return self.data
 
     @values.setter
-    def values(self, val) -> None:
+    def values(self, val: int | float | str | bool | bytes | list | dict | tuple | None) -> None:
         """Set the raw data bytes of the constant."""
         self.data = val
 
@@ -395,7 +452,7 @@ class Constant(Tensor):
         """Return the DLPack device info (CPU)."""
         return (1, 0)
 
-    def __dlpack__(self, stream: int | None = None) -> Any:
+    def __dlpack__(self, stream: int | None = None) -> ctypes.py_object[DLManagedTensor]:
         """Export the constant as a DLPack capsule.
 
         Args:
@@ -409,10 +466,10 @@ class Constant(Tensor):
 
         """
         if self.data is None:
-            raise ValueError("Cannot create DLPack capsule for a tensor with no data.")
+            raise Onnx9000Error("Cannot create DLPack capsule for a tensor with no data.")
         for dim in self.shape:
             if isinstance(dim, DynamicDim) or dim < 0:
-                raise ValueError("DLPack export requires static shapes.")
+                raise Onnx9000Error("DLPack export requires static shapes.")
         managed_tensor = DLManagedTensor()
         buffer_info = (ctypes.c_char * len(self.data)).from_buffer_copy(self.data)
         managed_tensor.dl_tensor.data = ctypes.cast(buffer_info, ctypes.c_void_p)
@@ -497,7 +554,7 @@ class Node:
         """Return the hash of the Node object."""
         return object.__hash__(self)
 
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: Node | str | None) -> bool:
         """Check equality with another Node."""
         if not isinstance(other, Node):
             return False
@@ -515,7 +572,7 @@ class Node:
         out_names2 = [o.name if isinstance(o, Tensor) else o for o in other.outputs]
         return in_names1 == in_names2 and out_names1 == out_names2
 
-    def copy(self, tensor_map=None) -> "Node":
+    def copy(self, tensor_map: dict[str, Tensor] | None = None) -> Node:
         """Return a deep copy of the Node.
 
         Args:
@@ -544,11 +601,11 @@ class Node:
             domain=self.domain,
         )
 
-    def i(self, idx: int = 0) -> Any:
+    def i(self, idx: int = 0) -> str | Tensor:
         """Retrieve the input tensor at the specified index."""
         return self.inputs[idx]
 
-    def o(self, idx: int = 0) -> Any:
+    def o(self, idx: int = 0) -> str | Tensor:
         """Retrieve the output tensor at the specified index."""
         return self.outputs[idx]
 
@@ -557,6 +614,20 @@ class Node:
         in_str = [i.name if isinstance(i, Tensor) else str(i) for i in self.inputs]
         out_str = [o.name if isinstance(o, Tensor) else str(o) for o in self.outputs]
         return f"ir.Node({self.op_type}, {in_str} -> {out_str})"
+
+    def to_dict(self) -> JsonDict:
+        """Serialize the Node to a JSON-compatible dictionary."""
+        return {
+            "name": self.name,
+            "op_type": self.op_type,
+            "domain": self.domain,
+            "inputs": [i.name if isinstance(i, Tensor) else str(i) for i in self.inputs],
+            "outputs": [o.name if isinstance(o, Tensor) else str(o) for o in self.outputs],
+            "attributes": {
+                k: v.to_dict() if isinstance(v, Attribute) else str(v)
+                for k, v in self.attributes.items()
+            },
+        }
 
 
 class Graph:
@@ -588,6 +659,7 @@ class Graph:
         self.metadata_props: dict[str, str] = {}
         self.producer_map: dict[str, Node] = {}
         self.consumer_map: dict[str, list[Node]] = {}
+        self._hooks: dict[str, list[Callable[[Node], None]]] = {}
 
     def _intern_string(self, s: str) -> str:
         """Intern a string to save memory and ensure uniqueness.
@@ -679,9 +751,8 @@ class Graph:
         for o in node.outputs:
             o_name = o.name if isinstance(o, Tensor) else o
             self.producer_map[o_name] = node
-            if isinstance(o, Tensor):
-                if node not in o.inputs:
-                    o.inputs.append(node)
+            if isinstance(o, Tensor) and node not in o.inputs:
+                o.inputs.append(node)
 
         for i in node.inputs:
             i_name = i.name if isinstance(i, Tensor) else i
@@ -689,9 +760,8 @@ class Graph:
                 self.consumer_map[i_name] = []
             if node not in self.consumer_map[i_name]:
                 self.consumer_map[i_name].append(node)
-            if isinstance(i, Tensor):
-                if node not in i.outputs:
-                    i.outputs.append(node)
+            if isinstance(i, Tensor) and node not in i.outputs:
+                i.outputs.append(node)
 
     def disconnect_node(self, node: Node) -> None:
         """Disconnect a node from all its input and output tensors.
@@ -739,7 +809,7 @@ class Graph:
             if i_name in self.consumer_map and node in self.consumer_map[i_name]:
                 self.consumer_map[i_name].remove(node)
 
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: Graph | str | None) -> bool:
         """Check equality with another Graph."""
         if not isinstance(other, Graph):
             return False
@@ -747,9 +817,28 @@ class Graph:
             return False
         if len(self.nodes) != len(other.nodes):
             return False
-        return all(n1 == n2 for n1, n2 in zip(self.nodes, other.nodes))
+        return all(n1 == n2 for n1, n2 in zip(self.nodes, other.nodes, strict=False))
 
-    def copy(self) -> "Graph":
+    def to_dict(self) -> JsonDict:
+        """Serialize the Graph AST to a JSON-compatible dictionary."""
+        return {
+            "name": self.name,
+            "doc_string": self.doc_string,
+            "producer_name": self.producer_name,
+            "producer_version": self.producer_version,
+            "opset_imports": dict(self.opset_imports),
+            "inputs": [
+                i.to_dict() if isinstance(i, (ValueInfo, Tensor)) else str(i) for i in self.inputs
+            ],
+            "outputs": [
+                o.to_dict() if isinstance(o, (ValueInfo, Tensor)) else str(o) for o in self.outputs
+            ],
+            "nodes": [n.to_dict() for n in self.nodes],
+            "tensors": {k: t.to_dict() for k, t in self.tensors.items()},
+            "initializers": list(self.initializers),
+        }
+
+    def copy(self) -> Graph:
         """Return a deep copy of the Graph.
 
         Returns:
@@ -775,7 +864,7 @@ class Graph:
         g.initializers = self.initializers.copy()
         return g
 
-    def tensors(self):
+    def tensors(self) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Return the dictionary of tensors in the graph."""
         return self.tensors
 
@@ -817,13 +906,24 @@ class QuantizedTensor(Tensor):
         name: str,
         type: str,
         block_size: int,
-        shape=None,
-        dtype=None,
-        is_initializer=True,
-        requires_grad=False,
-        data=None,
+        shape: int | float | str | bool | bytes | list | dict | tuple | None = None,
+        dtype: int | float | str | bool | bytes | list | dict | tuple | None = None,
+        is_initializer: int | float | str | bool | bytes | list | dict | tuple | None = True,
+        requires_grad: int | float | str | bool | bytes | list | dict | tuple | None = False,
+        data: int | float | str | bool | bytes | list | dict | tuple | None = None,
     ) -> None:
-        """Init."""
+        """Initialize QuantizedTensor with configured parameters and state.
+
+        Args:
+            name: Parameter specifying name (str).
+            type: Parameter specifying type (str).
+            block_size: Parameter specifying block size (int).
+            shape: Parameter specifying shape.
+            dtype: Parameter specifying dtype.
+            is_initializer: Parameter specifying is initializer.
+            requires_grad: Parameter specifying requires grad.
+            data: Parameter specifying data.
+        """
         super().__init__(
             name=name,
             shape=shape,
@@ -834,3 +934,28 @@ class QuantizedTensor(Tensor):
         )
         self.qtype = type
         self.block_size = block_size
+
+
+__all__ = [
+    "Attribute",
+    "AttributeValue",
+    "Constant",
+    "DLDataType",
+    "DLDevice",
+    "DLManagedTensor",
+    "DLTensor",
+    "DType",
+    "DynamicDim",
+    "Graph",
+    "JsonDict",
+    "JsonScalar",
+    "JsonValue",
+    "Node",
+    "QuantizedTensor",
+    "Shape",
+    "ShapeDim",
+    "SparseTensor",
+    "Tensor",
+    "ValueInfo",
+    "Variable",
+]

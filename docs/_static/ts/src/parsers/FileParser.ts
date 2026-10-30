@@ -25,7 +25,7 @@ export class FileParser {
   async initPyodide(): Promise<void> {
     if (!this.pyodidePool) return;
     try {
-      await this.pyodidePool.execute('INIT', null, (_p: any) => {
+      await this.pyodidePool.execute('INIT', null, (_p: unknown) => {
         Spinner.show();
       });
       Spinner.hide();
@@ -89,9 +89,13 @@ export class FileParser {
     Spinner.show();
 
     try {
-      const result = await this.pyodidePool.execute('PARSE_ONNXSCRIPT', text, (p: any) => {
-        logger.info(`[Pyodide] ${p.progress}%: ${p.message}`);
-      });
+      const result = await this.pyodidePool.execute(
+        'PARSE_ONNXSCRIPT',
+        text,
+        (p: { progress: number; message: string }) => {
+          logger.info(`[Pyodide] ${p.progress}%: ${p.message}`);
+        },
+      );
       Spinner.hide();
 
       // result is a hex string representing ONNX protobuf bytes

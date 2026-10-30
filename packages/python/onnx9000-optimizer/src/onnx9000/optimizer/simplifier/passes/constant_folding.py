@@ -3,6 +3,7 @@
 import logging
 
 import numpy as np
+from onnx9000.core.exceptions import Onnx9000Error, OptimizerError
 from onnx9000.core.ir import Attribute, Graph, Node, Tensor
 from onnx9000.optimizer.simplifier.passes.base import GraphPass
 
@@ -10,7 +11,14 @@ logger = logging.getLogger(__name__)
 MAX_CONSTANT_SIZE_BYTES = 10 * 1024 * 1024
 
 
-def _evaluate_pool(x, kernel_shape, strides, pads, pool_mode="max", ceil_mode=0):
+def _evaluate_pool(
+    x: int | float | str | bool | bytes | list | dict | tuple | None,
+    kernel_shape: int | float | str | bool | bytes | list | dict | tuple | None,
+    strides: int | float | str | bool | bytes | list | dict | tuple | None,
+    pads: int | float | str | bool | bytes | list | dict | tuple | None,
+    pool_mode: int | float | str | bool | bytes | list | dict | tuple | None = "max",
+    ceil_mode: int | float | str | bool | bytes | list | dict | tuple | None = 0,
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
     """Evaluate a pooling operation (Max or Average) using NumPy."""
     from numpy.lib.stride_tricks import as_strided
 
@@ -21,13 +29,10 @@ def _evaluate_pool(x, kernel_shape, strides, pads, pool_mode="max", ceil_mode=0)
         for i in range(spatial_dims):
             pad_width.append((int(pads[i]), int(pads[i + spatial_dims])))
     else:
-        for i in range(spatial_dims):
+        for _i in range(spatial_dims):
             pad_width.append((0, 0))
 
-    if pool_mode == "max":
-        pad_val = float("-inf")
-    else:
-        pad_val = 0.0
+    pad_val = float("-inf") if pool_mode == "max" else 0.0
 
     padded_shape = [x.shape[i] + pad_width[i][0] + pad_width[i][1] for i in range(len(x.shape))]
     x_padded = np.full(padded_shape, pad_val, dtype=x.dtype)
@@ -65,14 +70,22 @@ def _evaluate_pool(x, kernel_shape, strides, pads, pool_mode="max", ceil_mode=0)
         for ax in sorted(axes_to_reduce, reverse=True):
             res = np.max(res, axis=ax)
         return res
-    elif pool_mode == "avg":
+    else:
         res = x_w
         for ax in sorted(axes_to_reduce, reverse=True):
             res = np.mean(res, axis=ax)
         return res
 
 
-def _evaluate_conv(x, w, b, strides, pads, dilations, group):
+def _evaluate_conv(
+    x: int | float | str | bool | bytes | list | dict | tuple | None,
+    w: int | float | str | bool | bytes | list | dict | tuple | None,
+    b: int | float | str | bool | bytes | list | dict | tuple | None,
+    strides: int | float | str | bool | bytes | list | dict | tuple | None,
+    pads: int | float | str | bool | bytes | list | dict | tuple | None,
+    dilations: int | float | str | bool | bytes | list | dict | tuple | None,
+    group: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
     """Evaluate a convolution operation using NumPy."""
     from numpy.lib.stride_tricks import as_strided
 
@@ -97,7 +110,7 @@ def _evaluate_conv(x, w, b, strides, pads, dilations, group):
     x_padded[slices] = x
 
     kernel_shape = list(w.shape[2:])
-    eff_kernel_size = [k + (k - 1) * (d - 1) for k, d in zip(kernel_shape, dilations)]
+    eff_kernel_size = [k + (k - 1) * (d - 1) for k, d in zip(kernel_shape, dilations, strict=False)]
 
     output_shape = [x.shape[0], x.shape[1]]
     strides_w = [x_padded.strides[0], x_padded.strides[1]]
@@ -117,8 +130,8 @@ def _evaluate_conv(x, w, b, strides, pads, dilations, group):
     x_w = as_strided(x_padded, shape=shape_w, strides=tuple(strides_w))
 
     if group == 1:
-        axes_A = [1] + list(range(2 + spatial_dims, 2 + 2 * spatial_dims))
-        axes_W = [1] + list(range(2, 2 + spatial_dims))
+        axes_A = [1, *list(range(2 + spatial_dims, 2 + 2 * spatial_dims))]
+        axes_W = [1, *list(range(2, 2 + spatial_dims))]
         out = np.tensordot(x_w, w, axes=(axes_A, axes_W))
         out = np.moveaxis(out, -1, 1)
     else:
@@ -126,11 +139,11 @@ def _evaluate_conv(x, w, b, strides, pads, dilations, group):
         M = w.shape[0]
         C_per_g = x.shape[1] // group
         M_per_g = M // group
-        out_shape = [N, M] + output_shape[2:]
+        out_shape = [N, M, *output_shape[2:]]
         out = np.zeros(out_shape, dtype=x.dtype)
 
-        axes_A = [1] + list(range(2 + spatial_dims, 2 + 2 * spatial_dims))
-        axes_W = [1] + list(range(2, 2 + spatial_dims))
+        axes_A = [1, *list(range(2 + spatial_dims, 2 + 2 * spatial_dims))]
+        axes_W = [1, *list(range(2, 2 + spatial_dims))]
 
         for g in range(group):
             x_w_g = x_w[:, g * C_per_g : (g + 1) * C_per_g, ...]
@@ -145,7 +158,10 @@ def _evaluate_conv(x, w, b, strides, pads, dilations, group):
     return out
 
 
-def _numpy_to_tensor_proto(arr, name=""):
+def _numpy_to_tensor_proto(
+    arr: int | float | str | bool | bytes | list | dict | tuple | None,
+    name: int | float | str | bool | bytes | list | dict | tuple | None = "",
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
     """Convert a NumPy array to an ONNX TensorProto."""
     from onnx9000.core import onnx_pb2
 
@@ -180,7 +196,9 @@ def _numpy_to_tensor_proto(arr, name=""):
     return t
 
 
-def _tensor_to_numpy(tensor):
+def _tensor_to_numpy(
+    tensor: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
     """Convert an ONNX Tensor to a NumPy array."""
     from onnx9000.core.dtypes import DType
 
@@ -220,14 +238,29 @@ def _tensor_to_numpy(tensor):
     shape_list = [d.value if hasattr(d, "value") else d for d in tensor.shape]
     try:
         return np.frombuffer(tensor.data, dtype=np_dtype).reshape(shape_list)
-    except Exception:
+    except (
+        Onnx9000Error,
+        OSError,
+        ValueError,
+        TypeError,
+        RuntimeError,
+        KeyError,
+        IndexError,
+        AttributeError,
+        ImportError,
+        LookupError,
+        ArithmeticError,
+        BufferError,
+        AssertionError,
+        StopIteration,
+    ):
         return None
 
 
 class ConstantFoldingPass(GraphPass):
     """Perform constant folding across the entire graph by pre-evaluating static subgraphs."""
 
-    def __init__(self, max_size_mb: float = 10.0):
+    def __init__(self, max_size_mb: float = 10.0) -> None:
         """Initialize the optimization pass."""
         """Initialize the optimization pass."""
         super().__init__()
@@ -239,14 +272,21 @@ class ConstantFoldingPass(GraphPass):
     """
 
     def run(self, graph: Graph) -> bool:
-        """Implement the run method or operation."""
+        """Execute run on ConstantFoldingPass.
+
+        Args:
+            graph: Parameter specifying graph (Graph).
+
+        Returns:
+            Result of run (bool).
+        """
         changed = False
         while True:
             iteration_changed = self._run_once(graph)
 
             # Recurse into subgraphs
             for node in graph.nodes:
-                for attr_name, attr in node.attributes.items():
+                for _attr_name, attr in node.attributes.items():
                     if hasattr(attr, "attr_type") and attr.attr_type == "GRAPH":
                         sub_changed = self.run(attr.value)
                         if sub_changed:
@@ -258,7 +298,17 @@ class ConstantFoldingPass(GraphPass):
         return changed
 
     def _run_once(self, graph: Graph) -> bool:
-        """Implement the _run_once method or operation."""
+        """Execute run once on ConstantFoldingPass.
+
+        Args:
+            graph: Parameter specifying graph (Graph).
+
+        Returns:
+            Result of run once (bool).
+
+        Raises:
+            IndexError: If an invalid state or argument is encountered during execution.
+        """
         changed = False
         known_values = {}
         for init_name in graph.initializers:
@@ -273,18 +323,16 @@ class ConstantFoldingPass(GraphPass):
         for node in graph.nodes:
             if node.op_type == "Constant":
                 val = node.attributes.get("value")
-                if isinstance(val, Tensor) and val.data is not None:
+                if isinstance(val, Tensor):
                     np_val = _tensor_to_numpy(val)
                     if np_val is not None:
                         known_values[node.outputs[0]] = np_val
                 elif hasattr(val, "attr_type") and val.attr_type == "TENSOR":
                     from onnx9000.core.parser.core import parse_tensor_proto
 
-                    t = parse_tensor_proto(val.value)
-                    if t.data is not None:
-                        np_val = _tensor_to_numpy(t)
-                        if np_val is not None:
-                            known_values[node.outputs[0]] = np_val
+                    np_val = _tensor_to_numpy(parse_tensor_proto(val.value))
+                    if np_val is not None:
+                        known_values[node.outputs[0]] = np_val
                 elif hasattr(val, "ndim"):
                     known_values[node.outputs[0]] = val
                 elif "value_float" in node.attributes:
@@ -316,11 +364,10 @@ class ConstantFoldingPass(GraphPass):
                     break
 
             if not all_known and node.op_type == "Shape":
-                inp_tensor = None
-                for inp in graph.inputs:
-                    if getattr(inp, "name", inp) == node.inputs[0]:
-                        inp_tensor = inp
-                        break
+                inp_tensor = next(
+                    (inp for inp in graph.inputs if getattr(inp, "name", inp) == node.inputs[0]),
+                    None,
+                )
                 if not inp_tensor and node.inputs[0] in graph.tensors:
                     inp_tensor = graph.tensors[node.inputs[0]]
 
@@ -332,9 +379,7 @@ class ConstantFoldingPass(GraphPass):
                 ):
                     from onnx9000.core.ir import DynamicDim
 
-                    if not any(
-                        isinstance(d, DynamicDim) or isinstance(d, str) for d in inp_tensor.shape
-                    ):
+                    if not any(isinstance(d, (DynamicDim, str)) for d in inp_tensor.shape):
                         shape_arr = np.array(
                             [
                                 int(d.value if isinstance(d, DynamicDim) else d)
@@ -373,7 +418,9 @@ class ConstantFoldingPass(GraphPass):
                     result = self._evaluate_node(node.op_type, input_vals, node.attributes, node)
                     if result is not None:
 
-                        def _has_nan_inf(val):
+                        def _has_nan_inf(
+                            val: int | float | str | bool | bytes | list | dict | tuple | None,
+                        ) -> int | float | str | bool | bytes | list | dict | tuple | None:
                             """Check if a value (NumPy array, float, or list) contains NaN or Infinity."""
                             if isinstance(val, np.ndarray):
                                 if np.issubdtype(val.dtype, np.number):
@@ -421,7 +468,22 @@ class ConstantFoldingPass(GraphPass):
                                 logger.info(f"Folded node {node.name} ({node.op_type})")
                                 folded = True
                                 changed = True
-                except Exception as e:
+                except (
+                    Onnx9000Error,
+                    OSError,
+                    ValueError,
+                    TypeError,
+                    RuntimeError,
+                    KeyError,
+                    IndexError,
+                    AttributeError,
+                    ImportError,
+                    LookupError,
+                    ArithmeticError,
+                    BufferError,
+                    AssertionError,
+                    StopIteration,
+                ) as e:
                     import traceback
 
                     traceback.print_exc()
@@ -437,8 +499,27 @@ class ConstantFoldingPass(GraphPass):
         graph.nodes = new_nodes
         return changed
 
-    def _evaluate_node(self, op_type: str, inputs: list, attrs: dict, node=None):
-        """Implement the _evaluate_node method or operation."""
+    def _evaluate_node(
+        self,
+        op_type: str,
+        inputs: list,
+        attrs: dict,
+        node: int | float | str | bool | bytes | list | dict | tuple | None = None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
+        """Execute evaluate node on ConstantFoldingPass.
+
+        Args:
+            op_type: Parameter specifying op type (str).
+            inputs: Parameter specifying inputs (list).
+            attrs: Parameter specifying attrs (dict).
+            node: Parameter specifying node.
+
+        Returns:
+            Result of evaluate node.
+
+        Raises:
+            ValueError: If an invalid state or argument is encountered during execution.
+        """
         if op_type == "Identity":
             return inputs[0]
         if op_type == "Add":
@@ -450,7 +531,7 @@ class ConstantFoldingPass(GraphPass):
         if op_type == "Div":
             if np.any(inputs[1] == 0):
                 logger.warning("Skipping Div constant folding due to division by zero.")
-                raise ValueError(
+                raise OptimizerError(
                     "Div by zero"
                 )  # Caught by auto-fallback in simplify if implemented, else caught here
             return np.divide(inputs[0], inputs[1])
@@ -548,84 +629,46 @@ class ConstantFoldingPass(GraphPass):
         if op_type == "IsNaN":
             return np.isnan(inputs[0])
         if op_type == "Erf":
-            from scipy.special import erf
+            import math
 
-            return erf(inputs[0])
+            return np.vectorize(math.erf)(inputs[0]).astype(inputs[0].dtype)
         if op_type == "Relu":
             return np.maximum(inputs[0], 0)
         if op_type == "Sigmoid":
             return 1 / (1 + np.exp(-inputs[0]))
-        if op_type == "ReduceSum":
+        if op_type in (
+            "ReduceSum",
+            "ReduceMean",
+            "ReduceMax",
+            "ReduceMin",
+            "ReduceProd",
+            "ReduceL1",
+            "ReduceL2",
+            "ReduceLogSum",
+            "ReduceLogSumExp",
+        ):
             axes = attrs.get("axes")
-            keepdims = attrs.get("keepdims", 1)
+            keepdims = bool(attrs.get("keepdims", 1))
             if axes is not None:
                 axes = tuple(axes)
             elif len(inputs) > 1 and inputs[1] is not None:
                 axes = tuple(inputs[1].tolist())
-            return np.sum(inputs[0], axis=axes, keepdims=bool(keepdims))
-        if op_type == "ReduceMean":
-            axes = attrs.get("axes")
-            keepdims = attrs.get("keepdims", 1)
-            if axes is not None:
-                axes = tuple(axes)
-            elif len(inputs) > 1 and inputs[1] is not None:
-                axes = tuple(inputs[1].tolist())
-            return np.mean(inputs[0], axis=axes, keepdims=bool(keepdims))
-        if op_type == "ReduceMax":
-            axes = attrs.get("axes")
-            keepdims = attrs.get("keepdims", 1)
-            if axes is not None:
-                axes = tuple(axes)
-            elif len(inputs) > 1 and inputs[1] is not None:
-                axes = tuple(inputs[1].tolist())
-            return np.max(inputs[0], axis=axes, keepdims=bool(keepdims))
-        if op_type == "ReduceMin":
-            axes = attrs.get("axes")
-            keepdims = attrs.get("keepdims", 1)
-            if axes is not None:
-                axes = tuple(axes)
-            elif len(inputs) > 1 and inputs[1] is not None:
-                axes = tuple(inputs[1].tolist())
-            return np.min(inputs[0], axis=axes, keepdims=bool(keepdims))
-        if op_type == "ReduceProd":
-            axes = attrs.get("axes")
-            keepdims = attrs.get("keepdims", 1)
-            if axes is not None:
-                axes = tuple(axes)
-            elif len(inputs) > 1 and inputs[1] is not None:
-                axes = tuple(inputs[1].tolist())
-            return np.prod(inputs[0], axis=axes, keepdims=bool(keepdims))
-        if op_type == "ReduceL1":
-            axes = attrs.get("axes")
-            keepdims = attrs.get("keepdims", 1)
-            if axes is not None:
-                axes = tuple(axes)
-            elif len(inputs) > 1 and inputs[1] is not None:
-                axes = tuple(inputs[1].tolist())
-            return np.sum(np.abs(inputs[0]), axis=axes, keepdims=bool(keepdims))
-        if op_type == "ReduceL2":
-            axes = attrs.get("axes")
-            keepdims = attrs.get("keepdims", 1)
-            if axes is not None:
-                axes = tuple(axes)
-            elif len(inputs) > 1 and inputs[1] is not None:
-                axes = tuple(inputs[1].tolist())
-            return np.sqrt(np.sum(np.square(inputs[0]), axis=axes, keepdims=bool(keepdims)))
-        if op_type == "ReduceLogSum":
-            axes = attrs.get("axes")
-            keepdims = attrs.get("keepdims", 1)
-            if axes is not None:
-                axes = tuple(axes)
-            elif len(inputs) > 1 and inputs[1] is not None:
-                axes = tuple(inputs[1].tolist())
-            return np.log(np.sum(inputs[0], axis=axes, keepdims=bool(keepdims)))
-        if op_type == "ReduceLogSumExp":
-            axes = attrs.get("axes")
-            keepdims = attrs.get("keepdims", 1)
-            if axes is not None:
-                axes = tuple(axes)
-            elif len(inputs) > 1 and inputs[1] is not None:
-                axes = tuple(inputs[1].tolist())
+            if op_type == "ReduceSum":
+                return np.sum(inputs[0], axis=axes, keepdims=keepdims)
+            if op_type == "ReduceMean":
+                return np.mean(inputs[0], axis=axes, keepdims=keepdims)
+            if op_type == "ReduceMax":
+                return np.max(inputs[0], axis=axes, keepdims=keepdims)
+            if op_type == "ReduceMin":
+                return np.min(inputs[0], axis=axes, keepdims=keepdims)
+            if op_type == "ReduceProd":
+                return np.prod(inputs[0], axis=axes, keepdims=keepdims)
+            if op_type == "ReduceL1":
+                return np.sum(np.abs(inputs[0]), axis=axes, keepdims=keepdims)
+            if op_type == "ReduceL2":
+                return np.sqrt(np.sum(np.square(inputs[0]), axis=axes, keepdims=keepdims))
+            if op_type == "ReduceLogSum":
+                return np.log(np.sum(inputs[0], axis=axes, keepdims=keepdims))
             m = np.max(inputs[0], axis=axes, keepdims=True)
             res = m + np.log(np.sum(np.exp(inputs[0] - m), axis=axes, keepdims=True))
             if not keepdims:
@@ -876,10 +919,14 @@ class ConstantFoldingPass(GraphPass):
 
         if op_type == "SequenceAt":
             seq = inputs[0]
-            idx = inputs[1]
-            if isinstance(idx, np.ndarray):
-                idx = idx.item() if idx.size == 1 else idx[0]
-            idx = int(idx)
+            raw_idx = inputs[1]
+            idx = int(
+                raw_idx.item()
+                if isinstance(raw_idx, np.ndarray) and raw_idx.size == 1
+                else raw_idx[0]
+                if isinstance(raw_idx, np.ndarray)
+                else raw_idx
+            )
 
             if isinstance(seq, list) and -len(seq) <= idx < len(seq):
                 return seq[idx]
@@ -892,10 +939,7 @@ class ConstantFoldingPass(GraphPass):
                     split = split.item()
                 if isinstance(split, int):
                     axis_attr = attrs.get("axis", 0)
-                    if hasattr(axis_attr, "value"):
-                        axis = int(axis_attr.value)
-                    else:
-                        axis = int(axis_attr)
+                    axis = int(axis_attr.value) if hasattr(axis_attr, "value") else int(axis_attr)
 
                     # Prevent massive arrays
                     dim_size = inputs[0].shape[axis]
@@ -1038,7 +1082,15 @@ class ConstantFoldingPass(GraphPass):
         return None
 
     def _partial_fold(self, node: Node, known_values: dict) -> tuple:
-        """Implement the _partial_fold method or operation."""
+        """Execute partial fold on ConstantFoldingPass.
+
+        Args:
+            node: Parameter specifying node (Node).
+            known_values: Parameter specifying known values (dict).
+
+        Returns:
+            Result of partial fold (tuple).
+        """
         if node.op_type == "Add":
             if node.inputs[1] in known_values and np.all(known_values[node.inputs[1]] == 0):
                 (node.op_type, node.inputs) = ("Identity", [node.inputs[0]])
@@ -1121,5 +1173,10 @@ class ConstantFoldingPass(GraphPass):
 
 
 def constant_folding(graph: Graph, max_size_mb: float = 10.0) -> None:
-    """Implement the constant_folding method or operation."""
+    """Execute constant folding operation.
+
+    Args:
+        graph: Parameter specifying graph (Graph).
+        max_size_mb: Parameter specifying max size mb (float).
+    """
     ConstantFoldingPass(max_size_mb).run(graph)

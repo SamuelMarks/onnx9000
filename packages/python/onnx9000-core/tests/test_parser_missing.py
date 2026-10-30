@@ -7,7 +7,7 @@ from onnx9000.core import onnx_pb2
 from onnx9000.core.parser.core import load_tensor, parse_model, parse_tensor_proto
 
 
-def test_parse_tensor_proto_external_data():
+def test_parse_tensor_proto_external_data() -> None:
     """Test parse tensor proto external data."""
     with tempfile.TemporaryDirectory() as tmpdir:
         base_dir = Path(tmpdir)
@@ -53,7 +53,7 @@ def test_parse_tensor_proto_external_data():
         assert tensor2.name == "ext_tensor2"
 
 
-def test_parse_tensor_proto_data_types():
+def test_parse_tensor_proto_data_types() -> None:
     """Provides functional implementation."""
     # int32
     """Test parse tensor proto data types."""
@@ -84,7 +84,7 @@ def test_parse_tensor_proto_data_types():
     assert tensor_str.name == "t_str"
 
 
-def test_parse_model_metadata():
+def test_parse_model_metadata() -> None:
     """Test parse model metadata."""
     mp = onnx_pb2.ModelProto()
     gp = mp.graph
@@ -99,7 +99,7 @@ def test_parse_model_metadata():
     assert graph.metadata_props["my_key"] == "my_value"
 
 
-def test_load_tensor():
+def test_load_tensor() -> None:
     """Test load tensor."""
     with tempfile.TemporaryDirectory() as tmpdir:
         path = Path(tmpdir) / "tensor.pb"

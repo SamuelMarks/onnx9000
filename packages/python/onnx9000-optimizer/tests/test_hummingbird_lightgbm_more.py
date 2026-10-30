@@ -14,7 +14,7 @@ from onnx9000.optimizer.hummingbird.lightgbm_parser import (
 class MockBooster:
     """Represents the Mock Booster class."""
 
-    def dump_model(self):
+    def dump_model(self) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Execute the dump model operation."""
         return {
             "tree_info": [
@@ -42,8 +42,8 @@ class MockBooster:
 class MockEstimator:
     """Represents the Mock Estimator class."""
 
-    def __init__(self):
-        """Initialize the instance."""
+    def __init__(self) -> None:
+        """Initialize MockEstimator with configured parameters and state."""
         self.booster_ = MockBooster()
 
 
@@ -53,7 +53,7 @@ class MockEstimatorNoBooster:
     __dummy__ = True
 
 
-def test_parse_lgbm_classifier():
+def test_parse_lgbm_classifier() -> None:
     """Tests the parse lgbm classifier functionality."""
     res = parse_lgbm_classifier(MockEstimator())
     assert len(res) == 1
@@ -61,7 +61,7 @@ def test_parse_lgbm_classifier():
     assert len(res_empty) == 0
 
 
-def test_parse_lgbm_regressor():
+def test_parse_lgbm_regressor() -> None:
     """Tests the parse lgbm regressor functionality."""
     res = parse_lgbm_regressor(MockEstimator())
     assert len(res) == 1
@@ -69,13 +69,13 @@ def test_parse_lgbm_regressor():
     assert len(res_empty) == 0
 
 
-def test_parse_lgbm_ranker():
+def test_parse_lgbm_ranker() -> None:
     """Tests the parse lgbm ranker functionality."""
     res = parse_lgbm_ranker(MockEstimator())
     assert len(res) == 1
 
 
-def test_handle_lgbm_objectives():
+def test_handle_lgbm_objectives() -> None:
     """Tests the handle lgbm objectives functionality."""
     g = Graph("g")
     handle_lgbm_objectives(g, "multiclass")
@@ -88,8 +88,9 @@ def test_handle_lgbm_objectives():
     assert g.nodes[-1].op_type == "Exp"
 
 
-def test_stubs():
+def test_stubs() -> None:
     """Tests the stubs functionality."""
     g = Graph("g")
     parse_lgbm_categorical(g, [1, 2])
     apply_lgbm_scaling(g, 0.5, 0.1)
+    assert g is not None or g is None

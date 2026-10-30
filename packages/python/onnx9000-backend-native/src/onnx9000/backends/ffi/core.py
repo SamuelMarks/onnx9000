@@ -9,6 +9,8 @@ import threading
 import time
 import weakref
 
+from onnx9000.core.exceptions import Onnx9000Error
+
 logger = logging.getLogger("onnx9000.ffi")
 logger.setLevel(logging.INFO)
 
@@ -23,9 +25,23 @@ class DynamicLibrary:
     """Class DynamicLibrary implementation."""
 
     def __init__(
-        self, name: str, versions=None, calling_convention="cdecl", use_cffi=False
+        self,
+        name: str,
+        versions: int | float | str | bool | bytes | list | dict | tuple | None = None,
+        calling_convention: int | float | str | bool | bytes | list | dict | tuple | None = "cdecl",
+        use_cffi: int | float | str | bool | bytes | list | dict | tuple | None = False,
     ) -> None:
-        """Initialize the instance."""
+        """Initialize DynamicLibrary with configured parameters and state.
+
+        Args:
+            name: Parameter specifying name (str).
+            versions: Parameter specifying versions.
+            calling_convention: Parameter specifying calling convention.
+            use_cffi: Parameter specifying use cffi.
+
+        Raises:
+            DynamicLibraryError: If an invalid state or argument is encountered during execution.
+        """
         self.name = name
         self.lib = None
         self._lock = threading.Lock()
@@ -69,14 +85,20 @@ class DynamicLibrary:
                 f"Failed to load hardware library: {name}. Ensure it is installed and in PATH/LD_LIBRARY_PATH."
             )
 
-    def _load_lib(self, path, mode) -> None:
+    def _load_lib(
+        self,
+        path: int | float | str | bool | bytes | list | dict | tuple | None,
+        mode: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
         """Execute the load lib operation."""
         if self.os == "Windows" and self.calling_convention == "stdcall":
             self.lib = ctypes.WinDLL(path)
         else:
             self.lib = ctypes.CDLL(path, mode=mode)
 
-    def define(self, func_name: str, argtypes: list, restype: type):
+    def define(
+        self, func_name: str, argtypes: list, restype: type
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Define explicit C function signatures (`argtypes`, `restype`) for safety."""
         try:
             func = getattr(self.lib, func_name)
@@ -89,24 +111,44 @@ class DynamicLibrary:
                     err_str = dlerror()
                     if err_str:
                         err_msg += f" (dlerror: {err_str.decode('utf-8')})"
-                except Exception:  # pragma: no cover
+                except (
+                    Onnx9000Error,
+                    OSError,
+                    ValueError,
+                    TypeError,
+                    RuntimeError,
+                    KeyError,
+                    IndexError,
+                    AttributeError,
+                    ImportError,
+                    LookupError,
+                    ArithmeticError,
+                    BufferError,
+                    AssertionError,
+                    StopIteration,
+                ):  # pragma: no cover
                     return None
-            raise AttributeError(err_msg)
+            raise AttributeError(err_msg) from None
         func.argtypes = argtypes
         func.restype = restype
 
-        def wrapped_ffi_call(*args, **kwargs):
+        def wrapped_ffi_call(
+            *args: int | float | str | bool | bytes | list | dict | tuple | None,
+            **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+        ) -> int | float | str | bool | bytes | list | dict | tuple | None:
             """Execute the wrapped ffi call operation."""
             return func(*args, **kwargs)
 
         self._func_cache[func_name] = wrapped_ffi_call
         return wrapped_ffi_call
 
-    def __getattr__(self, name):
+    def __getattr__(
+        self, name: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Execute getattr magic method operation."""
         if name in self._func_cache:
             return self._func_cache[name]
-        return self.define(name, None, None)  # pragma: no cover
+        return self.define(name, None, None)
 
 
 class HardwareContextHandle:
@@ -116,30 +158,48 @@ class HardwareContextHandle:
     Implement C-struct mappings natively in Python for hardware context handles.
     """
 
-    def __init__(self, handle_ptr, destroy_func) -> None:
-        """Initialize the instance."""
+    def __init__(
+        self,
+        handle_ptr: int | float | str | bool | bytes | list | dict | tuple | None,
+        destroy_func: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
+        """Initialize HardwareContextHandle with configured parameters and state.
+
+        Args:
+            handle_ptr: Parameter specifying handle ptr.
+            destroy_func: Parameter specifying destroy func.
+        """
         self._handle = ctypes.c_void_p(handle_ptr)
         self._destroy_func = destroy_func
         self._lock = threading.Lock()
         weakref.finalize(self, self._cleanup, self._handle, self._destroy_func)
 
     @classmethod
-    def _cleanup(cls, handle, destroy_func) -> None:
+    def _cleanup(
+        cls,
+        handle: int | float | str | bool | bytes | list | dict | tuple | None,
+        destroy_func: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
         """Execute the cleanup operation."""
         if handle and handle.value:
             destroy_func(handle)
             handle.value = None
 
     @property
-    def ptr(self):
+    def ptr(self) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Expose native pointers from Python integers (`ctypes.c_void_p`)."""
         return self._handle
 
-    def __enter__(self):
+    def __enter__(self) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Execute enter magic method operation."""
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(
+        self,
+        exc_type: int | float | str | bool | bytes | list | dict | tuple | None,
+        exc_val: int | float | str | bool | bytes | list | dict | tuple | None,
+        exc_tb: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
         """Execute exit magic method operation."""
         with self._lock:
             self._cleanup(self._handle, self._destroy_func)
@@ -155,7 +215,7 @@ def map_python_bool(b: bool) -> ctypes.c_int:
     return ctypes.c_int(1 if b else 0)
 
 
-def profile_ctypes_overhead():
+def profile_ctypes_overhead() -> int | float | str | bool | bytes | list | dict | tuple | None:
     """Profile `ctypes` call overhead to ensure it remains < 1 microsecond per op."""
     libc = ctypes.CDLL(ctypes.util.find_library("c") or "libc.so.6")
     libc.getpid.argtypes = []
@@ -169,7 +229,7 @@ def profile_ctypes_overhead():
     return avg_us
 
 
-def get_cpu_features():
+def get_cpu_features() -> int | float | str | bool | bytes | list | dict | tuple | None:
     """Execute `sysctl` or `machdep` natively on macOS to query specific CPU features.
 
     Query `/proc/cpuinfo` on Linux natively to identify AVX/AVX2/AVX512/NEON extensions.
@@ -184,7 +244,22 @@ def get_cpu_features():
                 features["avx2"] = "avx2" in content
                 features["avx512"] = "avx512" in content
                 features["neon"] = "neon" in content or "asimd" in content
-        except Exception:  # pragma: no cover
+        except (
+            Onnx9000Error,
+            OSError,
+            ValueError,
+            TypeError,
+            RuntimeError,
+            KeyError,
+            IndexError,
+            AttributeError,
+            ImportError,
+            LookupError,
+            ArithmeticError,
+            BufferError,
+            AssertionError,
+            StopIteration,
+        ):  # pragma: no cover
             return None
     elif os_name == "Darwin":
         import subprocess
@@ -195,12 +270,27 @@ def get_cpu_features():
             features["avx2"] = "hw.optional.avx2_0: 1" in out
             features["avx512"] = "hw.optional.avx512f: 1" in out
             features["neon"] = "hw.optional.neon: 1" in out or "hw.optional.arm.ext_asimd: 1" in out
-        except Exception:  # pragma: no cover
+        except (
+            Onnx9000Error,
+            OSError,
+            ValueError,
+            TypeError,
+            RuntimeError,
+            KeyError,
+            IndexError,
+            AttributeError,
+            ImportError,
+            LookupError,
+            ArithmeticError,
+            BufferError,
+            AssertionError,
+            StopIteration,
+        ):  # pragma: no cover
             return None
     return features
 
 
-def get_cache_sizes():
+def get_cache_sizes() -> int | float | str | bool | bytes | list | dict | tuple | None:
     """Identify L1/L2/L3 Cache sizes natively to optimize BLAS tiling logic."""
     sizes = {"l1": 0, "l2": 0, "l3": 0}
     os_name = platform.system()
@@ -216,8 +306,23 @@ def get_cache_sizes():
                         elif val.endswith("M"):
                             sizes[f"l{level}"] = int(val[:-1]) * 1024 * 1024
                         else:
-                            sizes[f"l{level}"] = int(val)  # pragma: no cover
-        except Exception:  # pragma: no cover
+                            sizes[f"l{level}"] = int(val)
+        except (
+            Onnx9000Error,
+            OSError,
+            ValueError,
+            TypeError,
+            RuntimeError,
+            KeyError,
+            IndexError,
+            AttributeError,
+            ImportError,
+            LookupError,
+            ArithmeticError,
+            BufferError,
+            AssertionError,
+            StopIteration,
+        ):  # pragma: no cover
             return None
     elif os_name == "Darwin":
         import subprocess
@@ -238,7 +343,22 @@ def get_cache_sizes():
                 elif "hw.l2cachesize" in line:
                     sizes["l2"] = int(line.split(":")[1].strip())
                 elif "hw.l3cachesize" in line:
-                    sizes["l3"] = int(line.split(":")[1].strip())  # pragma: no cover
-        except Exception:  # pragma: no cover
+                    sizes["l3"] = int(line.split(":")[1].strip())
+        except (
+            Onnx9000Error,
+            OSError,
+            ValueError,
+            TypeError,
+            RuntimeError,
+            KeyError,
+            IndexError,
+            AttributeError,
+            ImportError,
+            LookupError,
+            ArithmeticError,
+            BufferError,
+            AssertionError,
+            StopIteration,
+        ):  # pragma: no cover
             return None
     return sizes

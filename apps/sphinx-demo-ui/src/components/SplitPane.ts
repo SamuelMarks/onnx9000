@@ -2,16 +2,22 @@
  * @fileoverview SplitPane.ts
  * Provides SplitPane functionality for the Sphinx Demo UI.
  */
-// @ts-nocheck
 import { Component } from '../core/Component';
 
+/** Type alias `SplitOrientation`. */
 export type SplitOrientation = 'horizontal' | 'vertical';
 
+/** Interface `SplitPaneOptions` definition. */
 export interface SplitPaneOptions {
+  /** Property `orientation`. */
   orientation: SplitOrientation;
+  /** Property `initialSplitRatio`. */
   initialSplitRatio?: number; // 0.0 to 1.0 (default 0.5)
+  /** Property `minSize`. */
   minSize?: number;
+  /** Property `className`. */
   className?: string;
+  /** Property `storageKey`. */
   storageKey?: string; // If provided, persists the ratio to localStorage
 }
 
@@ -20,23 +26,35 @@ export interface SplitPaneOptions {
  * Allows rendering two sub-components either side-by-side or stacked vertically.
  */
 export class SplitPane extends Component<HTMLDivElement> {
-  private pane1!: HTMLDivElement;
-  private pane2!: HTMLDivElement;
-  private divider!: HTMLDivElement;
+  /** Property `pane1` of `SplitPane`. */
+  private pane1: HTMLDivElement = document.createElement('div');
+  /** Property `pane2` of `SplitPane`. */
+  private pane2: HTMLDivElement = document.createElement('div');
+  /** Property `divider` of `SplitPane`. */
+  private divider: HTMLDivElement = document.createElement('div');
 
-  private isDragging = false;
+  /** Property `currentRatio` of `SplitPane`. */
   private currentRatio = 0.5;
 
+  /** Property `options` of `SplitPane`. */
   private options: SplitPaneOptions;
-  private boundMouseMove!: (e: MouseEvent) => void;
-  private boundMouseUp!: (e: MouseEvent) => void;
+  /** Property `boundMouseMove` of `SplitPane`. */
+  private boundMouseMove: (e: MouseEvent) => void;
+  /** Property `boundMouseUp` of `SplitPane`. */
+  private boundMouseUp: () => void;
 
+  /**
+   * Initializes a new `SplitPane` instance.
+   * @param options Parameter `options`.
+   */
   constructor(options: SplitPaneOptions) {
     super();
+    this.boundMouseMove = (e: MouseEvent) => this.onDrag(e);
+    this.boundMouseUp = () => this.onDragEnd();
     this.options = {
       initialSplitRatio: 0.5,
       minSize: 100,
-      ...options
+      ...options,
     };
 
     // Core element init must happen here now
@@ -51,15 +69,19 @@ export class SplitPane extends Component<HTMLDivElement> {
           this.currentRatio = parsed;
         }
       } else {
-        this.currentRatio = this.options.initialSplitRatio!;
+        this.currentRatio = this.options.initialSplitRatio as number;
       }
     } else {
-      this.currentRatio = this.options.initialSplitRatio!;
+      this.currentRatio = this.options.initialSplitRatio as number;
     }
 
     this.applyRatio();
   }
 
+  /**
+   * Executes `render` on `SplitPane`.
+   * @returns Result of `render`.
+   */
   protected render(): HTMLDivElement {
     const container = document.createElement('div');
     container.style.display = 'flex';
@@ -101,10 +123,6 @@ export class SplitPane extends Component<HTMLDivElement> {
         : 'demo-pane-divider-vertical';
     this.divider.setAttribute('aria-label', `Resize ${this.options.orientation} pane`);
 
-    if (this.options.orientation === 'vertical') {
-    } else {
-    }
-
     container.appendChild(this.pane1);
     container.appendChild(this.divider);
     container.appendChild(this.pane2);
@@ -112,14 +130,12 @@ export class SplitPane extends Component<HTMLDivElement> {
     return container;
   }
 
+  /** Executes `onMount` on `SplitPane`. */
   protected onMount(): void {
     // We bind DOM listeners to handle the drag lifecycle
     this.addDOMListener(this.divider, 'mousedown', (e) => this.onDragStart(e as MouseEvent));
     this.addDOMListener(this.divider, 'dblclick', () => this.resetRatio());
     this.addDOMListener(this.divider, 'keydown', (e) => this.onKeyDown(e as KeyboardEvent));
-
-    this.boundMouseMove = this.onDrag.bind(this);
-    this.boundMouseUp = this.onDragEnd.bind(this);
 
     // Add global window event listener cleanup
     this.onCleanup(() => {
@@ -128,10 +144,15 @@ export class SplitPane extends Component<HTMLDivElement> {
     });
   }
 
+  /**
+   * Executes `getPanes` on `SplitPane`.
+   * @returns Result of `getPanes`.
+   */
   public getPanes(): { pane1: HTMLDivElement; pane2: HTMLDivElement } {
     return { pane1: this.pane1, pane2: this.pane2 };
   }
 
+  /** Executes `applyRatio` on `SplitPane`. */
   private applyRatio(): void {
     const p1 = this.currentRatio * 100;
     const p2 = 100 - p1;
@@ -139,12 +160,17 @@ export class SplitPane extends Component<HTMLDivElement> {
     this.pane2.style.flex = `0 0 calc(${p2}% - 8px)`;
   }
 
+  /** Executes `resetRatio` on `SplitPane`. */
   private resetRatio(): void {
-    this.currentRatio = this.options.initialSplitRatio || 0.5;
+    this.currentRatio = this.options.initialSplitRatio as number;
     this.applyRatio();
     this.saveRatio();
   }
 
+  /**
+   * Executes `onKeyDown` on `SplitPane`.
+   * @param e Parameter `e`.
+   */
   private onKeyDown(e: KeyboardEvent): void {
     const step = 0.05; // 5% per key press
     let ratioChanged = false;
@@ -185,9 +211,12 @@ export class SplitPane extends Component<HTMLDivElement> {
     }
   }
 
+  /**
+   * Executes `onDragStart` on `SplitPane`.
+   * @param e Parameter `e`.
+   */
   private onDragStart(e: MouseEvent): void {
     e.preventDefault(); // Prevents text selection during drag
-    this.isDragging = true;
 
     this.divider.classList.add('active');
 
@@ -195,9 +224,11 @@ export class SplitPane extends Component<HTMLDivElement> {
     window.addEventListener('mouseup', this.boundMouseUp);
   }
 
+  /**
+   * Executes `onDrag` on `SplitPane`.
+   * @param e Parameter `e`.
+   */
   private onDrag(e: MouseEvent): void {
-    if (!this.isDragging) return;
-
     // Calculate new ratio
     const containerRect = this.element.getBoundingClientRect();
 
@@ -205,7 +236,7 @@ export class SplitPane extends Component<HTMLDivElement> {
 
     if (this.options.orientation === 'horizontal') {
       // Horizontal split (left/right) -> Track Mouse X
-      const minPixels = this.options.minSize || 0;
+      const minPixels = this.options.minSize as number;
       let newWidth = e.clientX - containerRect.left;
 
       // Boundaries
@@ -218,7 +249,7 @@ export class SplitPane extends Component<HTMLDivElement> {
       }
     } else {
       // Vertical split (top/bottom) -> Track Mouse Y
-      const minPixels = this.options.minSize || 0;
+      const minPixels = this.options.minSize as number;
       let newHeight = e.clientY - containerRect.top;
 
       // Boundaries
@@ -236,10 +267,8 @@ export class SplitPane extends Component<HTMLDivElement> {
     this.applyRatio();
   }
 
+  /** Executes `onDragEnd` on `SplitPane`. */
   private onDragEnd(): void {
-    if (!this.isDragging) return;
-    this.isDragging = false;
-
     window.removeEventListener('mousemove', this.boundMouseMove);
     window.removeEventListener('mouseup', this.boundMouseUp);
 
@@ -248,11 +277,12 @@ export class SplitPane extends Component<HTMLDivElement> {
     // Dispatch a custom event from the element so tests or parent views can react
     this.element.dispatchEvent(
       new CustomEvent('split-resize', {
-        detail: { ratio: this.currentRatio }
-      })
+        detail: { ratio: this.currentRatio },
+      }),
     );
   }
 
+  /** Executes `saveRatio` on `SplitPane`. */
   private saveRatio(): void {
     if (this.options.storageKey) {
       localStorage.setItem(this.options.storageKey, this.currentRatio.toString());

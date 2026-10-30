@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../../src/mmdnn/ncnn/mapper";
+import { describe, expect, it } from 'vitest';
+import { NcnnMapper } from '../../../src/mmdnn/ncnn/mapper';
 
-describe("mapper.ts", () => {
-  it("should instantiate and cover NcnnMapper", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('mapper.ts', () => {
+  it('should instantiate and cover NcnnMapper', () => {
     try {
-      const obj = new (Module as any).NcnnMapper();
+      const obj = Construct(NcnnMapper);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

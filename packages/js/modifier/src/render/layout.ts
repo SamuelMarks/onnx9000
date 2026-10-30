@@ -2,49 +2,82 @@
  * @fileoverview layout.ts
  * Provides layout functionality for the modifier package.
  */
-import type { Graph, Node } from "@onnx9000/core";
+import type { Graph, Node } from '@onnx9000/core';
 
+/** Interface `Point` definition. */
 export interface Point {
+  /** Property `x`. */
   x: number;
+  /** Property `y`. */
   y: number;
 }
 
+/** Interface `Size` definition. */
 export interface Size {
+  /** Property `width`. */
   width: number;
+  /** Property `height`. */
   height: number;
 }
 
+/** Interface `NodeLayout` definition. */
 export interface NodeLayout {
+  /** Property `id`. */
   id: string;
+  /** Property `position`. */
   position: Point;
+  /** Property `size`. */
   size: Size;
+  /** Property `layer`. */
   layer: number;
 }
 
+/** Interface `EdgeLayout` definition. */
 export interface EdgeLayout {
+  /** Property `sourceId`. */
   sourceId: string;
+  /** Property `targetId`. */
   targetId: string;
+  /** Property `sourcePort`. */
   sourcePort: string;
+  /** Property `targetPort`. */
   targetPort: string;
+  /** Property `path`. */
   path: Point[];
 }
 
+/** Interface `GraphLayout` definition. */
 export interface GraphLayout {
+  /** Property `nodes`. */
   nodes: Map<string, NodeLayout>;
+  /** Property `edges`. */
   edges: EdgeLayout[];
+  /** Property `bounds`. */
   bounds: Size;
 }
 
-export type LayoutDirection = "TB" | "LR";
+/** Type alias `LayoutDirection`. */
+export type LayoutDirection = 'TB' | 'LR';
 
+/** Represents the `DagreLayoutEngine` class. */
 export class DagreLayoutEngine {
+  /** Property `direction` of `DagreLayoutEngine`. */
   direction: LayoutDirection;
 
-  constructor(direction: LayoutDirection = "TB") {
+  /**
+   * Initializes a new `DagreLayoutEngine` instance.
+   * @param direction Parameter `direction`.
+   */
+  constructor(direction: LayoutDirection = 'TB') {
     this.direction = direction;
   }
 
   // 271. Fallback to a fast grid layout
+  /**
+   * Executes `computeGrid` on `DagreLayoutEngine`.
+   * @param graph Parameter `graph`.
+   * @returns Result of `computeGrid`.
+   */
   computeGrid(graph: Graph): GraphLayout {
     const nodes = new Map<string, NodeLayout>();
     const edges: EdgeLayout[] = [];
@@ -60,7 +93,7 @@ export class DagreLayoutEngine {
     const cols = Math.ceil(Math.sqrt(graph.nodes.length));
 
     for (let i = 0; i < graph.nodes.length; i++) {
-      const node = graph.nodes[i]!;
+      const node = graph.nodes[i] as Node;
       const r = Math.floor(i / cols);
       const c = i % cols;
       const x = c * (nodeWidth + xSpacing);
@@ -86,6 +119,11 @@ export class DagreLayoutEngine {
 
   // 37. Implement the Sugiyama layout algorithm (or integrate Dagre.js)
   // For a 0 dependency approach, we implement a lightweight topological layer assignment
+  /**
+   * Executes `compute` on `DagreLayoutEngine`.
+   * @param graph Parameter `graph`.
+   * @returns Result of `compute`.
+   */
   compute(graph: Graph): GraphLayout {
     // 271. Fallback to a fast grid layout if Sugiyama fails or times out
     const startTime = performance.now();
@@ -103,7 +141,7 @@ export class DagreLayoutEngine {
     }
 
     const getLayer = (nodeId: string): number => {
-      if (layers.has(nodeId)) return layers.get(nodeId)!;
+      if (layers.has(nodeId)) return layers.get(nodeId) as number;
       const node = graph.nodes.find((n) => n.id === nodeId);
       if (!node) return 0;
 
@@ -124,7 +162,7 @@ export class DagreLayoutEngine {
     for (const node of graph.nodes) {
       // Timeout check
       if (performance.now() - startTime > 2000) {
-        console.warn("Layout timeout! Falling back to grid layout.");
+        console.warn('Layout timeout Falling back to grid layout.');
         return this.computeGrid(graph);
       }
 
@@ -135,7 +173,7 @@ export class DagreLayoutEngine {
     // 2. Layout nodes per layer
     const layerMap = new Map<number, Node[]>();
     for (const node of graph.nodes) {
-      const l = layers.get(node.id)!;
+      const l = layers.get(node.id) as number;
       if (!layerMap.has(l)) layerMap.set(l, []);
       layerMap.get(l)?.push(node);
     }
@@ -154,11 +192,11 @@ export class DagreLayoutEngine {
       let currentY = 0;
 
       for (let i = 0; i < layerNodes.length; i++) {
-        const node = layerNodes[i]!;
+        const node = layerNodes[i] as Node;
 
         // 38. Vertical mode (TB)
         // 39. Horizontal mode (LR)
-        if (this.direction === "TB") {
+        if (this.direction === 'TB') {
           currentX = i * (nodeWidth + xSpacing);
           currentY = l * (nodeHeight + ySpacing);
         } else {
@@ -197,14 +235,13 @@ export class DagreLayoutEngine {
       for (const inp of node.inputs) {
         const prod = producerMap.get(inp);
         if (prod) {
-          const sourceLayout = nodes.get(prod.id)!;
-          const targetLayout = nodes.get(node.id)!;
+          const sourceLayout = nodes.get(prod.id) as NodeLayout;
+          const targetLayout = nodes.get(node.id) as NodeLayout;
 
           let path: Point[] = [];
 
-          if (this.direction === "TB") {
-            const startX =
-              sourceLayout.position.x + sourceLayout.size.width / 2;
+          if (this.direction === 'TB') {
+            const startX = sourceLayout.position.x + sourceLayout.size.width / 2;
             const startY = sourceLayout.position.y + sourceLayout.size.height;
             const endX = targetLayout.position.x + targetLayout.size.width / 2;
             const endY = targetLayout.position.y;
@@ -217,8 +254,7 @@ export class DagreLayoutEngine {
             ];
           } else {
             const startX = sourceLayout.position.x + sourceLayout.size.width;
-            const startY =
-              sourceLayout.position.y + sourceLayout.size.height / 2;
+            const startY = sourceLayout.position.y + sourceLayout.size.height / 2;
             const endX = targetLayout.position.x;
             const endY = targetLayout.position.y + targetLayout.size.height / 2;
 

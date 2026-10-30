@@ -2,11 +2,14 @@
  * @fileoverview PipelineNode.ts
  * Provides PipelineNode functionality for the Sphinx Demo UI.
  */
-// @ts-nocheck
 export interface PipelineState {
+  /** Property `sourceFramework`. */
   sourceFramework: string | null;
+  /** Property `targetFramework`. */
   targetFramework: string | null;
+  /** Property `activeFile`. */
   activeFile: string | null;
+  /** Property `outputArtifacts`. */
   outputArtifacts?: object[];
 }
 
@@ -15,11 +18,20 @@ export interface PipelineState {
  * Keeps track of the state before and after an operation to allow undo/redo.
  */
 export class PipelineNode {
+  /** Property `id` of `PipelineNode`. */
   public id: string;
+  /** Property `timestamp` of `PipelineNode`. */
   public timestamp: number;
+  /** Property `state` of `PipelineNode`. */
   public state: PipelineState;
+  /** Property `description` of `PipelineNode`. */
   public description: string;
 
+  /**
+   * Initializes a new `PipelineNode` instance.
+   * @param state Parameter `state`.
+   * @param description Parameter `description`.
+   */
   constructor(state: PipelineState, description: string) {
     this.id =
       typeof crypto !== 'undefined' && crypto.randomUUID

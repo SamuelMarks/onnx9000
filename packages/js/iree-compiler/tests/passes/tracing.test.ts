@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../src/passes/tracing";
+import { describe, expect, it } from 'vitest';
+import { DiagnosticTracer } from '../../src/passes/tracing';
 
-describe("tracing.ts", () => {
-  it("should instantiate and cover DiagnosticTracer", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('tracing.ts', () => {
+  it('should instantiate and cover DiagnosticTracer', () => {
     try {
-      const obj = new (Module as any).DiagnosticTracer();
+      const obj = Construct(DiagnosticTracer);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

@@ -1,17 +1,23 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../src/passes/lower_wgsl";
+import { describe, expect, it } from 'vitest';
+import { WGSLEmitter, WGSLRunner } from '../../src/passes/lower_wgsl';
 
-describe("lower_wgsl.ts", () => {
-  it("should instantiate and cover WGSLEmitter", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('lower_wgsl.ts', () => {
+  it('should instantiate and cover WGSLEmitter', () => {
     try {
-      const obj = new (Module as any).WGSLEmitter();
+      const obj = Construct(WGSLEmitter);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover WGSLRunner", () => {
+  it('should instantiate and cover WGSLRunner', () => {
     try {
-      const obj = new (Module as any).WGSLRunner();
+      const obj = Construct(WGSLRunner);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

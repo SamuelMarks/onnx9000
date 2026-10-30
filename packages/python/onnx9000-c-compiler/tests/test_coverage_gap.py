@@ -7,7 +7,7 @@ from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Node, Tensor
 
 
-def test_ast_builder_edges():
+def test_ast_builder_edges() -> None:
     """Test ast builder edges."""
     from onnx9000.c_compiler.ast_builder import C89Builder
 
@@ -19,17 +19,17 @@ def test_ast_builder_edges():
     assert b.indent_level == 0
 
 
-def test_unsupported_node():
+def test_unsupported_node() -> None:
     """Test unsupported node."""
     g = Graph("test")
     n = Node("UnsupportedOp", inputs=["X"], outputs=["Y"])
     g.nodes.append(n)
     compiler = C89Compiler(g)
-    (h, c) = compiler.generate()
+    (_h, c) = compiler.generate()
     assert "Unsupported node: UnsupportedOp" in c
 
 
-def test_data_unpacker_edges():
+def test_data_unpacker_edges() -> None:
     """Test data unpacker edges."""
     from onnx9000.c_compiler.data_unpacker import unpack_bytes_to_str
 
@@ -40,7 +40,7 @@ def test_data_unpacker_edges():
     assert "2.0" in res64
 
 
-def test_activations_coverage():
+def test_activations_coverage() -> None:
     """Test activations coverage."""
     g = Graph("test_activations")
     g.tensors["X"] = Tensor("X", shape=(1, 10), dtype=DType.FLOAT32)
@@ -62,7 +62,7 @@ def test_activations_coverage():
         n = Node(norm, inputs=["X"], outputs=[f"Y_{norm}"])
         g.nodes.append(n)
     compiler = C89Compiler(g, use_math_h=False)
-    (h, c) = compiler.generate()
+    (_h, c) = compiler.generate()
     assert "LeakyRelu" in c
     assert "Sigmoid" in c
     assert "Tanh" in c
@@ -74,7 +74,7 @@ def test_activations_coverage():
     assert "InstanceNormalization" in c
 
 
-def test_boolean_coverage():
+def test_boolean_coverage() -> None:
     """Test boolean coverage."""
     g = Graph("test_boolean")
     g.tensors["X1"] = Tensor("X1", shape=(1, 5), dtype=DType.FLOAT32)
@@ -95,13 +95,13 @@ def test_boolean_coverage():
         inputs = ["X1", "X2"] if op != "Not" else ["X1"]
         g.nodes.append(Node(op, inputs=inputs, outputs=[out]))
     compiler = C89Compiler(g)
-    (h, c) = compiler.generate()
+    (_h, c) = compiler.generate()
     assert "Xor" in c
     assert "LessOrEqual" in c
     assert "Greater" in c
 
 
-def test_pooling_and_reduction_coverage():
+def test_pooling_and_reduction_coverage() -> None:
     """Test pooling and reduction coverage."""
     g = Graph("test_pool")
     g.tensors["X2D"] = Tensor("X2D", shape=(1, 3, 10, 10), dtype=DType.FLOAT32)
@@ -133,14 +133,14 @@ def test_pooling_and_reduction_coverage():
         g.tensors[out] = Tensor(out, shape=(1, 3, 10), dtype=DType.INT64)
         g.nodes.append(Node(rop, inputs=["X2D"], outputs=[out]))
     compiler = C89Compiler(g)
-    (h, c) = compiler.generate()
+    (_h, c) = compiler.generate()
     assert "AveragePool" in c
     assert "ReduceMin" in c
     assert "ReduceProd" in c
     assert "ArgMin" in c
 
 
-def test_routing_coverage():
+def test_routing_coverage() -> None:
     """Test routing coverage."""
     g = Graph("test_route")
     g.tensors["X3D"] = Tensor("X3D", shape=(2, 3, 4), dtype=DType.FLOAT32)
@@ -166,12 +166,12 @@ def test_routing_coverage():
         )
     )
     compiler = C89Compiler(g)
-    (h, c) = compiler.generate()
+    (_h, c) = compiler.generate()
     assert "Unsupported Transpose dimensionality" in c
     assert "out_idx =" in c
 
 
-def test_spatial_coverage():
+def test_spatial_coverage() -> None:
     """Test spatial coverage."""
     g = Graph("test_spatial")
     g.tensors["X1"] = Tensor("X1", shape=(1, 3, 10), dtype=DType.FLOAT32)
@@ -187,7 +187,7 @@ def test_spatial_coverage():
     g.tensors["YT1"] = Tensor("YT1", shape=(1, 6, 12), dtype=DType.FLOAT32)
     g.nodes.append(Node("ConvTranspose", inputs=["XT1", "WT1"], outputs=["YT1"]))
     compiler = C89Compiler(g)
-    (h, c) = compiler.generate()
+    (_h, c) = compiler.generate()
     assert "Conv1D" in c
     assert "Conv3D" in c
     assert "Unsupported ConvTranspose dim" in c

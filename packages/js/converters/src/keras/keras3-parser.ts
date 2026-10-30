@@ -1,14 +1,21 @@
-// @ts-nocheck
-import { unzipSync } from "fflate";
-import type { JsonObject } from "./tfjs-parser.js";
+/**
+ * @fileoverview keras3-parser module for converters.
+ */
+import { ConversionError } from '@onnx9000/core';
+import { unzipSync } from 'fflate';
+import type { JsonObject } from './tfjs-parser.js';
 
 /**
  * Represents the extracted artifacts from a Keras 3 (.keras) archive.
  */
 export interface Keras3Model {
+  /** Property `config`. */
   config: JsonObject;
+  /** Property `metadata`. */
   metadata: JsonObject;
+  /** Property `weightsH5`. */
   weightsH5?: Uint8Array;
+  /** Property `weightsSafetensors`. */
   weightsSafetensors?: Uint8Array;
 }
 
@@ -20,7 +27,7 @@ export interface Keras3Model {
  * @throws Error if the provided buffer is not a valid Keras 3 archive missing config.json.
  */
 export function parseKeras3Zip(buffer: Uint8Array): Keras3Model {
-  const unzipped = unzipSync(buffer);
+  const unzipped = unzipSync(Buffer.from(buffer));
 
   let config: JsonObject | undefined;
   let metadata: JsonObject | undefined;
@@ -31,31 +38,25 @@ export function parseKeras3Zip(buffer: Uint8Array): Keras3Model {
     const filename = entry[0];
     const fileData = entry[1];
 
-    if (filename === "config.json" || filename.endsWith("/config.json")) {
+    if (filename === 'config.json' || filename.endsWith('/config.json')) {
       const text = new TextDecoder().decode(fileData);
       // We safely cast the output of JSON.parse to JsonObject to avoid any/unknown
       config = JSON.parse(text) as JsonObject;
-    } else if (
-      filename === "metadata.json" ||
-      filename.endsWith("/metadata.json")
-    ) {
+    } else if (filename === 'metadata.json' || filename.endsWith('/metadata.json')) {
       const text = new TextDecoder().decode(fileData);
       metadata = JSON.parse(text) as JsonObject;
-    } else if (
-      filename === "model.weights.h5" ||
-      filename.endsWith("/model.weights.h5")
-    ) {
+    } else if (filename === 'model.weights.h5' || filename.endsWith('/model.weights.h5')) {
       weightsH5 = fileData;
     } else if (
-      filename === "model.weights.safetensors" ||
-      filename.endsWith("/model.weights.safetensors")
+      filename === 'model.weights.safetensors' ||
+      filename.endsWith('/model.weights.safetensors')
     ) {
       weightsSafetensors = fileData;
     }
   }
 
   if (config === undefined) {
-    throw new Error("Invalid Keras 3 format: missing config.json");
+    throw new ConversionError('Invalid Keras 3 format: missing config.json');
   }
 
   const result: Keras3Model = {

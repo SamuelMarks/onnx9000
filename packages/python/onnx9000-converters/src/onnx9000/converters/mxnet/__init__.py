@@ -12,7 +12,7 @@ from onnx9000.core.ir import Graph
 class MXNetConverter(BaseParser):
     """Converter for MXNet models."""
 
-    def __init__(self, weights_path: str):
+    def __init__(self, weights_path: str) -> None:
         """Initialize the converter.
 
         Args:
@@ -48,4 +48,4 @@ class MXNetConverter(BaseParser):
         return graph
 
 
-__all__ = ["parse_symbol", "load_params", "MXNetMapper", "MXNetConverter"]
+__all__ = ["MXNetConverter", "MXNetMapper", "load_params", "parse_symbol"]

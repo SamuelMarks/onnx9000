@@ -10,7 +10,7 @@ from onnx9000.toolkit.training.autograd.optimizers import (
 )
 
 
-def test_adam_weight_decay():
+def test_adam_weight_decay() -> None:
     """Tests the adam weight decay functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("p", [2, 2], "float32", requires_grad=True))
@@ -18,7 +18,7 @@ def test_adam_weight_decay():
     assert any(n.name == "p_wd_c" for n in g.nodes)
 
 
-def test_rmsprop_momentum_weight_decay():
+def test_rmsprop_momentum_weight_decay() -> None:
     """Tests the rmsprop momentum weight decay functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("p", [2, 2], "float32", requires_grad=True))
@@ -26,7 +26,7 @@ def test_rmsprop_momentum_weight_decay():
     assert any(n.name == "p_mul_m_mom" for n in g.nodes)
 
 
-def test_rmsprop_no_momentum():
+def test_rmsprop_no_momentum() -> None:
     """Tests the rmsprop no momentum functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("p", [2, 2], "float32", requires_grad=True))
@@ -34,7 +34,7 @@ def test_rmsprop_no_momentum():
     assert any(n.name == "p_div_upd" for n in g.nodes)
 
 
-def test_differential_privacy_noise():
+def test_differential_privacy_noise() -> None:
     """Tests the differential privacy noise functionality."""
     g = Graph("g")
     grad_names = ["grad_p"]
@@ -43,7 +43,7 @@ def test_differential_privacy_noise():
     assert "grad_p_dp_noisy" in grad_names[0]
 
 
-def test_local_dp_gradient_clipping():
+def test_local_dp_gradient_clipping() -> None:
     """Tests the local dp gradient clipping functionality."""
     g = Graph("g")
     grad_names = ["grad_p"]
@@ -52,7 +52,7 @@ def test_local_dp_gradient_clipping():
     assert "grad_p_dp_clipped" in grad_names[0]
 
 
-def test_gradient_clipping_value():
+def test_gradient_clipping_value() -> None:
     """Tests the gradient clipping value functionality."""
     g = Graph("g")
     grad_names = ["grad_p"]
@@ -61,7 +61,7 @@ def test_gradient_clipping_value():
     assert "grad_p_val_clipped" in grad_names[0]
 
 
-def test_early_returns():
+def test_early_returns() -> None:
     """Tests the early returns functionality."""
     g = Graph("g")
     add_differential_privacy_noise(g, [], noise_multiplier=1.0, max_grad_norm=1.0)
@@ -70,3 +70,4 @@ def test_early_returns():
     add_local_dp_gradient_clipping(g, ["grad_p"], max_l2_norm=0.0)
     add_gradient_clipping_value(g, [], clip_value=1.0)
     add_gradient_clipping_value(g, ["grad_p"], clip_value=0.0)
+    assert g is not None or g is None

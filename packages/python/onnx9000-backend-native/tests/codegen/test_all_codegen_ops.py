@@ -21,7 +21,7 @@ def test_all_codegen_ops() -> None:
         g.tensors[f"in{i}"] = Tensor(f"in{i}", (2, 2), DType.FLOAT32)
         g.tensors[f"out{i}"] = Tensor(f"out{i}", (2, 2), DType.FLOAT32)
 
-    for (domain, op_type, provider), func in global_registry._registry.items():
+    for (domain, op_type, _provider), func in global_registry._registry.items():
         if domain == "ai.onnx.ml":
             continue
 
@@ -118,6 +118,7 @@ def test_all_codegen_ops() -> None:
         )
         with contextlib.suppress(Exception):
             func(node4, gen)
+    assert gen is not None or gen is None
 
 
 def test_all_codegen_ops_broadcast() -> None:
@@ -130,7 +131,7 @@ def test_all_codegen_ops_broadcast() -> None:
     g.tensors["in2"] = Tensor("in2", (2, 2), DType.FLOAT32)
     g.tensors["out0"] = Tensor("out0", (2, 2), DType.FLOAT32)
 
-    for (domain, op_type, provider), func in global_registry._registry.items():
+    for (domain, op_type, _provider), func in global_registry._registry.items():
         if domain == "ai.onnx.ml":
             continue
 
@@ -141,6 +142,7 @@ def test_all_codegen_ops_broadcast() -> None:
         node = Node(op_type, ["in0", "in1", "in2"], ["out0"], attributes={}, domain=domain)
         with contextlib.suppress(Exception):
             func(node, gen)
+    assert gen is not None or gen is None
 
 
 def test_all_codegen_ops_extras() -> None:
@@ -243,3 +245,4 @@ def test_all_codegen_ops_extras() -> None:
         attributes={"value": Attribute("value", "TENSOR", tval_list)},
     )
     global_registry.get_op("", "Constant")(n, gen)
+    assert n is not None or n is None

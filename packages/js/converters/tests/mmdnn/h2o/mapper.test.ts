@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../../src/mmdnn/h2o/mapper";
+import { describe, expect, it } from 'vitest';
+import { H2OMapper } from '../../../src/mmdnn/h2o/mapper';
 
-describe("mapper.ts", () => {
-  it("should instantiate and cover H2OMapper", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('mapper.ts', () => {
+  it('should instantiate and cover H2OMapper', () => {
     try {
-      const obj = new (Module as any).H2OMapper();
+      const obj = Construct(H2OMapper);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

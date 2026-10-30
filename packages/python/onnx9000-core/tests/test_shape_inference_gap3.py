@@ -6,7 +6,7 @@ from onnx9000.core.shape_inference import infer_shapes_and_types
 from onnx9000.core.symbolic import DynamicDim
 
 
-def test_reshape_dynamic_vol_exception():
+def test_reshape_dynamic_vol_exception() -> None:
     """Tests the reshape dynamic vol exception functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (DynamicDim("N"), 3), DType.FLOAT32))
@@ -21,7 +21,7 @@ def test_reshape_dynamic_vol_exception():
     assert g.tensors["y"].shape == (-1, 6)
 
 
-def test_reshape_no_values():
+def test_reshape_no_values() -> None:
     """Tests the reshape no values functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (2, 3), DType.FLOAT32))
@@ -33,7 +33,7 @@ def test_reshape_no_values():
     assert "dim_0" in str(g.tensors["y"].shape)
 
 
-def test_global_avg_pool():
+def test_global_avg_pool() -> None:
     """Tests the global avg pool functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (1, 3, 32, 32), DType.FLOAT32))
@@ -43,7 +43,7 @@ def test_global_avg_pool():
     assert list(g.tensors["y"].shape) == [1, 3, 1, 1]
 
 
-def test_conv_no_weights():
+def test_conv_no_weights() -> None:
     """Tests the conv no weights functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (1,), DType.FLOAT32))
@@ -53,7 +53,7 @@ def test_conv_no_weights():
     assert "C_out" in str(g.tensors["y"].shape)
 
 
-def test_maxpool_channels():
+def test_maxpool_channels() -> None:
     """Tests the maxpool channels functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (1,), DType.FLOAT32))
@@ -63,7 +63,7 @@ def test_maxpool_channels():
     assert "C_out" in str(g.tensors["y"].shape)
 
 
-def test_conv_dynamic_spatial():
+def test_conv_dynamic_spatial() -> None:
     """Tests the conv dynamic spatial functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (1, 3, DynamicDim("H"), 32), DType.FLOAT32))
@@ -87,7 +87,7 @@ def test_conv_dynamic_spatial():
     assert "spatial_0" in str(g.tensors["y"].shape)
 
 
-def test_conv_exception():
+def test_conv_exception() -> None:
     """Tests the conv exception functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", (1, 3, 32, 32), DType.FLOAT32))

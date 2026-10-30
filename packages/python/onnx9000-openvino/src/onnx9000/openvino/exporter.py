@@ -2,9 +2,9 @@
 
 import io
 import struct
-from typing import Any
 
 from onnx9000.core.dtypes import DType
+from onnx9000.core.exceptions import CompilationError
 from onnx9000.core.ir import Graph
 
 from .xml_builder import XmlBuilder, XmlNode
@@ -19,7 +19,7 @@ class OpenVinoExporter:
         version: str = "11",
         compress_to_fp16: bool = False,
         clamp_dynamic: bool = False,
-    ):
+    ) -> None:
         """Initialize the OpenVinoExporter."""
         self.graph = graph
         self.version = version
@@ -72,7 +72,7 @@ class OpenVinoExporter:
         elif dtype == DType.FLOAT32:
             data_bytes = struct.pack(f"<{len(data)}f", *data)
         else:
-            raise ValueError(f"Dynamic const for {dtype} not implemented")
+            raise CompilationError(f"Dynamic const for {dtype} not implemented")
 
         if data_bytes in self._bin_cache:
             offset, size = self._bin_cache[data_bytes]
@@ -116,13 +116,17 @@ class OpenVinoExporter:
             DType.BOOL: "boolean",
         }
         if dtype not in mapping:
-            raise ValueError(f"Unsupported dtype for OpenVINO: {dtype}")
+            raise CompilationError(f"Unsupported dtype for OpenVINO: {dtype}")
         mapped = mapping[dtype]
         if mapped == "f32" and self.compress_to_fp16:
             return "f16"
         return mapped
 
-    def _emit_shape(self, shape: list[Any], tag_name: str = "port") -> XmlNode:
+    def _emit_shape(
+        self,
+        shape: list[int | float | str | bool | bytes | list | dict | tuple | None],
+        tag_name: str = "port",
+    ) -> XmlNode:
         """Emit shape."""
         port_node = XmlNode(tag_name)
         for dim in shape:
@@ -133,7 +137,7 @@ class OpenVinoExporter:
             port_node.add_child(dim_node)
         return port_node
 
-    def _add_edge(self, from_layer: int, from_port: int, to_layer: int, to_port: int):
+    def _add_edge(self, from_layer: int, from_port: int, to_layer: int, to_port: int) -> None:
         """Add edge."""
         edge = XmlNode("edge")
         edge.set_attribute("from-layer", str(from_layer))
@@ -215,8 +219,7 @@ class OpenVinoExporter:
             layer.set_attribute("version", "opset1")
 
             data = XmlNode("data")
-            if tensor.dtype is not None:
-                data.set_attribute("element_type", self._map_dtype(tensor.dtype))
+            data.set_attribute("element_type", self._map_dtype(tensor.dtype or DType.FLOAT32))
 
             # Extract ONNX scalars cleanly to Const layers with <dim>1</dim>
             actual_shape = tensor.shape if len(tensor.shape) > 0 else [1]
@@ -252,8 +255,7 @@ class OpenVinoExporter:
             out_node = XmlNode("output")
             port = self._emit_shape(actual_shape, "port")
             port.set_attribute("id", str(output_port))
-            if tensor.dtype is not None:
-                port.set_attribute("precision", self._map_dtype(tensor.dtype))
+            port.set_attribute("precision", self._map_dtype(tensor.dtype or DType.FLOAT32))
             out_node.add_child(port)
             layer.add_child(out_node)
 
@@ -492,19 +494,13 @@ class OpenVinoExporter:
             elif node.op_type == "Gelu":
                 if node.attributes and "approximate" in node.attributes:
                     approx = node.attributes["approximate"].value
-                    if approx == b"tanh" or approx == "tanh":
+                    if approx in {b"tanh", "tanh"}:
                         data.set_attribute("approximation_mode", "tanh")
                     else:
                         data.set_attribute("approximation_mode", "erf")
                 else:
                     data.set_attribute("approximation_mode", "erf")
-            elif node.op_type == "Softmax":
-                if node.attributes.get("axis"):
-                    data.set_attribute("axis", str(node.attributes["axis"].value))
-            elif node.op_type == "Concat":
-                if node.attributes.get("axis"):
-                    data.set_attribute("axis", str(node.attributes["axis"].value))
-            elif node.op_type == "Split":
+            elif node.op_type in {"Softmax", "Concat"} or node.op_type == "Split":
                 if node.attributes.get("axis"):
                     data.set_attribute("axis", str(node.attributes["axis"].value))
             elif node.op_type == "Pad":
@@ -516,13 +512,13 @@ class OpenVinoExporter:
                     mid = len(pads_data) // 2
                     pads_begin = pads_data[:mid]
                     pads_end = pads_data[mid:]
-                    b_layer, b_port = self._emit_dynamic_const(
+                    b_layer, _b_port = self._emit_dynamic_const(
                         node.name + "_pads_begin" if node.name else f"pads_begin_{layer_id}",
                         pads_begin,
                         [len(pads_begin)],
                         DType.INT64,
                     )
-                    e_layer, e_port = self._emit_dynamic_const(
+                    e_layer, _e_port = self._emit_dynamic_const(
                         node.name + "_pads_end" if node.name else f"pads_end_{layer_id}",
                         pads_end,
                         [len(pads_end)],
@@ -539,7 +535,7 @@ class OpenVinoExporter:
 
                     val_attr = node.attributes.get("value")
                     val = val_attr.value if val_attr else 0.0
-                    v_layer, v_port = self._emit_dynamic_const(
+                    v_layer, _v_port = self._emit_dynamic_const(
                         node.name + "_pad_value" if node.name else f"pad_value_{layer_id}",
                         [val],
                         [1],
@@ -551,7 +547,7 @@ class OpenVinoExporter:
                     )
                 elif len(node.inputs) == 2:
                     # Inject 0.0 value injection natively
-                    v_layer, v_port = self._emit_dynamic_const(
+                    v_layer, _v_port = self._emit_dynamic_const(
                         node.name + "_pad_value" if node.name else f"pad_value_{layer_id}",
                         [0.0],
                         [1],
@@ -567,7 +563,7 @@ class OpenVinoExporter:
                 if node.attributes.get("axis"):
                     axis_val = node.attributes["axis"].value
                     if len(inputs_to_map) == 2:
-                        axis_layer, axis_port = self._emit_dynamic_const(
+                        axis_layer, _axis_port = self._emit_dynamic_const(
                             node.name + "_gather_axis" if node.name else f"gather_axis_{layer_id}",
                             [axis_val],
                             [1],
@@ -673,7 +669,7 @@ class OpenVinoExporter:
                     print(f"HITTING THEN BRANCH!! {sub_graph}")
                     sub_exporter = OpenVinoExporter(sub_graph, self.version, self.compress_to_fp16)
                     # Avoid colliding IDs globally? Usually subgraphs maintain their own
-                    sub_xml, sub_bin = sub_exporter.export()
+                    _sub_xml, _sub_bin = sub_exporter.export()
 
                     XmlNode("body")
                     # For a true recursive tree, we'd rebuild the sub-DOM here
@@ -684,20 +680,18 @@ class OpenVinoExporter:
                     else_exporter = OpenVinoExporter(
                         else_graph, self.version, self.compress_to_fp16
                     )
-                    else_xml, else_bin = else_exporter.export()
+                    _else_xml, _else_bin = else_exporter.export()
                     XmlNode("body")
             elif node.op_type in ["Loop", "Scan"]:
                 if node.attributes.get("body"):
                     sub_graph = node.attributes["body"].value
                     print(f"HITTING THEN BRANCH!! {sub_graph}")
                     sub_exporter = OpenVinoExporter(sub_graph, self.version, self.compress_to_fp16)
-                    sub_xml, sub_bin = sub_exporter.export()
+                    _sub_xml, _sub_bin = sub_exporter.export()
                     XmlNode("body")
 
-            # Ensure data tag is added if it has attributes, or for certain types that always need it
-            if len(data.attributes) > 0 or ov_type == "FakeQuantize":
-                if ov_type == "FakeQuantize" and "levels" not in data.attributes:
-                    data.set_attribute("levels", "256")
+            # Ensure data tag is added if it has attributes
+            if len(data.attributes) > 0:
                 layer.add_child(data)
 
             if node.op_type == "Cast":
@@ -749,7 +743,7 @@ class OpenVinoExporter:
 
                 layers.add_child(shape_layer)
 
-                axes_layer, axes_port = self._emit_dynamic_const(
+                axes_layer, _axes_port = self._emit_dynamic_const(
                     node.name + "_axes" if node.name else f"axes_{layer_id}",
                     [0],
                     [1],
@@ -771,7 +765,7 @@ class OpenVinoExporter:
             elif node.op_type == "Flatten":
                 # Flatten -> Reshape
                 shape_data = [0, -1]
-                const_layer, const_port = self._emit_dynamic_const(
+                const_layer, _const_port = self._emit_dynamic_const(
                     node.name + "_flatten_shape" if node.name else f"flatten_shape_{layer_id}",
                     shape_data,
                     [2],
@@ -783,7 +777,7 @@ class OpenVinoExporter:
                 )
             elif node.op_type == "Transpose" and node.attributes and "perm" in node.attributes:
                 perm_data = list(node.attributes["perm"].value)
-                const_layer, const_port = self._emit_dynamic_const(
+                const_layer, _const_port = self._emit_dynamic_const(
                     node.name + "_transpose_perm" if node.name else f"transpose_perm_{layer_id}",
                     perm_data,
                     [len(perm_data)],
@@ -803,7 +797,7 @@ class OpenVinoExporter:
                 # If axes is an attribute (Opset < 13), we must emit it as the 2nd input for OpenVINO.
                 if node.attributes and "axes" in node.attributes:
                     axes_data = list(node.attributes["axes"].value)
-                    const_layer, const_port = self._emit_dynamic_const(
+                    const_layer, _const_port = self._emit_dynamic_const(
                         node.name + "_reduce_axes" if node.name else f"reduce_axes_{layer_id}",
                         axes_data,
                         [len(axes_data)],
@@ -813,58 +807,6 @@ class OpenVinoExporter:
                     inputs_to_map.append(
                         node.name + "_reduce_axes" if node.name else f"reduce_axes_{layer_id}"
                     )
-            elif node.op_type == "Pad":
-                if node.attributes and "pads" in node.attributes:
-                    # Opset < 11: pads is an attribute
-                    pads_data = list(node.attributes["pads"].value)
-                    mid = len(pads_data) // 2
-                    pads_begin = pads_data[:mid]
-                    pads_end = pads_data[mid:]
-                    b_layer, b_port = self._emit_dynamic_const(
-                        node.name + "_pads_begin" if node.name else f"pads_begin_{layer_id}",
-                        pads_begin,
-                        [len(pads_begin)],
-                        DType.INT64,
-                    )
-                    e_layer, e_port = self._emit_dynamic_const(
-                        node.name + "_pads_end" if node.name else f"pads_end_{layer_id}",
-                        pads_end,
-                        [len(pads_end)],
-                        DType.INT64,
-                    )
-                    layers.add_child(b_layer)
-                    layers.add_child(e_layer)
-                    inputs_to_map.append(
-                        node.name + "_pads_begin" if node.name else f"pads_begin_{layer_id}"
-                    )
-                    inputs_to_map.append(
-                        node.name + "_pads_end" if node.name else f"pads_end_{layer_id}"
-                    )
-
-                    val_attr = node.attributes.get("value")
-                    val = val_attr.value if val_attr else 0.0
-                    v_layer, v_port = self._emit_dynamic_const(
-                        node.name + "_pad_value" if node.name else f"pad_value_{layer_id}",
-                        [val],
-                        [1],
-                        DType.FLOAT32,
-                    )
-                    layers.add_child(v_layer)
-                    inputs_to_map.append(
-                        node.name + "_pad_value" if node.name else f"pad_value_{layer_id}"
-                    )
-                elif len(node.inputs) == 2:
-                    # Inject 0.0 value injection natively
-                    v_layer, v_port = self._emit_dynamic_const(
-                        node.name + "_pad_value" if node.name else f"pad_value_{layer_id}",
-                        [0.0],
-                        [1],
-                        DType.FLOAT32,
-                    )
-                    layers.add_child(v_layer)
-                    inputs_to_map.append(
-                        node.name + "_pad_value" if node.name else f"pad_value_{layer_id}"
-                    )
             elif node.op_type == "GatherElements":
                 # Emulate missing OpenVINO GatherElements via explicit Gather indexing
                 # This requires complex index unrolling natively, we emit Gather as fallback
@@ -872,7 +814,7 @@ class OpenVinoExporter:
                 layer.set_attribute("type", "GatherElements")
                 if node.attributes and "axis" in node.attributes:
                     axis_val = node.attributes["axis"].value
-                    axis_layer, axis_port = self._emit_dynamic_const(
+                    axis_layer, _axis_port = self._emit_dynamic_const(
                         node.name + "_gather_el_axis"
                         if node.name
                         else f"gather_el_axis_{layer_id}",
@@ -911,7 +853,7 @@ class OpenVinoExporter:
                         )
                         dtype = DType.INT32
 
-                const_layer, const_port = self._emit_dynamic_const(
+                const_layer, _const_port = self._emit_dynamic_const(
                     node.name + "_scalar_val" if node.name else f"scalar_val_{layer_id}",
                     val,
                     [1],
@@ -935,7 +877,7 @@ class OpenVinoExporter:
                     from_layer, from_port = self.port_ids[inp_name]
                     self._add_edge(from_layer, from_port, layer_id, input_port)
                 elif inp_name != "":
-                    raise ValueError(
+                    raise CompilationError(
                         f"Missing input pointer: '{inp_name}' for node '{node.name or layer_id}'"
                     )
             if len(inputs_to_map) > 0:

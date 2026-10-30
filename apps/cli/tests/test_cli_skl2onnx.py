@@ -1,9 +1,14 @@
+"""Unit tests and verification suite for cli skl2onnx functionality."""
+
 import subprocess
 import unittest
 
 
 class TestCliSKL2ONNX(unittest.TestCase):
-    def test_skl2onnx(self):
+    """Represents test cli skl2 onnx inheriting from unittest.TestCase, supporting operations such as test_skl2onnx."""
+
+    def test_skl2onnx(self) -> None:
+        """Verify that skl2onnx behaves as expected."""
         res = subprocess.run(
             ["uv", "run", "onnx9000", "skl2onnx", "model"],
             capture_output=True,

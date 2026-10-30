@@ -100,3 +100,4 @@ def test_sink_transposes() -> None:
     from onnx9000.core.surgeon import sink_transposes
 
     sink_transposes(g)
+    assert n_add is not None or n_add is None

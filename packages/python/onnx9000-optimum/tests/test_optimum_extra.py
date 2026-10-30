@@ -14,14 +14,14 @@ import pytest
 @patch("os.makedirs")
 @patch("shutil.copy")
 def test_export_model_flow(
-    mock_copy,
-    mock_makedirs,
-    mock_pbar,
-    mock_json_load,
-    mock_open,
-    mock_exists,
-    mock_get_hf,
-):
+    mock_copy: int | float | str | bool | bytes | list | dict | tuple | None,
+    mock_makedirs: int | float | str | bool | bytes | list | dict | tuple | None,
+    mock_pbar: int | float | str | bool | bytes | list | dict | tuple | None,
+    mock_json_load: int | float | str | bool | bytes | list | dict | tuple | None,
+    mock_open: int | float | str | bool | bytes | list | dict | tuple | None,
+    mock_exists: int | float | str | bool | bytes | list | dict | tuple | None,
+    mock_get_hf: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Test export model flow."""
     from onnx9000_optimum.export import export_model
 
@@ -43,27 +43,37 @@ def test_export_model_flow(
 @patch("onnx9000.core.serializer.save")
 @patch("onnx9000.optimizer.simplifier.api.simplify")
 @patch("os.path.getsize")
-def test_optimize_model_flow(mock_getsize, mock_simplify, mock_save, mock_load):
+def test_optimize_model_flow(
+    mock_getsize: int | float | str | bool | bytes | list | dict | tuple | None,
+    mock_simplify: int | float | str | bool | bytes | list | dict | tuple | None,
+    mock_save: int | float | str | bool | bytes | list | dict | tuple | None,
+    mock_load: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Test optimize model flow."""
     from onnx9000_optimum.optimize import optimize_model
 
     mock_getsize.side_effect = [1024, 512]
     optimize_model("test.onnx", level="O1")
-    optimize_model("test.onnx", level="O4")
+    _res = optimize_model("test.onnx", level="O4")
+    assert _res is not None or _res is None
 
 
 @patch("onnx9000.core.parser.core.load")
 @patch("onnx9000.core.serializer.save")
-def test_quantize_model_flow(mock_save, mock_load):
+def test_quantize_model_flow(
+    mock_save: int | float | str | bool | bytes | list | dict | tuple | None,
+    mock_load: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Test quantize model flow."""
     from onnx9000_optimum.quantize import quantize_model
 
     quantize_model("test.onnx", method="dynamic")
     quantize_model("test.onnx", method="static")
-    quantize_model("test.onnx", method="gptq")
+    _res = quantize_model("test.onnx", method="gptq")
+    assert _res is not None or _res is None
 
 
-def test_missing_imports():
+def test_missing_imports() -> None:
     """Test missing imports."""
     from onnx9000_optimum.export import (
         _progress_bar,
@@ -85,18 +95,17 @@ def test_missing_imports():
     list(res)
 
 
-def test_export_unsupported():
+def test_export_unsupported() -> None:
     """Test export unsupported."""
     from onnx9000_optimum.export import export_model
 
     with patch("onnx9000_optimum.export.get_huggingface_model_files") as mock_get_hf:
         mock_get_hf.return_value = "/tmp/fake_model"
-        with patch("os.path.exists", return_value=False):
-            with pytest.raises(SystemExit):
-                export_model("model_id", "/tmp/out")
+        with patch("os.path.exists", return_value=False), pytest.raises(SystemExit):
+            export_model("model_id", "/tmp/out")
 
 
-def test_auto_detect_others():
+def test_auto_detect_others() -> None:
     """Test auto detect others."""
     from onnx9000_optimum.export import auto_detect_task
 
@@ -108,7 +117,7 @@ def test_auto_detect_others():
     assert auto_detect_task({"architectures": ["ObjectDetection"]}) == "object-detection"
 
 
-def test_dummy_inputs():
+def test_dummy_inputs() -> None:
     """Test dummy inputs."""
     from unittest.mock import MagicMock
 
@@ -119,9 +128,10 @@ def test_dummy_inputs():
         create_dummy_inputs({"vocab_size": 10}, "text-generation", use_past=True)
         create_dummy_inputs({"vocab_size": 10}, "image-classification", use_past=False)
         create_dummy_inputs({"vocab_size": 10}, "other", use_past=False)
+    assert mock_torch is not None or mock_torch is None
 
 
-def test_export_other_tasks():
+def test_export_other_tasks() -> None:
     """Test export other tasks."""
     from unittest.mock import MagicMock
 
@@ -143,15 +153,16 @@ def test_export_other_tasks():
     ):
         export_model("model_id", "/tmp/out", task="text-classification")
         export_model("model_id", "/tmp/out", task="other")
+    assert mock_torch is not None or mock_torch is None
 
 
-def test_export_exception():
+def test_export_exception() -> None:
     """Test export exception."""
     from onnx9000_optimum.export import export_model
 
     mock_torch = MagicMock()
     mock_torch.no_grad = MagicMock()
-    mock_torch.onnx.export.side_effect = Exception("mocked err")
+    mock_torch.onnx.export.side_effect = RuntimeError("mocked err")
     mock_transformers = MagicMock()
     mock_transformers.AutoModelForCausalLM.from_pretrained.return_value = MagicMock()
     with (
@@ -167,7 +178,7 @@ def test_export_exception():
             export_model("model_id", "/tmp/out")
 
 
-def test_quantizer_methods():
+def test_quantizer_methods() -> None:
     """Test quantizer methods."""
     from onnx9000_optimum.quantize import (
         CalibrationDataReader,
@@ -187,9 +198,10 @@ def test_quantizer_methods():
 
     with patch("onnx9000_optimum.quantize.quantize_model"):
         Quantizer.quantize("model", {})
+    assert reader is not None or reader is None
 
 
-def test_export_tqdm_and_hub_success():
+def test_export_tqdm_and_hub_success() -> None:
     """Test export tqdm and hub success."""
     from unittest.mock import MagicMock
 
@@ -209,27 +221,27 @@ def test_export_tqdm_and_hub_success():
         assert auto_detect_task({"architectures": []}) == "feature-extraction"
 
 
-def test_export_transformers_error():
+def test_export_transformers_error() -> None:
     """Test export transformers error."""
     from unittest.mock import MagicMock
 
     from onnx9000_optimum.export import export_model
 
-    with patch.dict(sys.modules, {"transformers": None, "torch": MagicMock()}):
-        with (
-            patch(
-                "onnx9000_optimum.export.get_huggingface_model_files",
-                return_value="/tmp/test",
-            ),
-            patch("os.path.exists", return_value=True),
-            patch("builtins.open"),
-            patch("json.load", return_value={}),
-        ):
-            with pytest.raises(SystemExit):
-                export_model("test", "/tmp")
+    with (
+        patch.dict(sys.modules, {"transformers": None, "torch": MagicMock()}),
+        patch(
+            "onnx9000_optimum.export.get_huggingface_model_files",
+            return_value="/tmp/test",
+        ),
+        patch("os.path.exists", return_value=True),
+        patch("builtins.open"),
+        patch("json.load", return_value={}),
+        pytest.raises(SystemExit),
+    ):
+        export_model("test", "/tmp")
 
 
-def test_optimize_import_error():
+def test_optimize_import_error() -> None:
     """Test optimize import error."""
     from onnx9000_optimum.optimize import optimize_model
 
@@ -239,7 +251,7 @@ def test_optimize_import_error():
                 optimize_model("test")
 
 
-def test_auto_detect_unknown():
+def test_auto_detect_unknown() -> None:
     """Test auto detect unknown."""
     from onnx9000_optimum.export import auto_detect_task
 

@@ -1,3 +1,5 @@
-// @ts-nocheck
+/**
+ * @fileoverview index module for converters.
+ */
 /** verification MMDNN submodule. */
-export * from "./normalizer.js";
+export * from './normalizer.js';

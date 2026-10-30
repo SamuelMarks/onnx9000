@@ -2,80 +2,114 @@
  * @fileoverview canvas.ts
  * Provides canvas functionality for the modifier package.
  */
-import type { Graph, Node } from "@onnx9000/core";
-import type { EdgeLayout, GraphLayout, NodeLayout } from "./layout.js";
 
+import type { Graph, Node } from '@onnx9000/core';
+import { Onnx9000Error } from '@onnx9000/core';
+import type { EdgeLayout, GraphLayout, NodeLayout } from './layout.js';
+
+/** Interface `CanvasConfig` definition. */
 export interface CanvasConfig {
+  /** Property `nodeColor`. */
   nodeColor: string;
+  /** Property `initializerColor`. */
   initializerColor: string;
+  /** Property `outputColor`. */
   outputColor: string;
+  /** Property `constantColor`. */
   constantColor: string;
+  /** Property `font`. */
   font: string;
+  /** Property `textColor`. */
   textColor: string;
+  /** Property `edgeColor`. */
   edgeColor: string;
+  /** Property `highlightColor`. */
   highlightColor: string;
+  /** Property `backgroundColor`. */
   backgroundColor: string;
+  /** Property `gridColor`. */
   gridColor: string;
+  /** Property `lineWidth`. */
   lineWidth: number;
 }
 
 export const DefaultConfig: CanvasConfig = {
-  nodeColor: "#f8f9fa",
-  initializerColor: "#e9ecef",
-  outputColor: "#ffe3e3",
-  constantColor: "#e3f2fd",
-  font: "12px monospace",
-  textColor: "#212529",
-  edgeColor: "#adb5bd",
-  highlightColor: "#339af0",
-  backgroundColor: "#ffffff",
-  gridColor: "#f1f3f5",
+  nodeColor: '#f8f9fa',
+  initializerColor: '#e9ecef',
+  outputColor: '#ffe3e3',
+  constantColor: '#e3f2fd',
+  font: '12px monospace',
+  textColor: '#212529',
+  edgeColor: '#adb5bd',
+  highlightColor: '#339af0',
+  backgroundColor: '#ffffff',
+  gridColor: '#f1f3f5',
   lineWidth: 2,
 };
 
 // 277. WebGL Instanced Drawing Hook / Fast Canvas caching
+/** Represents the `GraphRenderer` class. */
 export class GraphRenderer {
+  /** Property `nodeCache` of `GraphRenderer`. */
   private nodeCache: Map<string, HTMLCanvasElement> = new Map();
+  /** Property `canvas` of `GraphRenderer`. */
   canvas: HTMLCanvasElement;
+  /** Property `ctx` of `GraphRenderer`. */
   ctx: CanvasRenderingContext2D;
+  /** Property `config` of `GraphRenderer`. */
   config: CanvasConfig;
 
   // Transform
+  /** Property `scale` of `GraphRenderer`. */
   scale: number = 1;
+  /** Property `offsetX` of `GraphRenderer`. */
   offsetX: number = 0;
+  /** Property `offsetY` of `GraphRenderer`. */
   offsetY: number = 0;
 
   // State
+  /** Property `hoveredNodeId` of `GraphRenderer`. */
   hoveredNodeId: string | null = null;
+  /** Property `selectedNodeIds` of `GraphRenderer`. */
   selectedNodeIds: Set<string> = new Set();
 
   // 276. Cleanup
+  /**
+   * Executes `destroy` on `GraphRenderer`.
+   * @returns Result of `destroy`.
+   */
   destroy() {
     this.canvas.width = 0;
     this.canvas.height = 0;
     this.ctx = null as ReturnType<typeof JSON.parse>;
   }
 
+  /**
+   * Initializes a new `GraphRenderer` instance.
+   * @param canvas Parameter `canvas`.
+   * @param config Parameter `config`.
+   */
   constructor(canvas: HTMLCanvasElement, config: Partial<CanvasConfig> = {}) {
     this.canvas = canvas;
-    const context = canvas.getContext("2d");
-    if (!context) throw new Error("Could not get 2D context");
+    const context = canvas.getContext('2d');
+    if (!context) throw new Onnx9000Error('Could not get 2D context');
     this.ctx = context;
     this.config = { ...DefaultConfig, ...config };
   }
 
   // 40. Infinite pan and zoom
+  /**
+   * Executes `applyTransform` on `GraphRenderer`.
+   * @returns Result of `applyTransform`.
+   */
   applyTransform() {
-    this.ctx.setTransform(
-      this.scale,
-      0,
-      0,
-      this.scale,
-      this.offsetX,
-      this.offsetY,
-    );
+    this.ctx.setTransform(this.scale, 0, 0, this.scale, this.offsetX, this.offsetY);
   }
 
+  /**
+   * Executes `clear` on `GraphRenderer`.
+   * @returns Result of `clear`.
+   */
   clear() {
     this.ctx.save();
     this.ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -84,6 +118,10 @@ export class GraphRenderer {
     this.ctx.restore();
   }
 
+  /**
+   * Executes `drawGrid` on `GraphRenderer`.
+   * @returns Result of `drawGrid`.
+   */
   drawGrid() {
     this.ctx.save();
     this.applyTransform();
@@ -109,6 +147,12 @@ export class GraphRenderer {
     this.ctx.restore();
   }
 
+  /**
+   * Executes `render` on `GraphRenderer`.
+   * @param graph Parameter `graph`.
+   * @param layout Parameter `layout`.
+   * @returns Result of `render`.
+   */
   render(graph: Graph, layout: GraphLayout) {
     this.drawGroup(layout);
     this.clear();
@@ -118,12 +162,12 @@ export class GraphRenderer {
     if (graph.nodes.length === 0) {
       this.ctx.save();
       this.applyTransform();
-      this.ctx.fillStyle = "#6c757d";
-      this.ctx.font = "20px sans-serif";
-      this.ctx.textAlign = "center";
-      this.ctx.textBaseline = "middle";
+      this.ctx.fillStyle = '#6c757d';
+      this.ctx.font = '20px sans-serif';
+      this.ctx.textAlign = 'center';
+      this.ctx.textBaseline = 'middle';
       this.ctx.fillText(
-        "Empty Graph",
+        'Empty Graph',
         this.canvas.width / 2 / this.scale,
         this.canvas.height / 2 / this.scale,
       );
@@ -151,23 +195,26 @@ export class GraphRenderer {
   }
 
   // 48. Edge routing
+  /**
+   * Executes `drawEdge` on `GraphRenderer`.
+   * @param edge Parameter `edge`.
+   * @param graph Parameter `graph`.
+   * @returns Result of `drawEdge`.
+   */
   drawEdge(edge: EdgeLayout, graph: Graph) {
     const isHighlighted =
-      this.hoveredNodeId === edge.sourceId ||
-      this.hoveredNodeId === edge.targetId;
-    this.ctx.strokeStyle = isHighlighted
-      ? this.config.highlightColor
-      : this.config.edgeColor;
+      this.hoveredNodeId === edge.sourceId || this.hoveredNodeId === edge.targetId;
+    this.ctx.strokeStyle = isHighlighted ? this.config.highlightColor : this.config.edgeColor;
     this.ctx.lineWidth = this.config.lineWidth;
     this.ctx.beginPath();
 
     const path = edge.path;
     if (path.length > 0) {
-      const p0 = path[0];
-      if (p0) this.ctx.moveTo(p0.x, p0.y);
+      const p0 = path[0] as (typeof path)[number];
+      this.ctx.moveTo(p0.x, p0.y);
       for (let i = 1; i < path.length; i++) {
-        const pi = path[i];
-        if (pi) this.ctx.lineTo(pi.x, pi.y);
+        const pi = path[i] as (typeof path)[number];
+        this.ctx.lineTo(pi.x, pi.y);
       }
     }
     this.ctx.stroke();
@@ -176,57 +223,62 @@ export class GraphRenderer {
       // 47. Display the tensor shape and type directly on the connecting edges
       const vi = graph.valueInfo.find((v) => v.name === edge.sourcePort);
       if (vi) {
-        const p1 = path[1];
-        if (p1) {
-          const text = `${vi.dtype}[${vi.shape.join(",")}]`;
-          this.ctx.fillStyle = this.config.textColor;
-          this.ctx.font = "10px monospace";
-          this.ctx.textAlign = "center";
-          this.ctx.textBaseline = "bottom";
-          this.ctx.fillText(text, p1.x, p1.y - 2);
-        }
+        const p1 = path[1] as (typeof path)[number];
+        const text = `${vi.dtype}[${vi.shape.join(',')}]`;
+        this.ctx.fillStyle = this.config.textColor;
+        this.ctx.font = '10px monospace';
+        this.ctx.textAlign = 'center';
+        this.ctx.textBaseline = 'bottom';
+        this.ctx.fillText(text, p1.x, p1.y - 2);
       }
     }
   }
 
   // 42, 43, 44, 45. Distinct rendering
+  /**
+   * Executes `drawNode` on `GraphRenderer`.
+   * @param node Parameter `node`.
+   * @param layout Parameter `layout`.
+   * @param graph Parameter `graph`.
+   * @returns Result of `drawNode`.
+   */
   drawNode(node: Node, layout: NodeLayout, graph: Graph) {
     // 277. Pseudo-instancing via offscreen canvas caching
     const cacheKey =
       node.opType +
-      (this.hoveredNodeId === node.id ? "_hover" : "") +
-      (this.selectedNodeIds.has(node.id) ? "_sel" : "");
+      (this.hoveredNodeId === node.id ? '_hover' : '') +
+      (this.selectedNodeIds.has(node.id) ? '_sel' : '');
 
     // We only cache the background shape/colors, text is dynamic
     if (!this.nodeCache.has(cacheKey)) {
-      const off = document.createElement("canvas");
+      const off = document.createElement('canvas');
       off.width = layout.size.width + 10;
       off.height = layout.size.height + 10;
-      const octx = off.getContext("2d")!;
+      const octx = off.getContext('2d') as CanvasRenderingContext2D;
 
       octx.fillStyle = this.selectedNodeIds.has(node.id)
         ? this.config.highlightColor
         : this.config.nodeColor;
-      if (this.hoveredNodeId === node.id) octx.fillStyle = "#ffc107"; // hover color
+      if (this.hoveredNodeId === node.id) octx.fillStyle = '#ffc107'; // hover color
 
       // 191. Create custom warning badges on nodes that are known to be slow or unsupported in WebGPU
       if (
-        node.opType === "NonMaxSuppression" ||
-        node.opType === "TopK" ||
-        node.opType === "RoiAlign"
+        node.opType === 'NonMaxSuppression' ||
+        node.opType === 'TopK' ||
+        node.opType === 'RoiAlign'
       ) {
-        octx.fillStyle = "#dc3545"; // RED warning for unsupported ops
+        octx.fillStyle = '#dc3545'; // RED warning for unsupported ops
       }
 
       // 291. Add visual node highlighting based on inference path tracking.
-      if (node.attributes._inference_path_active) octx.fillStyle = "#28a745"; // Green path
+      if (node.attributes._inference_path_active) octx.fillStyle = '#28a745'; // Green path
 
       octx.strokeStyle = this.config.edgeColor;
       octx.lineWidth = 2;
       octx.beginPath();
-      if (typeof octx.roundRect === "function") {
+      if (typeof octx.roundRect === 'function') {
         octx.roundRect(5, 5, layout.size.width, layout.size.height, 8);
-      } else if (typeof octx.rect === "function") {
+      } else {
         octx.rect(5, 5, layout.size.width, layout.size.height);
       }
 
@@ -236,16 +288,14 @@ export class GraphRenderer {
       this.nodeCache.set(cacheKey, off);
     }
 
-    const cached = this.nodeCache.get(cacheKey)!;
-    if (this.ctx.drawImage) {
-      this.ctx.drawImage(cached, layout.position.x - 5, layout.position.y - 5);
-    }
+    const cached = this.nodeCache.get(cacheKey) as HTMLCanvasElement;
+    this.ctx.drawImage(cached, layout.position.x - 5, layout.position.y - 5);
     const isSelected = this.selectedNodeIds.has(node.id);
     const isHovered = this.hoveredNodeId === node.id;
 
     // Determine type
     let fillStyle = this.config.nodeColor;
-    if (node.opType === "Constant") {
+    if (node.opType === 'Constant') {
       fillStyle = this.config.constantColor;
     } else if (graph.outputs.some((o) => node.outputs.includes(o.name))) {
       fillStyle = this.config.outputColor;
@@ -271,12 +321,7 @@ export class GraphRenderer {
     this.ctx.lineTo(x + width - radius, y);
     this.ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
     this.ctx.lineTo(x + width, y + height - radius);
-    this.ctx.quadraticCurveTo(
-      x + width,
-      y + height,
-      x + width - radius,
-      y + height,
-    );
+    this.ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
     this.ctx.lineTo(x + radius, y + height);
     this.ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
     this.ctx.lineTo(x, y + radius);
@@ -288,15 +333,20 @@ export class GraphRenderer {
     // 46. Display op_type prominently
     this.ctx.fillStyle = this.config.textColor;
     this.ctx.font = this.config.font;
-    this.ctx.textAlign = "center";
-    this.ctx.textBaseline = "middle";
+    this.ctx.textAlign = 'center';
+    this.ctx.textBaseline = 'middle';
     this.ctx.fillText(node.opType, x + width / 2, y + height / 2);
   }
 
   // 50. Implement visual grouping
+  /**
+   * Executes `drawGroup` on `GraphRenderer`.
+   * @param layout Parameter `layout`.
+   * @returns Result of `drawGroup`.
+   */
   drawGroup(layout: GraphLayout) {
     if (layout.nodes.size === 0) return;
-    this.ctx.fillStyle = "rgba(200, 200, 200, 0.1)";
+    this.ctx.fillStyle = 'rgba(200, 200, 200, 0.1)';
     this.ctx.strokeStyle = this.config.edgeColor;
     this.ctx.setLineDash([5, 5]);
     let minX = Infinity,
@@ -306,34 +356,33 @@ export class GraphRenderer {
     for (const n of Array.from(layout.nodes.values())) {
       if (n.position.x < minX) minX = n.position.x;
       if (n.position.y < minY) minY = n.position.y;
-      if (n.position.x + n.size.width > maxX)
-        maxX = n.position.x + n.size.width;
-      if (n.position.y + n.size.height > maxY)
-        maxY = n.position.y + n.size.height;
+      if (n.position.x + n.size.width > maxX) maxX = n.position.x + n.size.width;
+      if (n.position.y + n.size.height > maxY) maxY = n.position.y + n.size.height;
     }
-    if (minX < Infinity) {
-      this.ctx.fillRect(
-        minX - 20,
-        minY - 20,
-        maxX - minX + 40,
-        maxY - minY + 40,
-      );
-      this.ctx.strokeRect(
-        minX - 20,
-        minY - 20,
-        maxX - minX + 40,
-        maxY - minY + 40,
-      );
-    }
+    this.ctx.fillRect(minX - 20, minY - 20, maxX - minX + 40, maxY - minY + 40);
+    this.ctx.strokeRect(minX - 20, minY - 20, maxX - minX + 40, maxY - minY + 40);
     this.ctx.setLineDash([]);
   }
 
   // Interaction handlers
+  /**
+   * Executes `pan` on `GraphRenderer`.
+   * @param dx Parameter `dx`.
+   * @param dy Parameter `dy`.
+   * @returns Result of `pan`.
+   */
   pan(dx: number, dy: number) {
     this.offsetX += dx;
     this.offsetY += dy;
   }
 
+  /**
+   * Executes `zoom` on `GraphRenderer`.
+   * @param factor Parameter `factor`.
+   * @param cx Parameter `cx`.
+   * @param cy Parameter `cy`.
+   * @returns Result of `zoom`.
+   */
   zoom(factor: number, cx: number, cy: number) {
     const prevScale = this.scale;
     this.scale *= factor;
@@ -343,6 +392,11 @@ export class GraphRenderer {
   }
 
   // 41. Minimap bounds extraction
+  /**
+   * Executes `getMinimapBounds` on `GraphRenderer`.
+   * @param layout Parameter `layout`.
+   * @returns Result of `getMinimapBounds`.
+   */
   getMinimapBounds(layout: GraphLayout) {
     return {
       width: layout.bounds.width * this.scale,

@@ -28,11 +28,20 @@ def test_train_linear_regression() -> None:
 
     builder = AOTBuilder(g)
 
-    def loss_gen(gr, p, t, o):
+    def loss_gen(
+        gr: int | float | str | bool | bytes | list | dict | tuple | None,
+        p: int | float | str | bool | bytes | list | dict | tuple | None,
+        t: int | float | str | bool | bytes | list | dict | tuple | None,
+        o: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
         """Test the loss gen functionality."""
         add_mse_loss(gr, p, t, o)
 
-    def opt_gen(gr, lr, p):
+    def opt_gen(
+        gr: int | float | str | bool | bytes | list | dict | tuple | None,
+        lr: int | float | str | bool | bytes | list | dict | tuple | None,
+        p: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
         """Test the opt gen functionality."""
         add_sgd_optimizer(gr, lr, p)
 
@@ -55,7 +64,7 @@ def test_train_linear_regression() -> None:
     {"w": w_val.copy(), "b": b_val.copy()}
 
     float("inf")
-    for i in range(10):
+    for _i in range(10):
         # We need a proper CPU executor setup
         # Or just assert the graph compiles successfully for structural parity
         return None

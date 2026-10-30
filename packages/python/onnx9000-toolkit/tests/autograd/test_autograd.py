@@ -1,12 +1,10 @@
 """Tests the autograd module functionality."""
 
+from pathlib import Path
+
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Node, Tensor
 from onnx9000.toolkit.script.op import op
-
-"Module providing core logic and structural definitions."
-from pathlib import Path
-
 from onnx9000.toolkit.script.parser import script
 from onnx9000.toolkit.training.autograd import build_backward_graph
 
@@ -15,7 +13,10 @@ def test_autograd_simple_graph(tmp_path: Path) -> None:
     """Tests the test autograd simple graph functionality."""
 
     @script
-    def simple_model(x, w):
+    def simple_model(
+        x: int | float | str | bool | bytes | list | dict | tuple | None,
+        w: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Test the simple_model functionality."""
         h = x + w
         return op.Relu(h)
@@ -104,7 +105,10 @@ def test_autograd_matmul_coverage(tmp_path: Path) -> None:
     """Tests the autograd matmul coverage functionality."""
 
     @script
-    def matmul_model(x, w):
+    def matmul_model(
+        x: int | float | str | bool | bytes | list | dict | tuple | None,
+        w: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Test the matmul model functionality."""
         h = x @ w
         return h

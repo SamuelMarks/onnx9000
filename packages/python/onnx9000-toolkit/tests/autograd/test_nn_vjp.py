@@ -1,4 +1,4 @@
-"""Module providing core logic and structural definitions."""
+"""Unit tests and verification suite for nn vjp functionality."""
 
 from onnx9000.core.ir import Node
 from onnx9000.toolkit.training.autograd.rules import get_vjp_rule
@@ -26,7 +26,7 @@ def test_globalavgpool_vjp() -> None:
     """Tests the test_globalavgpool_vjp functionality."""
     node = Node("GlobalAveragePool", ["a"], ["c"], {}, name="gap_node")
     rule = get_vjp_rule("GlobalAveragePool")
-    (nodes, names) = rule.build_backward_nodes(node, ["grad_c"])
+    (nodes, _names) = rule.build_backward_nodes(node, ["grad_c"])
     assert len(nodes) == 1
 
 
@@ -34,7 +34,7 @@ def test_globalmaxpool_vjp() -> None:
     """Tests the test_globalmaxpool_vjp functionality."""
     node = Node("GlobalMaxPool", ["a"], ["c"], {}, name="gmp_node")
     rule = get_vjp_rule("GlobalMaxPool")
-    (nodes, names) = rule.build_backward_nodes(node, ["grad_c"])
+    (nodes, _names) = rule.build_backward_nodes(node, ["grad_c"])
     assert len(nodes) == 1
 
 
@@ -60,5 +60,5 @@ def test_dropout_vjp() -> None:
     """Tests the test_dropout_vjp functionality."""
     node = Node("Dropout", ["a"], ["c", "mask"], {}, name="dropout_node")
     rule = get_vjp_rule("Dropout")
-    (nodes, names) = rule.build_backward_nodes(node, ["grad_c"])
+    (nodes, _names) = rule.build_backward_nodes(node, ["grad_c"])
     assert len(nodes) == 1

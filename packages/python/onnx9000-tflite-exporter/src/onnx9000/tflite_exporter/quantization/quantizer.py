@@ -20,7 +20,7 @@ class TensorQuantization:
         scale: list[float],
         zero_point: list[int],
         quantized_dimension: int,
-    ):
+    ) -> None:
         """Initialize TensorQuantization parameters."""
         self.min = min
         self.max = max
@@ -32,13 +32,15 @@ class TensorQuantization:
 class Quantizer:
     """TFLite model quantizer."""
 
-    def __init__(self, graph: Graph, mode: str = "none"):
+    def __init__(self, graph: Graph, mode: str = "none") -> None:
         """Initialize the Quantizer with a graph and quantization mode."""
         self.graph = graph
         self.mode = mode
         self.quantization_map: dict[str, TensorQuantization] = {}
 
-    def get_quantization_offset(self, builder, tensor: Tensor) -> int:
+    def get_quantization_offset(
+        self, builder: int | float | str | bool | bytes | list | dict | tuple | None, tensor: Tensor
+    ) -> int:
         """Create and return the FlatBuffer offset for a tensor's quantization parameters."""
         q = self.quantization_map.get(tensor.name)
         if not q:
@@ -103,7 +105,7 @@ class Quantizer:
     def quantize_fp16(self) -> None:
         """Quantize the graph to FLOAT16."""
         # 241. Downcast FLOAT32 FlatBuffer arrays entirely to FLOAT16 bytes explicitly for FP16 models.
-        for name, tensor in self.graph.tensors.items():
+        for _name, tensor in self.graph.tensors.items():
             if tensor.dtype == "float32" and tensor.is_initializer and tensor.data is not None:
                 tensor.dtype = "float16"
                 tensor.data = self._float32_to_float16_bytes(tensor.data)

@@ -4,10 +4,20 @@ import math
 import struct
 
 from onnx9000.core.dtypes import DType
+from onnx9000.core.exceptions import Onnx9000Error
 from onnx9000.core.ir import Constant, Graph
 
 
 def _unpack_scalar(c: Constant, is_float: bool = False) -> float:
+    """Execute unpack scalar operation.
+
+    Args:
+        c: Parameter specifying c (Constant).
+        is_float: Parameter specifying is float (bool).
+
+    Returns:
+        Result of unpack scalar (float).
+    """
     if c.data is None:
         return 0.0
     val = c.data
@@ -96,7 +106,22 @@ def fold_mel_weights(graph: Graph) -> Graph:
                     )
                     graph.tensors[out_name] = res_c
                     nodes_to_remove.append(n)
-                except Exception as e:
+                except (
+                    Onnx9000Error,
+                    OSError,
+                    ValueError,
+                    TypeError,
+                    RuntimeError,
+                    KeyError,
+                    IndexError,
+                    AttributeError,
+                    ImportError,
+                    LookupError,
+                    ArithmeticError,
+                    BufferError,
+                    AssertionError,
+                    StopIteration,
+                ) as e:
                     import logging
 
                     logging.warning("Failed to fold MelWeightMatrix: %s", e)

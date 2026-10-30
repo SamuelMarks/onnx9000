@@ -1,32 +1,30 @@
-import { beforeEach, describe, expect, it } from "vitest";
+// @vitest-environment jsdom
+import { beforeEach, describe, expect, it } from 'vitest';
+import { initOrtTrainingDemo } from '../src/main.js';
 
-describe("demo", () => {
+describe('demo-ort-training', () => {
   beforeEach(() => {
-    document.body.innerHTML = `
-      <textarea id="prompt"></textarea>
-      <button id="runBtn"></button>
-      <div id="output"></div>
-    `;
+    document.body.innerHTML = '<button id="btn-run"></button><div id="output"></div>';
   });
 
-  it("should run flow", async () => {
-    // import to execute module top-level
-    try {
-      await import("../src/main.js");
-    } catch (_e) {}
+  it('should initialize and run ORT training demo', async () => {
+    document.body.innerHTML = '';
+    initOrtTrainingDemo();
 
-    const btn = document.getElementById("runBtn");
-    const prompt = document.getElementById("prompt");
-    const _out = document.getElementById("output");
+    document.body.innerHTML = '<button id="btn-run"></button>';
+    initOrtTrainingDemo();
+    document.getElementById('btn-run')?.click();
 
-    if (btn) btn.click();
-    if (prompt && btn) {
-      prompt.value = "test";
-      btn.click();
-    }
+    document.body.innerHTML = '<button id="btn-run"></button><div id="output"></div>';
+    initOrtTrainingDemo();
 
-    // allow some async code to run
+    const btn = document.getElementById('btn-run') as HTMLButtonElement;
+    const out = document.getElementById('output') as HTMLElement;
+
+    btn.click();
+    expect(out.textContent).toContain('Running...');
+
     await new Promise((r) => setTimeout(r, 100));
-    expect(true).toBe(true);
+    expect(out.textContent).toContain('[OK] ORT Training execution complete.');
   });
 });

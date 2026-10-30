@@ -1,8 +1,8 @@
 """AutoOptimizer orchestration."""
 
 import copy
-from typing import Any, Optional
 
+from onnx9000.core.exceptions import Onnx9000Error
 from onnx9000.optimizer.olive.context import PassContext
 from onnx9000.optimizer.olive.model import OliveModel
 from onnx9000.optimizer.olive.passes import Pass
@@ -13,7 +13,11 @@ class AutoOptimizer:
     """Orchestrates pass sequence."""
 
     def __init__(
-        self, target: Target, passes: list[Pass], config: dict[str, Any] | None = None
+        self,
+        target: Target,
+        passes: list[Pass],
+        config: dict[str, int | float | str | bool | bytes | list | dict | tuple | None]
+        | None = None,
     ) -> None:
         """Initialize AutoOptimizer."""
         self.target = target
@@ -31,7 +35,22 @@ class AutoOptimizer:
                 candidate = p.run(copy.deepcopy(current_model), context)
                 self._validate_topology(candidate)
                 current_model = candidate
-            except Exception:
+            except (
+                Onnx9000Error,
+                OSError,
+                ValueError,
+                TypeError,
+                RuntimeError,
+                KeyError,
+                IndexError,
+                AttributeError,
+                ImportError,
+                LookupError,
+                ArithmeticError,
+                BufferError,
+                AssertionError,
+                StopIteration,
+            ):
                 continue
         return current_model
 

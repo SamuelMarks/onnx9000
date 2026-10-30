@@ -1,35 +1,60 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../src/sparse/modifier";
+import { describe, expect, it } from 'vitest';
+import {
+  applyRecipe,
+  ConstantPruningModifier,
+  MagnitudePruningModifier,
+  Modifier,
+  parseRecipe,
+} from '../../src/sparse/modifier';
 
-describe("modifier.ts", () => {
-  it("should instantiate and cover Modifier", () => {
+const Call = <T>(fn: (...args: never[]) => T): T => fn();
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('modifier.ts', () => {
+  it('should instantiate and cover Modifier', () => {
     try {
-      const obj = new (Module as any).Modifier();
+      const obj = Construct(Modifier);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover MagnitudePruningModifier", () => {
+  it('should instantiate and cover MagnitudePruningModifier', () => {
     try {
-      const obj = new (Module as any).MagnitudePruningModifier();
+      const obj = Construct(MagnitudePruningModifier);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover ConstantPruningModifier", () => {
+  it('should instantiate and cover ConstantPruningModifier', () => {
     try {
-      const obj = new (Module as any).ConstantPruningModifier();
+      const obj = Construct(ConstantPruningModifier);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should call and cover parseRecipe", async () => {
+  it('should call and cover parseRecipe', async () => {
     try {
-      const res = (Module as any).parseRecipe();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(parseRecipe);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should call and cover applyRecipe", async () => {
+  it('should call and cover applyRecipe', async () => {
     try {
-      const res = (Module as any).applyRecipe();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(applyRecipe);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

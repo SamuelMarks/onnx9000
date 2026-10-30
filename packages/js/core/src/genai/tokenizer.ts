@@ -1,4 +1,9 @@
 /**
+ * @fileoverview tokenizer module for core.
+ */
+import { Onnx9000Error } from '../exceptions.js';
+
+/**
  * Interface for streaming token decoding.
  */
 export interface TokenizerStream {
@@ -60,7 +65,9 @@ export interface Tokenizer {
  * Basic streaming tokenizer implementation using a sliding cache.
  */
 export class BasicTokenizerStream implements TokenizerStream {
+  /** Property `tokenizer` of `BasicTokenizerStream`. */
   private tokenizer: Tokenizer;
+  /** Property `cache` of `BasicTokenizerStream`. */
   private cache: number[] = [];
 
   /**
@@ -85,17 +92,14 @@ export class BasicTokenizerStream implements TokenizerStream {
 export class BasicTokenizer implements Tokenizer {
   /** Map characters to ASCII/UTF-8 codes. */
   encode(text: string): number[] {
-    return text.split("").map((c) => c.charCodeAt(0));
+    return text.split('').map((c) => c.charCodeAt(0));
   }
 
   /** Map codes back to characters. */
-  decode(
-    tokenIds: number[],
-    cleanUpTokenizationSpaces: boolean = true,
-  ): string {
+  decode(tokenIds: number[], cleanUpTokenizationSpaces: boolean = true): string {
     let text = String.fromCharCode(...tokenIds);
     if (cleanUpTokenizationSpaces) {
-      text = text.replace(/ +/g, " ").trim();
+      text = text.replace(/ +/g, ' ').trim();
     }
     return text;
   }
@@ -130,10 +134,15 @@ export class BasicTokenizer implements Tokenizer {
  * Byte-Pair Encoding (BPE) Tokenizer implementation.
  */
 export class BPETokenizer implements Tokenizer {
+  /** Property `merges` of `BPETokenizer`. */
   private merges: [string, string][];
+  /** Property `vocab` of `BPETokenizer`. */
   private vocab: Map<string, number>;
+  /** Property `invVocab` of `BPETokenizer`. */
   private invVocab: Map<number, string>;
+  /** Property `unkToken` of `BPETokenizer`. */
   private unkToken: string;
+  /** Property `unkTokenId` of `BPETokenizer`. */
   private unkTokenId: number;
 
   /**
@@ -142,11 +151,7 @@ export class BPETokenizer implements Tokenizer {
    * @param vocab Token to ID mapping.
    * @param unkToken Unknown token string.
    */
-  constructor(
-    merges: [string, string][],
-    vocab: Map<string, number>,
-    unkToken: string = "<unk>",
-  ) {
+  constructor(merges: [string, string][], vocab: Map<string, number>, unkToken: string = '<unk>') {
     this.merges = merges;
     this.vocab = vocab;
     this.unkToken = unkToken;
@@ -160,32 +165,29 @@ export class BPETokenizer implements Tokenizer {
   /** Helper to find all adjacent character pairs. */
   private getPairs(word: string[]): [string, string][] {
     const pairs: [string, string][] = [];
-    let prevChar = word[0];
+    let prevChar = word[0] as string;
     for (let i = 1; i < word.length; i++) {
-      pairs.push([prevChar!, word[i]!]);
-      prevChar = word[i];
+      const ch = word[i] as string;
+      pairs.push([prevChar, ch]);
+      prevChar = ch;
     }
     return pairs;
   }
 
   /** Encode text using iterative pair merging. */
   encode(text: string): number[] {
-    const words = text.split(/\s+/);
+    const words = text.split(/\s+/).filter(Boolean);
     const tokenIds: number[] = [];
 
     for (const word of words) {
-      let w = word.split("");
-      if (w.length === 0) continue;
+      let w = word.split('');
 
-      while (true) {
+      while (w.length > 1) {
         const pairs = this.getPairs(w);
-        if (pairs.length === 0) break;
 
         let bestPair: [string, string] | null = null;
         for (const merge of this.merges) {
-          const match = pairs.find(
-            (p) => p[0] === merge[0] && p[1] === merge[1],
-          );
+          const match = pairs.find((p) => p[0] === merge[0] && p[1] === merge[1]);
           if (match) {
             bestPair = match;
             break;
@@ -197,15 +199,11 @@ export class BPETokenizer implements Tokenizer {
         const newWord: string[] = [];
         let i = 0;
         while (i < w.length) {
-          if (
-            i < w.length - 1 &&
-            w[i] === bestPair[0] &&
-            w[i + 1] === bestPair[1]
-          ) {
+          if (i < w.length - 1 && w[i] === bestPair[0] && w[i + 1] === bestPair[1]) {
             newWord.push(bestPair[0] + bestPair[1]);
             i += 2;
           } else {
-            newWord.push(w[i]!);
+            newWord.push(w[i] as string);
             i += 1;
           }
         }
@@ -220,15 +218,10 @@ export class BPETokenizer implements Tokenizer {
   }
 
   /** Decode sequences of BPE tokens. */
-  decode(
-    tokenIds: number[],
-    cleanUpTokenizationSpaces: boolean = true,
-  ): string {
-    let text = tokenIds
-      .map((tid) => this.invVocab.get(tid) ?? this.unkToken)
-      .join("");
+  decode(tokenIds: number[], cleanUpTokenizationSpaces: boolean = true): string {
+    let text = tokenIds.map((tid) => this.invVocab.get(tid) ?? this.unkToken).join('');
     if (cleanUpTokenizationSpaces) {
-      text = text.replace(/ +/g, " ").trim();
+      text = text.replace(/ +/g, ' ').trim();
     }
     return text;
   }
@@ -263,10 +256,15 @@ export class BPETokenizer implements Tokenizer {
  * WordPiece Tokenizer implementation (used by BERT).
  */
 export class WordPieceTokenizer implements Tokenizer {
+  /** Property `vocab` of `WordPieceTokenizer`. */
   private vocab: Map<string, number>;
+  /** Property `invVocab` of `WordPieceTokenizer`. */
   private invVocab: Map<number, string>;
+  /** Property `unkToken` of `WordPieceTokenizer`. */
   private unkToken: string;
+  /** Property `unkTokenId` of `WordPieceTokenizer`. */
   private unkTokenId: number;
+  /** Property `maxInputCharsPerWord` of `WordPieceTokenizer`. */
   private maxInputCharsPerWord: number;
 
   /**
@@ -277,7 +275,7 @@ export class WordPieceTokenizer implements Tokenizer {
    */
   constructor(
     vocab: Map<string, number>,
-    unkToken: string = "[UNK]",
+    unkToken: string = '[UNK]',
     maxInputCharsPerWord: number = 100,
   ) {
     this.vocab = vocab;
@@ -326,7 +324,7 @@ export class WordPieceTokenizer implements Tokenizer {
           break;
         }
 
-        subTokens.push(this.vocab.get(curSubstr)!);
+        subTokens.push(this.vocab.get(curSubstr) as number);
         start = end;
       }
 
@@ -340,25 +338,22 @@ export class WordPieceTokenizer implements Tokenizer {
   }
 
   /** Decode sequences of WordPiece tokens. */
-  decode(
-    tokenIds: number[],
-    cleanUpTokenizationSpaces: boolean = true,
-  ): string {
-    let text = "";
+  decode(tokenIds: number[], cleanUpTokenizationSpaces: boolean = true): string {
+    let text = '';
     for (const tid of tokenIds) {
       const token = this.invVocab.get(tid) ?? this.unkToken;
-      if (token.startsWith("##")) {
+      if (token.startsWith('##')) {
         text += token.substring(2);
       } else {
         if (text.length > 0) {
-          text += " ";
+          text += ' ';
         }
         text += token;
       }
     }
 
     if (cleanUpTokenizationSpaces) {
-      text = text.replace(/ +/g, " ").trim();
+      text = text.replace(/ +/g, ' ').trim();
     }
     return text;
   }
@@ -393,10 +388,15 @@ export class WordPieceTokenizer implements Tokenizer {
  * Unigram Tokenizer implementation based on probabilistic subword models.
  */
 export class UnigramTokenizer implements Tokenizer {
+  /** Property `vocab` of `UnigramTokenizer`. */
   private vocab: Map<string, number>; // Maps token to log prob score
+  /** Property `tokenToIdMap` of `UnigramTokenizer`. */
   private tokenToIdMap: Map<string, number>;
+  /** Property `idToTokenMap` of `UnigramTokenizer`. */
   private idToTokenMap: Map<number, string>;
+  /** Property `unkToken` of `UnigramTokenizer`. */
   private unkToken: string;
+  /** Property `unkTokenId` of `UnigramTokenizer`. */
   private unkTokenId: number;
 
   /**
@@ -404,7 +404,7 @@ export class UnigramTokenizer implements Tokenizer {
    * @param vocab Token vocabulary with log-probabilities.
    * @param unkToken Unknown token marker.
    */
-  constructor(vocab: Map<string, number>, unkToken: string = "<unk>") {
+  constructor(vocab: Map<string, number>, unkToken: string = '<unk>') {
     this.vocab = vocab;
     this.unkToken = unkToken;
     this.tokenToIdMap = new Map();
@@ -435,8 +435,8 @@ export class UnigramTokenizer implements Tokenizer {
         for (let j = 0; j < i; j++) {
           const sub = word.substring(j, i);
           if (this.vocab.has(sub)) {
-            const score = bestScores[j]! + this.vocab.get(sub)!;
-            if (score > bestScores[i]!) {
+            const score = (bestScores[j] as number) + (this.vocab.get(sub) as number);
+            if (score > (bestScores[i] as number)) {
               bestScores[i] = score;
               backpointers[i] = j;
             }
@@ -450,13 +450,13 @@ export class UnigramTokenizer implements Tokenizer {
         let curr = n;
         const subs: string[] = [];
         while (curr > 0) {
-          const prev = backpointers[curr];
-          subs.push(word.substring(prev!, curr));
-          curr = prev!;
+          const prev = backpointers[curr] as number;
+          subs.push(word.substring(prev, curr));
+          curr = prev;
         }
         subs.reverse();
         for (const sub of subs) {
-          tokenIds.push(this.tokenToIdMap.get(sub)!);
+          tokenIds.push(this.tokenToIdMap.get(sub) as number);
         }
       }
     }
@@ -464,15 +464,10 @@ export class UnigramTokenizer implements Tokenizer {
   }
 
   /** Decode Unigram token sequences. */
-  decode(
-    tokenIds: number[],
-    cleanUpTokenizationSpaces: boolean = true,
-  ): string {
-    let text = tokenIds
-      .map((tid) => this.idToTokenMap.get(tid) ?? this.unkToken)
-      .join(" ");
+  decode(tokenIds: number[], cleanUpTokenizationSpaces: boolean = true): string {
+    let text = tokenIds.map((tid) => this.idToTokenMap.get(tid) ?? this.unkToken).join(' ');
     if (cleanUpTokenizationSpaces) {
-      text = text.replace(/ +/g, " ").trim();
+      text = text.replace(/ +/g, ' ').trim();
     }
     return text;
   }
@@ -514,9 +509,9 @@ export class HuggingFaceTokenizerLoader {
   static loadFromJson(jsonContent: string): Tokenizer {
     const data = JSON.parse(jsonContent);
     const model = data.model || {};
-    const modelType = model.type || "";
+    const modelType = model.type || '';
 
-    if (modelType === "BPE") {
+    if (modelType === 'BPE') {
       const vocabObj = model.vocab || {};
       const vocab = new Map<string, number>();
       for (const key of Object.keys(vocabObj)) {
@@ -525,31 +520,31 @@ export class HuggingFaceTokenizerLoader {
 
       const mergesRaw: string[] = model.merges || [];
       const merges = mergesRaw.map((m) => {
-        const parts = m.split(" ");
-        return [parts[0]!, parts[1]!] as [string, string];
+        const parts = m.split(' ');
+        return [parts[0], parts[1]] as [string, string];
       });
 
-      const unkToken = model.unk_token || "<unk>";
+      const unkToken = model.unk_token || '<unk>';
       return new BPETokenizer(merges, vocab, unkToken);
-    } else if (modelType === "WordPiece") {
+    } else if (modelType === 'WordPiece') {
       const vocabObj = model.vocab || {};
       const vocab = new Map<string, number>();
       for (const key of Object.keys(vocabObj)) {
         vocab.set(key, vocabObj[key]);
       }
-      const unkToken = model.unk_token || "[UNK]";
+      const unkToken = model.unk_token || '[UNK]';
       const maxInputChars = model.max_input_chars_per_word || 100;
       return new WordPieceTokenizer(vocab, unkToken, maxInputChars);
-    } else if (modelType === "Unigram") {
+    } else if (modelType === 'Unigram') {
       const vocabList: [string, number][] = model.vocab || [];
       const vocab = new Map<string, number>();
       for (const item of vocabList) {
         vocab.set(item[0], item[1]);
       }
-      const unkToken = model.unk_token || "<unk>";
+      const unkToken = model.unk_token || '<unk>';
       return new UnigramTokenizer(vocab, unkToken);
     } else {
-      throw new Error(`Unsupported model type: ${modelType}`);
+      throw new Onnx9000Error(`Unsupported model type: ${modelType}`);
     }
   }
 }
@@ -563,12 +558,12 @@ export class UnicodeNormalizer {
    * @param text Input text.
    * @param form Normalization form ('NFC', 'NFD', 'NFKC', 'NFKD').
    */
-  static normalize(text: string, form: string = "NFC"): string {
-    if (!["NFC", "NFD", "NFKC", "NFKD"].includes(form)) {
-      throw new Error(`Unsupported normalization form: ${form}`);
+  static normalize(text: string, form: string = 'NFC'): string {
+    if (!['NFC', 'NFD', 'NFKC', 'NFKD'].includes(form)) {
+      throw new Onnx9000Error(`Unsupported normalization form: ${form}`);
     }
     // Utilizing native JS String.prototype.normalize
-    return text.normalize(form as "NFC" | "NFD" | "NFKC" | "NFKD");
+    return text.normalize(form as 'NFC' | 'NFD' | 'NFKC' | 'NFKD');
   }
 }
 
@@ -607,8 +602,8 @@ export class PreTokenizer {
     const encoder = new TextEncoder();
     const bytes = encoder.encode(text);
     const tokens: string[] = [];
-    for (let i = 0; i < bytes.length; i++) {
-      tokens.push(String.fromCharCode(bytes[i]!));
+    for (const b of bytes) {
+      tokens.push(String.fromCharCode(b));
     }
     return tokens;
   }
@@ -642,7 +637,7 @@ export class StreamingUTF8Decoder {
    * @returns Decoded string.
    */
   decode(chunk: Uint8Array): string {
-    return new TextDecoder("utf-8").decode(chunk);
+    return new TextDecoder('utf-8').decode(chunk);
   }
 }
 
@@ -656,8 +651,6 @@ export class GPT2Tokenizer extends BasicTokenizer {}
  * @param url Tokenizer configuration URL.
  * @returns Promise resolving to a Tokenizer instance.
  */
-export async function loadTokenizerWithFallback(
-  _url: string,
-): Promise<Tokenizer> {
+export async function loadTokenizerWithFallback(_url: string): Promise<Tokenizer> {
   return new BasicTokenizer();
 }

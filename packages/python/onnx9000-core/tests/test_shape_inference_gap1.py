@@ -7,7 +7,7 @@ from onnx9000.core.ir import Attribute, Graph, Node, Tensor
 from onnx9000.core.shape_inference import infer_shapes_and_types
 
 
-def test_promote_types():
+def test_promote_types() -> None:
     """Tests the promote types functionality."""
     g = Graph("g")
     # Float64
@@ -41,7 +41,7 @@ def test_promote_types():
     assert g.tensors["y_i32"].dtype == DType.INT32
 
 
-def test_shape_inference_error_add():
+def test_shape_inference_error_add() -> None:
     """Tests the shape inference error add functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("a", (2,), DType.FLOAT32))
@@ -52,7 +52,7 @@ def test_shape_inference_error_add():
         infer_shapes_and_types(g)
 
 
-def test_bool_ops():
+def test_bool_ops() -> None:
     """Tests the bool ops functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("a", (1,), DType.FLOAT32))
@@ -63,7 +63,7 @@ def test_bool_ops():
     assert g.tensors["y"].dtype == DType.BOOL
 
 
-def test_where_op():
+def test_where_op() -> None:
     """Tests the where op functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("cond", (1,), DType.BOOL))
@@ -75,7 +75,7 @@ def test_where_op():
     assert list(g.tensors["y"].shape) == [2, 2]
 
 
-def test_gemm_trans():
+def test_gemm_trans() -> None:
     """Tests the gemm trans functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("a", (2, 3), DType.FLOAT32))
@@ -94,7 +94,7 @@ def test_gemm_trans():
     assert list(g2.tensors["y"].shape) == [2, 4]
 
 
-def test_promote_types_fallback():
+def test_promote_types_fallback() -> None:
     """Tests the promote types fallback functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("a", (1,), DType.INT8))

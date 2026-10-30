@@ -1,7 +1,5 @@
 """Mamba."""
 
-from typing import Any
-
 from onnx9000.core.ir import Tensor, Variable
 from onnx9000.core.ops import add, mul
 from onnx9000.core.primitives import ConvND, Gemm, RMSNorm, Silu, StateSpace
@@ -15,8 +13,18 @@ def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:
 class MambaBlock:
     """Mamba block."""
 
-    def __init__(self, d_model: int, d_state: int, d_conv: int, expand: int, prefix: str = ""):
-        """Init."""
+    def __init__(
+        self, d_model: int, d_state: int, d_conv: int, expand: int, prefix: str = ""
+    ) -> None:
+        """Initialize MambaBlock with configured parameters and state.
+
+        Args:
+            d_model: Parameter specifying d model (int).
+            d_state: Parameter specifying d state (int).
+            d_conv: Parameter specifying d conv (int).
+            expand: Parameter specifying expand (int).
+            prefix: Parameter specifying prefix (str).
+        """
         self.prefix = prefix
         self.d_model = d_model
         self.d_state = d_state
@@ -44,7 +52,14 @@ class MambaBlock:
         self.out_proj = Gemm(trans_b=1)
 
     def __call__(self, x: Tensor) -> Tensor:
-        """Call."""
+        """Invoke MambaBlock with the provided inputs and keyword arguments.
+
+        Args:
+            x: Parameter specifying x (Tensor).
+
+        Returns:
+            Result of call (Tensor).
+        """
         identity = x
         x_norm = self.norm(x, get_param(f"{self.prefix}.norm.weight", [self.d_model]))
 
@@ -152,8 +167,17 @@ class Mamba:
         d_state: int = 16,
         d_conv: int = 4,
         expand: int = 2,
-    ):
-        """Init."""
+    ) -> None:
+        """Initialize Mamba with configured parameters and state.
+
+        Args:
+            vocab_size: Parameter specifying vocab size (int).
+            d_model: Parameter specifying d model (int).
+            n_layer: Parameter specifying n layer (int).
+            d_state: Parameter specifying d state (int).
+            d_conv: Parameter specifying d conv (int).
+            expand: Parameter specifying expand (int).
+        """
         self.vocab_size = vocab_size
         self.d_model = d_model
 
@@ -165,7 +189,14 @@ class Mamba:
         self.lm_head = Gemm(trans_b=1)
 
     def __call__(self, input_ids: Tensor) -> Tensor:
-        """Call."""
+        """Invoke Mamba with the provided inputs and keyword arguments.
+
+        Args:
+            input_ids: Parameter specifying input ids (Tensor).
+
+        Returns:
+            Result of call (Tensor).
+        """
         from onnx9000.core.ops import gather
 
         x = gather(
@@ -182,7 +213,7 @@ class Mamba:
         return x
 
 
-def mamba_130m(**kwargs: Any) -> Mamba:
+def mamba_130m(**kwargs: int | float | str | bool | bytes | list | dict | tuple | None) -> Mamba:
     """Mamba 130m."""
     return Mamba(
         vocab_size=50277,

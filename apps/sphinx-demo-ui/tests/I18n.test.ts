@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { describe, expect, it } from 'vitest';
 import { i18n, t } from '../src/core/I18n.js';
 

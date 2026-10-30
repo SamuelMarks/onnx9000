@@ -15,7 +15,7 @@ from onnx9000.toolkit.training.autograd.compiler import (
 )
 
 
-def test_add_loss_subgraph_missing_tensor():
+def test_add_loss_subgraph_missing_tensor() -> None:
     """Tests the add loss subgraph missing tensor functionality."""
     g = Graph("g")
     loss_g = Graph("loss_g")
@@ -26,7 +26,7 @@ def test_add_loss_subgraph_missing_tensor():
     assert "t_mapped" in g.tensors
 
 
-def test_amp_skip_non_float32():
+def test_amp_skip_non_float32() -> None:
     """Tests the amp skip non float32 functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("init_non_f32", [1], "int64"))
@@ -37,7 +37,7 @@ def test_amp_skip_non_float32():
     assert "init_non_f32_cast_float16" not in g.tensors
 
 
-def test_inject_memcpy_boundaries_skip_non_float32():
+def test_inject_memcpy_boundaries_skip_non_float32() -> None:
     """Tests the inject memcpy boundaries skip non float32 functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("init_non_f32", [1], "int64"))
@@ -48,7 +48,7 @@ def test_inject_memcpy_boundaries_skip_non_float32():
     assert "init_non_f32_cast_float16" not in g.tensors
 
 
-def test_scale_loss_gradient_existing():
+def test_scale_loss_gradient_existing() -> None:
     """Tests the scale loss gradient existing functionality."""
     g = Graph("g")
     g.inputs.append("grad_loss")
@@ -57,7 +57,7 @@ def test_scale_loss_gradient_existing():
     assert any(n.name == "grad_loss_scaled_c" for n in g.nodes)
 
 
-def test_set_eval_mode_normal_node():
+def test_set_eval_mode_normal_node() -> None:
     """Tests the set eval mode normal node functionality."""
     g = Graph("g")
     g.add_node(Node("Relu", ["x"], ["y"], name="relu1"))
@@ -65,7 +65,7 @@ def test_set_eval_mode_normal_node():
     assert any(n.op_type == "Relu" for n in eval_g.nodes)
 
 
-def test_autograd_engine_retained_grads():
+def test_autograd_engine_retained_grads() -> None:
     """Tests the autograd engine retained grads functionality."""
     engine = AutogradEngine()
     engine.retain_grad("x")
@@ -73,7 +73,7 @@ def test_autograd_engine_retained_grads():
     assert engine._retained_grads == ["x"]
 
 
-def test_build_backward_graph_retained_grads():
+def test_build_backward_graph_retained_grads() -> None:
     """Tests the build backward graph retained grads functionality."""
     fwd = Graph("fwd")
     fwd.add_node(Node("Relu", ["x"], ["y"], name="relu1"))
@@ -84,7 +84,7 @@ def test_build_backward_graph_retained_grads():
     assert any(out.startswith("grad_x") for out in bwd.outputs)
 
 
-def test_build_backward_graph_no_vjp():
+def test_build_backward_graph_no_vjp() -> None:
     """Tests the build backward graph no vjp functionality."""
     fwd = Graph("fwd")
     fwd.add_node(Node("UnknownOp", ["x"], ["y"], name="unk"))
@@ -94,7 +94,7 @@ def test_build_backward_graph_no_vjp():
         build_backward_graph(fwd)
 
 
-def test_estimate_batch_size_limit_positive():
+def test_estimate_batch_size_limit_positive() -> None:
     """Tests the estimate batch size limit positive functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("large_in", (1024, 1024, 1024), "float32", is_initializer=True))
@@ -104,7 +104,7 @@ def test_estimate_batch_size_limit_positive():
     assert res >= 1
 
 
-def test_aot_builder_init_no_opset():
+def test_aot_builder_init_no_opset() -> None:
     """Tests the aot builder init no opset functionality."""
     g = Graph("g")
     if hasattr(g, "opset_imports"):
@@ -113,7 +113,7 @@ def test_aot_builder_init_no_opset():
     assert builder.fwd_graph.opset_imports["ai.onnx"] == 15
 
 
-def test_aot_builder_accumulate_gradient():
+def test_aot_builder_accumulate_gradient() -> None:
     """Tests the aot builder accumulate gradient functionality."""
     g = Graph("g")
     g.add_node(Node("Relu", ["x"], ["y"], name="relu"))

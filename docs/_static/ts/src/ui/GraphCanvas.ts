@@ -20,7 +20,7 @@ export class GraphCanvas extends BaseComponent {
   private textCache = new Map<string, number>();
   private measureText(text: string, ctx: CanvasRenderingContext2D): number {
     if (!this.textCache.has(text)) this.textCache.set(text, ctx.measureText(text).width);
-    return this.textCache.get(text)!;
+    return this.textCache.get(text);
   }
   private hoveredNode: string | null = null;
   private selectedNode: string | null = null;
@@ -139,18 +139,22 @@ export class GraphCanvas extends BaseComponent {
     this.bindEvent(window, 'mouseup', this.onMinimapUp.bind(this));
 
     // Listen for peer cursor movements
-    globalEvents.on('collabCursorMoved', (data: any) => {
-      const colors = ['#e41a1c', '#fd7e14', '#20c997', '#0dcaf0', '#6f42c1', '#d63384'];
-      const colorIdx =
-        Array.from(data.peerId).reduce((a: any, b: any) => a + b.charCodeAt(0), 0) % colors.length;
-      this.remoteCursors.set(data.peerId, {
-        x: data.worldX,
-        y: data.worldY,
-        color: colors[colorIdx],
-        timestamp: Date.now(),
-      });
-      this.render(); // Could be debounced
-    });
+    globalEvents.on(
+      'collabCursorMoved',
+      (data: { peerId: string; worldX: number; worldY: number }) => {
+        const colors = ['#e41a1c', '#fd7e14', '#20c997', '#0dcaf0', '#6f42c1', '#d63384'];
+        const colorIdx =
+          Array.from(data.peerId).reduce((a: number, b: string) => a + b.charCodeAt(0), 0) %
+          colors.length;
+        this.remoteCursors.set(data.peerId, {
+          x: data.worldX,
+          y: data.worldY,
+          color: colors[colorIdx] ?? '#e41a1c',
+          timestamp: Date.now(),
+        });
+        this.render(); // Could be debounced
+      },
+    );
     this.bindEvent(this.canvas, 'mousedown', this.onMouseDown.bind(this));
     this.bindEvent(this.canvas, 'mousemove', this.onMouseMove.bind(this));
     this.bindEvent(this.canvas, 'mouseup', this.onMouseUp.bind(this));
@@ -343,7 +347,7 @@ export class GraphCanvas extends BaseComponent {
       worker.postMessage(this.model);
       worker.onmessage = (_e) => {
         const dagrel = new Dagrel();
-        this.layout = dagrel.layout(this.model!);
+        this.layout = dagrel.layout(this.model);
         this.centerCamera();
         this.render();
         worker.terminate();
@@ -641,7 +645,7 @@ export class GraphCanvas extends BaseComponent {
           this.paintTargetNode = null;
           this.maskData = null;
           this.centerCamera();
-          globalEvents.emit('modelLoaded', this.model!); // Re-trigger update logic for AST sizes
+          globalEvents.emit('modelLoaded', this.model); // Re-trigger update logic for AST sizes
           this.render();
         }
         break;

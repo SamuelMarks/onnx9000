@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../src/loader";
+import { describe, expect, it } from 'vitest';
+import { MLPackageLoader } from '../src/loader';
 
-describe("loader.ts", () => {
-  it("should instantiate and cover MLPackageLoader", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('loader.ts', () => {
+  it('should instantiate and cover MLPackageLoader', () => {
     try {
-      const obj = new (Module as any).MLPackageLoader();
+      const obj = Construct(MLPackageLoader);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

@@ -1,4 +1,4 @@
-"""Module providing core logic and structural definitions."""
+"""Implementation of hasher (converters / jit / hasher.py) providing hash_graph."""
 
 import hashlib
 

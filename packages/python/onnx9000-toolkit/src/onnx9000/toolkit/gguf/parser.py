@@ -3,25 +3,35 @@
 import mmap
 import os
 import struct
-from typing import Any, Union
 
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import QuantizedTensor, Tensor
 
 
 class GGUFError(Exception):
-    """Docstring for D101."""
+    """Represents gguferror inheriting from Exception."""
 
     def __init__(self, message: str = "An error occurred") -> None:
-        """Initialize."""
+        """Initialize GGUFError with configured parameters and state.
+
+        Args:
+            message: Parameter specifying message (str).
+        """
         super().__init__(message)
 
 
 class GGUFParser:
-    """Docstring for D101."""
+    """Represents ggufparser, supporting operations such as get_onnx9000_tensor, keys."""
 
-    def __init__(self, filename: str):
-        """Docstring for D107."""
+    def __init__(self, filename: str) -> None:
+        """Initialize GGUFParser with configured parameters and state.
+
+        Args:
+            filename: Parameter specifying filename (str).
+
+        Raises:
+            GGUFError: If an invalid state or argument is encountered during execution.
+        """
         self.filename = filename
         self.file_size = os.path.getsize(self.filename)
         self.fd = os.open(self.filename, os.O_RDONLY)
@@ -63,26 +73,26 @@ class GGUFParser:
         self.data_offset = self.offset + padding
 
     def _read_bytes(self, n: int) -> bytes:
-        """read bytes."""
+        """Read bytes."""
         data = self.view[self.offset : self.offset + n].tobytes()
         self.offset += n
         return data
 
     def _read_uint32(self) -> int:
-        """read uint32."""
+        """Read uint32."""
         return struct.unpack("<I", self._read_bytes(4))[0]
 
     def _read_uint64(self) -> int:
-        """read uint64."""
+        """Read uint64."""
         return struct.unpack("<Q", self._read_bytes(8))[0]
 
     def _read_string(self) -> str:
-        """read string."""
+        """Read string."""
         length = self._read_uint64()
         return self._read_bytes(length).decode("utf-8")
 
-    def _read_value(self) -> Any:
-        """read value."""
+    def _read_value(self) -> int | float | str | bool | bytes | list | dict | tuple | None:
+        """Read value."""
         vtype = self._read_uint32()
         if vtype == 0:
             return struct.unpack("<B", self._read_bytes(1))[0]  # UINT8
@@ -144,7 +154,17 @@ class GGUFParser:
             raise GGUFError(f"Unsupported GGUF value type {vtype}")
 
     def get_onnx9000_tensor(self, name: str) -> Tensor | QuantizedTensor:
-        """Docstring for D102."""
+        """Execute get onnx9000 tensor on GGUFParser.
+
+        Args:
+            name: Parameter specifying name (str).
+
+        Returns:
+            Result of get onnx9000 tensor (Tensor | QuantizedTensor).
+
+        Raises:
+            KeyError: If an invalid state or argument is encountered during execution.
+        """
         for t in self.tensors:
             if t["name"] == name:
                 ggml_type = t["ggml_type"]
@@ -198,16 +218,46 @@ class GGUFParser:
                     )
         raise KeyError(f"Tensor {name} not found")
 
-    def keys(self):
-        """Docstring for D102."""
+    def keys(self) -> int | float | str | bool | bytes | list | dict | tuple | None:
+        """Execute keys on GGUFParser.
+
+        Returns:
+            Result of keys.
+        """
         return [t["name"] for t in self.tensors]
 
-    def __enter__(self):
-        """Docstring for D105."""
+    def __contains__(self, key: str) -> bool:
+        """Check if a tensor exists in the GGUF file.
+
+        Args:
+            key: Tensor name to check.
+
+        Returns:
+            True if present, False otherwise.
+        """
+        return any(t["name"] == key for t in self.tensors)
+
+    def __enter__(self) -> int | float | str | bool | bytes | list | dict | tuple | None:
+        """Enter the runtime context managed by GGUFParser.
+
+        Returns:
+            Result of enter.
+        """
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        """Docstring for D105."""
+    def __exit__(
+        self,
+        exc_type: int | float | str | bool | bytes | list | dict | tuple | None,
+        exc_val: int | float | str | bool | bytes | list | dict | tuple | None,
+        exc_tb: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
+        """Exit the runtime context managed by GGUFParser and handle exceptions.
+
+        Args:
+            exc_type: Parameter specifying exc type.
+            exc_val: Parameter specifying exc val.
+            exc_tb: Parameter specifying exc tb.
+        """
         if hasattr(self, "view") and self.view is not None:
             self.view.release()
             self.view = None

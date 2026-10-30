@@ -1,267 +1,145 @@
-"""ONNX Config Mapping for specific Architectures."""
+"""ONNX configuration and model wrappers for specific transformer and vision architectures."""
 
-from typing import Any
+from typing import TypeAlias
+
+ConfigArgValue: TypeAlias = str | int | float | bool | list[str] | list[int] | None
 
 
 class BaseConfig:
-    """Configuration for BaseConfig."""
+    """Base configuration class for Optimum architecture exports."""
 
-    def __init__(self, **kwargs: "Any") -> None:
-        """Initialize."""
-        super().__init__()
+    def __init__(self, **kwargs: ConfigArgValue) -> None:
+        """Initialize configuration with optional architecture parameters.
+
+        Args:
+            **kwargs: Arbitrary configuration key-value parameters.
+        """
+        self.options: dict[str, ConfigArgValue] = dict(kwargs)
 
 
 class BERTConfig(BaseConfig):
-    """Configuration for BERTConfig."""
-
-    def __init__(self, **kwargs: "Any") -> None:
-        """Initialize."""
-        super().__init__()
+    """ONNX export configuration for BERT architectures."""
 
 
 class RoBERTaConfig(BaseConfig):
-    """Configuration for RoBERTaConfig."""
-
-    def __init__(self, **kwargs: "Any") -> None:
-        """Initialize."""
-        super().__init__()
+    """ONNX export configuration for RoBERTa architectures."""
 
 
 class DistilBERTConfig(BaseConfig):
-    """Configuration for DistilBERTConfig."""
-
-    def __init__(self, **kwargs: "Any") -> None:
-        """Initialize."""
-        super().__init__()
+    """ONNX export configuration for DistilBERT architectures."""
 
 
 class T5Config(BaseConfig):
-    """Configuration for T5Config."""
-
-    def __init__(self, **kwargs: "Any") -> None:
-        """Initialize."""
-        super().__init__()
+    """ONNX export configuration for T5 encoder-decoder architectures."""
 
 
 class BARTConfig(BaseConfig):
-    """Configuration for BARTConfig."""
-
-    def __init__(self, **kwargs: "Any") -> None:
-        """Initialize."""
-        super().__init__()
+    """ONNX export configuration for BART encoder-decoder architectures."""
 
 
 class GPT2Config(BaseConfig):
-    """Configuration for GPT2Config."""
-
-    def __init__(self, **kwargs: "Any") -> None:
-        """Initialize."""
-        super().__init__()
+    """ONNX export configuration for GPT-2 causal language models."""
 
 
 class LLaMAConfig(BaseConfig):
-    """Configuration for LLaMAConfig."""
-
-    def __init__(self, **kwargs: "Any") -> None:
-        """Initialize."""
-        super().__init__()
+    """ONNX export configuration for LLaMA causal language models."""
 
 
 class MistralConfig(BaseConfig):
-    """Configuration for MistralConfig."""
-
-    def __init__(self, **kwargs: "Any") -> None:
-        """Initialize."""
-        super().__init__()
+    """ONNX export configuration for Mistral causal language models."""
 
 
 class GemmaConfig(BaseConfig):
-    """Configuration for GemmaConfig."""
-
-    def __init__(self, **kwargs: "Any") -> None:
-        """Initialize."""
-        super().__init__()
+    """ONNX export configuration for Gemma causal language models."""
 
 
 class PhiConfig(BaseConfig):
-    """Configuration for PhiConfig."""
-
-    def __init__(self, **kwargs: "Any") -> None:
-        """Initialize."""
-        super().__init__()
+    """ONNX export configuration for Phi causal language models."""
 
 
 class QwenConfig(BaseConfig):
-    """Configuration for QwenConfig."""
-
-    def __init__(self, **kwargs: "Any") -> None:
-        """Initialize."""
-        super().__init__()
+    """ONNX export configuration for Qwen causal language models."""
 
 
 class LlamaVisionConfig(BaseConfig):
-    """Configuration for LlamaVisionConfig."""
-
-    def __init__(self, **kwargs: "Any") -> None:
-        """Initialize."""
-        super().__init__()
+    """ONNX export configuration for LLaMA-Vision multimodal models."""
 
 
 class ViTConfig(BaseConfig):
-    """Configuration for ViTConfig."""
-
-    def __init__(self, **kwargs: "Any") -> None:
-        """Initialize."""
-        super().__init__()
+    """ONNX export configuration for Vision Transformer (ViT) models."""
 
 
 class CLIPConfig(BaseConfig):
-    """Configuration for CLIPConfig."""
-
-    def __init__(self, **kwargs: "Any") -> None:
-        """Initialize."""
-        super().__init__()
+    """ONNX export configuration for CLIP vision-language models."""
 
 
 class DETRConfig(BaseConfig):
-    """Configuration for DETRConfig."""
-
-    def __init__(self, **kwargs: "Any") -> None:
-        """Initialize."""
-        super().__init__()
+    """ONNX export configuration for DETR object detection models."""
 
 
 class YOLOSConfig(BaseConfig):
-    """Configuration for YOLOSConfig."""
-
-    def __init__(self, **kwargs: "Any") -> None:
-        """Initialize."""
-        super().__init__()
+    """ONNX export configuration for YOLOS object detection models."""
 
 
 class StableDiffusionUNetConfig(BaseConfig):
-    """Configuration for StableDiffusionUNetConfig."""
-
-    def __init__(self, **kwargs: "Any") -> None:
-        """Initialize."""
-        super().__init__()
+    """ONNX export configuration for Stable Diffusion UNet denoiser models."""
 
 
 class StableDiffusionVAEConfig(BaseConfig):
-    """Configuration for StableDiffusionVAEConfig."""
-
-    def __init__(self, **kwargs: "Any") -> None:
-        """Initialize."""
-        super().__init__()
+    """ONNX export configuration for Stable Diffusion VAE encoder/decoder models."""
 
 
 class StableDiffusionTextEncoderConfig(BaseConfig):
-    """Configuration for StableDiffusionTextEncoderConfig."""
-
-    def __init__(self, **kwargs: "Any") -> None:
-        """Initialize."""
-        super().__init__()
+    """ONNX export configuration for Stable Diffusion text encoder models."""
 
 
 class WhisperConfig(BaseConfig):
-    """Configuration for WhisperConfig."""
-
-    def __init__(self, **kwargs: "Any") -> None:
-        """Initialize."""
-        super().__init__()
+    """ONNX export configuration for Whisper speech recognition models."""
 
 
 class Wav2Vec2Config(BaseConfig):
-    """Configuration for Wav2Vec2Config."""
-
-    def __init__(self, **kwargs: "Any") -> None:
-        """Initialize."""
-        super().__init__()
+    """ONNX export configuration for Wav2Vec2 speech models."""
 
 
 class SpeechT5Config(BaseConfig):
-    """Configuration for SpeechT5Config."""
-
-    def __init__(self, **kwargs: "Any") -> None:
-        """Initialize."""
-        super().__init__()
+    """ONNX export configuration for SpeechT5 audio synthesis/recognition models."""
 
 
-class ORTModelForSequenceClassification:
-    """Configuration for ORTModelForSequenceClassification."""
-
-    def __init__(self, **kwargs: "Any") -> None:
-        """Initialize."""
-        super().__init__()
+class ORTModelForSequenceClassification(BaseConfig):
+    """Optimum-compatible ONNX Runtime wrapper for sequence classification."""
 
 
-class ORTModelForTokenClassification:
-    """Configuration for ORTModelForTokenClassification."""
-
-    def __init__(self, **kwargs: "Any") -> None:
-        """Initialize."""
-        super().__init__()
+class ORTModelForTokenClassification(BaseConfig):
+    """Optimum-compatible ONNX Runtime wrapper for token classification."""
 
 
-class ORTModelForQuestionAnswering:
-    """Configuration for ORTModelForQuestionAnswering."""
-
-    def __init__(self, **kwargs: "Any") -> None:
-        """Initialize."""
-        super().__init__()
+class ORTModelForQuestionAnswering(BaseConfig):
+    """Optimum-compatible ONNX Runtime wrapper for extractive question answering."""
 
 
-class ORTModelForCausalLM:
-    """Configuration for ORTModelForCausalLM."""
-
-    def __init__(self, **kwargs: "Any") -> None:
-        """Initialize."""
-        super().__init__()
+class ORTModelForCausalLM(BaseConfig):
+    """Optimum-compatible ONNX Runtime wrapper for causal language modeling."""
 
 
-class ORTModelForMaskedLM:
-    """Configuration for ORTModelForMaskedLM."""
-
-    def __init__(self, **kwargs: "Any") -> None:
-        """Initialize."""
-        super().__init__()
+class ORTModelForMaskedLM(BaseConfig):
+    """Optimum-compatible ONNX Runtime wrapper for masked language modeling."""
 
 
-class ORTModelForSeq2SeqLM:
-    """Configuration for ORTModelForSeq2SeqLM."""
-
-    def __init__(self, **kwargs: "Any") -> None:
-        """Initialize."""
-        super().__init__()
+class ORTModelForSeq2SeqLM(BaseConfig):
+    """Optimum-compatible ONNX Runtime wrapper for sequence-to-sequence language modeling."""
 
 
-class ORTModelForImageClassification:
-    """Configuration for ORTModelForImageClassification."""
-
-    def __init__(self, **kwargs: "Any") -> None:
-        """Initialize."""
-        super().__init__()
+class ORTModelForImageClassification(BaseConfig):
+    """Optimum-compatible ONNX Runtime wrapper for image classification."""
 
 
-class ORTModelForObjectDetection:
-    """Configuration for ORTModelForObjectDetection."""
-
-    def __init__(self, **kwargs: "Any") -> None:
-        """Initialize."""
-        super().__init__()
+class ORTModelForObjectDetection(BaseConfig):
+    """Optimum-compatible ONNX Runtime wrapper for object detection."""
 
 
-class ORTModelForSpeechSeq2Seq:
-    """Configuration for ORTModelForSpeechSeq2Seq."""
-
-    def __init__(self, **kwargs: "Any") -> None:
-        """Initialize."""
-        super().__init__()
+class ORTModelForSpeechSeq2Seq(BaseConfig):
+    """Optimum-compatible ONNX Runtime wrapper for speech sequence-to-sequence models."""
 
 
-class ORTModelForSemanticSegmentation:
-    """Configuration for ORTModelForSemanticSegmentation."""
-
-    def __init__(self, **kwargs: "Any") -> None:
-        """Initialize."""
-        super().__init__()
+class ORTModelForSemanticSegmentation(BaseConfig):
+    """Optimum-compatible ONNX Runtime wrapper for semantic segmentation."""

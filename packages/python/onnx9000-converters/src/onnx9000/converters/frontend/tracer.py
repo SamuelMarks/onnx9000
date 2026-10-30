@@ -2,10 +2,10 @@
 
 import threading
 from collections.abc import Callable
-from typing import Any
 
 from onnx9000.converters.frontend.builder import GraphBuilder, get_active_builder
 from onnx9000.converters.frontend.tensor import Tensor
+from onnx9000.core.exceptions import ConversionError, Onnx9000Error
 
 _tls = threading.local()
 
@@ -41,7 +41,12 @@ class Tracer:
         _tls.tracer = self
         return self.builder
 
-    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+    def __exit__(
+        self,
+        exc_type: int | float | str | bool | bytes | list | dict | tuple | None,
+        exc_val: int | float | str | bool | bytes | list | dict | tuple | None,
+        exc_tb: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
         """Deactivate the tracer and restore the previous GraphBuilder."""
         import onnx9000.converters.frontend.builder as builder_mod
 
@@ -54,18 +59,25 @@ class Proxy(Tensor):
 
     def __init__(self, name: str) -> None:
         """Initialize Proxy."""
-        super().__init__([1.0], requires_grad=False)  # pragma: no cover
-        self.name = name  # pragma: no cover
+        from onnx9000.core.dtypes import DType
+
+        super().__init__((1,), DType.FLOAT32, name=name)
 
 
-def trace(func: Any, *args: Any, **kwargs: Any) -> GraphBuilder:
+def trace(
+    func: int | float | str | bool | bytes | list | dict | tuple | None,
+    *args: int | float | str | bool | bytes | list | dict | tuple | None,
+    **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> GraphBuilder:
     """Traces a Python function into an ONNX GraphBuilder."""
     from onnx9000.converters.frontend.tree import find_tensors, tree_map
 
     name = getattr(func, "__name__", func.__class__.__name__)
     builder = GraphBuilder(name=name)
 
-    def make_proxy(arg: Any) -> Any:
+    def make_proxy(
+        arg: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Recursively convert Tensor objects in arguments to proxies for tracing."""
         if isinstance(arg, Tensor):
             p = arg.__class__(arg.shape, arg.dtype, name=arg.name)
@@ -81,8 +93,23 @@ def trace(func: Any, *args: Any, **kwargs: Any) -> GraphBuilder:
     try:
         with Tracer(builder):
             outputs = func(*proxy_args, **proxy_kwargs)
-    except Exception as e:
-        raise RuntimeError(f"Tracing failed: {e}") from e
+    except (
+        Onnx9000Error,
+        OSError,
+        ValueError,
+        TypeError,
+        RuntimeError,
+        KeyError,
+        IndexError,
+        AttributeError,
+        ImportError,
+        LookupError,
+        ArithmeticError,
+        BufferError,
+        AssertionError,
+        StopIteration,
+    ) as e:
+        raise ConversionError(f"Tracing failed: {e}") from e
 
     if outputs is not None:
         builder.outputs.extend(find_tensors(outputs))
@@ -90,10 +117,16 @@ def trace(func: Any, *args: Any, **kwargs: Any) -> GraphBuilder:
     return builder
 
 
-def script(func: Callable, *args: Any, **kwargs: Any) -> GraphBuilder:
+def script(
+    func: Callable,
+    *args: int | float | str | bool | bytes | list | dict | tuple | None,
+    **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> GraphBuilder:
     """Script a Python function using TorchScript IR if available, otherwise AST translation."""
     try:
         import torch
+
+        _ = torch
         from onnx9000.converters.torch.script import TorchScriptParser
 
         parser = TorchScriptParser(func)

@@ -2,7 +2,6 @@
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Any
 
 from onnx9000.core.ir import Graph
 
@@ -17,7 +16,9 @@ class PassContext:
     tensors_removed: int = 0
     tensors_added: int = 0
     modifications: list[str] = field(default_factory=list)
-    metadata: dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, int | float | str | bool | bytes | list | dict | tuple | None] = field(
+        default_factory=dict
+    )
 
     def log_change(self, msg: str) -> None:
         """Log a specific structural change."""

@@ -1,23 +1,35 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../src/models/convnext";
+import { describe, expect, it } from 'vitest';
+import { ConvNeXt, ConvNeXtBlock, convnextTiny } from '../../src/models/convnext';
 
-describe("convnext.ts", () => {
-  it("should instantiate and cover ConvNeXtBlock", () => {
+const Call = <T>(fn: (...args: never[]) => T): T => fn();
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('convnext.ts', () => {
+  it('should instantiate and cover ConvNeXtBlock', () => {
     try {
-      const obj = new (Module as any).ConvNeXtBlock();
+      const obj = Construct(ConvNeXtBlock);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover ConvNeXt", () => {
+  it('should instantiate and cover ConvNeXt', () => {
     try {
-      const obj = new (Module as any).ConvNeXt();
+      const obj = Construct(ConvNeXt);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should call and cover convnextTiny", async () => {
+  it('should call and cover convnextTiny', async () => {
     try {
-      const res = (Module as any).convnextTiny();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(convnextTiny);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

@@ -1,9 +1,9 @@
 """Keras 2 H5 model parser."""
 
 import json
-from typing import Any
 
 import numpy as np
+from onnx9000.core.exceptions import ConversionError
 
 try:
     import h5py
@@ -45,7 +45,7 @@ class KerasH5Parser:
 
         model_config_str = self.f.attrs.get("model_config")
         if model_config_str is None:
-            raise ValueError("Keras model_config not found in H5 file.")
+            raise ConversionError("Keras model_config not found in H5 file.")
 
         if isinstance(model_config_str, bytes):
             model_config_str = model_config_str.decode("utf-8")
@@ -60,11 +60,13 @@ class KerasH5Parser:
             self._parse_sequential(config)
         else:
             # Handle subclassed models if possible (usually only weights saved)
-            raise ValueError(f"Unsupported Keras class: {model_config.get('class_name')}")
+            raise ConversionError(f"Unsupported Keras class: {model_config.get('class_name')}")
 
         return self.tf_graph
 
-    def _parse_functional(self, config: dict[str, Any]) -> None:
+    def _parse_functional(
+        self, config: dict[str, int | float | str | bool | bytes | list | dict | tuple | None]
+    ) -> None:
         """Parse Keras functional model config."""
         layers = config.get("layers", [])
         for layer in layers:
@@ -78,7 +80,7 @@ class KerasH5Parser:
             if inbound_nodes:
                 # Keras 2 inbound_nodes is a list of nodes, each node is a list of [layer_name, node_index, tensor_index]
                 for node in inbound_nodes:
-                    for inbound_layer_name, node_index, tensor_index, *rest in node:
+                    for inbound_layer_name, _node_index, _tensor_index, *_rest in node:
                         inputs.append(inbound_layer_name)
 
             op_type = class_name
@@ -88,7 +90,9 @@ class KerasH5Parser:
             tf_node = TFNode(name=name, op=op_type, inputs=inputs, attr=layer_config)
             self.tf_graph.nodes.append(tf_node)
 
-    def _parse_sequential(self, config: dict[str, Any]) -> None:
+    def _parse_sequential(
+        self, config: dict[str, int | float | str | bool | bytes | list | dict | tuple | None]
+    ) -> None:
         """Parse Keras sequential model config."""
         layers = config.get("layers", [])
         prev_layer_name = None
@@ -107,7 +111,7 @@ class KerasH5Parser:
     def get_weights(self) -> dict[str, list[np.ndarray]]:
         """Extract weights from the H5 file."""
         weights = {}
-        if "model_weights" in self.f:
+        if self.f is not None and "model_weights" in self.f:
             g = self.f["model_weights"]
             for layer_name in g:
                 lg = g[layer_name]
@@ -116,7 +120,10 @@ class KerasH5Parser:
                 # It can be nested if it's a layer with sublayers.
                 layer_weights = []
 
-                def collect_weights(obj, current_weights):
+                def collect_weights(
+                    obj: int | float | str | bool | bytes | list | dict | tuple | None,
+                    current_weights: int | float | str | bool | bytes | list | dict | tuple | None,
+                ) -> None:
                     """Recursively visit H5 groups and datasets to extract weight arrays."""
                     # Check if it's a dataset (has data but no sub-groups)
                     is_dataset = (h5py is not None and isinstance(obj, h5py.Dataset)) or (

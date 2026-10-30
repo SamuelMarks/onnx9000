@@ -6,7 +6,7 @@ import tempfile
 from onnx9000_workspace import setup_workspace
 
 
-def test_setup_workspace():
+def test_setup_workspace() -> None:
     """Test setup workspace."""
     with tempfile.TemporaryDirectory() as tmpdir:
         setup_workspace(tmpdir)

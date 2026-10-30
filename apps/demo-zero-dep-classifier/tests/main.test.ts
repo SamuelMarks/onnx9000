@@ -1,32 +1,33 @@
-import { beforeEach, describe, expect, it } from "vitest";
+// @vitest-environment jsdom
+import { beforeEach, describe, expect, it } from 'vitest';
+import { initZeroDepClassifierDemo } from '../src/main.js';
 
-describe("demo", () => {
+describe('demo-zero-dep-classifier', () => {
   beforeEach(() => {
-    document.body.innerHTML = `
-      <textarea id="prompt"></textarea>
-      <button id="runBtn"></button>
-      <div id="output"></div>
-    `;
+    document.body.innerHTML =
+      '<button id="runBtn"></button><button id="resetBtn"></button><div id="output"></div>';
   });
 
-  it("should run flow", async () => {
-    // import to execute module top-level
-    try {
-      await import("../src/main.js");
-    } catch (_e) {}
+  it('should run classification pipeline and reset state', async () => {
+    document.body.innerHTML = '';
+    initZeroDepClassifierDemo();
 
-    const btn = document.getElementById("runBtn");
-    const prompt = document.getElementById("prompt");
-    const _out = document.getElementById("output");
+    document.body.innerHTML =
+      '<button id="runBtn"></button><button id="resetBtn"></button><div id="output"></div>';
+    initZeroDepClassifierDemo();
 
-    if (btn) btn.click();
-    if (prompt && btn) {
-      prompt.value = "test";
-      btn.click();
-    }
+    const runBtn = document.getElementById('runBtn') as HTMLButtonElement;
+    const resetBtn = document.getElementById('resetBtn') as HTMLButtonElement;
+    const out = document.getElementById('output') as HTMLDivElement;
 
-    // allow some async code to run
-    await new Promise((r) => setTimeout(r, 100));
-    expect(true).toBe(true);
+    runBtn.click();
+    await new Promise((r) => setTimeout(r, 200));
+
+    expect(out.textContent).toContain('Label: TABBY_CAT');
+    expect(resetBtn.disabled).toBe(false);
+
+    resetBtn.click();
+    expect(out.textContent).toContain('Ready. Click "Run Classification" to start.');
+    expect(runBtn.disabled).toBe(false);
   });
 });

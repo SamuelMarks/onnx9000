@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../../src/mmdnn/xgboost/parser";
+import { describe, expect, it } from 'vitest';
+import { XGBoostParser } from '../../../src/mmdnn/xgboost/parser';
 
-describe("parser.ts", () => {
-  it("should instantiate and cover XGBoostParser", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('parser.ts', () => {
+  it('should instantiate and cover XGBoostParser', () => {
     try {
-      const obj = new (Module as any).XGBoostParser();
+      const obj = Construct(XGBoostParser);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

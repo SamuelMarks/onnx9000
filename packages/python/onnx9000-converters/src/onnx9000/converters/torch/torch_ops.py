@@ -1,14 +1,35 @@
 """PyTorch ATen and TorchScript operator registrations."""
 
-from typing import Any
-
 from onnx9000.converters.torch.aten_map import ATEN_OP_MAP
 from onnx9000.core.ir import Node
 from onnx9000.core.registry import register_op
 
 
-def _create_mapper(op_type: str):
-    def mapper(inputs: list[str], outputs: list[str], params: dict[str, Any]) -> Node:
+def _create_mapper(op_type: str) -> int | float | str | bool | bytes | list | dict | tuple | None:
+    """Execute create mapper operation.
+
+    Args:
+        op_type: Parameter specifying op type (str).
+
+    Returns:
+        Result of create mapper.
+    """
+
+    def mapper(
+        inputs: list[str],
+        outputs: list[str],
+        params: dict[str, int | float | str | bool | bytes | list | dict | tuple | None],
+    ) -> Node:
+        """Execute mapper operation.
+
+        Args:
+            inputs: Parameter specifying inputs (list[str]).
+            outputs: Parameter specifying outputs (list[str]).
+            params: Parameter specifying params (dict[str, Union[int, float, str, bool, bytes, list, dict, tuple, None]]).
+
+        Returns:
+            Result of mapper (Node).
+        """
         return Node(
             op_type=op_type,
             inputs=inputs,

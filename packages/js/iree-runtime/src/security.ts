@@ -3,6 +3,7 @@
  * Provides security functionality for the iree-runtime package.
  */
 // 231-240. Security and Stability Features
+import { BackendError } from '@onnx9000/core';
 export const VM_Security_Manager = {
   // 231, 232, 233. ArrayBuffer bounds checking
   checkBounds(
@@ -12,9 +13,7 @@ export const VM_Security_Manager = {
     isProduction: boolean = false,
   ): void {
     if (!isProduction && offset + length > memorySize) {
-      throw new Error(
-        `Out of bounds memory access at offset ${String(offset)}`,
-      );
+      throw new BackendError(`Out of bounds memory access at offset ${String(offset)}`);
     }
   },
 
@@ -27,16 +26,14 @@ export const VM_Security_Manager = {
   // 236. Watchdog counter
   incrementWatchdog(counter: number, maxLoops: number = 1000000): void {
     if (counter > maxLoops) {
-      throw new Error("VM execution exceeded maximum allowed loop iterations.");
+      throw new BackendError('VM execution exceeded maximum allowed loop iterations.');
     }
   },
 
   // 238. Validate bytecode
   validateBytecodeIntegrity(bytecode: Uint8Array): void {
     if (bytecode.length > 50 * 1024 * 1024) {
-      throw new Error(
-        "Malicious payload detected: VM size exceeds 50MB limits.",
-      );
+      throw new BackendError('Malicious payload detected: VM size exceeds 50MB limits.');
     }
   },
 

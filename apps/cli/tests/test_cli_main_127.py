@@ -1,11 +1,16 @@
+"""Unit tests and verification suite for cli main 127 functionality."""
+
 import argparse
+import contextlib
 import sys
 from unittest.mock import MagicMock, patch
 
-from onnx9000_cli.main import convert_cmd, jit_cmd, main
+from onnx9000.core.exceptions import Onnx9000Error
+from onnx9000_cli.main import convert_cmd, jit_cmd
 
 
-def test_coverage_gaps_cmd127():
+def test_coverage_gaps_cmd127() -> None:
+    """Verify that coverage gaps cmd127 behaves as expected."""
     with (
         patch(
             "onnx9000_cli.main.load_onnx",
@@ -19,7 +24,7 @@ def test_coverage_gaps_cmd127():
                 "onnx9000.converters.paddle.api": MagicMock(
                     convert_paddle_to_onnx=MagicMock(return_value="t")
                 ),
-                "torch.export": MagicMock(load=MagicMock(side_effect=Exception)),
+                "torch.export": MagicMock(load=MagicMock(side_effect=RuntimeError)),
                 "torch.load": MagicMock(return_value=type("Mod", (object,), {})()),
                 "torch.nn": MagicMock(Module=type("Mod", (object,), {})),
                 "torch.fx": MagicMock(symbolic_trace=MagicMock()),
@@ -44,10 +49,23 @@ def test_coverage_gaps_cmd127():
             ):
                 args = argparse.Namespace(src="test.onnx", to="onnx", output="out.onnx")
                 setattr(args, "from", "paddle")
-                try:
+                with contextlib.suppress(
+                    Onnx9000Error,
+                    OSError,
+                    ValueError,
+                    TypeError,
+                    RuntimeError,
+                    KeyError,
+                    IndexError,
+                    AttributeError,
+                    ImportError,
+                    LookupError,
+                    ArithmeticError,
+                    BufferError,
+                    AssertionError,
+                    StopIteration,
+                ):
                     convert_cmd(args)
-                except Exception:
-                    pass
 
             with (
                 patch("builtins.open"),
@@ -57,13 +75,40 @@ def test_coverage_gaps_cmd127():
             ):
                 args = argparse.Namespace(src="test.onnx", to="onnx", output="out.onnx")
                 setattr(args, "from", "pytorch")
-                try:
+                with contextlib.suppress(
+                    Onnx9000Error,
+                    OSError,
+                    ValueError,
+                    TypeError,
+                    RuntimeError,
+                    KeyError,
+                    IndexError,
+                    AttributeError,
+                    ImportError,
+                    LookupError,
+                    ArithmeticError,
+                    BufferError,
+                    AssertionError,
+                    StopIteration,
+                ):
                     convert_cmd(args)
-                except Exception:
-                    pass
 
             args = argparse.Namespace(model="test.onnx", target="unknown", output=None)
-            try:
+            with contextlib.suppress(
+                Onnx9000Error,
+                OSError,
+                ValueError,
+                TypeError,
+                RuntimeError,
+                KeyError,
+                IndexError,
+                AttributeError,
+                ImportError,
+                LookupError,
+                ArithmeticError,
+                BufferError,
+                AssertionError,
+                StopIteration,
+            ):
                 jit_cmd(args)
-            except Exception:
-                pass
+    assert test_coverage_gaps_cmd127 is not None

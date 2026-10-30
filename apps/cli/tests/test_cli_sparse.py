@@ -1,30 +1,34 @@
+"""Unit tests and verification suite for cli sparse functionality."""
+
 import argparse
+import contextlib
 from unittest.mock import MagicMock, patch
 
 from onnx9000_cli.main import prune_cmd, sparse_cmd
 
 
-def test_sparse_cmd_missing_func():
+def test_sparse_cmd_missing_func() -> None:
+    """Verify that sparse cmd missing func behaves as expected."""
     args = argparse.Namespace()
     with (
         patch("sys.exit", side_effect=SystemExit) as mock_exit,
         patch("builtins.print"),
     ):
-        try:
+        with contextlib.suppress(SystemExit):
             sparse_cmd(args)
-        except SystemExit:
-            pass
         mock_exit.assert_called_once_with(1)
 
 
-def test_sparse_cmd_with_func():
+def test_sparse_cmd_with_func() -> None:
+    """Verify that sparse cmd with func behaves as expected."""
     mock_func = MagicMock()
     args = argparse.Namespace(sparse_func=mock_func)
     sparse_cmd(args)
     mock_func.assert_called_once_with(args)
 
 
-def test_prune_cmd():
+def test_prune_cmd() -> None:
+    """Verify that prune cmd behaves as expected."""
     args = argparse.Namespace(model="dummy.onnx", nodes="node1,node2", output=None)
     with (
         patch("builtins.print"),

@@ -2,11 +2,19 @@
  * @fileoverview emitters-merge.ts
  * Provides emitters-merge functionality for the converters package.
  */
-// @ts-nocheck
-import type { OnnxNodeBuilder } from "./emitters.js";
+import { ConversionError } from '@onnx9000/core';
+import type { OnnxNodeBuilder } from './emitters.js';
 
+/**
+ * Executes `emitMerge`.
+ * @param opType Parameter `opType`.
+ * @param inputNames Parameter `inputNames`.
+ * @param outputName Parameter `outputName`.
+ * @param name Parameter `name`.
+ * @returns Result of `emitMerge`.
+ */
 export function emitMerge(
-  opType: "Add" | "Sub" | "Mul" | "Mean" | "Max" | "Min",
+  opType: 'Add' | 'Sub' | 'Mul' | 'Mean' | 'Max' | 'Min',
   inputNames: string[],
   outputName: string,
   name: string,
@@ -14,8 +22,8 @@ export function emitMerge(
   const nodes: OnnxNodeBuilder[] = [];
 
   // ONNX Add, Sub, Mul, etc. generally take 2 inputs.
-  // Except Mean, Max, Min which can take multiple inputs!
-  if (opType === "Mean" || opType === "Max" || opType === "Min") {
+  // Except Mean, Max, Min which can take multiple inputs
+  if (opType === 'Mean' || opType === 'Max' || opType === 'Min') {
     nodes.push({
       opType,
       inputs: inputNames,
@@ -26,20 +34,18 @@ export function emitMerge(
   } else {
     // For Add/Mul with > 2 inputs, we need to accumulate
     if (inputNames.length < 2) {
-      throw new Error(
-        `Merge layer requires at least 2 inputs, got ${inputNames.length}`,
-      );
+      throw new ConversionError(`Merge layer requires at least 2 inputs, got ${inputNames.length}`);
     }
 
-    let currentOut = inputNames[0];
+    let currentOut = inputNames[0] as string;
     for (let i = 1; i < inputNames.length; i++) {
-      const nextIn = inputNames[i];
+      const nextIn = inputNames[i] as string;
       const isLast = i === inputNames.length - 1;
       const out = isLast ? outputName : `${name}_step_${i}`;
 
       nodes.push({
         opType,
-        inputs: [currentOut!, nextIn!],
+        inputs: [currentOut, nextIn],
         outputs: [out],
         name: `${name}_step_${i}`,
         attributes: [],
@@ -51,6 +57,14 @@ export function emitMerge(
   return nodes;
 }
 
+/**
+ * Executes `emitConcat`.
+ * @param inputNames Parameter `inputNames`.
+ * @param outputName Parameter `outputName`.
+ * @param axis Parameter `axis`.
+ * @param name Parameter `name`.
+ * @returns Result of `emitConcat`.
+ */
 export function emitConcat(
   inputNames: string[],
   outputName: string,
@@ -59,15 +73,24 @@ export function emitConcat(
 ): OnnxNodeBuilder[] {
   return [
     {
-      opType: "Concat",
+      opType: 'Concat',
       inputs: inputNames,
       outputs: [outputName],
       name,
-      attributes: [{ name: "axis", i: axis, type: "INT" }],
+      attributes: [{ name: 'axis', i: axis, type: 'INT' }],
     },
   ];
 }
 
+/**
+ * Executes `emitDot`.
+ * @param input1Name Parameter `input1Name`.
+ * @param input2Name Parameter `input2Name`.
+ * @param outputName Parameter `outputName`.
+ * @param _axes Parameter `_axes`.
+ * @param name Parameter `name`.
+ * @returns Result of `emitDot`.
+ */
 export function emitDot(
   input1Name: string,
   input2Name: string,
@@ -81,7 +104,7 @@ export function emitDot(
   // Assuming default Dot (inner product):
   return [
     {
-      opType: "MatMul",
+      opType: 'MatMul',
       inputs: [input1Name, input2Name],
       outputs: [outputName],
       name,

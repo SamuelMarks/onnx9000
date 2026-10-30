@@ -1,7 +1,6 @@
-"""Provide functionality for this module."""
+"""Implementation of loader (converters / safetensors / loader.py) providing load_safetensors_to_graph, map_huggingface_to_onnx, load_and_patch_state_dict, convert_pytorch_to_safetensors."""
 
-from typing import Any
-
+import numpy as np
 from onnx9000.core.ir import Graph, ValueInfo
 from onnx9000.toolkit.safetensors.parser import SafeTensors
 
@@ -18,7 +17,7 @@ def load_safetensors_to_graph(filename: str, graph: Graph | None = None) -> Grap
     graph.metadata_props["safetensors_loaded"] = "1"
 
     with SafeTensors(filename) as st:
-        for name in st.keys():
+        for name in st:
             tensor = st.get_onnx9000_tensor(name)
 
             # Here we just inject as initializers
@@ -27,7 +26,7 @@ def load_safetensors_to_graph(filename: str, graph: Graph | None = None) -> Grap
             # Rewrite ONNX Constant nodes seamlessly into safetensors memory views
             for node in graph.nodes:
                 if node.op_type == "Constant":
-                    for attr_name, attr_val in node.attributes.items():
+                    for _attr_name, attr_val in node.attributes.items():
                         if attr_val.name == name:
                             # Typically handled during optimization or direct mapping,
                             # but we can link the tensor reference immediately
@@ -58,7 +57,9 @@ def load_safetensors_to_graph(filename: str, graph: Graph | None = None) -> Grap
     return graph
 
 
-def map_huggingface_to_onnx(tensor_dict: dict[str, Any]) -> dict[str, Any]:
+def map_huggingface_to_onnx(
+    tensor_dict: dict[str, int | float | str | bool | bytes | list | dict | tuple | None],
+) -> dict[str, int | float | str | bool | bytes | list | dict | tuple | None]:
     """Provide dynamic transposition hooks: `tensor.transpose_on_load()`.
 
     Resolve QKV (Query/Key/Value) weight concatenation differences across PyTorch and TF natively.
@@ -128,19 +129,22 @@ def map_huggingface_to_onnx(tensor_dict: dict[str, Any]) -> dict[str, Any]:
     return out
 
 
-def load_and_patch_state_dict(filename: str, state_dict: dict[str, Any]) -> dict[str, Any]:
+def load_and_patch_state_dict(
+    filename: str,
+    state_dict: dict[str, int | float | str | bool | bytes | list | dict | tuple | None],
+) -> dict[str, int | float | str | bool | bytes | list | dict | tuple | None]:
     """Support PyTorch `state_dict()` semantic patching dynamically.
 
     Merge a `.bin` PyTorch checkpoint with a `.safetensors` dictionary visually.
     """
     with SafeTensors(filename) as st:
-        for name in st.keys():
+        for name in st:
             state_dict[name] = st.get_numpy(name)
 
     return state_dict
 
 
-def convert_pytorch_to_safetensors(pt_filename: str, st_filename: str):
+def convert_pytorch_to_safetensors(pt_filename: str, st_filename: str) -> None:
     """Provide utility to convert PyTorch .bin (Pickle) to .safetensors automatically."""
     import torch
     from onnx9000.toolkit.safetensors.parser import save_file
@@ -151,7 +155,7 @@ def convert_pytorch_to_safetensors(pt_filename: str, st_filename: str):
     save_file(np_dict, st_filename, metadata={"format": "pt"})
 
 
-def convert_tf_to_safetensors(tf_dir: str, st_filename: str):
+def convert_tf_to_safetensors(tf_dir: str, st_filename: str) -> None:
     """Provide utility to convert TensorFlow SavedModel variables directly to .safetensors."""
     import tensorflow as tf
     from onnx9000.toolkit.safetensors.parser import save_file
@@ -164,7 +168,9 @@ def convert_tf_to_safetensors(tf_dir: str, st_filename: str):
     save_file(np_dict, st_filename, metadata={"format": "tf"})
 
 
-def dump_graph_to_safetensors(graph: Graph, filename: str, topology_filename: str | None = None):
+def dump_graph_to_safetensors(
+    graph: Graph, filename: str, topology_filename: str | None = None
+) -> None:
     """Strip raw byte arrays from ModelProto and dump to .safetensors dynamically.
 
     Export ONNX model to a .onnx (topology only) and .safetensors (weights only) pair.
@@ -188,7 +194,7 @@ def dump_graph_to_safetensors(graph: Graph, filename: str, topology_filename: st
         return None
 
 
-def validate_onnx_shapes_and_dtypes(filename: str, graph: Graph):
+def validate_onnx_shapes_and_dtypes(filename: str, graph: Graph) -> None:
     """Validate ONNX topological shapes against safetensors extracted shapes at runtime.
 
     Warn on shape mismatches between ONNX ValueInfo and Safetensor arrays.
@@ -201,7 +207,7 @@ def validate_onnx_shapes_and_dtypes(filename: str, graph: Graph):
     logger = logging.getLogger(__name__)
 
     with SafeTensors(filename) as st:
-        for name in st.keys():
+        for name in st:
             if name in graph.tensors:
                 tensor = graph.tensors[name]
                 info = st.tensors[name]
@@ -238,9 +244,6 @@ def validate_onnx_shapes_and_dtypes(filename: str, graph: Graph):
                         logger.warning(
                             f"DType mismatch for {name}: ONNX expects {to_cpp_type(tensor.dtype)}, Safetensors provides {st_dtype_str}"
                         )
-
-
-import numpy as np
 
 
 def unpack_awq(name: str, array: np.ndarray, scales: np.ndarray, zeros: np.ndarray) -> np.ndarray:

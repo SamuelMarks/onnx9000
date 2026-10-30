@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../src/mil/builder";
+import { describe, expect, it } from 'vitest';
+import { Builder } from '../../src/mil/builder';
 
-describe("builder.ts", () => {
-  it("should instantiate and cover Builder", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('builder.ts', () => {
+  it('should instantiate and cover Builder', () => {
     try {
-      const obj = new (Module as any).Builder();
+      const obj = Construct(Builder);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

@@ -153,7 +153,7 @@ export class GraphSurgeon {
       for (let i = 0; i < node.inputs.length; i++) {
         let currentInp = node.inputs[i];
         while (replacements.has(currentInp)) {
-          currentInp = replacements.get(currentInp)!;
+          currentInp = replacements.get(currentInp);
         }
         node.inputs[i] = currentInp;
       }

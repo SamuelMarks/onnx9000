@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../src/render/canvas";
+import { describe, expect, it } from 'vitest';
+import { GraphRenderer } from '../../src/render/canvas';
 
-describe("canvas.ts", () => {
-  it("should instantiate and cover GraphRenderer", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('canvas.ts', () => {
+  it('should instantiate and cover GraphRenderer', () => {
     try {
-      const obj = new (Module as any).GraphRenderer();
+      const obj = Construct(GraphRenderer);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

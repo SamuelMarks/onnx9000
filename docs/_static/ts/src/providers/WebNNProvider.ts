@@ -1,6 +1,44 @@
 import type { IModelGraph } from '../core/IR';
 import { Toast } from '../ui/Toast';
 
+interface MLOperandStub {
+  readonly __brand?: 'MLOperand';
+}
+
+interface MLGraphStub {
+  readonly __brand?: 'MLGraph';
+}
+
+interface MLContextStub {
+  compute(
+    graph: MLGraphStub,
+    inputs: Record<string, ArrayBufferView>,
+    outputs: Record<string, ArrayBufferView>,
+  ): Promise<void>;
+}
+
+interface MLGraphBuilderStub {
+  input(name: string, desc: { dataType: string; dimensions: (number | string)[] }): MLOperandStub;
+  constant(
+    desc: { dataType: string; dimensions: (number | string)[] },
+    bufferView: ArrayBufferView,
+  ): MLOperandStub;
+  add(a: MLOperandStub, b: MLOperandStub): MLOperandStub;
+  matmul(a: MLOperandStub, b: MLOperandStub): MLOperandStub;
+  relu(a: MLOperandStub): MLOperandStub;
+  conv2d(a: MLOperandStub, b: MLOperandStub): MLOperandStub;
+  maxPool2d(a: MLOperandStub): MLOperandStub;
+  softmax(a: MLOperandStub): MLOperandStub;
+  build(outputs: Record<string, MLOperandStub>): Promise<MLGraphStub>;
+}
+
+interface NavigatorWithML {
+  ml: {
+    createContext(): Promise<MLContextStub>;
+    GraphBuilder: new (context: MLContextStub) => MLGraphBuilderStub;
+  };
+}
+
 // Temporary stub mapping for the proposed W3C WebNN standard.
 export class WebNNProvider {
   private model: IModelGraph;
@@ -16,12 +54,12 @@ export class WebNNProvider {
     }
 
     try {
-      const ml = (navigator as any).ml;
+      const ml = (navigator as Navigator & NavigatorWithML).ml;
       const context = await ml.createContext();
 
-      const builder = new (ml as any).GraphBuilder(context);
+      const builder = new ml.GraphBuilder(context);
 
-      const tensors = new Map<string, any>();
+      const tensors = new Map<string, MLOperandStub>();
 
       // 1. Declare inputs
       this.model.inputs.forEach((input) => {
@@ -118,10 +156,11 @@ export class WebNNProvider {
       }
 
       // We need outputs explicitly specified
-      const outputDict: Record<string, any> = {};
+      const outputDict: Record<string, MLOperandStub> = {};
       this.model.outputs.forEach((o) => {
-        if (tensors.has(o.name)) {
-          outputDict[o.name] = tensors.get(o.name);
+        const op = tensors.get(o.name);
+        if (op) {
+          outputDict[o.name] = op;
         }
       });
 
@@ -168,11 +207,11 @@ export class WebNNProvider {
 
       // 251. Compare WebNN execution time against WASM and WebGPU.
       console.info(`[WebNN Bench] Exec: ${execTime.toFixed(2)}ms`, outputs);
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error(e);
       // 254. Implement detailed error mapping from WebNN DOMExceptions
-      const name = e.name || 'Error';
-      const message = e.message || String(e);
+      const name = e instanceof Error ? e.name : 'Error';
+      const message = e instanceof Error ? e.message : String(e);
       Toast.show(`WebNN Execution Failed: [${name}] ${message}`, 'error');
     }
   }

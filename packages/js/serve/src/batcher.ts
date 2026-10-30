@@ -3,21 +3,37 @@
  * Provides batcher functionality for the serve package.
  */
 export interface BatchRequest {
+  /** Property `id`. */
   id: string;
+  /** Property `payload`. */
   payload: ReturnType<typeof JSON.parse>;
+  /** Property `resolve`. */
   resolve: (response: ReturnType<typeof JSON.parse>) => void;
+  /** Property `reject`. */
   reject: (error: Error) => void;
+  /** Property `queuedAt`. */
   queuedAt: number;
+  /** Property `priority`. */
   priority: number; // Higher is better
 }
 
+/** Represents the `DynamicBatcher` class. */
 export class DynamicBatcher {
+  /** Property `maxBatchSize` of `DynamicBatcher`. */
   public maxBatchSize: number = 8;
+  /** Property `batchTimeoutMs` of `DynamicBatcher`. */
   public batchTimeoutMs: number = 10;
 
+  /** Property `queue` of `DynamicBatcher`. */
   private queue: BatchRequest[] = [];
+  /** Property `timeoutHandle` of `DynamicBatcher`. */
   private timeoutHandle: ReturnType<typeof JSON.parse> = null;
 
+  /**
+   * Initializes a new `DynamicBatcher` instance.
+   * @param executeBatch Parameter `executeBatch`.
+   * @param options Parameter `options`.
+   */
   constructor(
     private executeBatch: (
       batch: BatchRequest[],
@@ -29,6 +45,12 @@ export class DynamicBatcher {
     if (options?.batchTimeoutMs) this.batchTimeoutMs = options.batchTimeoutMs;
   }
 
+  /**
+   * Executes `add` on `DynamicBatcher`.
+   * @param payload Parameter `payload`.
+   * @param priority Parameter `priority`.
+   * @returns Result of `add`.
+   */
   public async add(
     payload: ReturnType<typeof JSON.parse>,
     priority: number = 0,
@@ -55,6 +77,10 @@ export class DynamicBatcher {
     });
   }
 
+  /**
+   * Executes `flush` on `DynamicBatcher`.
+   * @returns Result of `flush`.
+   */
   private flush() {
     if (this.timeoutHandle) {
       clearTimeout(this.timeoutHandle);
@@ -75,10 +101,8 @@ export class DynamicBatcher {
     // 41. Ensure strict ordering of responses matching the incoming queue exactly.
     const activeBatch = this.queue.splice(0, this.maxBatchSize);
 
-    const startTime = activeBatch[0] ? activeBatch[0].queuedAt : Date.now();
-    console.debug(
-      `Batched ${activeBatch.length} requests in ${Date.now() - startTime}ms`,
-    );
+    const startTime = (activeBatch[0] as BatchRequest).queuedAt;
+    console.debug(`Batched ${activeBatch.length} requests in ${Date.now() - startTime}ms`);
 
     setTimeout(async () => {
       try {
@@ -88,10 +112,7 @@ export class DynamicBatcher {
         const concatenatedInputs = this.prepareBatchInputs(activeBatch);
 
         // Execute
-        const outputs = await this.executeBatch(
-          activeBatch,
-          concatenatedInputs,
-        );
+        const outputs = await this.executeBatch(activeBatch, concatenatedInputs);
 
         // 40. Split the single ONNX execution output back into isolated HTTP response promises.
         // 41. Strict ordering
@@ -109,9 +130,12 @@ export class DynamicBatcher {
     }, 0);
   }
 
-  private prepareBatchInputs(
-    batch: BatchRequest[],
-  ): ReturnType<typeof JSON.parse> {
+  /**
+   * Executes `prepareBatchInputs` on `DynamicBatcher`.
+   * @param batch Parameter `batch`.
+   * @returns Result of `prepareBatchInputs`.
+   */
+  private prepareBatchInputs(batch: BatchRequest[]): ReturnType<typeof JSON.parse> {
     const hasSequences = batch.some((b) => Array.isArray(b.payload?.input_ids));
     if (!hasSequences) {
       return {
@@ -134,10 +158,7 @@ export class DynamicBatcher {
       const padLen = maxLen - seq.length;
 
       const paddedSeq = [...seq, ...new Array(padLen).fill(0)];
-      const mask = [
-        ...new Array(seq.length).fill(1),
-        ...new Array(padLen).fill(0),
-      ];
+      const mask = [...new Array(seq.length).fill(1), ...new Array(padLen).fill(0)];
 
       paddedInputIds.push(paddedSeq);
       attentionMasks.push(mask);

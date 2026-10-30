@@ -2,10 +2,10 @@
 
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Node, Tensor
-from onnx9000.core.profiler import profile
+from onnx9000.core.profiler import _add_metric, profile
 
 
-def test_profiler_dtypes():
+def test_profiler_dtypes() -> None:
     """Tests the profiler dtypes functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x16", [10, 10], DType.FLOAT16))
@@ -34,7 +34,7 @@ def test_profiler_dtypes():
     assert res.int8_macs > 0
 
 
-def test_profiler_batchnorm_int():
+def test_profiler_batchnorm_int() -> None:
     """Tests the profiler batchnorm int functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", [10, 10], DType.FLOAT32))
@@ -52,7 +52,7 @@ def test_profiler_batchnorm_int():
     assert res.total_flops == 400
 
 
-def test_profiler_reduce_int():
+def test_profiler_reduce_int() -> None:
     """Tests the profiler reduce int functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", [10, 10], DType.FLOAT32))
@@ -70,7 +70,7 @@ def test_profiler_reduce_int():
     assert res.total_flops > 0
 
 
-def test_profiler_batchnorm_str():
+def test_profiler_batchnorm_str() -> None:
     """Tests the profiler batchnorm str functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", ("B", "I"), DType.FLOAT32))
@@ -88,7 +88,7 @@ def test_profiler_batchnorm_str():
     assert "4 *" in str(res.total_flops)
 
 
-def test_profiler_prelu():
+def test_profiler_prelu() -> None:
     """Tests the profiler prelu functionality."""
     g = Graph("g")
     g.add_tensor(Tensor("x", [10, 10], DType.FLOAT32))
@@ -98,10 +98,7 @@ def test_profiler_prelu():
     assert res.total_flops > 0
 
 
-from onnx9000.core.profiler import _add_metric
-
-
-def test_add_metric():
+def test_add_metric() -> None:
     """Tests the add metric functionality."""
     assert _add_metric(0, "A") == "A"
     assert _add_metric("B", 0) == "B"

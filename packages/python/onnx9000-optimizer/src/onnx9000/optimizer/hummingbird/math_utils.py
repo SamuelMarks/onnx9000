@@ -40,7 +40,12 @@ def optimize_sigmoid(
         g.nodes.append(Node("Sigmoid", inputs=[input_name], outputs=[output_name]))
 
 
-def fold_scaler_into_linear(weights, bias, mean, scale) -> None:
+def fold_scaler_into_linear(
+    weights: int | float | str | bool | bytes | list | dict | tuple | None,
+    bias: int | float | str | bool | bytes | list | dict | tuple | None,
+    mean: int | float | str | bool | bytes | list | dict | tuple | None,
+    scale: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Fold sequential Scaler -> LinearRegressor into a single affine transform natively."""
     # new_weights = weights / scale
     # new_bias = bias - sum(mean * new_weights)

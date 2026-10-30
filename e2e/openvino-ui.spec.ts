@@ -4,7 +4,7 @@ test.describe('openvino-ui', () => {
   test.beforeEach(async ({ page }) => {
     try {
       await page.goto('/openvino-ui.html');
-    } catch (_e) {
+    } catch {
       test.skip();
     }
   });

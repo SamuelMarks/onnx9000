@@ -1,3 +1,41 @@
-class OliveOptimizer:
-    def process(self, arg):
-        return f"Olive Optimizer processed {arg}"
+"""Backward-compatible re-export module for `onnx9000_olive_optimizer`."""
+
+from onnx9000.olive_optimizer import (
+    AutoOptimizer,
+    DynamicQuantizationPass,
+    Evaluator,
+    GraphFusionPass,
+    LayoutConversionPass,
+    MixedPrecisionPass,
+    OliveModel,
+    OliveOptimizer,
+    OrtPerfTuningPass,
+    OrtTransformerOptimizationPass,
+    Pass,
+    PassContext,
+    PruningPass,
+    QuantizationPass,
+    StaticQuantizationPass,
+    Target,
+    WeightOnlyQuantizationPass,
+)
+
+__all__ = [
+    "AutoOptimizer",
+    "DynamicQuantizationPass",
+    "Evaluator",
+    "GraphFusionPass",
+    "LayoutConversionPass",
+    "MixedPrecisionPass",
+    "OliveModel",
+    "OliveOptimizer",
+    "OrtPerfTuningPass",
+    "OrtTransformerOptimizationPass",
+    "Pass",
+    "PassContext",
+    "PruningPass",
+    "QuantizationPass",
+    "StaticQuantizationPass",
+    "Target",
+    "WeightOnlyQuantizationPass",
+]

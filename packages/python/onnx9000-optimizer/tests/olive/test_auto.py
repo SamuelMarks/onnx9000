@@ -2,6 +2,7 @@
 
 from typing import NoReturn
 
+from onnx9000.core.exceptions import Onnx9000Error
 from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.optimizer.olive.auto import AutoOptimizer
 from onnx9000.optimizer.olive.evaluator import Evaluator
@@ -14,10 +15,14 @@ class DummyPass(Pass):
     """A dummy pass."""
 
     def __init__(self) -> None:
-        """Init."""
+        """Initialize DummyPass with configured parameters and state."""
         super().__init__("DummyPass")
 
-    def run(self, model, context):
+    def run(
+        self,
+        model: int | float | str | bool | bytes | list | dict | tuple | None,
+        context: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Run."""
         return model
 
@@ -26,12 +31,16 @@ class FailingPass(Pass):
     """A failing pass."""
 
     def __init__(self) -> None:
-        """Init."""
+        """Initialize FailingPass with configured parameters and state."""
         super().__init__("FailingPass")
 
-    def run(self, model, context) -> NoReturn:
+    def run(
+        self,
+        model: int | float | str | bool | bytes | list | dict | tuple | None,
+        context: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> NoReturn:
         """Run."""
-        raise RuntimeError("Fail")
+        raise Onnx9000Error("Fail")
 
 
 def test_target() -> None:

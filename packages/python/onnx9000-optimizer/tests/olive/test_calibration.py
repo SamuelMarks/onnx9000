@@ -4,7 +4,9 @@ from onnx9000.core.ir import Graph
 from onnx9000.optimizer.olive.calibration_ops import CalibrationLoop
 
 
-def test_calibration_loop(tmp_path) -> None:
+def test_calibration_loop(
+    tmp_path: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Test calibration loop logic."""
     g = Graph("test")
     g.metadata = {}

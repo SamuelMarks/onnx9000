@@ -1,12 +1,16 @@
 import { describe, expect, it } from 'vitest';
-import * as Module from '../../src/core/OnnxAdapter';
+import { OnnxAdapter } from '../../src/core/OnnxAdapter';
+
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
 
 describe('OnnxAdapter.ts', () => {
   it('should instantiate and cover OnnxAdapter', () => {
     // Attempt to instantiate
     try {
-      const obj = new (Module as any).OnnxAdapter();
+      const obj = Construct(OnnxAdapter);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

@@ -1,4 +1,6 @@
-// @ts-nocheck
+/**
+ * @fileoverview flax_parser module for converters.
+ */
 /**
  * Flax nnx state dict parser.
  */

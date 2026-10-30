@@ -8,8 +8,8 @@ from onnx9000.core.ir import Attribute, Constant, Graph, Node, ValueInfo
 from onnx9000.openvino.exporter import OpenVinoExporter
 
 
-def test_export_unsupported_dtype():
-    """Docstring for D103."""
+def test_export_unsupported_dtype() -> None:
+    """Verify that export unsupported dtype behaves as expected."""
     g = Graph("g")
     g.inputs.append(ValueInfo("x", (1,), DType.FLOAT16))
     exporter = OpenVinoExporter(g)
@@ -17,35 +17,35 @@ def test_export_unsupported_dtype():
         exporter._map_dtype("UNSUPPORTED_DTYPE")
 
 
-def test_clamp_dynamic():
-    """Docstring for D103."""
+def test_clamp_dynamic() -> None:
+    """Verify that clamp dynamic behaves as expected."""
     g = Graph("g")
     g.inputs.append(ValueInfo("x", ["batch", 3, -1], DType.FLOAT32))
     g.nodes.append(Node("Relu", ["x"], ["y"]))
     g.outputs.append(ValueInfo("y", ["batch", 3, -1], DType.FLOAT32))
     exporter = OpenVinoExporter(g, clamp_dynamic=True)
-    xml, bin_ = exporter.export()
+    xml, _bin = exporter.export()
     assert "<dim>1</dim>" in xml
 
 
-def test_dynamic_const_dtypes():
-    """Docstring for D103."""
+def test_dynamic_const_dtypes() -> None:
+    """Verify that dynamic const dtypes behaves as expected."""
     g = Graph("g")
     exporter = OpenVinoExporter(g)
 
     # i64
-    _, p = exporter._emit_dynamic_const("i64", [1], [1], DType.INT64)
+    _, _p = exporter._emit_dynamic_const("i64", [1], [1], DType.INT64)
     # i32
-    _, p = exporter._emit_dynamic_const("i32", [1], [1], DType.INT32)
+    _, _p = exporter._emit_dynamic_const("i32", [1], [1], DType.INT32)
     # f32
-    _, p = exporter._emit_dynamic_const("f32", [1.0], [1], DType.FLOAT32)
+    _, _p = exporter._emit_dynamic_const("f32", [1.0], [1], DType.FLOAT32)
 
     with pytest.raises(ValueError):
         exporter._emit_dynamic_const("err", [1], [1], DType.INT8)
 
 
-def test_conv_nodes():
-    """Docstring for D103."""
+def test_conv_nodes() -> None:
+    """Verify that conv nodes behaves as expected."""
     g = Graph("g")
     g.inputs.append(ValueInfo("X", (1, 3, 224, 224), DType.FLOAT32))
     g.inputs.append(ValueInfo("W", (16, 3, 3, 3), DType.FLOAT32))
@@ -84,13 +84,13 @@ def test_conv_nodes():
 
     g.nodes = [n1, n2, n3]
     exporter = OpenVinoExporter(g)
-    xml, bin_ = exporter.export()
+    xml, _bin = exporter.export()
     assert "GroupConvolution" in xml
     assert "ConvolutionBackpropData" in xml
 
 
-def test_pool_nodes():
-    """Docstring for D103."""
+def test_pool_nodes() -> None:
+    """Verify that pool nodes behaves as expected."""
     g = Graph("g")
     g.inputs.append(ValueInfo("X", (1, 3, 224, 224), DType.FLOAT32))
     n1 = Node(
@@ -122,13 +122,13 @@ def test_pool_nodes():
     )
     g.nodes = [n1, n2, n3]
     exporter = OpenVinoExporter(g)
-    xml, bin_ = exporter.export()
+    xml, _bin = exporter.export()
     assert "MaxPool" in xml
     assert "AvgPool" in xml
 
 
-def test_gelu_softmax_concat_split():
-    """Docstring for D103."""
+def test_gelu_softmax_concat_split() -> None:
+    """Verify that gelu softmax concat split behaves as expected."""
     g = Graph("g")
     g.inputs.append(ValueInfo("X", (1, 3), DType.FLOAT32))
     g.nodes.append(
@@ -152,12 +152,12 @@ def test_gelu_softmax_concat_split():
     g.nodes.append(Node("Concat", ["X", "X"], ["Y5"], {"axis": Attribute("axis", "INT", 1)}))
     g.nodes.append(Node("Split", ["X"], ["Y6", "Y7"], {"axis": Attribute("axis", "INT", 1)}))
     exporter = OpenVinoExporter(g)
-    xml, bin_ = exporter.export()
+    xml, _bin = exporter.export()
     assert "tanh" in xml
 
 
-def test_pad_op():
-    """Docstring for D103."""
+def test_pad_op() -> None:
+    """Verify that pad op behaves as expected."""
     g = Graph("g")
     g.inputs.append(ValueInfo("X", (1, 3), DType.FLOAT32))
     g.inputs.append(ValueInfo("Pads", (4,), DType.INT64))
@@ -185,12 +185,12 @@ def test_pad_op():
     )
 
     exporter = OpenVinoExporter(g)
-    xml, bin_ = exporter.export()
+    xml, _bin = exporter.export()
     assert "Pad" in xml
 
 
-def test_gather_slice_reduce_argmax():
-    """Docstring for D103."""
+def test_gather_slice_reduce_argmax() -> None:
+    """Verify that gather slice reduce argmax behaves as expected."""
     g = Graph("g")
     g.inputs.append(ValueInfo("X", (1, 3), DType.FLOAT32))
 
@@ -236,13 +236,13 @@ def test_gather_slice_reduce_argmax():
     g.nodes.append(Node("ArgMin", ["X"], ["Y7"], {"keepdims": Attribute("keepdims", "INT", 0)}))
 
     exporter = OpenVinoExporter(g)
-    xml, bin_ = exporter.export()
+    xml, _bin = exporter.export()
     assert "Gather" in xml
     assert "StridedSlice" in xml
 
 
-def test_resize_space_nms_roi():
-    """Docstring for D103."""
+def test_resize_space_nms_roi() -> None:
+    """Verify that resize space nms roi behaves as expected."""
     g = Graph("g")
     g.inputs.append(ValueInfo("X", (1, 3), DType.FLOAT32))
 
@@ -297,12 +297,12 @@ def test_resize_space_nms_roi():
     )
 
     exporter = OpenVinoExporter(g)
-    xml, bin_ = exporter.export()
+    xml, _bin = exporter.export()
     assert "Interpolate" in xml
 
 
-def test_norms():
-    """Docstring for D103."""
+def test_norms() -> None:
+    """Verify that norms behaves as expected."""
     g = Graph("g")
     g.inputs.append(ValueInfo("X", (1, 3), DType.FLOAT32))
 
@@ -343,12 +343,12 @@ def test_norms():
     )
 
     exporter = OpenVinoExporter(g)
-    xml, bin_ = exporter.export()
+    xml, _bin = exporter.export()
     assert "MVN" in xml
 
 
-def test_dropout_cast_gridsample():
-    """Docstring for D103."""
+def test_dropout_cast_gridsample() -> None:
+    """Verify that dropout cast gridsample behaves as expected."""
     g = Graph("g")
     g.inputs.append(ValueInfo("X", (1, 3), DType.FLOAT32))
 
@@ -369,12 +369,12 @@ def test_dropout_cast_gridsample():
     )
 
     exporter = OpenVinoExporter(g)
-    xml, bin_ = exporter.export()
+    xml, _bin = exporter.export()
     assert "Convert" in xml
 
 
-def test_size_flatten_transpose():
-    """Docstring for D103."""
+def test_size_flatten_transpose() -> None:
+    """Verify that size flatten transpose behaves as expected."""
     g = Graph("g")
     g.inputs.append(ValueInfo("X", (1, 3), DType.FLOAT32))
 
@@ -383,12 +383,12 @@ def test_size_flatten_transpose():
     g.nodes.append(Node("Transpose", ["X"], ["Y3"], {"perm": Attribute("perm", "INTS", [1, 0])}))
 
     exporter = OpenVinoExporter(g)
-    xml, bin_ = exporter.export()
+    xml, _bin = exporter.export()
     assert "ShapeOf" in xml
 
 
-def test_gather_elements_constantofshape():
-    """Docstring for D103."""
+def test_gather_elements_constantofshape() -> None:
+    """Verify that gather elements constantofshape behaves as expected."""
     g = Graph("g")
     g.inputs.append(ValueInfo("X", (1, 3), DType.FLOAT32))
 
@@ -425,12 +425,12 @@ def test_gather_elements_constantofshape():
     g.nodes.append(Node("ConstantOfShape", ["X"], ["Y5"]))
 
     exporter = OpenVinoExporter(g)
-    xml, bin_ = exporter.export()
+    xml, _bin = exporter.export()
     assert "GatherElements" in xml
 
 
-def test_control_flow():
-    """Docstring for D103."""
+def test_control_flow() -> None:
+    """Verify that control flow behaves as expected."""
     sub_g1 = Graph("sub1")
     sub_g1.inputs.append(ValueInfo("a", (1,), DType.BOOL))
     sub_g1.nodes.append(Node("Relu", ["a"], ["b"]))
@@ -458,13 +458,13 @@ def test_control_flow():
     g.nodes.append(Node("Scan", ["X"], ["Y3"], {"body": Attribute("body", "GRAPH", sub_g1)}))
 
     exporter = OpenVinoExporter(g)
-    xml, bin_ = exporter.export()
+    xml, _bin = exporter.export()
     assert "If" in xml
     assert "TensorIterator" in xml
 
 
-def test_mat_gemm():
-    """Docstring for D103."""
+def test_mat_gemm() -> None:
+    """Verify that mat gemm behaves as expected."""
     g = Graph("g")
     g.inputs.append(ValueInfo("A", (2, 2), DType.FLOAT32))
     g.inputs.append(ValueInfo("B", (2, 2), DType.FLOAT32))
@@ -493,5 +493,5 @@ def test_mat_gemm():
         )
     )
     exporter = OpenVinoExporter(g)
-    xml, bin_ = exporter.export()
+    xml, _bin = exporter.export()
     assert "transpose_a" in xml

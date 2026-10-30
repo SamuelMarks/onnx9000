@@ -1,7 +1,5 @@
 """Module providing builder functionality."""
 
-from typing import Any
-
 from onnx9000.converters.tf.parsers import TFNode
 from onnx9000.core.ir import Graph, Node, Tensor
 
@@ -10,7 +8,11 @@ class TFToONNXGraphBuilder:
     """Class TFToONNXGraphBuilder implementation."""
 
     def __init__(self, name: str = "tf_to_onnx") -> None:
-        """Implement the __init__ method or operation."""
+        """Initialize TFToONNXGraphBuilder with configured parameters and state.
+
+        Args:
+            name: Parameter specifying name (str).
+        """
         self.graph = Graph(name=name)
         self._name_counters: dict[str, int] = {}
         self.tensor_map: dict[str, str] = {}
@@ -24,7 +26,13 @@ class TFToONNXGraphBuilder:
         self._name_counters[base_name] += 1
         return f"{base_name}_{count}"
 
-    def add_constant(self, name: str, value: Any, dtype: int, shape: list[int]) -> str:
+    def add_constant(
+        self,
+        name: str,
+        value: int | float | str | bool | bytes | list | dict | tuple | None,
+        dtype: int,
+        shape: list[int],
+    ) -> str:
         """Execute the add constant operation."""
         unique_name = self.get_unique_name(name)
         t = Tensor(name=unique_name, dtype=dtype, shape=shape)
@@ -37,7 +45,7 @@ class TFToONNXGraphBuilder:
         if node.op == "MatMul" and len(input_shapes) == 2:
             (s1, s2) = (input_shapes[0], input_shapes[1])
             if len(s1) > 0 and len(s2) > 0:
-                return s1[:-1] + (s2[-1],)
+                return (*s1[:-1], s2[-1])
         return ()
 
     def infer_dtype(self, node: TFNode, input_dtypes: list[int]) -> int:
@@ -65,7 +73,12 @@ class TFToONNXGraphBuilder:
             return [0, 0, 0, 0]
         return [1, 1, 1, 1]
 
-    def extract_attr(self, node: TFNode, attr_name: str, default: Any = None) -> Any:
+    def extract_attr(
+        self,
+        node: TFNode,
+        attr_name: str,
+        default: int | float | str | bool | bytes | list | dict | tuple | None = None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Execute the extract attr operation."""
         return node.attr.get(attr_name, default)
 
@@ -77,7 +90,7 @@ class TFToONNXGraphBuilder:
         self,
         op_type: str,
         inputs: list[str],
-        attributes: dict[str, Any],
+        attributes: dict[str, int | float | str | bool | bytes | list | dict | tuple | None],
         name_prefix: str,
         num_outputs: int = 1,
     ) -> list[str]:
@@ -100,7 +113,7 @@ class TFToONNXGraphBuilder:
         self,
         op_type: str,
         inputs: list[str | None],
-        attributes: dict[str, Any],
+        attributes: dict[str, int | float | str | bool | bytes | list | dict | tuple | None],
         name_prefix: str,
     ) -> list[str]:
         """Execute the make node optional inputs operation."""
@@ -119,10 +132,14 @@ class TFToONNXGraphBuilder:
         for n in self.graph.nodes:
             n.inputs = [new_output if inp == old_output else inp for inp in n.inputs]
 
-    def extract_const_value(self, node: TFNode) -> Any:
+    def extract_const_value(
+        self, node: TFNode
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Execute the extract const value operation."""
         return self.extract_attr(node, "value", None)
 
-    def resolve_variable(self, var_name: str) -> Any:
+    def resolve_variable(
+        self, var_name: str
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Execute the resolve variable operation."""
         return None

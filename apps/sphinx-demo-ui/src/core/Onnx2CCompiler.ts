@@ -1,10 +1,14 @@
-// @ts-nocheck
+/**
+ * @fileoverview Onnx2CCompiler module for sphinx-demo-ui.
+ */
+import { Onnx9000Error } from '@onnx9000/core';
 import { WorkerManager } from './WorkerManager';
 
 /**
  * Worker wrapper for ONNX2C compilation logic.
  */
 export class Onnx2CCompiler {
+  /** Property `workerId` of `Onnx2CCompiler`. */
   private workerId: string = 'onnx2c';
 
   /**
@@ -16,9 +20,10 @@ export class Onnx2CCompiler {
     const wm = WorkerManager.getInstance();
     try {
       const cSource = await wm.execute(this.workerId, onnxBuffer, 60000);
-      return cSource;
-    } catch (e: any) {
-      throw new Error(`ONNX2C Compilation failed: ${e.message}`);
+      return String(cSource);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      throw new Onnx9000Error(`ONNX2C Compilation failed: ${msg}`);
     }
   }
 

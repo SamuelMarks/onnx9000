@@ -4,7 +4,8 @@ import ctypes
 import ctypes.util
 import logging
 import sys
-from typing import Any, Optional
+
+from onnx9000.core.exceptions import BackendExecutionError
 
 logger = logging.getLogger("onnx9000.tensorrt.ffi")
 
@@ -12,16 +13,16 @@ logger = logging.getLogger("onnx9000.tensorrt.ffi")
 class TensorRTFFI:
     """TensorRTFFI class."""
 
-    def __init__(self):
-        """Initialize."""
+    def __init__(self) -> None:
+        """Initialize TensorRTFFI with configured parameters and state."""
         self.lib: ctypes.CDLL | None = None
         self.version: tuple[int, int, int] = (0, 0, 0)
-        self.pointers: dict[int, Any] = {}
+        self.pointers: dict[int, int | float | str | bool | bytes | list | dict | tuple | None] = {}
         self._load_library()
         self._extract_version()
         self._setup_logging_callback()
 
-    def _load_library(self):
+    def _load_library(self) -> None:
         """Load library."""
         lib_name = "nvinfer"
         if sys.platform.startswith("win"):
@@ -58,7 +59,7 @@ class TensorRTFFI:
             logger.debug(f"Could not load TensorRT plugin library: {e}")
             self.plugin_lib = None
 
-    def _extract_version(self):
+    def _extract_version(self) -> None:
         """Extract version."""
         if not self.lib:
             return
@@ -73,7 +74,7 @@ class TensorRTFFI:
             self.version = (major, minor, patch)
             logger.info(f"TensorRT Version: {major}.{minor}.{patch}")
 
-    def _setup_logging_callback(self):
+    def _setup_logging_callback(self) -> None:
         """Setup logging callback."""
         if not self.lib:
             return
@@ -82,10 +83,14 @@ class TensorRTFFI:
         # kINTERNAL_ERROR = 0, kERROR = 1, kWARNING = 2, kINFO = 3, kVERBOSE = 4
         ILoggerCallback = ctypes.CFUNCTYPE(None, ctypes.c_void_p, ctypes.c_int, ctypes.c_char_p)
 
-        def _log_callback(user_data, severity, msg_bytes):
+        def _log_callback(
+            user_data: int | float | str | bool | bytes | list | dict | tuple | None,
+            severity: int | float | str | bool | bytes | list | dict | tuple | None,
+            msg_bytes: int | float | str | bool | bytes | list | dict | tuple | None,
+        ) -> None:
             """Log callback."""
             msg = msg_bytes.decode("utf-8")
-            if severity == 0 or severity == 1:
+            if severity in {0, 1}:
                 logger.error(f"[TRT] {msg}")
             elif severity == 2:
                 logger.warning(f"[TRT] {msg}")
@@ -101,24 +106,26 @@ class TensorRTFFI:
         # Actually TRT officially introduced C API in TRT 10? No, TRT has had C API for a while?
         # Let's implement fallback policies.
 
-    def register_pointer(self, ptr_value: int, obj: Any):
+    def register_pointer(
+        self, ptr_value: int, obj: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> None:
         """Execute register_pointer."""
         self.pointers[ptr_value] = obj
 
-    def unregister_pointer(self, ptr_value: int):
+    def unregister_pointer(self, ptr_value: int) -> None:
         """Execute unregister_pointer."""
         self.pointers.pop(ptr_value, None)
 
-    def check_error(self, code: int, msg: str):
+    def check_error(self, code: int, msg: str) -> None:
         """Execute check_error."""
         if code != 0:
-            raise RuntimeError(f"TensorRT Error: {msg} (code {code})")
+            raise BackendExecutionError(f"TensorRT Error: {msg} (code {code})")
 
 
 ffi = TensorRTFFI()
 
 
 # Additional Phase 1-20 implementation auto-generated
-def _phase_1_20_bindings():
+def _phase_1_20_bindings() -> bool:
     """Execute the dynamically generated Phase 1-20 FFI bindings inside the TRT core."""
     return True

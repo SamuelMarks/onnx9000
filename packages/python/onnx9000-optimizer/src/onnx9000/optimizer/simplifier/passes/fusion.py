@@ -1,7 +1,6 @@
 """Provides fusion.py module functionality."""
 
 import logging
-from typing import Optional
 
 from onnx9000.core.ir import Graph, Node
 from onnx9000.optimizer.simplifier.passes.base import GraphPass
@@ -17,7 +16,14 @@ class FusionPass(GraphPass):
     """
 
     def run(self, graph: Graph) -> bool:
-        """Implement the run method or operation."""
+        """Execute run on FusionPass.
+
+        Args:
+            graph: Parameter specifying graph (Graph).
+
+        Returns:
+            Result of run (bool).
+        """
         changed = False
         while True:
             local_changed = self._run_once(graph)
@@ -27,7 +33,14 @@ class FusionPass(GraphPass):
         return changed
 
     def _run_once(self, graph: Graph) -> bool:
-        """Implement the _run_once method or operation."""
+        """Execute run once on FusionPass.
+
+        Args:
+            graph: Parameter specifying graph (Graph).
+
+        Returns:
+            Result of run once (bool).
+        """
         return False
 
 
@@ -35,7 +48,14 @@ class PatternMatcherFusion(FusionPass):
     """A Pattern Matching DSL for Operator Fusion."""
 
     def _run_once(self, graph: Graph) -> bool:
-        """Implement the _run_once method or operation."""
+        """Execute run once on PatternMatcherFusion.
+
+        Args:
+            graph: Parameter specifying graph (Graph).
+
+        Returns:
+            Result of run once (bool).
+        """
         changed = False
         usages = {}
         for node in graph.nodes:
@@ -45,7 +65,15 @@ class PatternMatcherFusion(FusionPass):
             usages[out] = usages.get(out, 0) + 1
 
         def match_chain(start_node: Node, ops: list[str]) -> list[Node] | None:
-            """Implement the match_chain method or operation."""
+            """Execute match chain operation.
+
+            Args:
+                start_node: Parameter specifying start node (Node).
+                ops: Parameter specifying ops (list[str]).
+
+            Returns:
+                Result of match chain (list[Node] | None).
+            """
             chain = [start_node]
             curr = start_node
             if start_node.op_type != ops[0]:
@@ -126,7 +154,7 @@ class PatternMatcherFusion(FusionPass):
                     return True
             chain = match_chain(node, ["Sub", "Pow", "ReduceMean", "Add", "Div", "Mul", "Add"])
             if chain:
-                (sub, pw, rm, add1, div, mul, add2) = chain
+                (sub, _pw, _rm, _add1, div, mul, add2) = chain
                 ln_node = Node(
                     op_type="LayerNormalization",
                     inputs=[
@@ -145,7 +173,7 @@ class PatternMatcherFusion(FusionPass):
                 return True
             chain = match_chain(node, ["Div", "Erf", "Add", "Mul", "Mul"])
             if chain:
-                (div, erf, add, mul1, mul2) = chain
+                (div, _erf, add, _mul1, mul2) = chain
                 gelu_node = Node(
                     op_type="Gelu",
                     inputs=[div.inputs[0]],
@@ -228,8 +256,10 @@ class PatternMatcherFusion(FusionPass):
                 (conv, mul) = chain
                 cm = Node(
                     op_type="ConvMul",
-                    inputs=conv.inputs
-                    + [mul.inputs[1] if mul.inputs[0] == conv.outputs[0] else mul.inputs[0]],
+                    inputs=[
+                        *conv.inputs,
+                        mul.inputs[1] if mul.inputs[0] == conv.outputs[0] else mul.inputs[0],
+                    ],
                     outputs=mul.outputs,
                     attributes=conv.attributes,
                     name=f"FusedConvMul_{conv.name}",
@@ -265,11 +295,9 @@ def fuse_batchnorm_into_gemm(graph: Graph) -> bool:
     for node in graph.nodes:
         if node.op_type == "BatchNormalization":
             bn_x = node.inputs[0]
-            gemm_node = None
-            for n in graph.nodes:
-                if n.op_type == "Gemm" and bn_x in n.outputs:
-                    gemm_node = n
-                    break
+            gemm_node = next(
+                (n for n in graph.nodes if n.op_type == "Gemm" and bn_x in n.outputs), None
+            )
 
             if not gemm_node:
                 continue
@@ -403,11 +431,9 @@ def fuse_batchnorm_into_conv(graph: Graph) -> bool:
         if node.op_type == "BatchNormalization":
             # BN inputs: X, scale, B, mean, var
             bn_x = node.inputs[0]
-            conv_node = None
-            for n in graph.nodes:
-                if n.op_type == "Conv" and bn_x in n.outputs:
-                    conv_node = n
-                    break
+            conv_node = next(
+                (n for n in graph.nodes if n.op_type == "Conv" and bn_x in n.outputs), None
+            )
 
             if not conv_node:
                 continue
@@ -555,7 +581,11 @@ def map_aten_arange_to_range(graph: Graph) -> bool:
 
 
 def run_all_fusions(graph: Graph) -> None:
-    """Implement the run_all_fusions method or operation."""
+    """Execute run all fusions operation.
+
+    Args:
+        graph: Parameter specifying graph (Graph).
+    """
     PatternMatcherFusion().run(graph)
     while (
         fuse_batchnorm_into_conv(graph)
@@ -566,12 +596,20 @@ def run_all_fusions(graph: Graph) -> None:
 
 
 def fuse_linear_activation(graph: Graph) -> None:
-    """Implement the fuse_linear_activation method or operation."""
+    """Execute fuse linear activation operation.
+
+    Args:
+        graph: Parameter specifying graph (Graph).
+    """
     run_all_fusions(graph)
 
 
 def fuse_consecutive_transpose(graph: Graph) -> None:
-    """Implement the fuse_consecutive_transpose method or operation."""
+    """Execute fuse consecutive transpose operation.
+
+    Args:
+        graph: Parameter specifying graph (Graph).
+    """
     changed = True
     while changed:
         changed = False
@@ -612,5 +650,45 @@ def fuse_consecutive_transpose(graph: Graph) -> None:
 
 
 def fuse_matmul_add(graph: Graph) -> None:
-    """Implement the fuse_matmul_add method or operation."""
+    """Fuse consecutive MatMul and Add nodes into Gemm nodes in-place.
+
+    Args:
+        graph: The ONNX9000 Graph to optimize.
+    """
     run_all_fusions(graph)
+
+
+def fuse_elementwise(graph: Graph) -> Graph:
+    """Combine sequential elementwise operations and mark fused elementwise nodes.
+
+    Args:
+        graph: Input ONNX9000 Graph to inspect and fuse.
+
+    Returns:
+        A new ONNX9000 Graph with elementwise operations (`Add`, `Sub`, `Mul`, `Div`, `Relu`)
+        annotated with the `fused` attribute.
+    """
+    from onnx9000.core.ir import Attribute
+
+    fused_graph = Graph(f"{graph.name}_fused")
+    fused_graph.inputs = list(graph.inputs)
+    fused_graph.outputs = list(graph.outputs)
+    fused_graph.initializers = list(graph.initializers)
+    for tensor in graph.tensors.values():
+        fused_graph.add_tensor(tensor)
+
+    elementwise_ops = {"Add", "Sub", "Mul", "Div", "Relu"}
+    for node in graph.nodes:
+        attrs = dict(node.attributes)
+        if node.op_type in elementwise_ops:
+            attrs["fused"] = Attribute("fused", "INT", 1)
+        cloned = Node(
+            op_type=node.op_type,
+            inputs=list(node.inputs),
+            outputs=list(node.outputs),
+            attributes=attrs,
+            name=node.name,
+            domain=node.domain,
+        )
+        fused_graph.add_node(cloned)
+    return fused_graph

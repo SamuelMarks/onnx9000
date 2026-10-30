@@ -13,7 +13,7 @@ test.describe('Spec Orphans Web Demos', () => {
       try {
         await page.goto(p.url);
         await page.waitForSelector('.container', { state: 'attached', timeout: 5000 });
-      } catch (_e) {
+      } catch {
         test.skip();
       }
       await page.click(p.id);

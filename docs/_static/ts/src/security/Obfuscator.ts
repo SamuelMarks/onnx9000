@@ -22,7 +22,7 @@ export class Obfuscator {
       if (!nameMap.has(original)) {
         nameMap.set(original, `n_${generateHash()}`);
       }
-      return nameMap.get(original)!;
+      return nameMap.get(original);
     };
 
     // Deep clone to avoid mutating original state in-place unexpectedly

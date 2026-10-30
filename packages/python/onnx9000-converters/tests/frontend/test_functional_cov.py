@@ -1,8 +1,11 @@
 """Tests the functional cov module functionality."""
 
 import numpy as np
+from onnx9000.converters.frontend.builder import GraphBuilder, Tracing
+from onnx9000.converters.frontend.nn import functional as F
 from onnx9000.converters.frontend.nn.functional import interpolate
 from onnx9000.converters.frontend.tensor import Tensor
+from onnx9000.core.dtypes import DType
 
 
 def test_interpolate_align_corners_unsupported() -> None:
@@ -12,13 +15,8 @@ def test_interpolate_align_corners_unsupported() -> None:
     assert res is None
 
 
-from onnx9000.converters.frontend.builder import GraphBuilder, Tracing
-from onnx9000.converters.frontend.nn import functional as F
-from onnx9000.core.dtypes import DType
-
-
-def test_activations():
-    """Docstring for D103."""
+def test_activations() -> None:
+    """Verify that activations behaves as expected."""
     x = Tensor(name="x", shape=(1, 2), dtype=DType.FLOAT32)
     b = GraphBuilder("test_acts")
     with Tracing(b):
@@ -34,8 +32,8 @@ def test_activations():
         assert b.nodes[-1].op_type == "Softmax"
 
 
-def test_linear():
-    """Docstring for D103."""
+def test_linear() -> None:
+    """Verify that linear behaves as expected."""
     x = Tensor(name="x", shape=(1, 2), dtype=DType.FLOAT32)
     w = Tensor(name="w", shape=(3, 2), dtype=DType.FLOAT32)
     b_t = Tensor(name="b", shape=(3,), dtype=DType.FLOAT32)
@@ -45,8 +43,8 @@ def test_linear():
         assert b.nodes[-1].op_type == "Add"  # linear produces matmul + add
 
 
-def test_conv2d():
-    """Docstring for D103."""
+def test_conv2d() -> None:
+    """Verify that conv2d behaves as expected."""
     x = Tensor(name="x", shape=(1, 3, 224, 224), dtype=DType.FLOAT32)
     w = Tensor(name="w", shape=(16, 3, 3, 3), dtype=DType.FLOAT32)
     bias = Tensor(name="bias", shape=(16,), dtype=DType.FLOAT32)
@@ -56,8 +54,8 @@ def test_conv2d():
         assert b.nodes[-1].op_type == "Conv"
 
 
-def test_pad():
-    """Docstring for D103."""
+def test_pad() -> None:
+    """Verify that pad behaves as expected."""
     x = Tensor(name="x", shape=(1, 1, 2, 2), dtype=DType.FLOAT32)
     b = GraphBuilder("test_pad")
     with Tracing(b):
@@ -66,8 +64,8 @@ def test_pad():
         assert b.nodes[-1].attributes["mode"] == "constant"
 
 
-def test_upsample():
-    """Docstring for D103."""
+def test_upsample() -> None:
+    """Verify that upsample behaves as expected."""
     x = Tensor(name="x", shape=(1, 3, 8, 8), dtype=DType.FLOAT32)
     b = GraphBuilder("test_upsample")
     with Tracing(b):
@@ -86,8 +84,8 @@ def test_upsample():
         assert F.interpolate(x, scale_factor=2.0, mode="linear", align_corners=True) is None
 
 
-def test_one_hot():
-    """Docstring for D103."""
+def test_one_hot() -> None:
+    """Verify that one hot behaves as expected."""
     x = Tensor(name="x", shape=(1, 3), dtype=DType.INT64)
     b = GraphBuilder("test_one_hot")
     with Tracing(b):
@@ -100,8 +98,8 @@ def test_one_hot():
         assert b.nodes[-1].op_type == "LogSoftmax"
 
 
-def test_max_pool2d():
-    """Docstring for D103."""
+def test_max_pool2d() -> None:
+    """Verify that max pool2d behaves as expected."""
     x = Tensor(name="x", shape=(1, 3, 224, 224), dtype=DType.FLOAT32)
     b = GraphBuilder("test_max_pool2d")
     with Tracing(b):

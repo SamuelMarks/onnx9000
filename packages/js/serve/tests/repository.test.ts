@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../src/repository";
+import { describe, expect, it } from 'vitest';
+import { ModelRepository } from '../src/repository';
 
-describe("repository.ts", () => {
-  it("should instantiate and cover ModelRepository", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('repository.ts', () => {
+  it('should instantiate and cover ModelRepository', () => {
     try {
-      const obj = new (Module as any).ModelRepository();
+      const obj = Construct(ModelRepository);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

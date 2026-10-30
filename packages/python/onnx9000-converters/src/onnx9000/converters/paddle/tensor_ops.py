@@ -8,20 +8,16 @@ from onnx9000.converters.paddle.parsers import PaddleNode
 
 def _map_reshape(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
     """Execute the  map reshape operation."""
-    inputs = []
-    if "X" in node.inputs:
-        inputs.extend(node.inputs["X"])
+    inputs = list(node.inputs.get("X", []))
     if "Shape" in node.inputs:
         inputs.extend(node.inputs["Shape"])
-    if "Shape" not in node.inputs:
+    else:
         shape_attr = builder.extract_list_attr(node, "shape")
         shape_tensor = builder.add_constant(
             f"{node.name}_shape_attr", shape_attr, 7, (len(shape_attr),)
         )
         inputs.append(shape_tensor)
-    out_names = node.outputs.get("Out", [])
-    if not out_names:
-        out_names = [f"{node.name}_out"]
+    out_names = node.outputs.get("Out") or [f"{node.name}_out"]
     builder.make_node("Reshape", inputs, {}, node.name, outputs=out_names)
     return out_names
 
@@ -30,9 +26,7 @@ def _map_transpose(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[
     """Execute the  map transpose operation."""
     inputs = node.inputs.get("X", [])
     perm = builder.extract_list_attr(node, "axis")
-    out_names = node.outputs.get("Out", [])
-    if not out_names:
-        out_names = [f"{node.name}_out"]
+    out_names = node.outputs.get("Out") or [f"{node.name}_out"]
     builder.make_node("Transpose", inputs, {"perm": perm}, node.name, outputs=out_names)
     return out_names
 
@@ -41,20 +35,16 @@ def _map_flatten(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[st
     """Execute the  map flatten operation."""
     inputs = node.inputs.get("X", [])
     axis = builder.extract_attr(node, "axis", 1)
-    out_names = node.outputs.get("Out", [])
-    if not out_names:
-        out_names = [f"{node.name}_out"]
+    out_names = node.outputs.get("Out") or [f"{node.name}_out"]
     builder.make_node("Flatten", inputs, {"axis": axis}, node.name, outputs=out_names)
     return out_names
 
 
 def _map_squeeze(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
     """Execute the  map squeeze operation."""
-    inputs = node.inputs.get("X", [])
+    inputs = list(node.inputs.get("X", []))
     axes = builder.extract_list_attr(node, "axes")
-    out_names = node.outputs.get("Out", [])
-    if not out_names:
-        out_names = [f"{node.name}_out"]
+    out_names = node.outputs.get("Out") or [f"{node.name}_out"]
     if axes:
         axes_tensor = builder.add_constant(f"{node.name}_axes", axes, 7, (len(axes),))
         inputs.append(axes_tensor)
@@ -64,11 +54,9 @@ def _map_squeeze(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[st
 
 def _map_unsqueeze(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
     """Execute the  map unsqueeze operation."""
-    inputs = node.inputs.get("X", [])
+    inputs = list(node.inputs.get("X", []))
     axes = builder.extract_list_attr(node, "axes")
-    out_names = node.outputs.get("Out", [])
-    if not out_names:
-        out_names = [f"{node.name}_out"]
+    out_names = node.outputs.get("Out") or [f"{node.name}_out"]
     if axes:
         axes_tensor = builder.add_constant(f"{node.name}_axes", axes, 7, (len(axes),))
         inputs.append(axes_tensor)
@@ -109,9 +97,8 @@ def _map_unstack(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[st
         sq = builder.make_node("Squeeze", [s, axes_const], {}, f"{node.name}_sq_{i}")[0]
         outs.append(sq)
     expected_outs = node.outputs.get("Y", [])
-    for i, out_name in enumerate(expected_outs):
-        if i < len(outs):
-            builder.rewire_edge(outs[i], out_name)
+    for i, out_name in enumerate(expected_outs[: len(outs)]):
+        builder.rewire_edge(outs[i], out_name)
     return expected_outs if expected_outs else outs
 
 
@@ -120,9 +107,7 @@ def _map_split(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]
     inputs = node.inputs.get("X", [])
     num = builder.extract_attr(node, "num", 1)
     axis = builder.extract_attr(node, "axis", 0)
-    out_names = node.outputs.get("Out", [])
-    if not out_names:
-        out_names = [f"{node.name}_out_{i}" for i in range(num)]
+    out_names = node.outputs.get("Out") or [f"{node.name}_out_{i}" for i in range(num)]
     builder.make_node(
         "Split",
         inputs,
@@ -135,9 +120,7 @@ def _map_split(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]
 
 def _map_slice(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
     """Execute the  map slice operation."""
-    inputs = node.inputs.get("X", [])
-    if not inputs:
-        inputs = node.inputs.get("Input", [])
+    inputs = node.inputs.get("X") or node.inputs.get("Input", [])
     axes = builder.extract_list_attr(node, "axes")
     starts = builder.extract_list_attr(node, "starts")
     ends = builder.extract_list_attr(node, "ends")
@@ -146,7 +129,7 @@ def _map_slice(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]
     axes_const = builder.add_constant(f"{node.name}_axes", axes, 7, [len(axes)])
     slice_out = builder.make_node(
         "Slice",
-        inputs + [starts_const, ends_const, axes_const],
+        [*inputs, starts_const, ends_const, axes_const],
         {},
         f"{node.name}_slice",
     )[0]
@@ -159,78 +142,50 @@ def _map_slice(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]
 
 def _map_gather(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
     """Execute the  map gather operation."""
-    inputs = []
-    if "X" in node.inputs:
-        inputs.extend(node.inputs["X"])
-    if "Index" in node.inputs:
-        inputs.extend(node.inputs["Index"])
+    inputs = node.inputs.get("X", []) + node.inputs.get("Index", [])
     axis = builder.extract_attr(node, "axis", 0)
     return builder.make_node("Gather", inputs, {"axis": axis}, node.name)
 
 
 def _map_gather_nd(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
     """Execute the  map gather nd operation."""
-    inputs = []
-    if "X" in node.inputs:
-        inputs.extend(node.inputs["X"])
-    if "Index" in node.inputs:
-        inputs.extend(node.inputs["Index"])
+    inputs = node.inputs.get("X", []) + node.inputs.get("Index", [])
     return builder.make_node("GatherND", inputs, {}, node.name)
 
 
 def _map_scatter(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
     """Execute the  map scatter operation."""
-    inputs = []
-    if "X" in node.inputs:
-        inputs.extend(node.inputs["X"])
-    if "Index" in node.inputs:
-        inputs.extend(node.inputs["Index"])
-    if "Updates" in node.inputs:
-        inputs.extend(node.inputs["Updates"])
+    inputs = (
+        node.inputs.get("X", []) + node.inputs.get("Index", []) + node.inputs.get("Updates", [])
+    )
     return builder.make_node("ScatterElements", inputs, {}, node.name)
 
 
 def _map_scatter_nd(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
     """Execute the  map scatter nd operation."""
-    inputs = []
-    if "X" in node.inputs:
-        inputs.extend(node.inputs["X"])
-    if "Index" in node.inputs:
-        inputs.extend(node.inputs["Index"])
-    if "Updates" in node.inputs:
-        inputs.extend(node.inputs["Updates"])
+    inputs = (
+        node.inputs.get("X", []) + node.inputs.get("Index", []) + node.inputs.get("Updates", [])
+    )
     return builder.make_node("ScatterND", inputs, {}, node.name)
 
 
 def _map_scatter_nd_add(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
     """Execute the  map scatter nd add operation."""
-    inputs = []
-    if "X" in node.inputs:
-        inputs.extend(node.inputs["X"])
-    if "Index" in node.inputs:
-        inputs.extend(node.inputs["Index"])
-    if "Updates" in node.inputs:
-        inputs.extend(node.inputs["Updates"])
+    inputs = (
+        node.inputs.get("X", []) + node.inputs.get("Index", []) + node.inputs.get("Updates", [])
+    )
     return builder.make_node("ScatterND", inputs, {"reduction": "add"}, node.name)
 
 
 def _map_tile(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
     """Execute the  map tile operation."""
-    inputs = []
-    if "X" in node.inputs:
-        inputs.extend(node.inputs["X"])
-    if "RepeatTimes" in node.inputs:
-        inputs.extend(node.inputs["RepeatTimes"])
+    inputs = node.inputs.get("X", []) + node.inputs.get("RepeatTimes", [])
     return builder.make_node("Tile", inputs, {}, node.name)
 
 
 def _map_expand(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
     """Execute the  map expand operation."""
-    inputs = []
-    if "X" in node.inputs:
-        inputs.extend(node.inputs["X"])
-    if "Shape" in node.inputs:
-        inputs.extend(node.inputs["Shape"])
+    inputs = node.inputs.get("X", []) + node.inputs.get("Shape", [])
     return builder.make_node("Expand", inputs, {}, node.name)
 
 
@@ -239,7 +194,7 @@ def _map_expand_as(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[
     x = node.inputs.get("X", [])
     y = node.inputs.get("Y", [])
     y_shape = builder.make_node("Shape", y, {}, f"{node.name}_shape")[0]
-    return builder.make_node("Expand", x + [y_shape], {}, node.name)
+    return builder.make_node("Expand", [*x, y_shape], {}, node.name)
 
 
 def _map_cast(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
@@ -261,11 +216,11 @@ def _map_size(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
 
 def _map_fill_constant(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
     """Execute the  map fill constant operation."""
-    shape = node.inputs.get("ShapeTensor", [])
+    shape = list(node.inputs.get("ShapeTensor", []))
     if not shape:
         shape_attr = builder.extract_list_attr(node, "shape")
         shape_const = builder.add_constant(f"{node.name}_shape", shape_attr, 7, (len(shape_attr),))
-        shape.append(shape_const)
+        shape = [shape_const]
     val = builder.extract_attr(node, "value", 0.0)
     return builder.make_node("ConstantOfShape", shape, {"value": val}, node.name)
 
@@ -284,13 +239,7 @@ def _map_zeros_ones_like(val: float) -> Callable:
 
 def _map_range(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
     """Execute the  map range operation."""
-    inputs = []
-    if "Start" in node.inputs:
-        inputs.extend(node.inputs["Start"])
-    if "End" in node.inputs:
-        inputs.extend(node.inputs["End"])
-    if "Step" in node.inputs:
-        inputs.extend(node.inputs["Step"])
+    inputs = node.inputs.get("Start", []) + node.inputs.get("End", []) + node.inputs.get("Step", [])
     return builder.make_node("Range", inputs, {}, node.name)
 
 
@@ -307,13 +256,7 @@ def _map_assign(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str
 
 def _map_where(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[str]:
     """Execute the  map where operation."""
-    inputs = []
-    if "Condition" in node.inputs:
-        inputs.extend(node.inputs["Condition"])
-    if "X" in node.inputs:
-        inputs.extend(node.inputs["X"])
-    if "Y" in node.inputs:
-        inputs.extend(node.inputs["Y"])
+    inputs = node.inputs.get("Condition", []) + node.inputs.get("X", []) + node.inputs.get("Y", [])
     return builder.make_node("Where", inputs, {}, node.name)
 
 
@@ -323,14 +266,15 @@ def _map_nonzero(builder: PaddleToONNXGraphBuilder, node: PaddleNode) -> list[st
     return builder.make_node("NonZero", inputs, {}, node.name)
 
 
-def _map_custom(op_name: str):
+def _map_custom(op_name: str) -> int | float | str | bool | bytes | list | dict | tuple | None:
     """Execute the map custom operation."""
 
-    def _impl(builder, node):
+    def _impl(
+        builder: int | float | str | bool | bytes | list | dict | tuple | None,
+        node: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Execute the impl operation."""
-        inputs = node.inputs.get("X", [])
-        if "Y" in node.inputs:
-            inputs.extend(node.inputs["Y"])
+        inputs = node.inputs.get("X", []) + node.inputs.get("Y", [])
         return builder.make_node(op_name, inputs, {}, node.name)
 
     return _impl

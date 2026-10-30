@@ -7,7 +7,11 @@ from onnx9000.toolkit.training.autograd.vjp import VJPRule
 class MockRule(VJPRule):
     """Represents the Mock Rule class."""
 
-    def build_backward_nodes(self, fwd_node, grad_outputs):
+    def build_backward_nodes(
+        self,
+        fwd_node: int | float | str | bool | bytes | list | dict | tuple | None,
+        grad_outputs: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Execute the build backward nodes operation."""
         return super().build_backward_nodes(fwd_node, grad_outputs)
 

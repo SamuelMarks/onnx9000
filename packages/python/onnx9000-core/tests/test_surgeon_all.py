@@ -1,6 +1,6 @@
 """Tests the surgeon all module functionality."""
 
-import onnx9000.core.surgeon as surgeon
+from onnx9000.core import surgeon
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Constant, Graph, Node, Variable
 

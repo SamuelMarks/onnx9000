@@ -2,27 +2,38 @@
  * @fileoverview lower_onnx_to_mhlo.ts
  * Provides lower_onnx_to_mhlo functionality for the iree-compiler package.
  */
-import type { Graph } from "@onnx9000/core";
-import * as mhlo from "../dialects/web/mhlo.js";
-import { TensorType } from "../dialects/web/tensor.js";
-import { Block, Operation, Region, type Value } from "../ir/core.js";
 
+import type { Graph } from '@onnx9000/core';
+import { Onnx9000Error } from '@onnx9000/core';
+import * as mhlo from '../dialects/web/mhlo.js';
+import { TensorType } from '../dialects/web/tensor.js';
+import { Block, Operation, Region, type Value } from '../ir/core.js';
+
+/**
+ * Executes `getONNXType`.
+ * @param graph Parameter `graph`.
+ * @param name Parameter `name`.
+ * @returns Result of `getONNXType`.
+ */
 function getONNXType(graph: Graph, name: string): TensorType {
-  const v =
-    graph.inputs.find((x) => x.name === name) ||
-    graph.outputs.find((x) => x.name === name);
+  const v = graph.inputs.find((x) => x.name === name) || graph.outputs.find((x) => x.name === name);
   if (v) {
-    const shape = v.shape.map((s) => (typeof s === "number" ? s : -1));
+    const shape = v.shape.map((s) => (typeof s === 'number' ? s : -1));
     return new TensorType(shape, v.dtype);
   }
   const t = graph.tensors[name];
   if (t) {
-    const shape = t.shape.map((s) => (typeof s === "number" ? s : -1));
+    const shape = t.shape.map((s) => (typeof s === 'number' ? s : -1));
     return new TensorType(shape, t.dtype);
   }
-  return new TensorType([], "unknown");
+  return new TensorType([], 'unknown');
 }
 
+/**
+ * Executes `lowerONNXToMHLO`.
+ * @param onnxGraph Parameter `onnxGraph`.
+ * @returns Result of `lowerONNXToMHLO`.
+ */
 export function lowerONNXToMHLO(onnxGraph: Graph): Region {
   const region = new Region();
   const block = new Block(region);
@@ -32,7 +43,7 @@ export function lowerONNXToMHLO(onnxGraph: Graph): Region {
 
   for (const input of onnxGraph.inputs) {
     const type = new TensorType(
-      input.shape.map((s) => (typeof s === "number" ? s : -1)),
+      input.shape.map((s) => (typeof s === 'number' ? s : -1)),
       input.dtype,
     );
     const arg = block.addArgument(type);
@@ -42,99 +53,69 @@ export function lowerONNXToMHLO(onnxGraph: Graph): Region {
   for (const initName of onnxGraph.initializers) {
     const t = onnxGraph.tensors[initName];
     if (t) {
-      const shape = t.shape.map((s) => (typeof s === "number" ? s : -1));
+      const shape = t.shape.map((s) => (typeof s === 'number' ? s : -1));
       const type = new TensorType(shape, t.dtype);
-      const constOp = new Operation("web.mhlo.constant", [], [type], {
+      const constOp = new Operation('web.mhlo.constant', [], [type], {
         value: t,
       });
       block.pushOperation(constOp);
-      valueMap.set(initName, constOp.results[0]!);
+      valueMap.set(initName, constOp.results[0] as Value);
     }
   }
 
   for (const node of onnxGraph.nodes) {
     const getOperand = (name: string | undefined) => {
-      if (!name) throw new Error(`Operand missing`);
+      if (!name) throw new Onnx9000Error(`Operand missing`);
       const v = valueMap.get(name);
       if (!v) {
-        throw new Error(`Operand ${name} not found`);
+        throw new Onnx9000Error(`Operand ${name} not found`);
       }
       return v;
     };
 
     const resultTypes = node.outputs.map((out) => getONNXType(onnxGraph, out));
-    const resType = resultTypes[0]!;
+    const resType = resultTypes[0] as TensorType;
 
     let op: Operation;
 
     switch (node.opType) {
-      case "Add":
-        op = mhlo.add(
-          getOperand(node.inputs[0]),
-          getOperand(node.inputs[1]),
-          resType,
-        );
+      case 'Add':
+        op = mhlo.add(getOperand(node.inputs[0]), getOperand(node.inputs[1]), resType);
         break;
-      case "Sub":
-        op = mhlo.subtract(
-          getOperand(node.inputs[0]),
-          getOperand(node.inputs[1]),
-          resType,
-        );
+      case 'Sub':
+        op = mhlo.subtract(getOperand(node.inputs[0]), getOperand(node.inputs[1]), resType);
         break;
-      case "Mul":
-        op = mhlo.multiply(
-          getOperand(node.inputs[0]),
-          getOperand(node.inputs[1]),
-          resType,
-        );
+      case 'Mul':
+        op = mhlo.multiply(getOperand(node.inputs[0]), getOperand(node.inputs[1]), resType);
         break;
-      case "Div":
-        op = mhlo.divide(
-          getOperand(node.inputs[0]),
-          getOperand(node.inputs[1]),
-          resType,
-        );
+      case 'Div':
+        op = mhlo.divide(getOperand(node.inputs[0]), getOperand(node.inputs[1]), resType);
         break;
-      case "MatMul":
-        op = mhlo.dot(
-          getOperand(node.inputs[0]),
-          getOperand(node.inputs[1]),
-          resType,
-        );
+      case 'MatMul':
+        op = mhlo.dot(getOperand(node.inputs[0]), getOperand(node.inputs[1]), resType);
         break;
-      case "Exp":
+      case 'Exp':
         op = mhlo.exponential(getOperand(node.inputs[0]), resType);
         break;
-      case "Log":
+      case 'Log':
         op = mhlo.log(getOperand(node.inputs[0]), resType);
         break;
-      case "Cos":
+      case 'Cos':
         op = mhlo.cosine(getOperand(node.inputs[0]), resType);
         break;
-      case "Sin":
+      case 'Sin':
         op = mhlo.sine(getOperand(node.inputs[0]), resType);
         break;
-      case "Max":
-        op = mhlo.maximum(
-          getOperand(node.inputs[0]),
-          getOperand(node.inputs[1]),
-          resType,
-        );
+      case 'Max':
+        op = mhlo.maximum(getOperand(node.inputs[0]), getOperand(node.inputs[1]), resType);
         break;
-      case "Min":
-        op = mhlo.minimum(
-          getOperand(node.inputs[0]),
-          getOperand(node.inputs[1]),
-          resType,
-        );
+      case 'Min':
+        op = mhlo.minimum(getOperand(node.inputs[0]), getOperand(node.inputs[1]), resType);
         break;
-      case "Conv": {
+      case 'Conv': {
         const strides = (node.attributes.strides?.value as number[]) || [1, 1];
         const pads = (node.attributes.pads?.value as number[]) || [0, 0, 0, 0];
-        const dilations = (node.attributes.dilations?.value as number[]) || [
-          1, 1,
-        ];
+        const dilations = (node.attributes.dilations?.value as number[]) || [1, 1];
         const mhloPadding: number[][] = [];
         const spatialDims = strides.length;
         for (let i = 0; i < spatialDims; i++) {
@@ -155,21 +136,21 @@ export function lowerONNXToMHLO(onnxGraph: Graph): Region {
         );
         break;
       }
-      case "Reshape": {
+      case 'Reshape': {
         op = mhlo.reshape(getOperand(node.inputs[0]), resType);
         break;
       }
-      case "Transpose": {
+      case 'Transpose': {
         const perm = (node.attributes.perm?.value as number[]) || [];
         op = mhlo.transpose(getOperand(node.inputs[0]), perm, resType);
         break;
       }
-      case "Concat": {
+      case 'Concat': {
         const axis = (node.attributes.axis?.value as number) || 0;
         op = mhlo.concatenate(node.inputs.map(getOperand), axis, resType);
         break;
       }
-      case "Slice": {
+      case 'Slice': {
         op = mhlo.dynamicSlice(
           getOperand(node.inputs[0]),
           [getOperand(node.inputs[1])],
@@ -179,30 +160,25 @@ export function lowerONNXToMHLO(onnxGraph: Graph): Region {
         break;
       }
       default:
-        op = new Operation(
-          "web.mhlo.custom_call",
-          node.inputs.map(getOperand),
-          resultTypes,
-          {
-            call_target_name: node.opType,
-          },
-        );
+        op = new Operation('web.mhlo.custom_call', node.inputs.map(getOperand), resultTypes, {
+          call_target_name: node.opType,
+        });
         break;
     }
 
     block.pushOperation(op);
 
     for (let i = 0; i < node.outputs.length; i++) {
-      valueMap.set(node.outputs[i]!, op.results[i]!);
+      valueMap.set(node.outputs[i] as string, op.results[i] as Value);
     }
   }
 
   const returnOp = new Operation(
-    "web.mhlo.return",
+    'web.mhlo.return',
     onnxGraph.outputs.map((out) => {
       const v = valueMap.get(out.name);
       if (!v) {
-        throw new Error(`Output ${out.name} not found`);
+        throw new Onnx9000Error(`Output ${out.name} not found`);
       }
       return v;
     }),

@@ -1,15 +1,59 @@
 """Sphinx extension for integrating the ONNX9000 Interactive WASM Demo UI.
+
 This extension provides the `.. interactive-demo::` directive which mounts
 the Vanilla JS frontend into the generated Sphinx HTML.
 """
 
+from __future__ import annotations
+
 import os
 import shutil
 import subprocess
+import types
 
-from docutils import nodes
-from docutils.parsers.rst import Directive
-from sphinx.application import Sphinx
+try:
+    from docutils import nodes
+    from docutils.parsers.rst import Directive
+except ImportError:
+
+    class _Element(dict):  # type: ignore[type-arg]
+        """Fallback docutils Element node."""
+
+        def __init__(self, *args: object, **kwargs: object) -> None:
+            """Initialize element."""
+            super().__init__()
+            self.attributes: dict[str, object] = self
+
+        def __setitem__(self, key: str, value: object) -> None:
+            """Set attribute."""
+            super().__setitem__(key, value)
+
+    nodes = types.SimpleNamespace(General=_Element, Element=object, Node=_Element)
+
+    class Directive:  # type: ignore[no-redef]
+        """Fallback docutils Directive."""
+
+        has_content: bool = False
+        option_spec: dict[str, object] = {}
+
+        def __init__(
+            self,
+            name: str = "",
+            arguments: list[str] | None = None,
+            options: dict[str, object] | None = None,
+            *args: object,
+            **kwargs: object,
+        ) -> None:
+            """Initialize directive."""
+            self.name = name
+            self.arguments = arguments or []
+            self.options = options or {}
+
+
+try:
+    from sphinx.application import Sphinx
+except ImportError:
+    Sphinx = object
 
 
 class InteractiveDemoNode(nodes.General, nodes.Element):
@@ -18,10 +62,12 @@ class InteractiveDemoNode(nodes.General, nodes.Element):
     pass
 
 
-def visit_interactive_demo_node(self, node: InteractiveDemoNode) -> None:
+def visit_interactive_demo_node(
+    self: int | float | str | bool | bytes | list | dict | tuple | None, node: InteractiveDemoNode
+) -> None:
     """HTML rendering for the interactive demo node."""
     data_attrs = " ".join(
-        [f'data-{k}="{v}"' for k, v in node.attributes.items() if k != "ids" and k != "classes"]
+        [f'data-{k}="{v}"' for k, v in node.attributes.items() if k not in {"ids", "classes"}]
     )
 
     # CSS trick removed to let it fit its div normally
@@ -36,7 +82,9 @@ def visit_interactive_demo_node(self, node: InteractiveDemoNode) -> None:
     )
 
 
-def depart_interactive_demo_node(self, node: InteractiveDemoNode) -> None:
+def depart_interactive_demo_node(
+    self: int | float | str | bool | bytes | list | dict | tuple | None, node: InteractiveDemoNode
+) -> None:
     """HTML departure function for the interactive demo node."""
     pass
 
@@ -65,8 +113,9 @@ class InteractiveDemoDirective(Directive):
 
 
 def build_frontend(app: Sphinx) -> None:
-    """Hooks into Sphinx build process to run the frontend build via pnpm
-    if it hasn't been built, and copies the artifacts into the Sphinx static directory.
+    """Hook into Sphinx build process to run the frontend build via pnpm.
+
+    Runs the build if it hasn't been built, and copies the artifacts into the Sphinx static directory.
     """
     frontend_dir = os.path.abspath(os.path.join(app.srcdir, "../apps/sphinx-demo-ui"))
     repo_root = os.path.abspath(os.path.join(app.srcdir, ".."))

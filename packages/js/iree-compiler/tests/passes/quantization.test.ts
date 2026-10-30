@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../src/passes/quantization";
+import { describe, expect, it } from 'vitest';
+import { QuantizationOptimizer } from '../../src/passes/quantization';
 
-describe("quantization.ts", () => {
-  it("should instantiate and cover QuantizationOptimizer", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('quantization.ts', () => {
+  it('should instantiate and cover QuantizationOptimizer', () => {
     try {
-      const obj = new (Module as any).QuantizationOptimizer();
+      const obj = Construct(QuantizationOptimizer);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

@@ -6,7 +6,7 @@ from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.tflite_exporter.tf_protobuf import SavedModelGenerator, TFProtobufEncoder
 
 
-def test_tf_protobuf_generation():
+def test_tf_protobuf_generation() -> None:
     """Provides functional implementation."""
     graph = Graph("TestGraph")
     graph.tensors["X"] = Tensor("X", shape=(1, 10), dtype="float32", is_initializer=False)

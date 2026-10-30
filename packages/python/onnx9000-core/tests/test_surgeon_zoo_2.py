@@ -1,4 +1,5 @@
-import pytest
+"""Unit tests and verification suite for surgeon zoo 2 functionality."""
+
 from onnx9000.core.ir import Attribute, Graph, Node
 from onnx9000.core.surgeon import (
     LayoutOptimizerPass,
@@ -9,7 +10,8 @@ from onnx9000.core.surgeon import (
 )
 
 
-def test_unroll_scan():
+def test_unroll_scan() -> None:
+    """Verify that unroll scan behaves as expected."""
     graph = Graph(name="test")
     graph.nodes = []
     attr = Attribute(name="sequence_length", attr_type="int", value=3)
@@ -30,7 +32,8 @@ def test_unroll_scan():
     assert graph.nodes[2].outputs == ["out1_2"]
 
 
-def test_map_while_loop():
+def test_map_while_loop() -> None:
+    """Verify that map while loop behaves as expected."""
     graph = Graph(name="test")
     graph.nodes = []
     node = Node(
@@ -48,7 +51,8 @@ def test_map_while_loop():
     assert graph.nodes[0].inputs == ["trip_count_var", "cond_var", "state1"]
 
 
-def test_stateful_to_stateless():
+def test_stateful_to_stateless() -> None:
+    """Verify that stateful to stateless behaves as expected."""
     graph = Graph(name="test")
     graph.nodes = []
     graph.inputs = []
@@ -70,7 +74,8 @@ def test_stateful_to_stateless():
     assert "mamba1_state_out" in graph.outputs
 
 
-def test_map_fft():
+def test_map_fft() -> None:
+    """Verify that map fft behaves as expected."""
     graph = Graph(name="test")
     graph.nodes = []
     node = Node(
@@ -89,7 +94,8 @@ def test_map_fft():
     assert graph.nodes[0].attributes["spatial"].value == 1
 
 
-def test_layout_optimizer():
+def test_layout_optimizer() -> None:
+    """Verify that layout optimizer behaves as expected."""
     graph = Graph(name="test")
     graph.nodes = []
     node = Node(op_type="Conv", name="conv1", inputs=[], outputs=[], domain="", attributes={})

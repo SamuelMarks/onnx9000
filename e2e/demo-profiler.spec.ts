@@ -5,7 +5,7 @@ test.describe('Profiler Web Demo', () => {
     try {
       await page.goto('/apps/demo-profiler/index.html');
       await page.waitForSelector('.container', { state: 'attached', timeout: 5000 });
-    } catch (_e) {
+    } catch {
       test.skip();
     }
     await page.click('#btn-run');

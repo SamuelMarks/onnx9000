@@ -6,6 +6,8 @@ import pickle
 import struct
 import zipfile
 
+from onnx9000.core.exceptions import ConversionError
+
 STORAGE_SIZES = {
     "DoubleStorage": 8,
     "FloatStorage": 4,
@@ -28,8 +30,14 @@ STORAGE_SIZES = {
 
 
 def _rebuild_tensor_v2(
-    storage, storage_offset, size, stride, requires_grad, backward_hooks, metadata=None
-):
+    storage: int | float | str | bool | bytes | list | dict | tuple | None,
+    storage_offset: int | float | str | bool | bytes | list | dict | tuple | None,
+    size: int | float | str | bool | bytes | list | dict | tuple | None,
+    stride: int | float | str | bool | bytes | list | dict | tuple | None,
+    requires_grad: int | float | str | bool | bytes | list | dict | tuple | None,
+    backward_hooks: int | float | str | bool | bytes | list | dict | tuple | None,
+    metadata: int | float | str | bool | bytes | list | dict | tuple | None = None,
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
     """Rebuild tensor v2."""
     return {
         "storage": storage,
@@ -42,15 +50,15 @@ def _rebuild_tensor_v2(
 
 
 def _rebuild_tensor_v3(
-    storage,
-    storage_offset,
-    size,
-    stride,
-    requires_grad,
-    backward_hooks,
-    dtype=None,
-    metadata=None,
-):
+    storage: int | float | str | bool | bytes | list | dict | tuple | None,
+    storage_offset: int | float | str | bool | bytes | list | dict | tuple | None,
+    size: int | float | str | bool | bytes | list | dict | tuple | None,
+    stride: int | float | str | bool | bytes | list | dict | tuple | None,
+    requires_grad: int | float | str | bool | bytes | list | dict | tuple | None,
+    backward_hooks: int | float | str | bool | bytes | list | dict | tuple | None,
+    dtype: int | float | str | bool | bytes | list | dict | tuple | None = None,
+    metadata: int | float | str | bool | bytes | list | dict | tuple | None = None,
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
     """Rebuild tensor v3."""
     return {
         "storage": storage,
@@ -63,21 +71,46 @@ def _rebuild_tensor_v3(
     }
 
 
-def _rebuild_parameter(data, requires_grad, backward_hooks):
+def _rebuild_parameter(
+    data: int | float | str | bool | bytes | list | dict | tuple | None,
+    requires_grad: int | float | str | bool | bytes | list | dict | tuple | None,
+    backward_hooks: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
     """Rebuild parameter."""
     return {"data": data, "requires_grad": requires_grad}
 
 
 class RestrictedUnpickler(pickle.Unpickler):
-    """Docstring for D101."""
+    """Represents restricted unpickler inheriting from pickle.Unpickler, supporting operations such as find_class, persistent_load."""
 
-    def __init__(self, file, storage_callback):
-        """Docstring for D107."""
+    def __init__(
+        self,
+        file: int | float | str | bool | bytes | list | dict | tuple | None,
+        storage_callback: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
+        """Initialize RestrictedUnpickler with configured parameters and state.
+
+        Args:
+            file: Parameter specifying file.
+            storage_callback: Parameter specifying storage callback.
+        """
         super().__init__(file)
         self.storage_callback = storage_callback
 
-    def find_class(self, module, name):
-        """Docstring for D102."""
+    def find_class(
+        self,
+        module: int | float | str | bool | bytes | list | dict | tuple | None,
+        name: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
+        """Execute find class on RestrictedUnpickler.
+
+        Args:
+            module: Parameter specifying module.
+            name: Parameter specifying name.
+
+        Returns:
+            Result of find class.
+        """
         if module == "collections" and name == "OrderedDict":
             return collections.OrderedDict
         if (
@@ -92,7 +125,12 @@ class RestrictedUnpickler(pickle.Unpickler):
             return _rebuild_tensor_v3
         if module == "torch._tensor" and name == "_rebuild_from_type_v2":
             # This takes (func, new_type, args, state)
-            def _rebuild_from_type_v2(func, new_type, args, state):
+            def _rebuild_from_type_v2(
+                func: int | float | str | bool | bytes | list | dict | tuple | None,
+                new_type: int | float | str | bool | bytes | list | dict | tuple | None,
+                args: int | float | str | bool | bytes | list | dict | tuple | None,
+                state: int | float | str | bool | bytes | list | dict | tuple | None,
+            ) -> int | float | str | bool | bytes | list | dict | tuple | None:
                 """Rebuild from type v2."""
                 tensor = func(*args)
                 tensor["type"] = new_type
@@ -106,33 +144,50 @@ class RestrictedUnpickler(pickle.Unpickler):
             return _rebuild_parameter
 
         # Builtins
-        if module == "builtins":
-            if name in ("set", "frozenset", "list", "dict", "tuple"):
-                return (
-                    __builtins__[name]
-                    if isinstance(__builtins__, dict)
-                    else getattr(__builtins__, name)
-                )
+        if module == "builtins" and name in ("set", "frozenset", "list", "dict", "tuple"):
+            return (
+                __builtins__[name]
+                if isinstance(__builtins__, dict)
+                else getattr(__builtins__, name)
+            )
 
         # Let's allow generic classes as Dummy objects to avoid crashing on unknown classes
         class Dummy:
             """Dummy."""
 
-            def __init__(self, *args, **kwargs):
-                """Init."""
+            def __init__(
+                self,
+                *args: int | float | str | bool | bytes | list | dict | tuple | None,
+                **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+            ) -> None:
+                """Initialize Dummy with configured parameters and state.
+
+                Args:
+                    *args: Variadic positional arguments for args.
+                    **kwargs: Variadic keyword arguments for kwargs.
+                """
                 self.__class__.__name__ = name
                 self.__class__.__module__ = module
                 self.args = args
                 self.kwargs = kwargs
 
-            def __repr__(self):
+            def __repr__(self) -> str:
                 """Repr."""
                 return f"<{module}.{name}>"
 
         return Dummy
 
-    def persistent_load(self, pid):
-        """Docstring for D102."""
+    def persistent_load(
+        self, pid: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
+        """Execute persistent load on RestrictedUnpickler.
+
+        Args:
+            pid: Parameter specifying pid.
+
+        Returns:
+            Result of persistent load.
+        """
         if isinstance(pid, tuple) and len(pid) >= 1 and pid[0] == "storage":
             # pid format: ('storage', storage_type_class, key, location, count, ...)
             storage_type = pid[1]
@@ -142,8 +197,17 @@ class RestrictedUnpickler(pickle.Unpickler):
         return pid
 
 
-def parse_pytorch_checkpoint(file_or_path):
-    """Docstring for D103."""
+def parse_pytorch_checkpoint(
+    file_or_path: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
+    """Execute parse pytorch checkpoint operation.
+
+    Args:
+        file_or_path: Parameter specifying file or path.
+
+    Returns:
+        Result of parse pytorch checkpoint.
+    """
     if isinstance(file_or_path, str):
         with open(file_or_path, "rb") as f:
             data = f.read()
@@ -160,7 +224,7 @@ def parse_pytorch_checkpoint(file_or_path):
         z = zipfile.ZipFile(stream)
         is_zip = True
     except zipfile.BadZipFile:
-        assert True
+        is_zip = False
 
     stream.seek(0)
 
@@ -170,7 +234,9 @@ def parse_pytorch_checkpoint(file_or_path):
         return _parse_old_format(stream)
 
 
-def _parse_zip(z):
+def _parse_zip(
+    z: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
     # Zip format
     # The actual data is in archive/data.pkl
     # And storages are in archive/data/<key>
@@ -184,11 +250,15 @@ def _parse_zip(z):
             break
 
     if not data_pkl_path:
-        raise ValueError("Could not find data.pkl in zip archive")
+        raise ConversionError("Could not find data.pkl in zip archive")
 
     base_dir = data_pkl_path.rsplit("/", 1)[0] if "/" in data_pkl_path else ""
 
-    def storage_callback(storage_type, key, count):
+    def storage_callback(
+        storage_type: int | float | str | bool | bytes | list | dict | tuple | None,
+        key: int | float | str | bool | bytes | list | dict | tuple | None,
+        count: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Storage callback."""
         path = f"{base_dir}/data/{key}" if base_dir else f"data/{key}"
         storage_data = z.read(path)
@@ -199,13 +269,18 @@ def _parse_zip(z):
         return unpickler.load()
 
 
-def _parse_old_format(stream):
+def _parse_old_format(
+    stream: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
     # Old format
     """Parse old format."""
     magic_unpickler = RestrictedUnpickler(stream, lambda *args: None)
-    magic = magic_unpickler.load()
+    try:
+        magic = magic_unpickler.load()
+    except (pickle.UnpicklingError, EOFError) as e:
+        raise ConversionError(f"Failed to unpickle PyTorch checkpoint: {e}") from e
     if magic != 0x1950A86A20F9469CFC6C:
-        raise ValueError(f"Invalid magic number: {magic}")
+        raise ConversionError(f"Invalid magic number: {magic}")
 
     RestrictedUnpickler(stream, lambda *args: None).load()
     RestrictedUnpickler(stream, lambda *args: None).load()
@@ -214,7 +289,11 @@ def _parse_old_format(stream):
     # We don't read storages yet, we just collect their specs
     storage_specs = {}
 
-    def storage_callback(storage_type, key, count):
+    def storage_callback(
+        storage_type: int | float | str | bool | bytes | list | dict | tuple | None,
+        key: int | float | str | bool | bytes | list | dict | tuple | None,
+        count: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Storage callback."""
         storage_specs[key] = (storage_type, count)
         return key  # We'll replace this later if we wanted, but typical users just need the state dict tree
@@ -232,10 +311,12 @@ def _parse_old_format(stream):
         storages[key] = memoryview(data)
 
     # Replace keys in state_dict with actual memoryviews
-    def replace_storages(obj):
+    def replace_storages(
+        obj: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
         """Replace storages."""
         if isinstance(obj, dict):
-            for k, v in obj.items():
+            for _k, v in obj.items():
                 if (
                     isinstance(v, dict)
                     and "storage" in v
@@ -246,7 +327,7 @@ def _parse_old_format(stream):
                 else:
                     replace_storages(v)
         elif isinstance(obj, list):
-            for i, v in enumerate(obj):
+            for _i, v in enumerate(obj):
                 if (
                     isinstance(v, dict)
                     and "storage" in v

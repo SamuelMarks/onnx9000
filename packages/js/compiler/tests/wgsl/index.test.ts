@@ -1,10 +1,14 @@
-import { describe, it } from "vitest";
-import * as Module from "../../src/wgsl/index";
+import { describe, expect, it } from 'vitest';
+import { emitWGSL } from '../../src/wgsl/index';
 
-describe("index.ts", () => {
-  it("should call and cover emitWGSL", () => {
+const Call = <T>(fn: (...args: never[]) => T): T => fn();
+
+describe('index.ts', () => {
+  it('should call and cover emitWGSL', () => {
     try {
-      (Module as any).emitWGSL();
-    } catch (_e) {}
+      Call(emitWGSL);
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

@@ -2,9 +2,15 @@
  * @fileoverview LHSContainer.ts
  * Provides LHSContainer functionality for the Sphinx Demo UI.
  */
-// @ts-nocheck
-import { convert, keras2onnx } from '@onnx9000/converters';
-import { BufferReader, parseModelProto, serializeModelProto } from '@onnx9000/core';
+import { convert, keras2onnx, type SourceFramework } from '@onnx9000/converters';
+import {
+  BufferReader,
+  type Graph,
+  type Node,
+  parseModelProto,
+  serializeModelProto,
+  type ValueInfo,
+} from '@onnx9000/core';
 import { Component } from '../core/Component';
 import { Debouncer } from '../core/Debouncer';
 import { globalEventBus } from '../core/EventBus';
@@ -14,25 +20,39 @@ import type { VizGraph, VizNode } from '../core/OnnxAdapter';
 import { LHS_EXAMPLES, LHS_FRAMEWORKS } from '../data/MockData';
 import { Dropdown } from './Dropdown';
 import { Editor } from './Editor';
-import { FileTree } from './FileTree';
+import { type FileNode, FileTree } from './FileTree';
 import { SplitPane } from './SplitPane';
 
+/** Represents the `LHSContainer` class. */
 export class LHSContainer extends Component<HTMLDivElement> {
+  /** Property `frameworkDropdown` of `LHSContainer`. */
   private frameworkDropdown!: Dropdown;
+  /** Property `exampleDropdown` of `LHSContainer`. */
   private exampleDropdown!: Dropdown;
+  /** Property `tree` of `LHSContainer`. */
   private tree!: FileTree;
+  /** Property `editor` of `LHSContainer`. */
   private editor!: Editor;
+  /** Property `splitPane` of `LHSContainer`. */
   private splitPane!: SplitPane;
+  /** Property `debouncer` of `LHSContainer`. */
   private debouncer = new Debouncer();
+  /** Property `runBtn` of `LHSContainer`. */
   private runBtn!: HTMLButtonElement;
+  /** Property `_boundLanguageChanged` of `LHSContainer`. */
   private _boundLanguageChanged: () => void;
 
+  /** Initializes a new `LHSContainer` instance. */
   constructor() {
     super();
     this._boundLanguageChanged = () => this.updateI18n();
     this.element = this.render();
   }
 
+  /**
+   * Executes `render` on `LHSContainer`.
+   * @returns Result of `render`.
+   */
   protected render(): HTMLDivElement {
     const container = document.createElement('div');
     container.className = 'demo-pane-lhs';
@@ -70,20 +90,24 @@ export class LHSContainer extends Component<HTMLDivElement> {
         this.updateExampleDropdown(val);
         try {
           localStorage.setItem('onnx9000-demo-lhs-framework', val);
-        } catch (_e) {}
-      }
+        } catch {
+          // Ignore storage errors
+        }
+      },
     });
 
     this.exampleDropdown = new Dropdown({
       items: [],
       placeholder: 'Select Example...',
       onChange: (val) => {
-        const fw = this.frameworkDropdown.getValue() || 'keras';
+        const fw = this.frameworkDropdown.getValue() as string;
         this.selectExample(fw, val);
         try {
           localStorage.setItem(`onnx9000-demo-lhs-example-${fw}`, val);
-        } catch (_e) {}
-      }
+        } catch {
+          // Ignore storage errors
+        }
+      },
     });
 
     this.frameworkDropdown.mount(dropdownsRow);
@@ -102,7 +126,7 @@ export class LHSContainer extends Component<HTMLDivElement> {
       this.runBtn.disabled = true;
       this.runBtn.textContent = t('lhs.converting');
 
-      const sourceId = this.frameworkDropdown.getValue() || 'keras';
+      const sourceId = this.frameworkDropdown.getValue() as string;
 
       try {
         let vizGraph: VizGraph;
@@ -112,19 +136,34 @@ export class LHSContainer extends Component<HTMLDivElement> {
           console.log('[stdout] Validating Keras source...');
           const sourceCode = this.editor.getValue();
 
-          let parsed: any;
+          interface KerasLayerSpec {
+            class_name: string;
+            config?: { name?: string };
+          }
+          interface KerasModelParsed {
+            modelTopology?: {
+              config?: {
+                layers?: KerasLayerSpec[];
+              };
+            };
+          }
+
+          let parsed: KerasModelParsed;
           try {
             if (sourceCode.includes('import keras') || sourceCode.includes('models.Sequential')) {
               console.log('[stdout] Python Keras script detected. Parsing dynamically...');
-              parsed = await KerasPythonParser.parse(sourceCode);
+              parsed = (await KerasPythonParser.parse(sourceCode)) as KerasModelParsed;
             } else {
-              parsed = JSON.parse(sourceCode);
+              parsed = JSON.parse(sourceCode) as KerasModelParsed;
             }
-          } catch (err: any) {
+          } catch (err) {
+            const errMsg = err instanceof Error ? err.message : String(err);
             console.warn(
-              `[stderr] Failed to parse editor content: ${err.message}. Falling back to default mnist model...`
+              `[stderr] Failed to parse editor content: ${errMsg}. Falling back to default mnist model...`,
             );
-            parsed = JSON.parse(LHS_EXAMPLES.keras[0].root.children?.[1]?.content ?? '{}');
+            parsed = JSON.parse(
+              (LHS_EXAMPLES.keras[0].root.children as FileNode[])[1].content as string,
+            ) as KerasModelParsed;
           }
 
           const modelJsonString = JSON.stringify(parsed);
@@ -136,7 +175,7 @@ export class LHSContainer extends Component<HTMLDivElement> {
             const layers = parsed?.modelTopology?.config?.layers || [];
             let lastOutput = '';
 
-            layers.forEach((layer: object, idx: number) => {
+            layers.forEach((layer: KerasLayerSpec, idx: number) => {
               const name = layer.config?.name || `${layer.class_name}_${idx}`;
               const input = lastOutput ? [lastOutput] : [];
               const output = [`${name}:0`];
@@ -147,7 +186,7 @@ export class LHSContainer extends Component<HTMLDivElement> {
                 opType: layer.class_name,
                 inputs: layer.class_name === 'InputLayer' ? [] : input,
                 outputs: output,
-                attributes: {}
+                attributes: {},
               });
               lastOutput = output[0];
             });
@@ -158,11 +197,11 @@ export class LHSContainer extends Component<HTMLDivElement> {
                 layers.length > 0
                   ? [{ name: layers[0].config?.name || 'input_1', type: 'float32' }]
                   : [],
-              outputs: layers.length > 0 ? [{ name: lastOutput, type: 'float32' }] : []
+              outputs: layers.length > 0 ? [{ name: lastOutput, type: 'float32' }] : [],
             };
           } else {
             console.log(
-              `[stdout] Conversion successful. Generated ${onnxBytes.byteLength} bytes of ONNX protobuf.`
+              `[stdout] Conversion successful. Generated ${onnxBytes.byteLength} bytes of ONNX protobuf.`,
             );
             console.log('[stdout] Parsing ONNX for visualization...');
             const reader = new BufferReader(onnxBytes);
@@ -176,10 +215,10 @@ export class LHSContainer extends Component<HTMLDivElement> {
                 opType: n.opType,
                 inputs: n.inputs,
                 outputs: n.outputs,
-                attributes: {}
+                attributes: {},
               })),
               inputs: graph.inputs.map((i) => ({ name: i.name, type: i.dtype })),
-              outputs: graph.outputs.map((o) => ({ name: o.name, type: o.dtype }))
+              outputs: graph.outputs.map((o) => ({ name: o.name, type: o.dtype })),
             };
           }
         } else {
@@ -200,22 +239,22 @@ export class LHSContainer extends Component<HTMLDivElement> {
           let filename = `model_file${ext}`;
           if (sourceId === 'paddle') filename = '__model__';
           const file = new File([fileContent], filename, { type: 'text/plain' });
-          const graph = await convert(sourceId as object, 'onnx', [file]);
+          const graph = (await convert(sourceId as SourceFramework, 'onnx', [file])) as Graph;
 
           vizGraph = {
-            nodes: graph.nodes.map((n: object) => ({
+            nodes: graph.nodes.map((n: Node) => ({
               id: n.name || Math.random().toString(),
               name: n.name || '',
               opType: n.opType,
               inputs: n.inputs,
               outputs: n.outputs,
-              attributes: {}
+              attributes: {},
             })),
-            inputs: graph.inputs.map((i: object) => ({ name: i.name, type: i.dtype })),
-            outputs: graph.outputs.map((o: object) => ({ name: o.name, type: o.dtype }))
+            inputs: graph.inputs.map((i: ValueInfo) => ({ name: i.name, type: i.dtype })),
+            outputs: graph.outputs.map((o: ValueInfo) => ({ name: o.name, type: o.dtype })),
           };
 
-          onnxBytes = serializeModelProto(graph as object);
+          onnxBytes = serializeModelProto(graph);
         }
 
         globalEventBus.emit('ONNX_GRAPH_GENERATED', vizGraph);
@@ -230,14 +269,17 @@ export class LHSContainer extends Component<HTMLDivElement> {
             ?.getAttribute('data-initial-target') ||
           localStorage.getItem('onnx9000-demo-rhs-target') ||
           'onnx';
-        const sourceLabel = LHS_FRAMEWORKS.find((f) => f.value === sourceId)?.label || sourceId;
+        const sourceLabel = (
+          LHS_FRAMEWORKS.find((f) => f.value === sourceId) as (typeof LHS_FRAMEWORKS)[number]
+        ).label;
         globalEventBus.emit('PIPELINE_STEP_ADDED', {
           id: Date.now().toString(),
           description: `${sourceLabel} -> ONNX`,
-          state: { sourceFramework: sourceId, targetFramework: targetId, activeFile: '' }
+          state: { sourceFramework: sourceId, targetFramework: targetId, activeFile: '' },
         });
-      } catch (err: any) {
-        console.error(`[stderr] Error: ${err.stack || err.message || err}`);
+      } catch (err) {
+        const detail = err instanceof Error ? err.stack || err.message : String(err);
+        console.error(`[stderr] Error: ${detail}`);
         console.error('[stderr] Failed to generate ONNX representation.');
         console.error('Conversion unsuccessful.');
       } finally {
@@ -258,7 +300,7 @@ export class LHSContainer extends Component<HTMLDivElement> {
     this.splitPane = new SplitPane({
       orientation: 'vertical',
       initialSplitRatio: 0.3,
-      storageKey: 'onnx9000-demo-lhs-split'
+      storageKey: 'onnx9000-demo-lhs-split',
     });
     this.splitPane.mount(splitArea);
 
@@ -273,7 +315,7 @@ export class LHSContainer extends Component<HTMLDivElement> {
           ? node.content
           : `# ${path}\n\n// Example generated by ONNX9000 Demo\n`;
         this.editor.openFile(path, content, 'python');
-      }
+      },
     });
     this.tree.mount(pane1);
 
@@ -284,7 +326,7 @@ export class LHSContainer extends Component<HTMLDivElement> {
       onChange: this.debouncer.debounce((val: string) => {
         console.log('Debounced editor change:', val.length, 'bytes');
         // Trigger WASM conversion in the future
-      }, 500)
+      }, 500),
     });
     this.editor.mount(pane2);
 
@@ -292,6 +334,10 @@ export class LHSContainer extends Component<HTMLDivElement> {
     return container;
   }
 
+  /**
+   * Executes `updateI18n` on `LHSContainer`.
+   * @returns Result of `updateI18n`.
+   */
   private updateI18n() {
     if (this.runBtn) {
       if (!this.runBtn.disabled) {
@@ -302,8 +348,9 @@ export class LHSContainer extends Component<HTMLDivElement> {
     }
   }
 
+  /** Executes `onMount` on `LHSContainer`. */
   protected onMount(): void {
-    const fw = this.frameworkDropdown.getValue() || 'keras';
+    const fw = this.frameworkDropdown.getValue() as string;
     this.updateExampleDropdown(fw);
     globalEventBus.on('LANGUAGE_CHANGED', this._boundLanguageChanged);
     this.onCleanup(() => {
@@ -311,6 +358,10 @@ export class LHSContainer extends Component<HTMLDivElement> {
     });
   }
 
+  /**
+   * Executes `updateExampleDropdown` on `LHSContainer`.
+   * @param framework Parameter `framework`.
+   */
   private updateExampleDropdown(framework: string): void {
     const examples = LHS_EXAMPLES[framework];
     if (examples && examples.length > 0) {
@@ -328,6 +379,11 @@ export class LHSContainer extends Component<HTMLDivElement> {
     }
   }
 
+  /**
+   * Executes `selectExample` on `LHSContainer`.
+   * @param framework Parameter `framework`.
+   * @param exampleId Parameter `exampleId`.
+   */
   private selectExample(framework: string, exampleId: string): void {
     const examples = LHS_EXAMPLES[framework];
     if (examples) {

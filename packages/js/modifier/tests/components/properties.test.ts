@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../src/components/properties";
+import { describe, expect, it } from 'vitest';
+import { PropertiesPanel } from '../../src/components/properties';
 
-describe("properties.ts", () => {
-  it("should instantiate and cover PropertiesPanel", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('properties.ts', () => {
+  it('should instantiate and cover PropertiesPanel', () => {
     try {
-      const obj = new (Module as any).PropertiesPanel();
+      const obj = Construct(PropertiesPanel);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

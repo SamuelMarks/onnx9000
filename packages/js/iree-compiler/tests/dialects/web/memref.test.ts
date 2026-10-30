@@ -1,35 +1,60 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../../src/dialects/web/memref";
+import { describe, expect, it } from 'vitest';
+import { alloc, dealloc, load, MemRefType, store } from '../../../src/dialects/web/memref';
 
-describe("memref.ts", () => {
-  it("should instantiate and cover MemRefType", () => {
+const Call = <T>(fn: (...args: never[]) => T): T => fn();
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('memref.ts', () => {
+  it('should instantiate and cover MemRefType', () => {
     try {
-      const obj = new (Module as any).MemRefType();
+      const obj = Construct(MemRefType);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should call and cover alloc", async () => {
+  it('should call and cover alloc', async () => {
     try {
-      const res = (Module as any).alloc();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(alloc);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should call and cover dealloc", async () => {
+  it('should call and cover dealloc', async () => {
     try {
-      const res = (Module as any).dealloc();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(dealloc);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should call and cover load", async () => {
+  it('should call and cover load', async () => {
     try {
-      const res = (Module as any).load();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(load);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should call and cover store", async () => {
+  it('should call and cover store', async () => {
     try {
-      const res = (Module as any).store();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(store);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

@@ -1,12 +1,11 @@
 """Final coverage tests for shape_inference.py."""
 
-import pytest
-from onnx9000.core.ir import DType, DynamicDim, Graph, Node, Tensor, ValueInfo
+from onnx9000.core.ir import DType, DynamicDim, Graph, Node, Tensor
 from onnx9000.core.shape_inference import infer_shapes_and_types
 
 
-def test_shape_inference_transpose():
-    """Docstring for D103."""
+def test_shape_inference_transpose() -> None:
+    """Verify that shape inference transpose behaves as expected."""
     g = Graph("test")
     # Transpose without perm
     t1 = Tensor("A", (2, 3, 4), DType.FLOAT32)
@@ -25,8 +24,8 @@ def test_shape_inference_transpose():
     assert g2.tensors["B"].shape == (3, 2, 4)
 
 
-def test_shape_inference_flatten():
-    """Docstring for D103."""
+def test_shape_inference_flatten() -> None:
+    """Verify that shape inference flatten behaves as expected."""
     g = Graph("test")
     t1 = Tensor("A", (2, 3, 4, 5), DType.FLOAT32)
     g.add_tensor(t1)
@@ -61,8 +60,8 @@ def test_shape_inference_flatten():
     assert isinstance(g4.tensors["B"].shape[1], DynamicDim)
 
 
-def test_shape_inference_nms():
-    """Docstring for D103."""
+def test_shape_inference_nms() -> None:
+    """Verify that shape inference nms behaves as expected."""
     g = Graph("test")
     n = Node("NonMaxSuppression", ["boxes", "scores"], ["selected_indices"])
     g.add_node(n)
@@ -74,8 +73,8 @@ def test_shape_inference_nms():
     assert g.tensors["selected_indices"].dtype == DType.INT64
 
 
-def test_shape_inference_flash_attention_and_rope():
-    """Docstring for D103."""
+def test_shape_inference_flash_attention_and_rope() -> None:
+    """Verify that shape inference flash attention and rope behaves as expected."""
     g = Graph("test")
     g.add_tensor(Tensor("Q", (1, 8, 128, 64), DType.FLOAT32))
     n1 = Node("FlashAttention", ["Q", "K", "V"], ["O"])
@@ -87,8 +86,8 @@ def test_shape_inference_flash_attention_and_rope():
     assert g.tensors["Q_out"].shape == (1, 8, 128, 64)
 
 
-def test_shape_inference_missing_in1():
-    """Docstring for D103."""
+def test_shape_inference_missing_in1() -> None:
+    """Verify that shape inference missing in1 behaves as expected."""
     # Test 'if not in1: continue' branches
     g = Graph("test")
     # Cast with missing input
@@ -102,8 +101,8 @@ def test_shape_inference_missing_in1():
     assert "Out2" not in g.tensors
 
 
-def test_shape_inference_fallback():
-    """Docstring for D103."""
+def test_shape_inference_fallback() -> None:
+    """Verify that shape inference fallback behaves as expected."""
     g = Graph("test")
     # Unknown op
     n = Node("UnknownOp", ["A"], ["B"])
@@ -114,8 +113,8 @@ def test_shape_inference_fallback():
     assert isinstance(g.tensors["B"].shape[0], DynamicDim)
 
 
-def test_shape_inference_custom_output_fallback():
-    """Docstring for D103."""
+def test_shape_inference_custom_output_fallback() -> None:
+    """Verify that shape inference custom output fallback behaves as expected."""
     # To hit the custom output fallback, we need an op that is matched but doesn't fill all out_shapes
     # Let's use FlashAttention but give it more outputs than 1
     g = Graph("test")
@@ -128,8 +127,8 @@ def test_shape_inference_custom_output_fallback():
     assert isinstance(g.tensors["O2"].shape[0], DynamicDim)
 
 
-def test_shape_inference_custom_output_fallback_no_input():
-    """Docstring for D103."""
+def test_shape_inference_custom_output_fallback_no_input() -> None:
+    """Verify that shape inference custom output fallback no input behaves as expected."""
     # Op with no inputs and extra outputs
     g = Graph("test")
     n = Node("NonMaxSuppression", [], ["O1", "O2"])

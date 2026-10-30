@@ -2,27 +2,46 @@
  * @fileoverview repository.ts
  * Provides repository functionality for the serve package.
  */
-import type { MemoryManager, ModelInstance } from "./memory";
+import type { MemoryManager, ModelInstance } from './memory';
 
+/** Interface `ModelMetadata` definition. */
 export interface ModelMetadata {
+  /** Property `name`. */
   name: string;
+  /** Property `version`. */
   version: string;
+  /** Property `platform`. */
   platform: string;
+  /** Property `config`. */
   config: ReturnType<typeof JSON.parse>;
+  /** Property `path`. */
   path: string;
 }
 
+/** Represents the `ModelRepository` class. */
 export class ModelRepository {
+  /** Property `models` of `ModelRepository`. */
   public models: Map<string, ModelMetadata[]> = new Map();
 
+  /**
+   * Initializes a new `ModelRepository` instance.
+   * @param memoryManager Parameter `memoryManager`.
+   * @param basePath Parameter `basePath`.
+   */
   constructor(
     public memoryManager: MemoryManager,
-    public basePath: string = "./models",
+    public basePath: string = './models',
   ) {}
 
   // 156. Implement local File System (FS) watcher natively in Node/Deno.
   // We use abstract polling / watcher interface so it works isomorphic-ly if possible,
   // or via specific Node 'fs' injected.
+  /**
+   * Executes `watch` on `ModelRepository`.
+   * @param fsModule Parameter `fsModule`.
+   * @param pathModule Parameter `pathModule`.
+   * @returns Result of `watch`.
+   */
   public async watch(
     fsModule: ReturnType<typeof JSON.parse>,
     pathModule: ReturnType<typeof JSON.parse>,
@@ -38,9 +57,9 @@ export class ModelRepository {
         // 158. Detect removed models and evict them from memory safely.
         if (
           filename &&
-          (filename.endsWith(".onnx") ||
-            filename.endsWith(".safetensors") ||
-            filename.endsWith("config.json"))
+          (filename.endsWith('.onnx') ||
+            filename.endsWith('.safetensors') ||
+            filename.endsWith('config.json'))
         ) {
           const parts = filename.split(pathModule.sep);
           if (parts.length >= 3) {
@@ -54,6 +73,14 @@ export class ModelRepository {
     );
   }
 
+  /**
+   * Executes `reloadModel` on `ModelRepository`.
+   * @param name Parameter `name`.
+   * @param version Parameter `version`.
+   * @param fs Parameter `fs`.
+   * @param path Parameter `path`.
+   * @returns Result of `reloadModel`.
+   */
   public async reloadModel(
     name: string,
     version: string,
@@ -75,16 +102,14 @@ export class ModelRepository {
 
     // 162. Parse `config.json` automatically on folder ingest.
     let config = {};
-    const configPath = path.join(this.basePath, name, "config.json");
+    const configPath = path.join(this.basePath, name, 'config.json');
     if (fs.existsSync(configPath)) {
-      config = JSON.parse(fs.readFileSync(configPath, "utf8"));
+      config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
     }
 
     // 164. Support explicit `.safetensors` weight loading seamlessly
-    const hasSafetensors = fs.existsSync(
-      path.join(modelPath, "model.safetensors"),
-    );
-    const hasOnnx = fs.existsSync(path.join(modelPath, "model.onnx"));
+    const hasSafetensors = fs.existsSync(path.join(modelPath, 'model.safetensors'));
+    const hasOnnx = fs.existsSync(path.join(modelPath, 'model.onnx'));
 
     if (hasOnnx || hasSafetensors) {
       // 163. Handle zero-downtime deployments
@@ -95,14 +120,11 @@ export class ModelRepository {
         lastUsed: Date.now(),
         buffer: new ArrayBuffer(1024),
         unload: () => {
-          console.log("Unloaded", name, version);
+          console.log('Unloaded', name, version);
         },
       };
 
-      const loaded = await this.memoryManager.requestLoad(
-        instance.id,
-        instance.sizeBytes,
-      );
+      const loaded = await this.memoryManager.requestLoad(instance.id, instance.sizeBytes);
       if (loaded) {
         this.memoryManager.registerModel(instance);
 
@@ -110,7 +132,7 @@ export class ModelRepository {
         versions.push({
           name,
           version,
-          platform: hasSafetensors ? "safetensors" : "onnx",
+          platform: hasSafetensors ? 'safetensors' : 'onnx',
           config,
           path: modelPath,
         });

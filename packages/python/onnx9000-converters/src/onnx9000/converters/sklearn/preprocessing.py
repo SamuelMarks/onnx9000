@@ -1,9 +1,12 @@
 """Provide preprocessing module functionality."""
 
+from onnx9000.converters.sklearn.protocols import ScalerEstimatorProtocol
 from onnx9000.core.ir import Attribute, Graph, Node
 
 
-def convert_standard_scaler(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
+def convert_standard_scaler(
+    estimator: ScalerEstimatorProtocol, input_names: list[str], graph: Graph
+) -> list[str]:
     """Execute the convert standard scaler operation."""
     out_name = graph._uniquify_tensor_name("standard_scaler_out")
     node = Node("Scaler", domain="ai.onnx.ml", inputs=input_names, outputs=[out_name])
@@ -15,7 +18,9 @@ def convert_standard_scaler(estimator: object, input_names: list[str], graph: Gr
     return [out_name]
 
 
-def convert_min_max_scaler(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
+def convert_min_max_scaler(
+    estimator: ScalerEstimatorProtocol, input_names: list[str], graph: Graph
+) -> list[str]:
     """Execute the convert min max scaler operation."""
     out_name = graph._uniquify_tensor_name("minmax_scaler_out")
     node = Node("Scaler", domain="ai.onnx.ml", inputs=input_names, outputs=[out_name])
@@ -28,7 +33,9 @@ def convert_min_max_scaler(estimator: object, input_names: list[str], graph: Gra
     return [out_name]
 
 
-def convert_max_abs_scaler(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
+def convert_max_abs_scaler(
+    estimator: ScalerEstimatorProtocol, input_names: list[str], graph: Graph
+) -> list[str]:
     """Execute the convert max abs scaler operation."""
     out_name = graph._uniquify_tensor_name("maxabs_scaler_out")
     node = Node("Scaler", domain="ai.onnx.ml", inputs=input_names, outputs=[out_name])
@@ -38,7 +45,9 @@ def convert_max_abs_scaler(estimator: object, input_names: list[str], graph: Gra
     return [out_name]
 
 
-def convert_robust_scaler(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
+def convert_robust_scaler(
+    estimator: ScalerEstimatorProtocol, input_names: list[str], graph: Graph
+) -> list[str]:
     """Execute the convert robust scaler operation."""
     out_name = graph._uniquify_tensor_name("robust_scaler_out")
     node = Node("Scaler", domain="ai.onnx.ml", inputs=input_names, outputs=[out_name])
@@ -50,7 +59,9 @@ def convert_robust_scaler(estimator: object, input_names: list[str], graph: Grap
     return [out_name]
 
 
-def convert_normalizer(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
+def convert_normalizer(
+    estimator: ScalerEstimatorProtocol, input_names: list[str], graph: Graph
+) -> list[str]:
     """Execute the convert normalizer operation."""
     out_name = graph._uniquify_tensor_name("normalizer_out")
     node = Node("Normalizer", domain="ai.onnx.ml", inputs=input_names, outputs=[out_name])
@@ -65,7 +76,9 @@ def convert_normalizer(estimator: object, input_names: list[str], graph: Graph) 
     return [out_name]
 
 
-def convert_binarizer(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
+def convert_binarizer(
+    estimator: ScalerEstimatorProtocol, input_names: list[str], graph: Graph
+) -> list[str]:
     """Execute the convert binarizer operation."""
     out_name = graph._uniquify_tensor_name("binarizer_out")
     node = Node("Binarizer", domain="ai.onnx.ml", inputs=input_names, outputs=[out_name])
@@ -74,7 +87,9 @@ def convert_binarizer(estimator: object, input_names: list[str], graph: Graph) -
     return [out_name]
 
 
-def convert_one_hot_encoder(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
+def convert_one_hot_encoder(
+    estimator: ScalerEstimatorProtocol, input_names: list[str], graph: Graph
+) -> list[str]:
     """Execute the convert one hot encoder operation."""
     out_name = graph._uniquify_tensor_name("ohe_out")
     node = Node("OneHotEncoder", domain="ai.onnx.ml", inputs=input_names, outputs=[out_name])
@@ -93,7 +108,9 @@ def convert_one_hot_encoder(estimator: object, input_names: list[str], graph: Gr
     return [out_name]
 
 
-def convert_label_encoder(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
+def convert_label_encoder(
+    estimator: ScalerEstimatorProtocol, input_names: list[str], graph: Graph
+) -> list[str]:
     """Execute the convert label encoder operation."""
     out_name = graph._uniquify_tensor_name("label_encoder_out")
     node = Node("LabelEncoder", domain="ai.onnx.ml", inputs=input_names, outputs=[out_name])
@@ -112,7 +129,9 @@ def convert_label_encoder(estimator: object, input_names: list[str], graph: Grap
     return [out_name]
 
 
-def convert_ordinal_encoder(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
+def convert_ordinal_encoder(
+    estimator: ScalerEstimatorProtocol, input_names: list[str], graph: Graph
+) -> list[str]:
     """Execute the convert ordinal encoder operation."""
     out_name = graph._uniquify_tensor_name("ordinal_encoder_out")
     node = Node("CategoryMapper", domain="ai.onnx.ml", inputs=input_names, outputs=[out_name])
@@ -121,7 +140,7 @@ def convert_ordinal_encoder(estimator: object, input_names: list[str], graph: Gr
 
 
 def convert_polynomial_features(
-    estimator: object, input_names: list[str], graph: Graph
+    estimator: ScalerEstimatorProtocol, input_names: list[str], graph: Graph
 ) -> list[str]:
     """Execute the convert polynomial features operation."""
     out_name = graph._uniquify_tensor_name("poly_features_out")
@@ -130,7 +149,9 @@ def convert_polynomial_features(
     return [out_name]
 
 
-def convert_power_transformer(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
+def convert_power_transformer(
+    estimator: ScalerEstimatorProtocol, input_names: list[str], graph: Graph
+) -> list[str]:
     """Execute the convert power transformer operation."""
     out_name = graph._uniquify_tensor_name("power_transform_out")
     node = Node("Identity", domain="", inputs=input_names, outputs=[out_name])
@@ -139,7 +160,7 @@ def convert_power_transformer(estimator: object, input_names: list[str], graph: 
 
 
 def convert_quantile_transformer(
-    estimator: object, input_names: list[str], graph: Graph
+    estimator: ScalerEstimatorProtocol, input_names: list[str], graph: Graph
 ) -> list[str]:
     """Execute the convert quantile transformer operation."""
     out_name = graph._uniquify_tensor_name("quantile_transform_out")
@@ -148,7 +169,9 @@ def convert_quantile_transformer(
     return [out_name]
 
 
-def convert_kbins_discretizer(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
+def convert_kbins_discretizer(
+    estimator: ScalerEstimatorProtocol, input_names: list[str], graph: Graph
+) -> list[str]:
     """Execute the convert kbins discretizer operation."""
     out_name = graph._uniquify_tensor_name("kbins_out")
     node = Node("Identity", domain="", inputs=input_names, outputs=[out_name])
@@ -156,7 +179,9 @@ def convert_kbins_discretizer(estimator: object, input_names: list[str], graph: 
     return [out_name]
 
 
-def convert_label_binarizer(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
+def convert_label_binarizer(
+    estimator: ScalerEstimatorProtocol, input_names: list[str], graph: Graph
+) -> list[str]:
     """Execute the convert label binarizer operation."""
     out_name = graph._uniquify_tensor_name("label_binarizer_out")
     node = Node("Identity", domain="", inputs=input_names, outputs=[out_name])
@@ -165,7 +190,7 @@ def convert_label_binarizer(estimator: object, input_names: list[str], graph: Gr
 
 
 def convert_multi_label_binarizer(
-    estimator: object, input_names: list[str], graph: Graph
+    estimator: ScalerEstimatorProtocol, input_names: list[str], graph: Graph
 ) -> list[str]:
     """Execute the convert multi label binarizer operation."""
     out_name = graph._uniquify_tensor_name("multi_label_binarizer_out")
@@ -174,7 +199,9 @@ def convert_multi_label_binarizer(
     return [out_name]
 
 
-def convert_simple_imputer(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
+def convert_simple_imputer(
+    estimator: ScalerEstimatorProtocol, input_names: list[str], graph: Graph
+) -> list[str]:
     """Execute the convert simple imputer operation."""
     out_name = graph._uniquify_tensor_name("simple_imputer_out")
     node = Node("Imputer", domain="ai.onnx.ml", inputs=input_names, outputs=[out_name])
@@ -182,7 +209,9 @@ def convert_simple_imputer(estimator: object, input_names: list[str], graph: Gra
     return [out_name]
 
 
-def convert_missing_indicator(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
+def convert_missing_indicator(
+    estimator: ScalerEstimatorProtocol, input_names: list[str], graph: Graph
+) -> list[str]:
     """Execute the convert missing indicator operation."""
     out_name = graph._uniquify_tensor_name("missing_indicator_out")
     node = Node("Identity", domain="", inputs=input_names, outputs=[out_name])
@@ -190,7 +219,9 @@ def convert_missing_indicator(estimator: object, input_names: list[str], graph: 
     return [out_name]
 
 
-def convert_iterative_imputer(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
+def convert_iterative_imputer(
+    estimator: ScalerEstimatorProtocol, input_names: list[str], graph: Graph
+) -> list[str]:
     """Execute the convert iterative imputer operation."""
     out_name = graph._uniquify_tensor_name("iterative_imputer_out")
     node = Node("Identity", domain="", inputs=input_names, outputs=[out_name])
@@ -198,7 +229,9 @@ def convert_iterative_imputer(estimator: object, input_names: list[str], graph: 
     return [out_name]
 
 
-def convert_knn_imputer(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
+def convert_knn_imputer(
+    estimator: ScalerEstimatorProtocol, input_names: list[str], graph: Graph
+) -> list[str]:
     """Execute the convert knn imputer operation."""
     out_name = graph._uniquify_tensor_name("knn_imputer_out")
     node = Node("Identity", domain="", inputs=input_names, outputs=[out_name])
@@ -207,7 +240,7 @@ def convert_knn_imputer(estimator: object, input_names: list[str], graph: Graph)
 
 
 def convert_function_transformer(
-    estimator: object, input_names: list[str], graph: Graph
+    estimator: ScalerEstimatorProtocol, input_names: list[str], graph: Graph
 ) -> list[str]:
     """Execute the convert function transformer operation."""
     out_name = graph._uniquify_tensor_name("function_transformer_out")
@@ -217,7 +250,7 @@ def convert_function_transformer(
 
 
 def convert_spline_transformer(
-    estimator: object, input_names: list[str], graph: Graph
+    estimator: ScalerEstimatorProtocol, input_names: list[str], graph: Graph
 ) -> list[str]:
     """Execute the convert spline transformer operation."""
     out_name = graph._uniquify_tensor_name("spline_transformer_out")
@@ -226,7 +259,9 @@ def convert_spline_transformer(
     return [out_name]
 
 
-def convert_dict_vectorizer(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
+def convert_dict_vectorizer(
+    estimator: ScalerEstimatorProtocol, input_names: list[str], graph: Graph
+) -> list[str]:
     """Execute the convert dict vectorizer operation."""
     out_name = graph._uniquify_tensor_name("dict_vectorizer_out")
     node = Node("DictVectorizer", domain="ai.onnx.ml", inputs=input_names, outputs=[out_name])
@@ -234,7 +269,9 @@ def convert_dict_vectorizer(estimator: object, input_names: list[str], graph: Gr
     return [out_name]
 
 
-def convert_feature_hasher(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
+def convert_feature_hasher(
+    estimator: ScalerEstimatorProtocol, input_names: list[str], graph: Graph
+) -> list[str]:
     """Execute the convert feature hasher operation."""
     out_name = graph._uniquify_tensor_name("feature_hasher_out")
     node = Node("Identity", domain="", inputs=input_names, outputs=[out_name])
@@ -242,7 +279,9 @@ def convert_feature_hasher(estimator: object, input_names: list[str], graph: Gra
     return [out_name]
 
 
-def convert_count_vectorizer(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
+def convert_count_vectorizer(
+    estimator: ScalerEstimatorProtocol, input_names: list[str], graph: Graph
+) -> list[str]:
     """Execute the convert count vectorizer operation."""
     out_name = graph._uniquify_tensor_name("count_vectorizer_out")
     node = Node("CountVectorizer", domain="ai.onnx.ml", inputs=input_names, outputs=[out_name])
@@ -250,7 +289,9 @@ def convert_count_vectorizer(estimator: object, input_names: list[str], graph: G
     return [out_name]
 
 
-def convert_tfidf_transformer(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
+def convert_tfidf_transformer(
+    estimator: ScalerEstimatorProtocol, input_names: list[str], graph: Graph
+) -> list[str]:
     """Execute the convert tfidf transformer operation."""
     out_name = graph._uniquify_tensor_name("tfidf_transformer_out")
     node = Node("TfIdfVectorizer", domain="ai.onnx.ml", inputs=input_names, outputs=[out_name])
@@ -258,7 +299,9 @@ def convert_tfidf_transformer(estimator: object, input_names: list[str], graph: 
     return [out_name]
 
 
-def convert_tfidf_vectorizer(estimator: object, input_names: list[str], graph: Graph) -> list[str]:
+def convert_tfidf_vectorizer(
+    estimator: ScalerEstimatorProtocol, input_names: list[str], graph: Graph
+) -> list[str]:
     """Execute the convert tfidf vectorizer operation."""
     out_name = graph._uniquify_tensor_name("tfidf_vectorizer_out")
     node = Node("TfIdfVectorizer", domain="ai.onnx.ml", inputs=input_names, outputs=[out_name])
@@ -267,7 +310,7 @@ def convert_tfidf_vectorizer(estimator: object, input_names: list[str], graph: G
 
 
 def convert_hashing_vectorizer(
-    estimator: object, input_names: list[str], graph: Graph
+    estimator: ScalerEstimatorProtocol, input_names: list[str], graph: Graph
 ) -> list[str]:
     """Execute the convert hashing vectorizer operation."""
     out_name = graph._uniquify_tensor_name("hashing_vectorizer_out")

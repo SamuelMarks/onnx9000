@@ -1,12 +1,11 @@
 """Module providing onnx2gguf functionality."""
 
 import json
-from typing import Any
 
 
 def extract_tokenizer_metadata(
-    tokenizer_json_str: str = None, vocab_size: int = 0
-) -> dict[str, Any]:
+    tokenizer_json_str: str | None = None, vocab_size: int = 0
+) -> dict[str, int | float | str | bool | bytes | list | dict | tuple | None]:
     """Extract tokenizer metadata."""
     meta = {}
     if not tokenizer_json_str:

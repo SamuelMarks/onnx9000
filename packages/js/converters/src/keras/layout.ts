@@ -1,4 +1,6 @@
-// @ts-nocheck
+/**
+ * @fileoverview layout module for converters.
+ */
 /**
  * Translates a generic shape tuple from NHWC (Channels Last) to NCHW (Channels First) format.
  * Applies appropriately to 3D (NLC), 4D (NHWC), and 5D (NDHWC) permutations.
@@ -9,13 +11,19 @@
 export function translateNhwcToNchw(shape: number[]): number[] {
   if (shape.length === 4) {
     // [N, H, W, C] -> [N, C, H, W]
-    return [shape[0]!, shape[3]!, shape[1]!, shape[2]!];
+    return [shape[0] as number, shape[3] as number, shape[1] as number, shape[2] as number];
   } else if (shape.length === 3) {
     // [N, L, C] -> [N, C, L]
-    return [shape[0]!, shape[2]!, shape[1]!];
+    return [shape[0] as number, shape[2] as number, shape[1] as number];
   } else if (shape.length === 5) {
     // [N, D, H, W, C] -> [N, C, D, H, W]
-    return [shape[0]!, shape[4]!, shape[1]!, shape[2]!, shape[3]!];
+    return [
+      shape[0] as number,
+      shape[4] as number,
+      shape[1] as number,
+      shape[2] as number,
+      shape[3] as number,
+    ];
   }
   return [...shape];
 }
@@ -38,7 +46,7 @@ export function transposeConv2DWeights(
         for (let x = 0; x < w; x++) {
           const srcIdx = y * (w * inC * outC) + x * (inC * outC) + i * outC + o;
           const dstIdx = o * (inC * h * w) + i * (h * w) + y * w + x;
-          out[dstIdx] = data[srcIdx]!;
+          out[dstIdx] = data[srcIdx] as number;
         }
       }
     }
@@ -62,7 +70,7 @@ export function transposeConv1DWeights(
       for (let x = 0; x < l; x++) {
         const srcIdx = x * (inC * outC) + i * outC + o;
         const dstIdx = o * (inC * l) + i * l + x;
-        out[dstIdx] = data[srcIdx]!;
+        out[dstIdx] = data[srcIdx] as number;
       }
     }
   }
@@ -88,14 +96,9 @@ export function transposeConv3DWeights(
         for (let y = 0; y < h; y++) {
           for (let x = 0; x < w; x++) {
             const srcIdx =
-              z * (h * w * inC * outC) +
-              y * (w * inC * outC) +
-              x * (inC * outC) +
-              i * outC +
-              o;
-            const dstIdx =
-              o * (inC * d * h * w) + i * (d * h * w) + z * (h * w) + y * w + x;
-            out[dstIdx] = data[srcIdx]!;
+              z * (h * w * inC * outC) + y * (w * inC * outC) + x * (inC * outC) + i * outC + o;
+            const dstIdx = o * (inC * d * h * w) + i * (d * h * w) + z * (h * w) + y * w + x;
+            out[dstIdx] = data[srcIdx] as number;
           }
         }
       }
@@ -107,22 +110,26 @@ export function transposeConv3DWeights(
 /**
  * Transpose Keras Dense weights: [In, Out] -> [Out, In]
  */
-export function transposeDenseWeights(
-  data: Float32Array,
-  inF: number,
-  outF: number,
-): Float32Array {
+export function transposeDenseWeights(data: Float32Array, inF: number, outF: number): Float32Array {
   const out = new Float32Array(data.length);
   for (let o = 0; o < outF; o++) {
     for (let i = 0; i < inF; i++) {
       const srcIdx = i * outF + o;
       const dstIdx = o * inF + i;
-      out[dstIdx] = data[srcIdx]!;
+      out[dstIdx] = data[srcIdx] as number;
     }
   }
   return out;
 }
 
+/**
+ * Executes `calculatePaddingSame`.
+ * @param inputSize Parameter `inputSize`.
+ * @param kernelSize Parameter `kernelSize`.
+ * @param stride Parameter `stride`.
+ * @param dilation Parameter `dilation`.
+ * @returns Result of `calculatePaddingSame`.
+ */
 export function calculatePaddingSame(
   inputSize: number,
   kernelSize: number,
@@ -142,6 +149,10 @@ export function calculatePaddingSame(
   return [padBefore, padAfter];
 }
 
+/**
+ * Executes `calculatePaddingValid`.
+ * @returns Result of `calculatePaddingValid`.
+ */
 export function calculatePaddingValid(): [number, number] {
   return [0, 0];
 }

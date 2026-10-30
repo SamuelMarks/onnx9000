@@ -1,7 +1,5 @@
 """Darknet to ONNX IR Mapper."""
 
-from typing import Any
-
 import numpy as np
 from onnx9000.core.ir import Constant, Graph, Node, Variable
 
@@ -9,11 +7,15 @@ from onnx9000.core.ir import Constant, Graph, Node, Variable
 class DarknetMapper:
     """Mapper to convert Darknet parsed layers and weights to ONNX IR."""
 
-    def __init__(self, layers: list[dict[str, Any]], weights: np.ndarray):
+    def __init__(
+        self,
+        layers: list[dict[str, int | float | str | bool | bytes | list | dict | tuple | None]],
+        weights: np.ndarray,
+    ) -> None:
         """Initialize the mapper.
 
         Args:
-            layers (List[Dict[str, Any]]): Parsed layers from the .cfg file.
+            layers (List[dict[str, Union[int, float, str, bool]]]): Parsed layers from the .cfg file.
             weights (np.ndarray): Parsed weights from the .weights file.
 
         """
@@ -50,7 +52,7 @@ class DarknetMapper:
         if net_info.get("type") == "net":
             h = int(net_info.get("height", 416))
             w = int(net_info.get("width", 416))
-            c = int(net_info.get("channels", 3))  # pragma: no cover
+            c = int(net_info.get("channels", 3))
             self.layers = self.layers[1:]
         else:
             h, w, c = 416, 416, 3
@@ -73,12 +75,8 @@ class DarknetMapper:
                 batch_normalize = int(layer.get("batch_normalize", 0))
                 groups = int(layer.get("groups", 1))
                 channels = (
-                    current.shape[1]
-                    if hasattr(current, "shape") and len(current.shape) > 1
-                    else c  # pragma: no cover
+                    current.shape[1] if hasattr(current, "shape") and len(current.shape) > 1 else c
                 )
-                if not isinstance(channels, int):
-                    channels = 3  # fallback
 
                 if batch_normalize:
                     bn_w = self._read_weights(filters)
@@ -165,10 +163,10 @@ class DarknetMapper:
                 ]
                 route_inputs = []
                 for idx in layers_idx:
-                    if idx < 0:  # pragma: no cover
-                        route_inputs.append(outputs[i + idx])  # pragma: no cover
+                    if idx < 0:
+                        route_inputs.append(outputs[i + idx])
                     else:
-                        route_inputs.append(outputs[idx])  # pragma: no cover
+                        route_inputs.append(outputs[idx])
 
                 if len(route_inputs) == 1:
                     current = route_inputs[0]
@@ -216,7 +214,6 @@ class DarknetMapper:
             outputs.append(current)
 
         # Ensure graph has outputs
-        if current not in self.graph.outputs:
-            self.graph.outputs.append(current)
+        self.graph.outputs.append(current)
 
         return self.graph

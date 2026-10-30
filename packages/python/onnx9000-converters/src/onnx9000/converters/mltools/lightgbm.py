@@ -1,7 +1,6 @@
 """LightGBM JSON parser for pure-Python ONNX conversion."""
 
 import json
-from typing import Any
 
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Attribute, Graph, Node, ValueInfo
@@ -13,7 +12,9 @@ def parse_lightgbm_json(json_str: str) -> Graph:
     return parse_lightgbm_dict(data)
 
 
-def parse_lightgbm_dict(data: dict[str, Any]) -> Graph:
+def parse_lightgbm_dict(
+    data: dict[str, int | float | str | bool | bytes | list | dict | tuple | None],
+) -> Graph:
     """Parse a LightGBM dict representation."""
     graph = Graph("LightGBM_Model")
     graph.opset_imports = {"": 14, "ai.onnx.ml": 3}
@@ -43,7 +44,11 @@ def parse_lightgbm_dict(data: dict[str, Any]) -> Graph:
     for tree in data.get("tree_info", []):
         tree_id = tree["tree_index"]
 
-        def traverse(node: dict[str, Any], node_id: int, tree_id: int = tree_id) -> int:
+        def traverse(
+            node: dict[str, int | float | str | bool | bytes | list | dict | tuple | None],
+            node_id: int,
+            tree_id: int = tree_id,
+        ) -> int:
             """Execute the traverse operation."""
             if "leaf_value" in node:
                 nodes_treeids.append(tree_id)

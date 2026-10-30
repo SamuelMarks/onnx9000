@@ -5,6 +5,7 @@ TFLite SubGraph, including layout optimization, quantization, and
 operator/tensor mapping.
 """
 
+from onnx9000.core.exceptions import CompilationError
 from onnx9000.core.ir import Graph
 
 from ..exporter import TFLiteExporter
@@ -125,7 +126,7 @@ def compile_graph_to_tflite(
                     buffer_index = exporter.add_buffer(bytes(t.data))
             else:
                 # 21. Lazy loading could hook here
-                raise ValueError(f"External data for tensor {t.name} not loaded.")
+                raise CompilationError(f"External data for tensor {t.name} not loaded.")
 
         name_offset = exporter.builder.create_string(t.name)
 
@@ -242,12 +243,11 @@ def compile_graph_to_tflite(
                 val = co_attr.value
                 if isinstance(val, (bytes, bytearray)):
                     custom_options_offset = exporter.builder.create_byte_vector(val)
-        else:
-            if mapping.create_options:
-                options_offset = mapping.create_options(exporter.builder, node, graph)
-            elif mapping.builtin_options_type != BuiltinOptions.NONE:
-                exporter.builder.start_object(0)
-                options_offset = exporter.builder.end_object()
+        elif mapping.create_options:
+            options_offset = mapping.create_options(exporter.builder, node, graph)
+        elif mapping.builtin_options_type != BuiltinOptions.NONE:
+            exporter.builder.start_object(0)
+            options_offset = exporter.builder.end_object()
 
         operator_offsets.append(
             Operator.create(

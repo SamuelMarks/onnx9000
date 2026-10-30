@@ -3,18 +3,46 @@
 import json
 import logging
 import os
+import shutil
 import sys
-from typing import Any, Optional
+from collections.abc import Iterable, Iterator, Mapping
+from typing import Protocol, TypeAlias, TypeVar
+
+from onnx9000.core.exceptions import Onnx9000Error
 
 logger = logging.getLogger(__name__)
 
+T = TypeVar("T")
+ConfigValue: TypeAlias = str | int | float | bool | list[str] | list[int] | None
+
+
+class TensorSeedProtocol(Protocol):
+    """Protocol representing a traced dummy input tensor."""
+
+    @property
+    def shape(self) -> tuple[int, ...]:
+        """Return tensor shape dimensions."""
+
+
+DummyInputValue: TypeAlias = (
+    TensorSeedProtocol | tuple[tuple[TensorSeedProtocol, TensorSeedProtocol], ...]
+)
+
 
 def get_huggingface_model_files(model_id: str, cache_dir: str | None = None) -> str:
-    """Download model files and return local path."""
+    """Download model files from HuggingFace Hub and return the local directory path.
+
+    Args:
+        model_id: HuggingFace Hub repository identifier.
+        cache_dir: Optional local cache directory path.
+
+    Returns:
+        Path to the downloaded local snapshot directory.
+    """
     try:
         from huggingface_hub import snapshot_download
 
-        local_dir = snapshot_download(
+        local_dir: str = snapshot_download(
             repo_id=model_id,
             cache_dir=cache_dir,
             allow_patterns=[
@@ -32,34 +60,51 @@ def get_huggingface_model_files(model_id: str, cache_dir: str | None = None) -> 
         sys.exit(1)
 
 
-def _progress_bar(iterable, desc="Progress", unit="it"):
-    """Create a progress bar for iterables, with tqdm support if available."""
+def _progress_bar(iterable: Iterable[T], desc: str = "Progress", unit: str = "it") -> Iterable[T]:
+    """Create a progress bar for iterables, with tqdm support if available.
+
+    Args:
+        iterable: Input iterable to wrap.
+        desc: Description prefix displayed on the progress bar.
+        unit: Iteration unit label.
+
+    Returns:
+        Wrapped iterable yielding elements from `iterable`.
+    """
     try:
         from tqdm import tqdm
 
         return tqdm(iterable, desc=desc, unit=unit)
     except ImportError:
-        # Fallback simplistic progress bar
         items = list(iterable)
         total = len(items)
 
-        def generator():
+        def generator() -> Iterator[T]:
             """Yield items while printing a simple progress update to stdout."""
+            cr = chr(13)
+            nl = chr(10)
             for i, item in enumerate(items):
-                sys.stdout.write(f"\r{desc}: {i}/{total} [{int(i / total * 100)}%] ")
+                sys.stdout.write(f"{cr}{desc}: {i}/{total} [{int(i / total * 100)}%] ")
                 sys.stdout.flush()
                 yield item
-            sys.stdout.write(f"\r{desc}: {total}/{total} [100%]\n")
+            sys.stdout.write(f"{cr}{desc}: {total}/{total} [100%]{nl}")
 
         return generator()
 
 
-def auto_detect_task(config: dict[str, Any]) -> str:
-    """Auto-detect task from config.json if omitted."""
+def auto_detect_task(config: Mapping[str, ConfigValue]) -> str:
+    """Auto-detect the Optimum export task from `config.json` architectures.
+
+    Args:
+        config: Parsed `config.json` dictionary.
+
+    Returns:
+        Canonical task identifier string.
+    """
     architectures = config.get("architectures", [])
-    if not architectures:
+    if not isinstance(architectures, list) or not architectures:
         return "feature-extraction"
-    arch = architectures[0]
+    arch = str(architectures[0])
     if "SequenceClassification" in arch:
         return "text-classification"
     if "TokenClassification" in arch:
@@ -79,7 +124,7 @@ def auto_detect_task(config: dict[str, Any]) -> str:
     return "feature-extraction"
 
 
-def warn_unsupported_ops():
+def warn_unsupported_ops() -> None:
     """Log a warning if unsupported PyTorch ops are encountered during export."""
     logger.warning(
         "Unsupported PyTorch ops found during export. Fallback to CPU recommended if WebGPU fails."
@@ -87,24 +132,38 @@ def warn_unsupported_ops():
 
 
 def create_dummy_inputs(
-    config: dict[str, Any], task: str, use_past: bool = False
-) -> dict[str, Any]:
-    """Create dummy inputs for ONNX JIT tracing."""
+    config: Mapping[str, ConfigValue], task: str, use_past: bool = False
+) -> dict[str, DummyInputValue]:
+    """Create dummy inputs for ONNX JIT tracing.
+
+    Args:
+        config: Model configuration mapping.
+        task: Target task name.
+        use_past: Whether to include `past_key_values` inputs for KV caching.
+
+    Returns:
+        Dictionary of input names to dummy torch tensors.
+    """
     import torch
 
     batch_size = 1
     seq_length = 8
-    inputs = {}
+    inputs: dict[str, DummyInputValue] = {}
+
+    vocab_size_raw = config.get("vocab_size", 1000)
+    vocab_size = int(vocab_size_raw) if isinstance(vocab_size_raw, (int, float)) else 1000
 
     if task in ["text-generation", "fill-mask", "text-classification"]:
-        inputs["input_ids"] = torch.randint(
-            0, config.get("vocab_size", 1000), (batch_size, seq_length)
-        )
+        inputs["input_ids"] = torch.randint(0, vocab_size, (batch_size, seq_length))
         inputs["attention_mask"] = torch.ones((batch_size, seq_length), dtype=torch.int64)
         if use_past:
-            num_heads = config.get("num_attention_heads", 12)
-            head_dim = config.get("hidden_size", 768) // num_heads
-            num_layers = config.get("num_hidden_layers", 12)
+            num_heads_raw = config.get("num_attention_heads", 12)
+            hidden_size_raw = config.get("hidden_size", 768)
+            num_layers_raw = config.get("num_hidden_layers", 12)
+            num_heads = int(num_heads_raw) if isinstance(num_heads_raw, (int, float)) else 12
+            hidden_size = int(hidden_size_raw) if isinstance(hidden_size_raw, (int, float)) else 768
+            num_layers = int(num_layers_raw) if isinstance(num_layers_raw, (int, float)) else 12
+            head_dim = hidden_size // num_heads
             past_key_values = []
             for _ in range(num_layers):
                 past_key_values.append(
@@ -117,7 +176,6 @@ def create_dummy_inputs(
     elif task == "image-classification":
         inputs["pixel_values"] = torch.randn(batch_size, 3, 224, 224)
     else:
-        # Default
         inputs["input_ids"] = torch.randint(0, 1000, (batch_size, seq_length))
 
     return inputs
@@ -131,8 +189,18 @@ def export_model(
     device: str = "cpu",
     cache_dir: str | None = None,
     split: bool = False,
-):
-    """Trace and export a HuggingFace model to ONNX format."""
+) -> None:
+    """Trace and export a HuggingFace model to ONNX format.
+
+    Args:
+        model_id: HuggingFace Hub model identifier.
+        output_dir: Destination directory for the exported ONNX model and metadata.
+        task: Optional task name (auto-detected if `None`).
+        opset: Target ONNX opset version.
+        device: Execution device string.
+        cache_dir: Optional HuggingFace cache directory.
+        split: Whether to split the exported model into multiple components.
+    """
     print(f"Exporting model {model_id}...")
     local_path = get_huggingface_model_files(model_id, cache_dir)
 
@@ -142,7 +210,7 @@ def export_model(
         sys.exit(1)
 
     with open(config_path) as f:
-        config = json.load(f)
+        config: dict[str, ConfigValue] = json.load(f)
 
     if task is None:
         task = auto_detect_task(config)
@@ -157,7 +225,6 @@ def export_model(
             AutoModelForSequenceClassification,
         )
 
-        # Simplify loading for demo
         if task == "text-generation":
             model = AutoModelForCausalLM.from_pretrained(local_path)
         elif task == "text-classification":
@@ -170,11 +237,11 @@ def export_model(
 
     model.eval()
 
-    use_past = getattr(model.config, "use_cache", False) and task == "text-generation"
+    use_past = bool(getattr(model.config, "use_cache", False)) and task == "text-generation"
 
     dummy_inputs = create_dummy_inputs(config, task, use_past)
 
-    dynamic_axes = {}
+    dynamic_axes: dict[str, dict[int, str]] = {}
     if "input_ids" in dummy_inputs:
         dynamic_axes["input_ids"] = {0: "batch_size", 1: "sequence_length"}
     if "attention_mask" in dummy_inputs:
@@ -183,7 +250,8 @@ def export_model(
     output_names = ["logits"]
     if use_past:
         dynamic_axes["logits"] = {0: "batch_size", 1: "sequence_length"}
-        num_layers = config.get("num_hidden_layers", 12)
+        num_layers_raw = config.get("num_hidden_layers", 12)
+        num_layers = int(num_layers_raw) if isinstance(num_layers_raw, (int, float)) else 12
         for i in range(num_layers):
             dynamic_axes[f"past_key_values_{i}_key"] = {
                 0: "batch_size",
@@ -199,11 +267,9 @@ def export_model(
     onnx_path = os.path.join(output_dir, "model.onnx")
 
     print("Tracing and exporting to ONNX...")
-    # Wrap in progress bar
     for _ in _progress_bar([1], desc="Exporting"):
         with torch.no_grad():
             try:
-                # Mock export if onnx is missing or just do native torch export
                 torch.onnx.export(
                     model,
                     tuple(dummy_inputs.values()),
@@ -214,13 +280,25 @@ def export_model(
                     opset_version=opset or 14,
                     do_constant_folding=True,
                 )
-            except Exception as e:
+            except (
+                Onnx9000Error,
+                OSError,
+                ValueError,
+                TypeError,
+                RuntimeError,
+                KeyError,
+                IndexError,
+                AttributeError,
+                ImportError,
+                LookupError,
+                ArithmeticError,
+                BufferError,
+                AssertionError,
+                StopIteration,
+            ) as e:
                 warn_unsupported_ops()
                 logger.error(f"Export failed: {e}")
                 sys.exit(1)
-
-    # Copy metadata
-    import shutil
 
     for meta_file in [
         "config.json",

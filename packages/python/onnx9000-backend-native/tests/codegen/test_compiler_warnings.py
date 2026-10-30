@@ -6,7 +6,7 @@ import pytest
 from onnx9000.backends.codegen.compiler import compile_static_lib, compile_wasm
 
 
-def test_wasm_size_warning():
+def test_wasm_size_warning() -> None:
     """Test wasm size warning."""
     with patch("subprocess.run"), patch("os.path.exists", return_value=True):
         with patch("os.path.getsize", return_value=5 * 1024 * 1024):  # 5MB
@@ -14,12 +14,11 @@ def test_wasm_size_warning():
                 compile_wasm("int main(){}")
 
 
-def test_compile_static_lib_cleanup():
+def test_compile_static_lib_cleanup() -> None:
     """Provides functional implementation."""
     # If the object path exists, it should be removed
     """Test compile static lib cleanup."""
-    with patch("subprocess.run"):
-        with patch("os.path.exists", side_effect=lambda p: True):
-            with patch("os.remove") as mock_rm:
-                compile_static_lib("int main(){}")
-                mock_rm.assert_called()
+    with patch("subprocess.run"), patch("os.path.exists", side_effect=lambda p: True):
+        with patch("os.remove") as mock_rm:
+            compile_static_lib("int main(){}")
+            mock_rm.assert_called()

@@ -1,10 +1,13 @@
+"""Unit tests and verification suite for cli triton functionality."""
+
 import argparse
 from unittest.mock import patch
 
 from onnx9000_cli.main import triton_cmd
 
 
-def test_triton_cmd():
+def test_triton_cmd() -> None:
+    """Verify that triton cmd behaves as expected."""
     args = argparse.Namespace(model="dummy.onnx")
     with patch("builtins.print") as mock_print:
         triton_cmd(args)

@@ -1,5 +1,9 @@
-import type { Graph } from "@onnx9000/core";
+/**
+ * @fileoverview index module for json-extract.
+ */
+import type { Graph } from '@onnx9000/core';
 
+/** Interface `JsonExtractOptions` definition. */
 export interface JsonExtractOptions {
   /** Drop large buffer payloads like ArrayBuffer/Uint8Array */
   dropBuffers?: boolean;
@@ -27,7 +31,7 @@ export function createOnnxJsonReplacer(options: JsonExtractOptions = {}) {
       }
     }
 
-    if (typeof value === "bigint") {
+    if (typeof value === 'bigint') {
       return `${value.toString()}n`;
     }
 
@@ -43,10 +47,7 @@ export function createOnnxJsonReplacer(options: JsonExtractOptions = {}) {
  * @param options Extraction options
  * @returns Serialized JSON string
  */
-export function extractJson(
-  graph: Graph,
-  options: JsonExtractOptions = {},
-): string {
+export function extractJson(graph: Graph, options: JsonExtractOptions = {}): string {
   const { spaces = 2 } = options;
   return JSON.stringify(graph, createOnnxJsonReplacer(options), spaces);
 }

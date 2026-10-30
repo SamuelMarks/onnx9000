@@ -16,7 +16,7 @@ def parse_onnxml_tree_ensemble(node: Node) -> list[TreeAbstractions]:
         return trees
 
     tree_ids = node.attributes["nodes_treeids"].value
-    node.attributes["nodes_nodeids"].value
+    _ = node.attributes["nodes_nodeids"].value
     feature_ids = node.attributes["nodes_featureids"].value
     thresholds = node.attributes["nodes_values"].value
     modes = node.attributes["nodes_modes"].value
@@ -51,7 +51,9 @@ def parse_onnxml_tree_ensemble(node: Node) -> list[TreeAbstractions]:
     return trees
 
 
-def extract_tree_ensemble_attributes(node: Node):
+def extract_tree_ensemble_attributes(
+    node: Node,
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
     """Extract all relevant tree attributes natively."""
     attrs = {}
     for k in [

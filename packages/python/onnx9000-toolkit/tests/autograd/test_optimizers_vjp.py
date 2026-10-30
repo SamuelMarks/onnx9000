@@ -1,4 +1,4 @@
-"""Module providing core logic and structural definitions."""
+"""Unit tests and verification suite for optimizers vjp functionality."""
 
 import onnx9000.toolkit.training.autograd.optimizers as opt
 from onnx9000.core.ir import Graph

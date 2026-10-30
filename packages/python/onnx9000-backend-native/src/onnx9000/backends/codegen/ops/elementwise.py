@@ -3,29 +3,35 @@
 Translates ONNX operations to equivalent C++ bindings and memory buffers.
 """
 
-from typing import Optional
-
+from onnx9000.backends.codegen.generator import Generator
 from onnx9000.backends.codegen.utils import get_attribute, get_omp_pragma
+from onnx9000.core.dtypes import to_cpp_type
 from onnx9000.core.ir import Node
 from onnx9000.core.registry import global_registry as registry
 
 
 def _generate_unary_op(
     node: Node,
-    generator_context: "onnx9000.backends.codegen.Generator",
+    generator_context: Generator,
     op_expr: str,
     vdsp_func: str | None = None,
 ) -> str:
-    """Implement the _generate_unary_op method or operation."""
+    """Execute generate unary op operation.
+
+    Args:
+        node: Parameter specifying node (Node).
+        generator_context: Parameter specifying generator context ('onnx9000.backends.codegen.Generator').
+        op_expr: Parameter specifying op expr (str).
+        vdsp_func: Parameter specifying vdsp func (str | None).
+
+    Returns:
+        Result of generate unary op (str).
+    """
     inp = generator_context.get_tensor_name(node.inputs[0])
     out = generator_context.get_tensor_name(node.outputs[0])
     tensor_info = generator_context.graph.tensors[node.outputs[0]]
     offset = generator_context.tensor_offsets.get(node.outputs[0], 0)
-    cpp_type = "float"
-    if tensor_info.dtype is not None:
-        from onnx9000.core.dtypes import to_cpp_type
-
-        cpp_type = to_cpp_type(tensor_info.dtype)
+    cpp_type = to_cpp_type(tensor_info.dtype) if tensor_info.dtype is not None else "float"
 
     pragma = get_omp_pragma(f"{inp}.size()")
 
@@ -55,8 +61,16 @@ def _generate_unary_op(
 
 
 @registry.register_op("", "Relu")
-def generate_relu(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
-    """Implement the generate_relu method or operation."""
+def generate_relu(node: Node, generator_context: Generator) -> str:
+    """Generate target source code for the relu operator.
+
+    Args:
+        node: Parameter specifying node (Node).
+        generator_context: Parameter specifying generator context ('onnx9000.backends.codegen.Generator').
+
+    Returns:
+        Result of generate relu (str).
+    """
     return _generate_unary_op(
         node,
         generator_context,
@@ -65,7 +79,7 @@ def generate_relu(node: Node, generator_context: "onnx9000.backends.codegen.Gene
 
 
 @registry.register_op("", "Elu")
-def generate_elu(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
+def generate_elu(node: Node, generator_context: Generator) -> str:
     """Generate the code implementation for the Elu operator."""
     alpha = get_attribute(node, "alpha", 1.0)
     return _generate_unary_op(
@@ -76,7 +90,7 @@ def generate_elu(node: Node, generator_context: "onnx9000.backends.codegen.Gener
 
 
 @registry.register_op("", "Celu")
-def generate_celu(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
+def generate_celu(node: Node, generator_context: Generator) -> str:
     """Generate the code implementation for the Celu operator."""
     alpha = get_attribute(node, "alpha", 1.0)
     return _generate_unary_op(
@@ -87,9 +101,7 @@ def generate_celu(node: Node, generator_context: "onnx9000.backends.codegen.Gene
 
 
 @registry.register_op("", "LeakyRelu")
-def generate_leaky_relu(
-    node: Node, generator_context: "onnx9000.backends.codegen.Generator"
-) -> str:
+def generate_leaky_relu(node: Node, generator_context: Generator) -> str:
     """Generate the code implementation for the Leaky Relu operator."""
     alpha = get_attribute(node, "alpha", 0.01)
     return _generate_unary_op(
@@ -100,7 +112,7 @@ def generate_leaky_relu(
 
 
 @registry.register_op("", "Selu")
-def generate_selu(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
+def generate_selu(node: Node, generator_context: Generator) -> str:
     """Generate the code implementation for the Selu operator."""
     alpha = get_attribute(node, "alpha", 1.6732632423543772)
     gamma = get_attribute(node, "gamma", 1.0507009873554805)
@@ -112,21 +124,19 @@ def generate_selu(node: Node, generator_context: "onnx9000.backends.codegen.Gene
 
 
 @registry.register_op("", "Softplus")
-def generate_softplus(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
+def generate_softplus(node: Node, generator_context: Generator) -> str:
     """Generate the code implementation for the Softplus operator."""
     return _generate_unary_op(node, generator_context, "std::log(std::exp({inp}) + 1.0f)")
 
 
 @registry.register_op("", "Softsign")
-def generate_softsign(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
+def generate_softsign(node: Node, generator_context: Generator) -> str:
     """Generate the code implementation for the Softsign operator."""
     return _generate_unary_op(node, generator_context, "{inp} / (1.0f + std::abs({inp}))")
 
 
 @registry.register_op("", "ThresholdedRelu")
-def generate_thresholded_relu(
-    node: Node, generator_context: "onnx9000.backends.codegen.Generator"
-) -> str:
+def generate_thresholded_relu(node: Node, generator_context: Generator) -> str:
     """Generate the code implementation for the Thresholded Relu operator."""
     alpha = get_attribute(node, "alpha", 1.0)
     return _generate_unary_op(
@@ -137,7 +147,7 @@ def generate_thresholded_relu(
 
 
 @registry.register_op("", "Mish")
-def generate_mish(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
+def generate_mish(node: Node, generator_context: Generator) -> str:
     """Generate the code implementation for the Mish operator."""
     return _generate_unary_op(
         node, generator_context, "{inp} * std::tanh(std::log(std::exp({inp}) + 1.0f))"
@@ -145,9 +155,7 @@ def generate_mish(node: Node, generator_context: "onnx9000.backends.codegen.Gene
 
 
 @registry.register_op("", "HardSigmoid")
-def generate_hard_sigmoid(
-    node: Node, generator_context: "onnx9000.backends.codegen.Generator"
-) -> str:
+def generate_hard_sigmoid(node: Node, generator_context: Generator) -> str:
     """Generate the code implementation for the Hard Sigmoid operator."""
     alpha = get_attribute(node, "alpha", 0.2)
     beta = get_attribute(node, "beta", 0.5)
@@ -159,9 +167,7 @@ def generate_hard_sigmoid(
 
 
 @registry.register_op("", "HardSwish")
-def generate_hard_swish(
-    node: Node, generator_context: "onnx9000.backends.codegen.Generator"
-) -> str:
+def generate_hard_swish(node: Node, generator_context: Generator) -> str:
     """Generate the code implementation for the Hard Swish operator."""
     return _generate_unary_op(
         node,
@@ -171,25 +177,52 @@ def generate_hard_swish(
 
 
 @registry.register_op("", "Sigmoid")
-def generate_sigmoid(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
-    """Implement the generate_sigmoid method or operation."""
+def generate_sigmoid(node: Node, generator_context: Generator) -> str:
+    """Generate target source code for the sigmoid operator.
+
+    Args:
+        node: Parameter specifying node (Node).
+        generator_context: Parameter specifying generator context ('onnx9000.backends.codegen.Generator').
+
+    Returns:
+        Result of generate sigmoid (str).
+    """
     return _generate_unary_op(node, generator_context, "1.0f / (1.0f + std::exp(-{inp}))")
 
 
 @registry.register_op("", "Tanh")
-def generate_tanh(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
-    """Implement the generate_tanh method or operation."""
+def generate_tanh(node: Node, generator_context: Generator) -> str:
+    """Generate target source code for the tanh operator.
+
+    Args:
+        node: Parameter specifying node (Node).
+        generator_context: Parameter specifying generator context ('onnx9000.backends.codegen.Generator').
+
+    Returns:
+        Result of generate tanh (str).
+    """
     return _generate_unary_op(node, generator_context, "std::tanh({inp})", vdsp_func="vvtanhf")
 
 
 def _generate_binary_op(
     node: Node,
-    generator_context: "onnx9000.backends.codegen.Generator",
+    generator_context: Generator,
     op_expr: str,
     vdsp_func: str | None = None,
     is_function: bool = False,
 ) -> str:
-    """Implement the _generate_binary_op method or operation."""
+    """Execute generate binary op operation.
+
+    Args:
+        node: Parameter specifying node (Node).
+        generator_context: Parameter specifying generator context ('onnx9000.backends.codegen.Generator').
+        op_expr: Parameter specifying op expr (str).
+        vdsp_func: Parameter specifying vdsp func (str | None).
+        is_function: Parameter specifying is function (bool).
+
+    Returns:
+        Result of generate binary op (str).
+    """
     inp1 = generator_context.get_tensor_name(node.inputs[0])
     inp2 = generator_context.get_tensor_name(node.inputs[1])
     out = generator_context.get_tensor_name(node.outputs[0])
@@ -198,14 +231,13 @@ def _generate_binary_op(
     in1_shape = generator_context.graph.tensors[node.inputs[0]].shape
     in2_shape = generator_context.graph.tensors[node.inputs[1]].shape
     out_shape = tensor_info.shape
-    cpp_type = "float"
-    if tensor_info.dtype is not None:
-        from onnx9000.core.dtypes import to_cpp_type
-
-        cpp_type = to_cpp_type(tensor_info.dtype)
+    cpp_type = to_cpp_type(tensor_info.dtype) if tensor_info.dtype is not None else "float"
     pragma = get_omp_pragma(f"{out}.size()")
 
-    def format_op(a, b):
+    def format_op(
+        a: int | float | str | bool | bytes | list | dict | tuple | None,
+        b: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Execute the Format op process and return the computed results."""
         if is_function:
             return op_expr.format(inp1=a, inp2=b)
@@ -220,10 +252,17 @@ def _generate_binary_op(
     return f"\n        // Binary Op: {node.op_type} (Broadcast Path)\n        std::vector<int64_t> {out}_shape = {out_shape_str};\n        int64_t {out}_size = 1;\n        for (auto d : {out}_shape) {out}_size *= d;\n\n        /* preallocated */\n        onnx9000::Tensor<{cpp_type}> {out}(reinterpret_cast<{cpp_type}*>((_global_arena.data() + {offset})), {out}_shape);\n\n        {pragma}\n        for (int64_t i = 0; i < {out}_size; ++i) {{\n            int64_t idx1 = onnx9000::broadcast_index(i, {out}.shape, {inp1}.shape, {inp1}.strides);\n            int64_t idx2 = onnx9000::broadcast_index(i, {out}.shape, {inp2}.shape, {inp2}.strides);\n            {out}.data[i] = {format_op(f'{inp1}.data[idx1]', f'{inp2}.data[idx2]')};\n        }}\n"
 
 
-def _generate_ternary_op(
-    node: Node, generator_context: "onnx9000.backends.codegen.Generator", op_expr: str
-) -> str:
-    """Implement the _generate_ternary_op method or operation."""
+def _generate_ternary_op(node: Node, generator_context: Generator, op_expr: str) -> str:
+    """Execute generate ternary op operation.
+
+    Args:
+        node: Parameter specifying node (Node).
+        generator_context: Parameter specifying generator context ('onnx9000.backends.codegen.Generator').
+        op_expr: Parameter specifying op expr (str).
+
+    Returns:
+        Result of generate ternary op (str).
+    """
     inp1 = generator_context.get_tensor_name(node.inputs[0])
     inp2 = generator_context.get_tensor_name(node.inputs[1])
     inp3 = generator_context.get_tensor_name(node.inputs[2])
@@ -231,11 +270,7 @@ def _generate_ternary_op(
     tensor_info = generator_context.graph.tensors[node.outputs[0]]
     offset = generator_context.tensor_offsets.get(node.outputs[0], 0)
     out_shape = tensor_info.shape
-    cpp_type = "float"
-    if tensor_info.dtype is not None:
-        from onnx9000.core.dtypes import to_cpp_type
-
-        cpp_type = to_cpp_type(tensor_info.dtype)
+    cpp_type = to_cpp_type(tensor_info.dtype) if tensor_info.dtype is not None else "float"
     pragma = get_omp_pragma(f"{out}.size()")
     in1_shape = generator_context.graph.tensors[node.inputs[0]].shape
     in2_shape = generator_context.graph.tensors[node.inputs[1]].shape
@@ -248,7 +283,7 @@ def _generate_ternary_op(
 
 
 @registry.register_op("", "PRelu")
-def generate_prelu(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> str:
+def generate_prelu(node: Node, ctx: Generator) -> str:
     """Generate the code implementation for the Prelu operator."""
     return _generate_binary_op(
         node, ctx, "({inp1} < 0) ? ({inp1} * {inp2}) : {inp1}", is_function=True
@@ -256,24 +291,56 @@ def generate_prelu(node: Node, ctx: "onnx9000.backends.codegen.Generator") -> st
 
 
 @registry.register_op("", "Add")
-def generate_add(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
-    """Implement the generate_add method or operation."""
+def generate_add(node: Node, generator_context: Generator) -> str:
+    """Generate target source code for the add operator.
+
+    Args:
+        node: Parameter specifying node (Node).
+        generator_context: Parameter specifying generator context ('onnx9000.backends.codegen.Generator').
+
+    Returns:
+        Result of generate add (str).
+    """
     return _generate_binary_op(node, generator_context, "+", vdsp_func="vDSP_vadd")
 
 
 @registry.register_op("", "Sub")
-def generate_sub(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
-    """Implement the generate_sub method or operation."""
+def generate_sub(node: Node, generator_context: Generator) -> str:
+    """Generate target source code for the sub operator.
+
+    Args:
+        node: Parameter specifying node (Node).
+        generator_context: Parameter specifying generator context ('onnx9000.backends.codegen.Generator').
+
+    Returns:
+        Result of generate sub (str).
+    """
     return _generate_binary_op(node, generator_context, "-")
 
 
 @registry.register_op("", "Mul")
-def generate_mul(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
-    """Implement the generate_mul method or operation."""
+def generate_mul(node: Node, generator_context: Generator) -> str:
+    """Generate target source code for the mul operator.
+
+    Args:
+        node: Parameter specifying node (Node).
+        generator_context: Parameter specifying generator context ('onnx9000.backends.codegen.Generator').
+
+    Returns:
+        Result of generate mul (str).
+    """
     return _generate_binary_op(node, generator_context, "*", vdsp_func="vDSP_vmul")
 
 
 @registry.register_op("", "Div")
-def generate_div(node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
-    """Implement the generate_div method or operation."""
+def generate_div(node: Node, generator_context: Generator) -> str:
+    """Generate target source code for the div operator.
+
+    Args:
+        node: Parameter specifying node (Node).
+        generator_context: Parameter specifying generator context ('onnx9000.backends.codegen.Generator').
+
+    Returns:
+        Result of generate div (str).
+    """
     return _generate_binary_op(node, generator_context, "/", vdsp_func="vDSP_vdiv")

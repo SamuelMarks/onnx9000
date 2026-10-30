@@ -4,7 +4,7 @@ test.describe('CUDA Demo App', () => {
   test.beforeEach(async ({ page }) => {
     try {
       await page.goto('/demo-cuda');
-    } catch (_e) {
+    } catch {
       test.skip();
     }
   });

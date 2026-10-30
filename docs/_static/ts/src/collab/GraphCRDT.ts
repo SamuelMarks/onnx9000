@@ -1,22 +1,35 @@
 import type { IModelGraph, INode } from '../core/IR';
 import { globalEvents } from '../core/State';
 
+export interface CRDTNodeState {
+  node: INode;
+  ts: number;
+  peerId: string;
+  deleted: boolean;
+}
+
+export interface CRDTDelta {
+  type: 'crdt_update';
+  nodeName: string;
+  node: INode;
+  ts: number;
+  peerId: string;
+  deleted: boolean;
+}
+
 // 521. Generic CRDT model for IModelGraph
 // A true CRDT for JSON involves Lamport timestamps and logical clocks.
 // This is a minimal LWW (Last-Write-Wins) Map stub applied to graph nodes.
 export class GraphCRDT {
   private localClock = 0;
   private peerClocks = new Map<string, number>();
-  private nodeMap = new Map<
-    string,
-    { node: INode; ts: number; peerId: string; deleted: boolean }
-  >();
+  private nodeMap = new Map<string, CRDTNodeState>();
 
   private modelRef: IModelGraph | null = null;
   private localPeerId: string;
 
   // 535. Undo/Redo tracking
-  private historyStack: any[] = [];
+  private historyStack: CRDTDelta[] = [];
 
   // 532. Granular permissions
   public role: 'Admin' | 'Edit' | 'View' = 'Admin';
@@ -24,7 +37,7 @@ export class GraphCRDT {
   public lockedNodes: Set<string> = new Set();
 
   // 534. Offline edits sync queue
-  private pendingDeltas: any[] = [];
+  private pendingDeltas: CRDTDelta[] = [];
 
   constructor(peerId: string) {
     this.localPeerId = peerId;
@@ -46,14 +59,14 @@ export class GraphCRDT {
   }
 
   // 524. Local mutations
-  deleteNode(nodeName: string): any {
+  deleteNode(nodeName: string): CRDTDelta | null {
     if (this.role === 'View') throw new Error('Permission Denied: View Only');
     if (this.lockedNodes.has(nodeName) && this.role !== 'Admin')
       throw new Error('Permission Denied: Node is locked by Admin');
 
-    if (!this.nodeMap.has(nodeName)) return null;
+    const state = this.nodeMap.get(nodeName);
+    if (!state) return null;
     this.localClock++;
-    const state = this.nodeMap.get(nodeName)!;
     state.deleted = true;
     state.ts = this.localClock;
     state.peerId = this.localPeerId;
@@ -62,26 +75,27 @@ export class GraphCRDT {
     return this.createDelta(nodeName, state);
   }
 
-  updateNode(node: INode): any {
+  updateNode(node: INode): CRDTDelta {
     if (this.role === 'View') throw new Error('Permission Denied: View Only');
     if (this.lockedNodes.has(node.name) && this.role !== 'Admin')
       throw new Error('Permission Denied: Node is locked by Admin');
 
     this.localClock++;
-    this.nodeMap.set(node.name, {
+    const state: CRDTNodeState = {
       node: JSON.parse(JSON.stringify(node)),
       ts: this.localClock,
       peerId: this.localPeerId,
       deleted: false,
-    });
+    };
+    this.nodeMap.set(node.name, state);
 
     this.syncToModel();
-    return this.createDelta(node.name, this.nodeMap.get(node.name)!);
+    return this.createDelta(node.name, state);
   }
 
   // Handle incoming remote syncs
   // 525. Handle concurrent edits (LWW logic)
-  applyDelta(delta: any): boolean {
+  applyDelta(delta: CRDTDelta): boolean {
     const { nodeName, node, ts, peerId, deleted } = delta;
 
     // Update peer clock watermark
@@ -103,8 +117,8 @@ export class GraphCRDT {
     return false; // Ignored (stale)
   }
 
-  private createDelta(nodeName: string, state: any): any {
-    const delta = {
+  private createDelta(nodeName: string, state: CRDTNodeState): CRDTDelta {
+    const delta: CRDTDelta = {
       type: 'crdt_update',
       nodeName,
       node: state.node,
@@ -120,7 +134,7 @@ export class GraphCRDT {
   }
 
   // 534. Get pending deltas for reconnection
-  public flushPending(): any[] {
+  public flushPending(): CRDTDelta[] {
     const p = [...this.pendingDeltas];
     this.pendingDeltas = [];
     return p;

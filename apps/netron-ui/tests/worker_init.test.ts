@@ -1,21 +1,28 @@
-import { beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from 'vitest';
 
-describe("Worker Initialization", () => {
+const g = globalThis as typeof globalThis & {
+  self: {
+    postMessage: () => void;
+    onmessage?: (ev: MessageEvent) => Promise<void>;
+  };
+};
+
+describe('Worker Initialization', () => {
   beforeAll(() => {
-    (globalThis as any).self = { postMessage: () => undefined };
+    g.self = { postMessage: () => undefined };
   });
 
-  it("should map self.onmessage (lines 31-33)", async () => {
-    const _w = await import("../src/parser/worker");
-    expect(typeof (globalThis as any).self.onmessage).toBe("function");
+  it('should map self.onmessage (lines 31-33)', async () => {
+    const _w = await import('../src/parser/worker');
+    expect(typeof g.self.onmessage).toBe('function');
 
     let posted = false;
-    const orig = (globalThis as any).self.postMessage;
-    (globalThis as any).self.postMessage = () => {
+    const orig = g.self.postMessage;
+    g.self.postMessage = () => {
       posted = true;
     };
-    await (globalThis as any).self.onmessage({} as any);
+    await g.self.onmessage?.({} as MessageEvent);
     expect(posted).toBe(true);
-    (globalThis as any).self.postMessage = orig;
+    g.self.postMessage = orig;
   });
 });

@@ -1,18 +1,26 @@
 """Keras Source Generator."""
 
-from typing import Any
-
-from onnx9000.core.ir import Graph, Node, Tensor
+from onnx9000.core.ir import Graph, Tensor
 
 
 class ONNXToKerasVisitor:
     """Generates Keras 3 code from ONNX IR."""
 
-    def __init__(self, graph: Graph):
+    def __init__(self, graph: Graph) -> None:
         """Initialize the visitor."""
         self.graph = graph
 
-    def _get_shape(self, tensor_or_name: Any) -> list[int]:
+    def _get_shape(
+        self, tensor_or_name: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> list[int]:
+        """Execute get shape on ONNXToKerasVisitor.
+
+        Args:
+            tensor_or_name: Parameter specifying tensor or name (Union[int, float, str, bool, bytes, list, dict, tuple, None]).
+
+        Returns:
+            Result of get shape (list[int]).
+        """
         if isinstance(tensor_or_name, Tensor):
             return list(tensor_or_name.shape) if tensor_or_name.shape else []
         elif isinstance(tensor_or_name, str) and tensor_or_name in self.graph.tensors:
@@ -54,8 +62,7 @@ class ONNXToKerasVisitor:
 
         env = {name: name for name in input_names}
         for init_name in self.graph.initializers:
-            if init_name in env:
-                del env[init_name]
+            env.pop(init_name, None)
 
         module_idx = 0
         for node in self.graph.nodes:

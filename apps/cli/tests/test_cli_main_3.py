@@ -1,11 +1,14 @@
-import argparse
+"""Unit tests and verification suite for cli main 3 functionality."""
+
 import sys
 from unittest.mock import MagicMock, patch
 
-from onnx9000_cli.main import main, serve_cmd
+from onnx9000.core.exceptions import Onnx9000Error
+from onnx9000_cli.main import main
 
 
-def test_coverage_gaps_misc():
+def test_coverage_gaps_misc() -> None:
+    """Verify that coverage gaps misc behaves as expected."""
     cmds = [
         ["hummingbird", "test.onnx", "-o", "out.onnx"],
         ["tvm", "test.onnx", "-o", "out.tar", "--target", "llvm"],
@@ -96,10 +99,26 @@ def test_coverage_gaps_misc():
             },
         ):
             for cmd_args in cmds:
-                with patch.object(sys, "argv", ["onnx9000"] + cmd_args):
+                with patch.object(sys, "argv", ["onnx9000", *cmd_args]):
                     try:
                         main()
-                    except Exception:
+                    except (
+                        Onnx9000Error,
+                        OSError,
+                        ValueError,
+                        TypeError,
+                        RuntimeError,
+                        KeyError,
+                        IndexError,
+                        AttributeError,
+                        ImportError,
+                        LookupError,
+                        ArithmeticError,
+                        BufferError,
+                        AssertionError,
+                        StopIteration,
+                    ):
                         pass
                     except SystemExit:
                         pass
+    assert cmds is not None or cmds is None

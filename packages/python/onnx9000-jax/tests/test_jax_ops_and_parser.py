@@ -1,6 +1,5 @@
-from typing import Any
+"""Unit tests and verification suite for jax ops and parser functionality."""
 
-import pytest
 from onnx9000.jax.jax_ops import (
     _map_jax_add_prim,
     _map_jax_broadcast_in_dim_prim,
@@ -26,9 +25,11 @@ from onnx9000.jax.jax_ops import (
     _map_jax_while_loop,
     _map_jax_xla_pmap_prim,
 )
+from onnx9000.jax.jaxpr_string_parser import parse_jaxpr_string
 
 
-def test_jax_ops():
+def test_jax_ops() -> None:
+    """Verify that jax ops behaves as expected."""
     assert _map_jax_add_prim([], [], {}).op_type == "Add"
     assert _map_jax_add_prim(["a"], ["b"], {}).name == "add_b"
     assert _map_jax_mul_prim([], [], {}).op_type == "Mul"
@@ -92,10 +93,8 @@ def test_jax_ops():
     assert _map_jax_while_loop(["a"], ["b"], {}).name == "while_loop_b"
 
 
-from onnx9000.jax.jaxpr_string_parser import parse_jaxpr_string
-
-
-def test_jaxpr_string_parser():
+def test_jaxpr_string_parser() -> None:
+    """Verify that jaxpr string parser behaves as expected."""
     test_str = """
 {
   in (a, b)

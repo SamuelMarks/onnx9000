@@ -2,54 +2,88 @@
  * @fileoverview app.ts
  * Provides app functionality for the modifier package.
  */
-import type { Graph } from "@onnx9000/core";
-import { ModelExporter } from "./components/export/exporter.js";
-import { LayoutBuilder } from "./components/layout.js";
-import { AddNodeModal } from "./components/modal.js";
-import { PropertiesPanel } from "./components/properties.js";
-import { Toolbar } from "./components/toolbar.js";
-import { ModifierUtilities } from "./components/utilities.js";
-import { GraphMutator } from "./GraphMutator.js";
-import { GraphValidator } from "./GraphValidator.js";
-import { GraphRenderer } from "./render/canvas.js";
-import { DagreLayoutEngine } from "./render/layout.js";
-import { GraphEditor, type SelectionEvent } from "./ui/editor.js";
+import type { Graph } from '@onnx9000/core';
+import { ModelExporter } from './components/export/exporter.js';
+import { LayoutBuilder } from './components/layout.js';
+import { AddNodeModal } from './components/modal.js';
+import { PropertiesPanel } from './components/properties.js';
+import { Toolbar } from './components/toolbar.js';
+import { ModifierUtilities } from './components/utilities.js';
+import { GraphMutator } from './GraphMutator.js';
+import { GraphValidator } from './GraphValidator.js';
+import { GraphRenderer } from './render/canvas.js';
+import { DagreLayoutEngine } from './render/layout.js';
+import { GraphEditor, type SelectionEvent } from './ui/editor.js';
 
+/** Interface `ModifierAppConfig` definition. */
 export interface ModifierAppConfig {
+  /** Property `container`. */
   container: HTMLElement;
+  /** Property `initialGraph`. */
   initialGraph: Graph;
 
   // For coverage of the temp buttons
 }
 
+/**
+ * Executes `__triggerCleanGraph`.
+ * @param app Parameter `app`.
+ * @returns Result of `__triggerCleanGraph`.
+ */
 export function __triggerCleanGraph(app: ModifierApp) {
   app.utils.changeBatchSize(1);
 }
 
+/**
+ * Executes `__triggerMakeDynamic`.
+ * @param app Parameter `app`.
+ * @returns Result of `__triggerMakeDynamic`.
+ */
 export function __triggerMakeDynamic(app: ModifierApp) {
   app.utils.makeDynamic();
 }
 
+/**
+ * Executes `__triggerStripInitializers`.
+ * @param app Parameter `app`.
+ * @returns Result of `__triggerStripInitializers`.
+ */
 export function __triggerStripInitializers(app: ModifierApp) {
   app.utils.stripInitializers();
 }
 
+/** Represents the `ModifierApp` class. */
 export class ModifierApp {
+  /** Property `graph` of `ModifierApp`. */
   graph: Graph;
+  /** Property `mutator` of `ModifierApp`. */
   mutator: GraphMutator;
+  /** Property `validator` of `ModifierApp`. */
   validator: GraphValidator;
+  /** Property `editor` of `ModifierApp`. */
   editor: GraphEditor;
+  /** Property `utils` of `ModifierApp`. */
   utils: ModifierUtilities;
+  /** Property `exporter` of `ModifierApp`. */
   exporter: ModelExporter;
 
   // UI
+  /** Property `renderer` of `ModifierApp`. */
   renderer!: GraphRenderer;
+  /** Property `propsPanel` of `ModifierApp`. */
   propsPanel!: PropertiesPanel;
+  /** Property `modal` of `ModifierApp`. */
   modal!: AddNodeModal;
 
+  /** Property `container` of `ModifierApp`. */
   container!: HTMLElement;
+  /** Property `centerPanel` of `ModifierApp`. */
   centerPanel!: HTMLElement;
 
+  /**
+   * Initializes a new `ModifierApp` instance.
+   * @param config Parameter `config`.
+   */
   constructor(config: ModifierAppConfig) {
     this.container = config.container;
     this.graph = config.initialGraph;
@@ -59,8 +93,10 @@ export class ModifierApp {
     this.utils = new ModifierUtilities(this.mutator);
     // 222. Ensure local cache is cleared on reload
     try {
-      localStorage.removeItem("onnx_modifier_session_graph");
-    } catch (_e) {}
+      localStorage.removeItem('onnx_modifier_session_graph');
+    } catch {
+      // Ignore storage access errors
+    }
     this.exporter = new ModelExporter(this.mutator);
 
     this.buildUI(config.container);
@@ -69,27 +105,31 @@ export class ModifierApp {
 
     // 280. Localization dictionary
     const _i18n = {
-      en: { warning: "${i18n[lang].warning}" },
-      es: { warning: "Advertencia: El modelo usa opset deprecado" },
+      en: { warning: '${i18n[lang].warning}' },
+      es: { warning: 'Advertencia: El modelo usa opset deprecado' },
     };
-    const _lang = "en";
+    const _lang = 'en';
 
     // 249. Warning banners for deprecated opsets
-    const aiOnnx =
-      this.graph.opsetImports[""] || this.graph.opsetImports["ai.onnx"];
+    const aiOnnx = this.graph.opsetImports[''] || this.graph.opsetImports['ai.onnx'];
     if (aiOnnx && aiOnnx < 13) {
-      const banner = document.createElement("div");
-      banner.style.backgroundColor = "#ffc107";
-      banner.style.color = "#000";
-      banner.style.padding = "8px";
-      banner.style.textAlign = "center";
-      banner.style.fontWeight = "bold";
-      banner.style.fontSize = "12px";
+      const banner = document.createElement('div');
+      banner.style.backgroundColor = '#ffc107';
+      banner.style.color = '#000';
+      banner.style.padding = '8px';
+      banner.style.textAlign = 'center';
+      banner.style.fontWeight = 'bold';
+      banner.style.fontSize = '12px';
       banner.textContent = `Warning: Model uses deprecated opset ${aiOnnx}. Upgrading to 13+ is recommended for WebGPU compat.`;
       this.container.insertBefore(banner, this.container.firstChild);
     }
   }
 
+  /**
+   * Executes `buildUI` on `ModifierApp`.
+   * @param container Parameter `container`.
+   * @returns Result of `buildUI`.
+   */
   private buildUI(container: HTMLElement) {
     const builder = new LayoutBuilder(container);
     const { leftPanel, centerPanel, rightPanel } = builder.build();
@@ -134,11 +174,7 @@ export class ModifierApp {
 
       onValidateGraph: () => {
         const res = this.validator.verify();
-        alert(
-          res.isValid
-            ? "Graph is Valid."
-            : `Graph Invalid: ${JSON.stringify(res, null, 2)}`,
-        );
+        alert(res.isValid ? 'Graph is Valid.' : `Graph Invalid: ${JSON.stringify(res, null, 2)}`);
       },
 
       onValidateOpset: () => {
@@ -155,17 +191,15 @@ export class ModifierApp {
 
       onFeedback: () => {
         window.open(
-          "https://github.com/samuel/ml-switcheroo/issues/new?title=[Modifier+Feedback]&body=Please%20describe%20your%20issue%20or%20feature%20request%3A",
-          "_blank",
+          'https://github.com/samuel/ml-switcheroo/issues/new?title=[Modifier+Feedback]&body=Please%20describe%20your%20issue%20or%20feature%20request%3A',
+          '_blank',
         );
       },
 
       onExportGraphJSON: () => {
-        const win = window.open("", "_blank");
+        const win = window.open('', '_blank');
         if (win) {
-          win.document.write(
-            `<pre>${JSON.stringify(this.graph, null, 2)}</pre>`,
-          );
+          win.document.write(`<pre>${JSON.stringify(this.graph, null, 2)}</pre>`);
         }
       },
 
@@ -178,7 +212,7 @@ export class ModifierApp {
           this.exporter
             .exportModel()
             .then((data) => {
-              this.exporter.downloadBlob("model_edited.onnx", data);
+              this.exporter.downloadBlob('model_edited.onnx', data);
             })
             .catch((e) => {
               alert(e.message);
@@ -203,41 +237,37 @@ export class ModifierApp {
     });
 
     // Properties
-    const propContainer = rightPanel.querySelector(
-      "#modifier-properties-content",
-    ) as HTMLElement;
+    const propContainer = rightPanel.querySelector('#modifier-properties-content') as HTMLElement;
     this.propsPanel = new PropertiesPanel(propContainer, this.mutator);
 
     // Canvas
-    const canvas = document.createElement("canvas");
+    const canvas = document.createElement('canvas');
     canvas.width = 1200;
     canvas.height = 800;
-    canvas.style.width = "100%";
-    canvas.style.height = "100%";
-    canvas.setAttribute("data-testid", "modifier-canvas");
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
+    canvas.setAttribute('data-testid', 'modifier-canvas');
     centerPanel.appendChild(canvas);
     this.renderer = new GraphRenderer(canvas);
 
     // Modal
-    const modalContainer = document.createElement("div");
+    const modalContainer = document.createElement('div');
     document.body.appendChild(modalContainer);
     this.modal = new AddNodeModal(modalContainer, this.mutator);
 
     // 74. Search logic mockup
-    const searchInput = document.createElement("input");
-    searchInput.placeholder = "Search by Name (74)";
+    const searchInput = document.createElement('input');
+    searchInput.placeholder = 'Search by Name (74)';
     searchInput.onchange = (e) => {
       const val = (e.target as HTMLInputElement).value;
-      const found = this.graph.nodes.find(
-        (n) => n.name === val || n.id === val,
-      );
+      const found = this.graph.nodes.find((n) => n.name === val || n.id === val);
       if (found) this.editor.selectNode(found.id);
     };
     leftPanel.appendChild(searchInput);
 
     // 75. Search by type
-    const searchType = document.createElement("input");
-    searchType.placeholder = "Search by Type (75)";
+    const searchType = document.createElement('input');
+    searchType.placeholder = 'Search by Type (75)';
     searchType.onchange = (e) => {
       const val = (e.target as HTMLInputElement).value;
       const found = this.graph.nodes.filter((n) => n.opType === val);
@@ -249,12 +279,16 @@ export class ModifierApp {
     leftPanel.appendChild(searchType);
   }
 
+  /**
+   * Executes `bindEvents` on `ModifierApp`.
+   * @returns Result of `bindEvents`.
+   */
   private bindEvents() {
     // Selection updates properties panel
     this.editor.onSelectionChange = (selection: SelectionEvent[]) => {
       this.renderer.selectedNodeIds.clear();
       for (const sel of selection) {
-        if (sel.type === "node") {
+        if (sel.type === 'node') {
           this.renderer.selectedNodeIds.add(sel.id);
           const node = this.graph.nodes.find((n) => n.id === sel.id);
           if (node) this.propsPanel.renderNode(node, this.graph);
@@ -269,26 +303,29 @@ export class ModifierApp {
     };
 
     // Keyboard bindings
-    window.addEventListener("keydown", (e) => {
-      if (e.key === "Backspace" || e.key === "Delete") {
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Backspace' || e.key === 'Delete') {
         // Only delete if we are not typing in an input
-        if (document.activeElement?.tagName !== "INPUT") {
+        if (document.activeElement?.tagName !== 'INPUT') {
           this.editor.deleteSelection();
           this.updateView();
         }
-      } else if (e.key === "d" && (e.ctrlKey || e.metaKey)) {
+      } else if (e.key === 'd' && (e.ctrlKey || e.metaKey)) {
         e.preventDefault();
         if (this.editor.selectedNodeIds.size > 0) {
-          this.editor.duplicateSubgraph(
-            Array.from(this.editor.selectedNodeIds),
-          );
+          this.editor.duplicateSubgraph(Array.from(this.editor.selectedNodeIds));
           this.updateView();
         }
       }
     });
   }
 
+  /** Property `updateTimer` of `ModifierApp`. */
   private updateTimer: ReturnType<typeof JSON.parse> = null;
+  /**
+   * Executes `updateView` on `ModifierApp`.
+   * @returns Result of `updateView`.
+   */
   updateView() {
     // 226. Debounce expensive layout recalculations
     if (this.updateTimer) {
@@ -299,35 +336,39 @@ export class ModifierApp {
     }, 16); // ~1 frame debounce
   }
 
+  /**
+   * Executes `_updateViewInternal` on `ModifierApp`.
+   * @returns Result of `_updateViewInternal`.
+   */
   private _updateViewInternal() {
     // 26. Validate
     const valResult = this.validator.verify();
     if (!valResult.isValid) {
-      console.warn("Graph Invalid", valResult);
+      console.warn('Graph Invalid', valResult);
       // In real UI, render red outlines on bad nodes
     }
 
     // Render
     // 285. Confirm that models generated by onnx-modifier execute flawlessly
     // 295. Set up continuous integration analyzing WebGL framerates
-    console.log("[CI Hook] WebGL Render Framerate Triggered: 60FPS Validated");
+    console.log('[CI Hook] WebGL Render Framerate Triggered: 60FPS Validated');
 
     // 269. Progress bar & 270. Abort button mock implementation
-    const pb = document.createElement("div");
-    pb.style.position = "absolute";
-    pb.style.bottom = "10px";
-    pb.style.right = "10px";
-    pb.style.background = "rgba(0,0,0,0.8)";
-    pb.style.color = "#fff";
-    pb.style.padding = "8px";
-    pb.style.zIndex = "1000";
+    const pb = document.createElement('div');
+    pb.style.position = 'absolute';
+    pb.style.bottom = '10px';
+    pb.style.right = '10px';
+    pb.style.background = 'rgba(0,0,0,0.8)';
+    pb.style.color = '#fff';
+    pb.style.padding = '8px';
+    pb.style.zIndex = '1000';
     pb.innerHTML = `<span>Layout computing... <progress value="50" max="100"></progress></span> <button>Abort</button>`;
     this.centerPanel.appendChild(pb);
 
     // Simulate yielding to let the UI paint
     setTimeout(() => {
       try {
-        const layout = new DagreLayoutEngine("TB").compute(this.graph);
+        const layout = new DagreLayoutEngine('TB').compute(this.graph);
         this.renderer.render(this.graph, layout);
       } finally {
         if (pb.parentNode) pb.parentNode.removeChild(pb);

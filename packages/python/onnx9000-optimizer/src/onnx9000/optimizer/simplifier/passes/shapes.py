@@ -1,7 +1,6 @@
 """Provides shapes.py module functionality."""
 
 import logging
-from typing import Optional
 
 from onnx9000.core.ir import Graph, Node
 from onnx9000.optimizer.simplifier.passes.base import GraphPass
@@ -16,7 +15,14 @@ class ShapeInferencePass(GraphPass):
     """
 
     def run(self, graph: Graph) -> bool:
-        """Implement the run method or operation."""
+        """Execute run on ShapeInferencePass.
+
+        Args:
+            graph: Parameter specifying graph (Graph).
+
+        Returns:
+            Result of run (bool).
+        """
         changed = False
         shapes = {}
         for inp in graph.inputs:
@@ -38,7 +44,15 @@ class ShapeInferencePass(GraphPass):
         return changed
 
     def _infer_shape(self, node: Node, shapes: dict) -> tuple | None:
-        """Implement the _infer_shape method or operation."""
+        """Execute infer shape on ShapeInferencePass.
+
+        Args:
+            node: Parameter specifying node (Node).
+            shapes: Parameter specifying shapes (dict).
+
+        Returns:
+            Result of infer shape (tuple | None).
+        """
         if (
             node.op_type
             in (
@@ -63,7 +77,8 @@ class ShapeInferencePass(GraphPass):
                 if s1 == s2:
                     return s1
                 return tuple(
-                    max(a, b) if a != 1 and b != 1 else a * b for (a, b) in zip(s1[::-1], s2[::-1])
+                    max(a, b) if a != 1 and b != 1 else a * b
+                    for (a, b) in zip(s1[::-1], s2[::-1], strict=False)
                 )[::-1]
         if node.op_type == "MatMul":
             if node.inputs[0] in shapes and node.inputs[1] in shapes:
@@ -83,27 +98,39 @@ class ShapeInferencePass(GraphPass):
 
 
 def resolve_dynamic_batch(graph: Graph, batch_size: int = 1) -> None:
-    """Implement the resolve_dynamic_batch method or operation."""
+    """Execute resolve dynamic batch operation.
+
+    Args:
+        graph: Parameter specifying graph (Graph).
+        batch_size: Parameter specifying batch size (int).
+    """
     for _t_name, tensor in graph.tensors.items():
-        if (
-            tensor.shape
-            and isinstance(tensor.shape[0], str)
-            or (tensor.shape and tensor.shape[0] == -1)
+        if (tensor.shape and isinstance(tensor.shape[0], str)) or (
+            tensor.shape and tensor.shape[0] == -1
         ):
-            tensor.shape = (batch_size,) + tensor.shape[1:]
+            tensor.shape = (batch_size, *tensor.shape[1:])
 
 
 def resolve_dynamic_sequence(graph: Graph, seq_len: int = 128) -> None:
-    """Implement the resolve_dynamic_sequence method or operation."""
+    """Execute resolve dynamic sequence operation.
+
+    Args:
+        graph: Parameter specifying graph (Graph).
+        seq_len: Parameter specifying seq len (int).
+    """
     for _t_name, tensor in graph.tensors.items():
         if (
             tensor.shape
             and len(tensor.shape) > 1
             and (isinstance(tensor.shape[1], str) or tensor.shape[1] == -1)
         ):
-            tensor.shape = (tensor.shape[0], seq_len) + tensor.shape[2:]
+            tensor.shape = (tensor.shape[0], seq_len, *tensor.shape[2:])
 
 
 def extract_rnn_states(graph: Graph) -> None:
-    """Implement the extract_rnn_states method or operation."""
+    """Execute extract rnn states operation.
+
+    Args:
+        graph: Parameter specifying graph (Graph).
+    """
     return None

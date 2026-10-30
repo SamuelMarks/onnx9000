@@ -1,4 +1,5 @@
-def convert(model_str: str) -> str:
-    if not model_str:
-        raise ValueError("Invalid model string")
-    return f"[ONNX-IR] from skl {model_str}"
+"""Backward-compatible re-export module for `onnx9000_skl2onnx`."""
+
+from onnx9000.skl2onnx import SKLearnParser, convert, convert_sklearn
+
+__all__ = ["SKLearnParser", "convert", "convert_sklearn"]

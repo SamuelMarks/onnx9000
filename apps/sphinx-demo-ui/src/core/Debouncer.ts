@@ -1,8 +1,11 @@
-// @ts-nocheck
+/**
+ * @fileoverview Debouncer module for sphinx-demo-ui.
+ */
 /**
  * A simple utility to debounce function calls.
  */
 export class Debouncer {
+  /** Property `timeoutId` of `Debouncer`. */
   private timeoutId: ReturnType<typeof setTimeout> | null = null;
 
   /**
@@ -12,9 +15,9 @@ export class Debouncer {
    * @param delay - The delay in milliseconds.
    * @returns A wrapped, debounced function.
    */
-  public debounce<T extends (...args: object[]) => void>(
+  public debounce<T extends (...args: never[]) => void>(
     func: T,
-    delay: number
+    delay: number,
   ): (...args: Parameters<T>) => void {
     return (...args: Parameters<T>) => {
       if (this.timeoutId) {

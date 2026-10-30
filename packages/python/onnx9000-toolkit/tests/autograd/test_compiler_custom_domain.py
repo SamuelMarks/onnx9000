@@ -5,7 +5,7 @@ from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.toolkit.training.autograd.compiler import build_backward_graph
 
 
-def test_custom_domain_raise():
+def test_custom_domain_raise() -> None:
     """Tests the custom domain raise functionality."""
     g = Graph("test")
     g.inputs.append("in")

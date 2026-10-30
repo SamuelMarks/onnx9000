@@ -4,7 +4,7 @@ test.describe('ROCm Demo App', () => {
   test.beforeEach(async ({ page }) => {
     try {
       await page.goto('/demo-rocm');
-    } catch (_e) {
+    } catch {
       test.skip();
     }
   });

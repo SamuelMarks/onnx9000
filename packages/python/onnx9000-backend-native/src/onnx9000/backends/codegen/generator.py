@@ -98,7 +98,7 @@ class Generator:
             elif mmap_constants:
                 # We will initialize these from the mmap pointer inside the constructor body
                 constructor_inits_list.append(f"{clean_name}(nullptr, {shape_str})")
-            elif embed_constants:
+            else:
                 # We will initialize these from the embedded arrays
                 constructor_inits_list.append(
                     f"{clean_name}(reinterpret_cast<{cpp_type}*>(const_cast<uint8_t*>({clean_name}_data)), {shape_str})"
@@ -266,7 +266,12 @@ class Generator:
             isolated_execution_function=isolated_execution_function,
         )
 
-    def write_to_directory(self, output_dir: str, run_clang_format: bool = True, **generate_kwargs):
+    def write_to_directory(
+        self,
+        output_dir: str,
+        run_clang_format: bool = True,
+        **generate_kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Generate the C++ code and writes it to a specific directory alongside a CMakeLists.txt.
 
         Optionally runs clang-format on the generated code.
@@ -316,15 +321,15 @@ int main() {{
         std::cerr << "Failed to create model." << std::endl;
         return 1;
     }}
-    
+
     // We pass nulls or zeros for benchmarking. In a real CLI these would be parsed or memory mapped.
     auto start = std::chrono::high_resolution_clock::now();
     int res = {self.class_name}_forward(model{", nullptr" * (len(self.graph.inputs) + len(self.graph.outputs))});
     auto end = std::chrono::high_resolution_clock::now();
-    
+
     if (res != 0) std::cerr << "Forward pass failed!" << std::endl;
     else std::cout << "Execution time: " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " us" << std::endl;
-    
+
     {self.class_name}_destroy(model);
     return res;
 }}

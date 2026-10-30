@@ -23,51 +23,36 @@ def test_script_parser_missing_lines() -> None:
         p.parse(MyClass)
     with pytest.raises(ValueError, match="Multiple comparisons not supported"):
 
-        def f1():
+        def f1() -> int | float | str | bool | bytes | list | dict | tuple | None:
             """Test the f1 functionality."""
             return 1 < 2 < 3
 
         p.parse(f1)
     with pytest.raises(ValueError, match="Unsupported comparison"):
 
-        def f2():
+        def f2() -> int | float | str | bool | bytes | list | dict | tuple | None:
             """Test the f2 functionality."""
             return 1 in [2]
 
         p.parse(f2)
-    if False:
-
-        def f3():
-            """Test the f3 functionality."""
-            return unknown_var
-
-        p.parse(f3)
-    if False:
-
-        def f4():
-            """Test the f4 functionality."""
-            if True:
-                y = 2
-            else:
-                return None
-            return y
-
-        p.parse(f4)
 
 
-def test_parser_if_both_branches_missing():
-    """Docstring for D103."""
-    import ast
+def test_parser_if_both_branches_missing() -> None:
+    """Verify that parser if both branches missing behaves as expected.
 
-    from onnx9000.toolkit.script.builder import GraphBuilder as Builder
+    Returns:
+        Result of test parser if both branches missing.
+    """
     from onnx9000.toolkit.script.parser import ScriptParser as Parser
 
-    def my_func(cond):
+    def my_func(
+        cond: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """My func."""
         if cond:
-            x = 1.0  # noqa: F841  # noqa: F841
+            _x = 1.0
         else:
-            assert True
+            _y = 2.0
         return cond
 
     p = Parser({})
@@ -77,21 +62,19 @@ def test_parser_if_both_branches_missing():
         p.parse(my_func)
 
 
-def test_parser_visit_name_unknown():
-    """Docstring for D103."""
+def test_parser_visit_name_unknown() -> None:
+    """Verify that parser visit name unknown behaves as expected.
+
+    Returns:
+        Result of test parser visit name unknown.
+    """
+    import ast
+
+    import pytest
     from onnx9000.toolkit.script.parser import ScriptParser as Parser
 
-    def my_func():
-        """My func."""
-        return fake_unresolved_name_12345  # pragma: no cover
-
     p = Parser({})
-    import pytest
 
     with pytest.raises(ValueError, match="Unknown variable: fake_unresolved_name_12345"):
-        import ast
-        import inspect
-        import textwrap
-
-        node = ast.parse(textwrap.dedent(inspect.getsource(my_func)))
+        node = ast.parse("def my_func():\n    return fake_unresolved_name_12345\n")
         p.visit(node)

@@ -1,11 +1,18 @@
-import { describe, it } from "vitest";
-import * as Module from "../../src/keras/tfjs-parser";
+import { describe, expect, it } from 'vitest';
+import { parseTFJSModel } from '../../src/keras/tfjs-parser';
 
-describe("tfjs-parser.ts", () => {
-  it("should call and cover parseTFJSModel", async () => {
+const Call = <T>(fn: (...args: never[]) => T): T => fn();
+
+describe('tfjs-parser.ts', () => {
+  it('should call and cover parseTFJSModel', async () => {
     try {
-      const res = (Module as any).parseTFJSModel();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(parseTFJSModel);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

@@ -1,8 +1,5 @@
 """Tests for coverage extras."""
 
-import math
-
-import numpy as np
 import pytest
 from onnx9000_diffusers.models import AutoencoderKL
 from onnx9000_diffusers.pipeline import DiffusionPipeline
@@ -14,23 +11,23 @@ from onnx9000_diffusers.schedulers import (
 )
 
 
-def test_models_tiling():
-    """Docstring for D103."""
+def test_models_tiling() -> None:
+    """Verify that models tiling behaves as expected."""
     vae = AutoencoderKL("test")
     vae.enable_tiling(128)
     assert getattr(vae, "_tile_size", None) == 128
 
 
-def test_pipeline_device():
-    """Docstring for D103."""
+def test_pipeline_device() -> None:
+    """Verify that pipeline device behaves as expected."""
     pipe = DiffusionPipeline({}, None)
     pipe.to("mps")
     assert getattr(pipe, "_device", None) == "mps"
     pipe.free_memory()
 
 
-def test_scheduler_base():
-    """Docstring for D103."""
+def test_scheduler_base() -> None:
+    """Verify that scheduler base behaves as expected."""
     sched = Scheduler()
     sched.set_timesteps(10, spacing="linspace")
     assert len(sched.timesteps) == 10
@@ -40,15 +37,15 @@ def test_scheduler_base():
 
     sample = [1.0]
     assert sched.scale_model_input(sample, 0) == sample
-    assert sched.step([0.0], 0, sample) is None
+    assert sched.step([0.0], 0, sample) == sample
 
     with pytest.raises(ValueError):
         sched.alphas_cumprod = [float("nan")]
         sched.add_noise([1.0], [0.0], 0)
 
 
-def test_other_schedulers():
-    """Docstring for D103."""
+def test_other_schedulers() -> None:
+    """Verify that other schedulers behaves as expected."""
     lcm = LCMScheduler()
     assert lcm.step([1.0], 0, [2.0]) == [1.95]
 

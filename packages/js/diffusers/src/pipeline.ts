@@ -3,10 +3,12 @@
  * Provides pipeline functionality for the diffusers package.
  */
 
-import { AutoencoderKL, UNet2DConditionModel } from "./models";
-import { DDPMScheduler, type Scheduler } from "./schedulers";
-import { PyTorchPCG, parseModelIndex } from "./utils";
+import { Onnx9000Error } from '@onnx9000/core';
+import { AutoencoderKL, UNet2DConditionModel } from './models';
+import { DDPMScheduler, type Scheduler } from './schedulers';
+import { PyTorchPCG, parseModelIndex } from './utils';
 
+/** Represents the `DiffusionPipeline` class. */
 export class DiffusionPipeline {
   /** Configuration object for the pipeline. */
   config: Record<string, ReturnType<typeof JSON.parse>>;
@@ -21,6 +23,7 @@ export class DiffusionPipeline {
   /** Scheduler. */
   scheduler: Scheduler;
 
+  /** Property `_isAborted` of `DiffusionPipeline`. */
   private _isAborted: boolean = false;
 
   /**
@@ -29,7 +32,7 @@ export class DiffusionPipeline {
    */
   constructor(config: Record<string, ReturnType<typeof JSON.parse>> = {}) {
     this.config = config;
-    this.device = "cpu";
+    this.device = 'cpu';
     this.unet = new UNet2DConditionModel();
     this.vae = new AutoencoderKL();
     this.scheduler = new DDPMScheduler();
@@ -46,7 +49,7 @@ export class DiffusionPipeline {
     });
     try {
       pipeline.modelIndex = await parseModelIndex(modelId);
-    } catch (_e) {
+    } catch {
       pipeline.modelIndex = {};
     }
     return pipeline;
@@ -70,7 +73,7 @@ export class DiffusionPipeline {
   ): Promise<Float32Array> {
     this._isAborted = false;
     if (signal) {
-      signal.addEventListener("abort", () => {
+      signal.addEventListener('abort', () => {
         this._isAborted = true;
       });
       if (signal.aborted) {
@@ -92,21 +95,14 @@ export class DiffusionPipeline {
 
     for (let step = 0; step < numInferenceSteps; step++) {
       if (this._isAborted) {
-        throw new Error("Pipeline aborted.");
+        throw new Onnx9000Error('Pipeline aborted.');
       }
 
-      const timestep = this.scheduler.timesteps[step] || 0;
-      const noise_pred = this.unet.call(
-        latents,
-        timestep,
-        encoder_hidden_states,
-      );
-      latents = this.scheduler.step(
-        noise_pred,
-        timestep,
-        latents,
-        gen,
-      ) as ReturnType<typeof JSON.parse>;
+      const timestep = this.scheduler.timesteps[step] as number;
+      const noise_pred = this.unet.call(latents, timestep, encoder_hidden_states);
+      latents = this.scheduler.step(noise_pred, timestep, latents, gen) as ReturnType<
+        typeof JSON.parse
+      >;
 
       if (callback) {
         callback(step, timestep, latents);

@@ -1,5 +1,6 @@
-// @ts-nocheck
-
+/**
+ * @fileoverview ORTWebRunner module for sphinx-demo-ui.
+ */
 import { globalEventBus } from './EventBus';
 import { WorkerManager } from './WorkerManager';
 
@@ -18,19 +19,20 @@ export class ORTWebRunner {
   public async runInference(
     onnxBinary: Uint8Array,
     inputs: Record<string, Float32Array | Int32Array>,
-    executionProvider: 'wasm' | 'webgl' | 'webgpu' = 'wasm'
+    executionProvider: 'wasm' | 'webgl' | 'webgpu' = 'wasm',
   ): Promise<Record<string, object>> {
     console.log(`Starting ORT Web execution (${executionProvider})...`);
     globalEventBus.emit('INFERENCE_STARTED');
 
     const start = performance.now();
 
+    let outputs: Record<string, object>;
     try {
       WorkerManager.getInstance().initWorker('/workers/ort-worker.js');
-      const outputs = (await WorkerManager.getInstance().execute('RUN_ORT', {
+      outputs = (await WorkerManager.getInstance().execute('RUN_ORT', {
         binary: onnxBinary,
         inputs,
-        executionProvider
+        executionProvider,
       })) as Record<string, object>;
 
       const end = performance.now();
@@ -38,13 +40,13 @@ export class ORTWebRunner {
       console.log(`ORT Web execution complete in ${latency.toFixed(2)} ms.`);
 
       globalEventBus.emit('INFERENCE_SUCCESS', { latency, outputs });
-      return outputs;
-    } catch (e: any) {
+    } catch (e) {
       console.error(`ORT Web execution failed`, e);
       globalEventBus.emit('INFERENCE_ERROR', e);
       throw e;
     } finally {
       WorkerManager.getInstance().terminate();
     }
+    return outputs;
   }
 }

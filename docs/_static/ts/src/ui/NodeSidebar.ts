@@ -91,7 +91,7 @@ export class NodeSidebar extends BaseComponent {
       attrSection.innerHTML = `<h5>Attributes</h5>`;
       const table = $create('table', { className: 'ide-table property-table' });
       table.innerHTML = `<tbody></tbody>`;
-      const tbody = table.querySelector('tbody')!;
+      const tbody = table.querySelector('tbody');
 
       for (const [key, attr] of Object.entries(n.attributes)) {
         const tr = $create('tr');
@@ -175,14 +175,14 @@ export class NodeSidebar extends BaseComponent {
           if (vi?.type) {
             shapeStr = ` <span class="muted">(${vi.type.elemType}) [${vi.type.shape.join(', ')}]</span>`;
             isDynamic = vi.type.shape.some(
-              (d: any) => typeof d === 'string' || d === '?' || d === null,
+              (d: number | string | null) => typeof d === 'string' || d === '?' || d === null,
             );
           } else {
             const init = this.currentModel.initializers.find((i) => i.name === inp);
             if (init) {
               shapeStr = ` <span class="muted">(INIT) [${init.dims.join(', ')}]</span>`;
               isDynamic = init.dims.some(
-                (d: any) => typeof d === 'string' || d === '?' || d === null,
+                (d: number | string | null) => typeof d === 'string' || d === '?' || d === null,
               );
             }
           }

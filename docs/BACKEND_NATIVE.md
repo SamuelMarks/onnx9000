@@ -21,7 +21,7 @@ from onnx9000.core import Model
 from onnx9000.backends.cpu import CPUExecutionProvider
 
 # The native backend is the default provider for Python environments
-model = Model.load('model.onnx', provider=CPUExecutionProvider)
+model = Model.load("model.onnx", provider=CPUExecutionProvider)
 
 # Inference runs natively
 results = model.predict(inputs)

@@ -89,9 +89,28 @@ export class DropZone extends BaseComponent {
     }
   }
 
-  private traverseFileTree(item: any, files: File[]): Promise<void> {
+  private traverseFileTree(
+    item: {
+      isFile?: boolean;
+      isDirectory?: boolean;
+      fullPath: string;
+      file?: (cb: (f: File) => void) => void;
+      createReader?: () => {
+        readEntries: (
+          cb: (
+            entries: Array<{
+              isFile?: boolean;
+              isDirectory?: boolean;
+              fullPath: string;
+            }>,
+          ) => void,
+        ) => void;
+      };
+    },
+    files: File[],
+  ): Promise<void> {
     return new Promise((resolve) => {
-      if (item.isFile) {
+      if (item.isFile && item.file) {
         item.file((file: File) => {
           // Keep a reference to its path if possible
           // file.webkitRelativePath is read-only usually, so we just append to files array
@@ -102,12 +121,15 @@ export class DropZone extends BaseComponent {
           files.push(file);
           resolve();
         });
-      } else if (item.isDirectory) {
+      } else if (item.isDirectory && item.createReader) {
         const dirReader = item.createReader();
-        dirReader.readEntries((entries: any[]) => {
+        dirReader.readEntries((entries) => {
           const promises: Promise<void>[] = [];
           for (let i = 0; i < entries.length; i++) {
-            promises.push(this.traverseFileTree(entries[i], files));
+            const entry = entries[i];
+            if (entry) {
+              promises.push(this.traverseFileTree(entry, files));
+            }
           }
           Promise.all(promises).then(() => resolve());
         });

@@ -4,7 +4,11 @@ from onnx9000.c_compiler.ast_builder import C89Builder
 from onnx9000.core.ir import Node, Tensor
 
 
-def get_attribute(node, name, default):
+def get_attribute(
+    node: int | float | str | bool | bytes | list | dict | tuple | None,
+    name: int | float | str | bool | bytes | list | dict | tuple | None,
+    default: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
     """Get an attribute value from an ONNX node.
 
     Args:
@@ -17,7 +21,12 @@ def get_attribute(node, name, default):
 
     """
     if node.attributes and name in node.attributes:
-        val = node.attributes[name].value
+        attr = node.attributes[name]
+        val = (
+            attr
+            if isinstance(attr, (int, float, str, bytes, list, tuple, bool, Tensor))
+            else attr.value
+        )
         return val if val is not None else default
     return default
 
@@ -33,7 +42,7 @@ def generate_conv(
     w_name: str,
     bias_name: str,
     out_name: str,
-):
+) -> None:
     """Generate Conv loops (1D, 2D, 3D)."""
     b.emit(f"/* {node.op_type} */")
     b.emit("{")
@@ -241,7 +250,7 @@ def generate_conv(
         b.pop_indent()
         b.emit("}")
 
-    elif spatial_dims == 3:
+    else:
         b.emit("/* Conv3D */")
         ID, IH, IW = in_shape[2], in_shape[3], in_shape[4]
         KD, KH, KW = w_shape[2], w_shape[3], w_shape[4]
@@ -324,7 +333,7 @@ def generate_conv_transpose(
     w_name: str,
     bias_name: str,
     out_name: str,
-):
+) -> None:
     """Generate ConvTranspose loops."""
     b.emit(f"/* {node.op_type} */")
     b.emit("{")

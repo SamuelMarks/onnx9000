@@ -1,10 +1,11 @@
 """Tree utility for handling nested collections (list, tuple, dict)."""
 
 from collections.abc import Callable
-from typing import Any
 
 
-def tree_map(fn: Callable, tree: Any) -> Any:
+def tree_map(
+    fn: Callable, tree: int | float | str | bool | bytes | list | dict | tuple | None
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
     """Recursively apply a function to all leaves in a tree."""
     if isinstance(tree, list):
         return [tree_map(fn, x) for x in tree]
@@ -15,7 +16,12 @@ def tree_map(fn: Callable, tree: Any) -> Any:
     return fn(tree)
 
 
-def tree_flatten(tree: Any) -> tuple[list[Any], Any]:
+def tree_flatten(
+    tree: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> tuple[
+    list[int | float | str | bool | bytes | list | dict | tuple | None],
+    int | float | str | bool | bytes | list | dict | tuple | None,
+]:
     """Flatten a nested collection into a flat list of leaf elements and a structural definition.
 
     Args:
@@ -29,7 +35,9 @@ def tree_flatten(tree: Any) -> tuple[list[Any], Any]:
     """
     leaves = []
 
-    def _flatten(t):
+    def _flatten(
+        t: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Recursively traverse the tree, collecting leaves and preserving structure."""
         if isinstance(t, list):
             return [_flatten(x) for x in t], list
@@ -44,7 +52,10 @@ def tree_flatten(tree: Any) -> tuple[list[Any], Any]:
     return leaves, treedef
 
 
-def tree_unflatten(leaves: list[Any], treedef: Any) -> Any:
+def tree_unflatten(
+    leaves: list[int | float | str | bool | bytes | list | dict | tuple | None],
+    treedef: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
     """Reconstruct a nested collection from a flat list of leaves and a structural definition.
 
     Args:
@@ -65,13 +76,15 @@ def tree_unflatten(leaves: list[Any], treedef: Any) -> Any:
     return leaves[structure]
 
 
-def find_tensors(tree: Any) -> list[Any]:
+def find_tensors(
+    tree: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> list[int | float | str | bool | bytes | list | dict | tuple | None]:
     """Recursively find all Tensor objects in a tree."""
     from onnx9000.converters.frontend.tensor import Tensor
 
     tensors = []
 
-    def _find(t):
+    def _find(t: int | float | str | bool | bytes | list | dict | tuple | None) -> None:
         """Recursively traverse the tree and append found Tensor instances to the outer list."""
         if isinstance(t, Tensor):
             tensors.append(t)

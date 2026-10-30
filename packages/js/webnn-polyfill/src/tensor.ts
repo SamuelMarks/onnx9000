@@ -2,25 +2,37 @@
  * @fileoverview tensor.ts
  * Provides tensor functionality for the webnn-polyfill package.
  */
-import type { MLOperandDataType } from "./interfaces.js";
+import type { MLOperandDataType } from './interfaces.js';
 
+/** Interface `MLTensorOptions` definition. */
 export interface MLTensorOptions {
+  /** Property `dataType`. */
   dataType: MLOperandDataType;
+  /** Property `dimensions`. */
   dimensions: number[];
+  /** Property `usage`. */
   usage?: number; // MLTensorUsage
 }
 
+/** Represents the `PolyfillMLTensor` class. */
 export class PolyfillMLTensor {
+  /** Property `dataType` of `PolyfillMLTensor`. */
   dataType: MLOperandDataType;
+  /** Property `dimensions` of `PolyfillMLTensor`. */
   dimensions: number[];
+  /** Property `usage` of `PolyfillMLTensor`. */
   usage: number;
+  /** Property `buffer` of `PolyfillMLTensor`. */
   buffer: ReturnType<typeof JSON.parse> | null = null;
+  /** Property `internalBuffer` of `PolyfillMLTensor`. */
   internalBuffer: ArrayBuffer | null = null; // fallback for WASM
 
-  constructor(
-    options: MLTensorOptions,
-    device?: ReturnType<typeof JSON.parse>,
-  ) {
+  /**
+   * Initializes a new `PolyfillMLTensor` instance.
+   * @param options Parameter `options`.
+   * @param device Parameter `device`.
+   */
+  constructor(options: MLTensorOptions, device?: ReturnType<typeof JSON.parse>) {
     this.dataType = options.dataType;
     this.dimensions = options.dimensions;
     this.usage = options.usage || 0;
@@ -38,10 +50,13 @@ export class PolyfillMLTensor {
     }
   }
 
-  private calculateSize(
-    dataType: MLOperandDataType,
-    dimensions: number[],
-  ): number {
+  /**
+   * Executes `calculateSize` on `PolyfillMLTensor`.
+   * @param dataType Parameter `dataType`.
+   * @param dimensions Parameter `dimensions`.
+   * @returns Result of `calculateSize`.
+   */
+  private calculateSize(dataType: MLOperandDataType, dimensions: number[]): number {
     const counts = dimensions.reduce((a, b) => a * b, 1);
     const byteMap: Record<string, number> = {
       float32: 4,
@@ -57,6 +72,10 @@ export class PolyfillMLTensor {
   }
 
   // 167. Implement MLTensor.destroy() hooking directly into buffer.destroy().
+  /**
+   * Executes `destroy` on `PolyfillMLTensor`.
+   * @returns Result of `destroy`.
+   */
   destroy() {
     this.buffer?.destroy();
     this.buffer = null;

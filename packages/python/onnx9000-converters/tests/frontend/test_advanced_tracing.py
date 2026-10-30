@@ -9,14 +9,18 @@ from onnx9000.core.dtypes import DType
 class NestedModule(Module):
     """Module that takes and returns nested collections."""
 
-    def forward(self, x_list, y_dict):
+    def forward(
+        self,
+        x_list: int | float | str | bool | bytes | list | dict | tuple | None,
+        y_dict: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Test the forward functionality."""
         out1 = x_list[0] + x_list[1]
         out2 = y_dict["a"] * 2
         return {"results": [out1, out2], "status": "ok"}
 
 
-def test_nested_tracing():
+def test_nested_tracing() -> None:
     """Verify that trace() correctly handles nested lists and dicts."""
     m = NestedModule()
     x1 = Tensor((2, 2), DType.FLOAT32, "x1")
@@ -38,10 +42,12 @@ def test_nested_tracing():
         assert isinstance(out, Tensor)
 
 
-def test_deeply_nested_tracing():
+def test_deeply_nested_tracing() -> None:
     """Verify that trace() handles deeply nested structures."""
 
-    def func(nested_in):
+    def func(
+        nested_in: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Func."""
         return [nested_in["a"][0] + 1]
 

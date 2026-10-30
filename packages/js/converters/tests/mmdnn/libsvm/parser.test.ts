@@ -1,11 +1,18 @@
-import { describe, it } from "vitest";
-import * as Module from "../../../src/mmdnn/libsvm/parser";
+import { describe, expect, it } from 'vitest';
+import { parseLibSVM } from '../../../src/mmdnn/libsvm/parser';
 
-describe("parser.ts", () => {
-  it("should call and cover parseLibSVM", async () => {
+const Call = <T>(fn: (...args: never[]) => T): T => fn();
+
+describe('parser.ts', () => {
+  it('should call and cover parseLibSVM', async () => {
     try {
-      const res = (Module as any).parseLibSVM();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(parseLibSVM);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

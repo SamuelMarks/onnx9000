@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from 'vitest';
 
 interface MockSelf {
   postMessage: ReturnType<typeof vi.fn>;
@@ -19,8 +19,8 @@ interface GlobalWithSelf {
   self?: typeof globalThis | MockSelf;
 }
 
-describe("Triton Worker", () => {
-  it("should handle messages and generate triton code", async () => {
+describe('Triton Worker', () => {
+  it('should handle messages and generate triton code', async () => {
     // Mock self.onmessage and postMessage
     const globalContext = globalThis as GlobalWithSelf;
     const originalSelf = globalContext.self;
@@ -32,19 +32,19 @@ describe("Triton Worker", () => {
 
     // Import worker to register listener
     vi.resetModules();
-    await import("../src/worker.js");
+    await import('../src/worker.js');
 
-    const onmessage = (globalContext.self as MockSelf).onmessage!;
+    const onmessage = (globalContext.self as MockSelf).onmessage;
     expect(onmessage).toBeDefined();
 
     // Trigger message with a named graph
     const mockGraph = {
-      name: "test_graph",
+      name: 'test_graph',
       nodes: [] as string[],
       inputs: [] as string[],
       outputs: [] as string[],
     };
-    onmessage({ data: { graph: mockGraph, config: {} } });
+    onmessage?.({ data: { graph: mockGraph, config: {} } });
 
     expect(postMessageSpy).toHaveBeenCalled();
     const result = postMessageSpy.mock.calls[0][0];

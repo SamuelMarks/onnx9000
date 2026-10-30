@@ -1,55 +1,47 @@
-/* v8 ignore start */
-import { GraphMutator } from "@onnx9000/modifier";
+/**
+ * @fileoverview GraphSurgeon Demo UI.
+ */
+import { Graph, Node } from '@onnx9000/core';
+import { GraphMutator } from '@onnx9000/modifier';
 
 /**
  * Initializes the GraphSurgeon demo.
  */
 export function initGraphSurgeonDemo(): void {
-  const mutateBtn = document.getElementById("mutate-btn") as HTMLButtonElement;
-  const out = document.getElementById("surgeon-output") as HTMLElement;
+  const mutateBtn = document.getElementById('mutate-btn') as HTMLButtonElement | null;
+  const out = document.getElementById('surgeon-output') as HTMLElement | null;
   if (!mutateBtn || !out) return;
 
-  mutateBtn.addEventListener("click", async () => {
-    out.innerText = "Initializing GraphSurgeon Mutator...\n";
+  mutateBtn.addEventListener('click', () => {
+    out.innerText = 'Initializing GraphSurgeon Mutator...';
     mutateBtn.disabled = true;
 
-    try {
-      const mockModel: any = {
-        graph: {
-          node: [
-            { opType: "Identity", name: "id1", input: ["X"], output: ["Y"] },
-            { opType: "Relu", name: "relu1", input: ["Y"], output: ["Z"] },
-          ],
-        },
-      };
+    const mockGraph = new Graph('surgeon_demo');
+    mockGraph.nodes.push(
+      new Node('Identity', ['X'], ['Y'], {}, 'id1'),
+      new Node('Relu', ['Y'], ['Z'], {}, 'relu1'),
+    );
 
-      out.innerText += "\nOriginal Graph:";
-      out.innerText += `\n${JSON.stringify(mockModel.graph.node.map((n: any) => n.opType))}`;
+    out.innerText += ' Original Graph: ';
+    out.innerText += JSON.stringify(mockGraph.nodes.map((n: Node) => n.opType));
 
-      const mutator = new GraphMutator(mockModel);
+    const mutator = new GraphMutator(mockGraph);
 
-      out.innerText += "\n\nApplying Mutations...";
-      out.innerText += "\n- Removing Identity node";
-      mutator.deleteNode("id1");
+    out.innerText += ' Applying Mutations... - Removing Identity node';
+    mutator.removeNode('id1');
 
-      out.innerText += "\n- Rewiring inputs";
-      const reluNode = mockModel.graph.node.find(
-        (n: any) => n.name === "relu1",
-      );
-      if (reluNode) {
-        reluNode.input[0] = "X";
+    out.innerText += ' - Rewiring inputs';
+    for (const n of mockGraph.nodes) {
+      if (n.name === 'relu1') {
+        n.inputs[0] = 'X';
       }
-
-      out.innerText += "\n\nMutated Graph:";
-      out.innerText += `\n${JSON.stringify(mockModel.graph.node.filter((n: any) => n.name !== "id1").map((n: any) => n.opType))}`;
-      out.innerText += "\n\nSuccess! Graph structure modified.";
-    } catch (e: any) {
-      out.innerText += `\nError: ${e.message}`;
-    } finally {
-      mutateBtn.disabled = false;
     }
+
+    out.innerText += ' Mutated Graph: ';
+    out.innerText += JSON.stringify(mockGraph.nodes.map((n: Node) => n.opType));
+    out.innerText += ' Success! Graph structure modified.';
+    mutateBtn.disabled = false;
   });
 }
-initGraphSurgeonDemo();
 
-/* v8 ignore stop */
+initGraphSurgeonDemo();

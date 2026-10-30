@@ -1,3 +1,5 @@
+"""Unit tests and verification suite for optimum functionality."""
+
 from onnx9000_optimum.architectures import (
     BARTConfig,
     BaseConfig,
@@ -35,7 +37,8 @@ from onnx9000_optimum.architectures import (
 )
 
 
-def test_optimum_architectures():
+def test_optimum_architectures() -> None:
+    """Verify that optimum architectures behaves as expected."""
     assert BaseConfig() is not None
     assert BERTConfig() is not None
     assert RoBERTaConfig() is not None

@@ -1,4 +1,4 @@
-"""Module providing core logic and structural definitions."""
+"""Unit tests and verification suite for aot builder functionality."""
 
 from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.toolkit.training.autograd.compiler import (
@@ -44,11 +44,20 @@ def test_stop_gradient() -> None:
     g.outputs.append("out")
     builder = AOTBuilder(g)
 
-    def dummy_loss(graph, x, y, out):
+    def dummy_loss(
+        graph: int | float | str | bool | bytes | list | dict | tuple | None,
+        x: int | float | str | bool | bytes | list | dict | tuple | None,
+        y: int | float | str | bool | bytes | list | dict | tuple | None,
+        out: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
         """Test the dummy loss functionality."""
         graph.add_node(Node("Sub", [x, y], [out]))
 
-    def dummy_opt(graph, lr, params):
+    def dummy_opt(
+        graph: int | float | str | bool | bytes | list | dict | tuple | None,
+        lr: int | float | str | bool | bytes | list | dict | tuple | None,
+        params: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
         """Test the dummy opt functionality."""
         return None
 
@@ -67,11 +76,20 @@ def test_scalar_gradient() -> None:
     g.outputs.append("out")
     builder = AOTBuilder(g)
 
-    def dummy_loss(graph, x, y, out):
+    def dummy_loss(
+        graph: int | float | str | bool | bytes | list | dict | tuple | None,
+        x: int | float | str | bool | bytes | list | dict | tuple | None,
+        y: int | float | str | bool | bytes | list | dict | tuple | None,
+        out: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
         """Test the dummy loss functionality."""
         graph.add_node(Node("Sub", [x, y], [out]))
 
-    def dummy_opt(graph, lr, params):
+    def dummy_opt(
+        graph: int | float | str | bool | bytes | list | dict | tuple | None,
+        lr: int | float | str | bool | bytes | list | dict | tuple | None,
+        params: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
         """Test the dummy opt functionality."""
         return None
 
@@ -81,7 +99,7 @@ def test_scalar_gradient() -> None:
     assert any(n.op_type == "Add" and "accum_grad" in n.name for n in bwd.nodes)
 
 
-def test_extras(tmp_path) -> None:
+def test_extras(tmp_path: int | float | str | bool | bytes | list | dict | tuple | None) -> None:
     """Tests the test_extras functionality."""
     g = Graph("test")
     sub = extract_partial_subgraph(g, [], [])

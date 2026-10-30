@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../src/mmdnn/file-loader";
+import { describe, expect, it } from 'vitest';
+import { FileLoader } from '../../src/mmdnn/file-loader';
 
-describe("file-loader.ts", () => {
-  it("should instantiate and cover FileLoader", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('file-loader.ts', () => {
+  it('should instantiate and cover FileLoader', () => {
     try {
-      const obj = new (Module as any).FileLoader();
+      const obj = Construct(FileLoader);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

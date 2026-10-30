@@ -2,7 +2,6 @@
  * @fileoverview OliveOptimizer.ts
  * Provides OliveOptimizer functionality for the Sphinx Demo UI.
  */
-// @ts-nocheck
 
 import { globalEventBus } from './EventBus';
 import { WorkerManager } from './WorkerManager';
@@ -25,7 +24,7 @@ export class OliveOptimizer {
       quantizationLevel: 'FP16' | 'INT8' | 'None';
       enableStaticShapeInference: boolean;
       enableTransformerFusion: boolean;
-    }
+    },
   ): Promise<Uint8Array> {
     console.log(`Starting Olive optimization...`, config);
     globalEventBus.emit('OLIVE_OPTIMIZATION_STARTED');
@@ -33,11 +32,12 @@ export class OliveOptimizer {
     const originalSize = onnxBinary.byteLength;
     console.log(`Original size: ${(originalSize / 1024).toFixed(2)} KB`);
 
+    let optimizedBinary: Uint8Array;
     try {
       WorkerManager.getInstance().initWorker('/workers/olive-worker.js');
-      const optimizedBinary = (await WorkerManager.getInstance().execute('OPTIMIZE_ONNX', {
+      optimizedBinary = (await WorkerManager.getInstance().execute('OPTIMIZE_ONNX', {
         binary: onnxBinary,
-        config: config
+        config: config,
       })) as Uint8Array;
 
       const newSize = optimizedBinary.byteLength;
@@ -47,15 +47,14 @@ export class OliveOptimizer {
 
       globalEventBus.emit('OLIVE_COMPRESSION_METRIC', { originalSize, newSize, ratio });
       globalEventBus.emit('OLIVE_OPTIMIZATION_SUCCESS');
-
-      return optimizedBinary;
-    } catch (e: any) {
+    } catch (e) {
       console.error(`Olive optimization failed`, e);
       globalEventBus.emit('OLIVE_OPTIMIZATION_ERROR', e);
       throw e;
     } finally {
       WorkerManager.getInstance().terminate();
     }
+    return optimizedBinary;
   }
 
   /**
@@ -65,19 +64,20 @@ export class OliveOptimizer {
     console.log(`Starting ONNX simplification...`);
     globalEventBus.emit('ONNX_SIMPLIFIER_STARTED');
 
+    let simplifiedBinary: Uint8Array;
     try {
       WorkerManager.getInstance().initWorker('/workers/simplifier-worker.js');
-      const simplifiedBinary = (await WorkerManager.getInstance().execute('SIMPLIFY_ONNX', {
-        binary: onnxBinary
+      simplifiedBinary = (await WorkerManager.getInstance().execute('SIMPLIFY_ONNX', {
+        binary: onnxBinary,
       })) as Uint8Array;
       globalEventBus.emit('ONNX_SIMPLIFIER_SUCCESS');
-      return simplifiedBinary;
-    } catch (e: any) {
+    } catch (e) {
       console.error(`ONNX simplification failed`, e);
       globalEventBus.emit('ONNX_SIMPLIFIER_ERROR', e);
       throw e;
     } finally {
       WorkerManager.getInstance().terminate();
     }
+    return simplifiedBinary;
   }
 }

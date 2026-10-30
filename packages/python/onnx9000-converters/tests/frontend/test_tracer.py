@@ -1,4 +1,4 @@
-"""Module providing core logic and structural definitions."""
+"""Unit tests and verification suite for tracer functionality."""
 
 import pytest
 from onnx9000.converters.frontend.tensor import Tensor
@@ -9,7 +9,10 @@ from onnx9000.core.dtypes import DType
 def test_tracer_and_proxy() -> None:
     """Tests the test_tracer_and_proxy functionality."""
 
-    def my_func(x, y):
+    def my_func(
+        x: int | float | str | bool | bytes | list | dict | tuple | None,
+        y: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Test the my_func functionality."""
         return x + y
 
@@ -26,7 +29,9 @@ def test_tracer_and_proxy() -> None:
 def test_tracer_constant_folding() -> None:
     """Tests the test_tracer_constant_folding functionality."""
 
-    def const_func(x):
+    def const_func(
+        x: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Test the const_func functionality."""
         return x + 2
 
@@ -40,7 +45,9 @@ def test_tracer_constant_folding() -> None:
 def test_tracer_control_flow() -> None:
     """Tests the test_tracer_control_flow functionality."""
 
-    def dynamic_if(x):
+    def dynamic_if(
+        x: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Test the dynamic_if functionality."""
         if x > 0:
             return x + 1
@@ -55,13 +62,16 @@ def test_tracer_control_flow() -> None:
     assert "Data-dependent control flow is not supported" in str(excinfo.value)
 
 
-def test_tracer_kwargs_outputs():
+def test_tracer_kwargs_outputs() -> None:
     """Test tracer kwargs outputs."""
     from onnx9000.converters.frontend.tensor import Tensor
     from onnx9000.converters.frontend.tracer import trace
     from onnx9000.core.dtypes import DType
 
-    def my_func(x, w=1):
+    def my_func(
+        x: int | float | str | bool | bytes | list | dict | tuple | None,
+        w: int | float | str | bool | bytes | list | dict | tuple | None = 1,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Provides functional implementation."""
         return (x, x)
 
@@ -69,7 +79,9 @@ def test_tracer_kwargs_outputs():
     builder = trace(my_func, x, w=2)
     assert len(builder.outputs) == 2
 
-    def my_func_dict(x):
+    def my_func_dict(
+        x: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Provides functional implementation."""
         return {"a": x, "b": x}
 

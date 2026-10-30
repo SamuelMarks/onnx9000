@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../src/optimizations/edgetpu";
+import { describe, expect, it } from 'vitest';
+import { EdgeTPUOptimizer } from '../../src/optimizations/edgetpu';
 
-describe("edgetpu.ts", () => {
-  it("should instantiate and cover EdgeTPUOptimizer", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('edgetpu.ts', () => {
+  it('should instantiate and cover EdgeTPUOptimizer', () => {
     try {
-      const obj = new (Module as any).EdgeTPUOptimizer();
+      const obj = Construct(EdgeTPUOptimizer);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

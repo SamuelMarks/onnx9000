@@ -1,7 +1,6 @@
 """NCNN converter module."""
 
 import os
-from typing import Any
 
 from onnx9000.converters.ncnn.mapper import NCNNMapper
 from onnx9000.converters.ncnn.parser import parse_param
@@ -13,7 +12,7 @@ from onnx9000.core.ir import Graph
 class NCNNConverter(BaseParser):
     """Converter for NCNN models."""
 
-    def __init__(self, weights_path: str):  # pragma: no cover
+    def __init__(self, weights_path: str) -> None:  # pragma: no cover
         """Initialize the converter.
 
         Args:
@@ -48,4 +47,4 @@ class NCNNConverter(BaseParser):
         return graph
 
 
-__all__ = ["parse_param", "WeightsReader", "NCNNMapper", "NCNNConverter"]
+__all__ = ["NCNNConverter", "NCNNMapper", "WeightsReader", "parse_param"]

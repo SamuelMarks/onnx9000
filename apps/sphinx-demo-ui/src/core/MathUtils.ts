@@ -1,4 +1,6 @@
-// @ts-nocheck
+/**
+ * @fileoverview MathUtils module for sphinx-demo-ui.
+ */
 export class MathUtils {
   /**
    * Calculates Mean.

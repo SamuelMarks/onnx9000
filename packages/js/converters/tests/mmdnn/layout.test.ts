@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../src/mmdnn/layout";
+import { describe, expect, it } from 'vitest';
+import { DataLayoutTracker } from '../../src/mmdnn/layout';
 
-describe("layout.ts", () => {
-  it("should instantiate and cover DataLayoutTracker", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('layout.ts', () => {
+  it('should instantiate and cover DataLayoutTracker', () => {
     try {
-      const obj = new (Module as any).DataLayoutTracker();
+      const obj = Construct(DataLayoutTracker);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

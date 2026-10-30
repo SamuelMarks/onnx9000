@@ -1,7 +1,5 @@
 """Caffe to ONNX IR Mapper."""
 
-from typing import Any  # pragma: no cover
-
 import numpy as np  # pragma: no cover
 from onnx9000.core.ir import Constant, Graph, Node, Variable  # pragma: no cover
 
@@ -9,7 +7,11 @@ from onnx9000.core.ir import Constant, Graph, Node, Variable  # pragma: no cover
 class CaffeMapper:
     """Mapper to convert Caffe layers to ONNX IR."""
 
-    def __init__(self, net_info: dict[str, Any], weights: dict[str, list[np.ndarray]]):
+    def __init__(
+        self,
+        net_info: dict[str, int | float | str | bool | bytes | list | dict | tuple | None],
+        weights: dict[str, list[np.ndarray]],
+    ) -> None:
         """Initialize the mapper."""
         self.net_info = net_info  # pragma: no cover
         self.weights = weights  # pragma: no cover

@@ -1,5 +1,4 @@
-// @ts-nocheck
-declare module "jsfive" {
+declare module 'jsfive' {
   export class File {
     constructor(buffer: ArrayBuffer, filename: string);
     keys: string[];

@@ -2,12 +2,17 @@
  * @fileoverview RHSContainer.ts
  * Provides RHSContainer functionality for the Sphinx Demo UI.
  */
-// @ts-nocheck
 
 import { compileOnnxToC } from '@onnx9000/c-compiler';
-import { convert } from '@onnx9000/converters';
-import { BufferReader, parseModelProto } from '@onnx9000/core';
-import { buildMLPackage, convertToCoreML } from '@onnx9000/coreml';
+import { convert, type TargetFramework } from '@onnx9000/converters';
+import {
+  BufferReader,
+  type Graph,
+  type Node,
+  parseModelProto,
+  type ValueInfo,
+} from '@onnx9000/core';
+import { buildMLPackage, convertToCoreML, type Model } from '@onnx9000/coreml';
 import { MLIRInterop } from '@onnx9000/iree-compiler/dist/passes/interop.js';
 import { lowerONNXToMHLO } from '@onnx9000/iree-compiler/dist/passes/lower_onnx_to_mhlo.js';
 import { optimize, simplify } from '@onnx9000/optimum';
@@ -19,19 +24,27 @@ import { OnnxAstFormatter } from '../core/OnnxAstFormatter';
 import { RHS_TARGETS } from '../data/MockData';
 import { Dropdown } from './Dropdown';
 import { Editor } from './Editor';
-import { FileTree } from './FileTree';
+import { type FileNode, FileTree } from './FileTree';
 import { OliveConfigPanel } from './OliveConfigPanel';
 import { PromoteButton } from './PromoteButton';
 import { SplitPane } from './SplitPane';
 
+/** Represents the `RHSContainer` class. */
 export class RHSContainer extends Component<HTMLDivElement> {
+  /** Property `dropdown` of `RHSContainer`. */
   private dropdown!: Dropdown;
+  /** Property `tree` of `RHSContainer`. */
   private tree!: FileTree;
+  /** Property `editor` of `RHSContainer`. */
   private editor!: Editor;
+  /** Property `splitPane` of `RHSContainer`. */
   private splitPane!: SplitPane;
   /* /* private outputCache = new Cache<ReturnType<typeof JSON.parse>>(); */
+  /** Property `olivePanel` of `RHSContainer`. */
   private olivePanel!: OliveConfigPanel;
+  /** Property `runBtn` of `RHSContainer`. */
   private runBtn!: HTMLButtonElement;
+  /** Property `_boundLanguageChanged` of `RHSContainer`. */
   private _boundLanguageChanged: () => void;
 
   /**
@@ -39,6 +52,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
    */
   private onnxBytes: Uint8Array | null = null;
 
+  /** Initializes a new `RHSContainer` instance. */
   constructor() {
     super();
     this._boundLanguageChanged = () => this.updateI18n();
@@ -75,8 +89,9 @@ export class RHSContainer extends Component<HTMLDivElement> {
         // Auto-select and open the newly converted source file
         this.tree.selectFile(`${outputDir}/model.${ext}`);
         console.log(`[stdout] ${langName} compilation complete.`, result);
-      } catch (e: any) {
-        console.error(`[stderr] ${langName} compilation failed: ${e.message}`);
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : String(e);
+        console.error(`[stderr] ${langName} compilation failed: ${msg}`);
       }
     } else if (val === 'coreml') {
       console.log('[stdout] Compiling ONNX to CoreML...');
@@ -87,7 +102,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
 
         const model = {
           specificationVersion: 6,
-          mlProgram: program
+          mlProgram: program,
         };
 
         // Extract weights from the parsed graph for the CoreML package
@@ -108,7 +123,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
           offset += chunk.length;
         }
 
-        const builder = buildMLPackage(model as object, concatenatedWeights);
+        const builder = buildMLPackage(model as never as Model, concatenatedWeights);
         const structure = builder.buildDirectoryStructure();
         const manifestBytes = structure.get('Manifest.json');
 
@@ -123,14 +138,15 @@ export class RHSContainer extends Component<HTMLDivElement> {
           this.tree.selectFile('/model.mlpackage/Manifest.json');
         }
         console.log('[stdout] CoreML compilation complete.');
-      } catch (e: any) {
-        console.error(`[stderr] CoreML compilation failed: ${e.message}`);
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : String(e);
+        console.error(`[stderr] CoreML compilation failed: ${msg}`);
       }
     } else if (val === 'pytorch') {
       console.log('[stdout] Converting ONNX to PyTorch...');
       try {
-        const file = new File([new Blob([this.onnxBytes as object])], 'model.onnx', {
-          type: 'application/octet-stream'
+        const file = new File([new Blob([this.onnxBytes as never as BlobPart])], 'model.onnx', {
+          type: 'application/octet-stream',
         });
         const output = await convert('onnx', 'pytorch_code', [file]);
 
@@ -143,31 +159,32 @@ export class RHSContainer extends Component<HTMLDivElement> {
 
         this.tree.selectFile('/output-pytorch/module.py');
         console.log('[stdout] PyTorch conversion complete.');
-      } catch (e: any) {
-        console.error(`[stderr] PyTorch conversion failed: ${e.message}`);
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : String(e);
+        console.error(`[stderr] PyTorch conversion failed: ${msg}`);
       }
     } else if (val === 'olive') {
       console.log('[stdout] Optimizing ONNX with Olive (Optimum)...');
       try {
-        const oliveConfig = (this.olivePanel as object).config || {};
-        const optimizeConfig: object = {
-          level: oliveConfig.quantizationLevel === 'INT8' ? 'O3' : 'O2',
-          disableFusion: !oliveConfig.enableTransformerFusion
+        const oliveConfig = this.olivePanel.config;
+        const optimizeConfig = {
+          level: (oliveConfig.quantizationLevel === 'INT8' ? 'O3' : 'O2') as 'O1' | 'O2' | 'O3',
+          disableFusion: !oliveConfig.enableTransformerFusion,
         };
         const reader = new BufferReader(this.onnxBytes);
         const originalGraph = await parseModelProto(reader);
-        const graph = await optimize(originalGraph, optimizeConfig);
+        const graph: Graph = await optimize(originalGraph, optimizeConfig);
         const vizGraph: VizGraph = {
-          nodes: (graph as object).nodes.map((n: object) => ({
+          nodes: graph.nodes.map((n: Node) => ({
             id: n.name || Math.random().toString(),
             name: n.name || '',
             opType: n.opType,
             inputs: n.inputs,
             outputs: n.outputs,
-            attributes: {}
+            attributes: {},
           })),
-          inputs: (graph as object).inputs.map((i: object) => ({ name: i.name, type: i.dtype })),
-          outputs: (graph as object).outputs.map((o: object) => ({ name: o.name, type: o.dtype }))
+          inputs: graph.inputs.map((i: ValueInfo) => ({ name: i.name, type: i.dtype })),
+          outputs: graph.outputs.map((o: ValueInfo) => ({ name: o.name, type: o.dtype })),
         };
         const astText = OnnxAstFormatter.format(vizGraph);
 
@@ -179,8 +196,9 @@ export class RHSContainer extends Component<HTMLDivElement> {
 
         this.tree.selectFile('/olive-optimized/optimized_model.onnx');
         console.log('[stdout] Olive optimization complete.');
-      } catch (e: any) {
-        console.error(`[stderr] Olive optimization failed: ${e.message}`);
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : String(e);
+        console.error(`[stderr] Olive optimization failed: ${msg}`);
       }
     } else if (val === 'mlir') {
       console.log('[stdout] Generating MLIR from ONNX AST...');
@@ -199,26 +217,27 @@ export class RHSContainer extends Component<HTMLDivElement> {
 
         this.tree.selectFile('/output-mlir/graph.mlir');
         console.log('[stdout] MLIR generation complete.');
-      } catch (e: any) {
-        console.error(`[stderr] MLIR generation failed: ${e.message}`);
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : String(e);
+        console.error(`[stderr] MLIR generation failed: ${msg}`);
       }
     } else if (val === 'onnx-simplifier') {
       console.log('[stdout] Simplifying ONNX model...');
       try {
         const reader = new BufferReader(this.onnxBytes);
         const originalGraph = await parseModelProto(reader);
-        const graph = await simplify(originalGraph);
+        const graph: Graph = await simplify(originalGraph);
         const vizGraph: VizGraph = {
-          nodes: (graph as object).nodes.map((n: object) => ({
+          nodes: graph.nodes.map((n: Node) => ({
             id: n.name || Math.random().toString(),
             name: n.name || '',
             opType: n.opType,
             inputs: n.inputs,
             outputs: n.outputs,
-            attributes: {}
+            attributes: {},
           })),
-          inputs: (graph as object).inputs.map((i: object) => ({ name: i.name, type: i.dtype })),
-          outputs: (graph as object).outputs.map((o: object) => ({ name: o.name, type: o.dtype }))
+          inputs: graph.inputs.map((i: ValueInfo) => ({ name: i.name, type: i.dtype })),
+          outputs: graph.outputs.map((o: ValueInfo) => ({ name: o.name, type: o.dtype })),
         };
         const astText = OnnxAstFormatter.format(vizGraph);
 
@@ -230,40 +249,42 @@ export class RHSContainer extends Component<HTMLDivElement> {
 
         this.tree.selectFile('/simplified-model/simplified.onnx');
         console.log('[stdout] Simplification complete.');
-      } catch (e: any) {
-        console.error(`[stderr] Simplification failed: ${e.message}`);
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : String(e);
+        console.error(`[stderr] Simplification failed: ${msg}`);
       }
     } else if (['caffe', 'keras', 'mxnet', 'tensorflow', 'cntk', 'onnxscript'].includes(val)) {
       console.log(`[stdout] Converting ONNX to ${val}...`);
       try {
-        const file = new File([new Blob([this.onnxBytes as object])], 'model.onnx', {
-          type: 'application/octet-stream'
+        const file = new File([new Blob([this.onnxBytes as never as BlobPart])], 'model.onnx', {
+          type: 'application/octet-stream',
         });
-        const output = await convert('onnx', val as object, [file]);
+        const output = await convert('onnx', val as TargetFramework, [file]);
 
         const targetObj = RHS_TARGETS[val];
-        let fileNode: object = null;
         let filePath = '';
 
         if (targetObj?.children && targetObj.children.length > 0) {
-          fileNode = targetObj.children[0];
-          if (fileNode) {
-            fileNode.content =
-              typeof output === 'string' ? output : JSON.stringify(output, null, 2);
-            filePath = fileNode.path;
-          }
+          const fileNode = targetObj.children[0] as FileNode;
+          fileNode.content = typeof output === 'string' ? output : JSON.stringify(output, null, 2);
+          filePath = fileNode.path;
         }
 
         if (filePath) this.tree.selectFile(filePath);
         console.log(`[stdout] ${val} conversion complete.`);
-      } catch (e: any) {
-        console.error(`[stderr] ${val} conversion failed: ${e.message}`);
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : String(e);
+        console.error(`[stderr] ${val} conversion failed: ${msg}`);
       }
     } else if (val === 'onnx') {
       this.tree.selectFile('/output-onnx/model.onnx');
     }
   }
 
+  /**
+   * Executes `render` on `RHSContainer`.
+   * @returns Result of `render`.
+   */
   protected render(): HTMLDivElement {
     const container = document.createElement('div');
     container.className = 'demo-pane-rhs';
@@ -310,22 +331,24 @@ export class RHSContainer extends Component<HTMLDivElement> {
         { value: 'tensorflow', label: 'TensorFlow' },
         { value: 'cntk', label: 'CNTK' },
         { value: 'pytorch', label: 'PyTorch' },
-        { value: 'onnxscript', label: 'ONNX Script' }
+        { value: 'onnxscript', label: 'ONNX Script' },
       ],
       placeholder: 'Select Target Framework...',
       initialValue: initialTarget,
       onChange: (val) => {
         if (this.olivePanel) {
-          (this.olivePanel as object).element.style.display = val === 'olive' ? 'block' : 'none';
+          this.olivePanel.element.style.display = val === 'olive' ? 'block' : 'none';
         }
         if (RHS_TARGETS[val]) {
           this.tree.updateData(RHS_TARGETS[val]);
           try {
             localStorage.setItem('onnx9000-demo-rhs-target', val);
-          } catch (_e) {}
+          } catch {
+            // Ignore storage errors
+          }
           this.regenerateOutput();
         }
-      }
+      },
     });
     this.dropdown.mount(actionContainer);
 
@@ -353,7 +376,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
           console.log('Inference completed. Results generated.');
         } else {
           console.error(
-            '[stderr] Error: Failed to execute inference due to unallocated memory block.'
+            '[stderr] Error: Failed to execute inference due to unallocated memory block.',
           );
           console.error('Inference unsuccessful.');
         }
@@ -362,13 +385,16 @@ export class RHSContainer extends Component<HTMLDivElement> {
         this.runBtn.textContent = t('rhs.run');
 
         if (isSuccess) {
-          const targetId = this.dropdown.getValue() || 'onnx';
-          const targetLabel =
-            this.dropdown.options.items.find((i) => i.value === targetId)?.label || targetId;
+          const targetId = this.dropdown.getValue() as string;
+          const targetLabel = (
+            this.dropdown.options.items.find(
+              (i) => i.value === targetId,
+            ) as (typeof this.dropdown.options.items)[number]
+          ).label;
           globalEventBus.emit('PIPELINE_STEP_ADDED', {
             id: Date.now().toString(),
             description: `ONNX → ${targetLabel}`,
-            state: {}
+            state: {},
           });
         }
       }, 1000);
@@ -394,7 +420,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
     this.splitPane = new SplitPane({
       orientation: 'vertical',
       initialSplitRatio: 0.3,
-      storageKey: 'onnx9000-demo-rhs-split'
+      storageKey: 'onnx9000-demo-rhs-split',
     });
     this.splitPane.mount(splitArea);
 
@@ -413,20 +439,20 @@ export class RHSContainer extends Component<HTMLDivElement> {
         if (ext === 'py') lang = 'python';
 
         this.editor.openFile(path, content, lang);
-      }
+      },
     });
     this.tree.mount(pane1);
 
     // Olive Panel (hidden by default)
     this.olivePanel = new OliveConfigPanel();
-    (this.olivePanel as object).element.style.display = 'none';
+    this.olivePanel.element.style.display = 'none';
     this.olivePanel.mount(pane1);
 
     // 4. Editor (Bottom)
     this.editor = new Editor({
       language: 'plaintext',
       initialValue: 'Select an output file...',
-      readOnly: true
+      readOnly: true,
     });
     this.editor.mount(pane2);
 
@@ -434,6 +460,10 @@ export class RHSContainer extends Component<HTMLDivElement> {
     return container;
   }
 
+  /**
+   * Executes `updateI18n` on `RHSContainer`.
+   * @returns Result of `updateI18n`.
+   */
   private updateI18n() {
     if (this.runBtn) {
       if (!this.runBtn.disabled || this.runBtn.textContent === t('rhs.run')) {
@@ -444,10 +474,11 @@ export class RHSContainer extends Component<HTMLDivElement> {
     }
   }
 
+  /** Executes `onMount` on `RHSContainer`. */
   protected onMount(): void {
     const val = this.dropdown.getValue();
     if (val === 'olive') {
-      (this.olivePanel as object).element.style.display = 'block';
+      this.olivePanel.element.style.display = 'block';
     }
 
     globalEventBus.on('LANGUAGE_CHANGED', this._boundLanguageChanged);
@@ -462,7 +493,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
           this.onnxBytes = bytes;
           this.regenerateOutput();
         }
-      })
+      }),
     );
 
     this.onCleanup(
@@ -488,7 +519,7 @@ export class RHSContainer extends Component<HTMLDivElement> {
             this.editor.openFile('/output-onnx/model.onnx', astText, 'plaintext');
           }
         }
-      })
+      }),
     );
 
     this.onCleanup(() => {

@@ -1,7 +1,6 @@
 """Provides post processing module functionality."""
 
 import logging
-from typing import Any
 
 from onnx9000.core.ir import Attribute, Graph, Node
 
@@ -12,15 +11,20 @@ class PostProcessor:
     """Target Post-Processing utility for Hummingbird transpilation."""
 
     def __init__(self, g: Graph, emit_zipmap: bool = True) -> None:
-        """Initialize the instance."""
+        """Initialize PostProcessor with configured parameters and state.
+
+        Args:
+            g: Parameter specifying g (Graph).
+            emit_zipmap: Parameter specifying emit zipmap (bool).
+        """
         self.g = g
         self.emit_zipmap = emit_zipmap
 
     def apply_argmax_classes(
         self,
         raw_scores_name: str,
-        classlabels_ints: list[int] = None,
-        classlabels_strings: list[str] = None,
+        classlabels_ints: list[int] | None = None,
+        classlabels_strings: list[str] | None = None,
     ) -> None:
         """Extract predicted classes via ArgMax and attach class labels."""
         self.g.nodes.append(Node("ArgMax", inputs=[raw_scores_name], outputs=["predicted_idx"]))
@@ -34,7 +38,11 @@ class PostProcessor:
             # Flatten multi-class classlabels_strings into metadata
             return None
 
-    def apply_zipmap(self, probabilities_name: str, classlabels: list[Any]) -> None:
+    def apply_zipmap(
+        self,
+        probabilities_name: str,
+        classlabels: list[int | float | str | bool | bytes | list | dict | tuple | None],
+    ) -> None:
         """Parse ZipMap requirements and emit explicit output sequences.
 
         Provide configuration to omit ZipMap for raw tensor performance.

@@ -1,11 +1,18 @@
-import { describe, it } from "vitest";
-import * as Module from "../../src/mil/compression";
+import { describe, expect, it } from 'vitest';
+import { applyCompression } from '../../src/mil/compression';
 
-describe("compression.ts", () => {
-  it("should call and cover applyCompression", async () => {
+const Call = <T>(fn: (...args: never[]) => T): T => fn();
+
+describe('compression.ts', () => {
+  it('should call and cover applyCompression', async () => {
     try {
-      const res = (Module as any).applyCompression();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(applyCompression);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

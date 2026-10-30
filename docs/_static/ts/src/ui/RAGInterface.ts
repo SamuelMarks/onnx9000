@@ -49,7 +49,7 @@ class SimpleBM25 {
 
         const df = this.documentFrequencies.get(term) || 1;
         const idf = Math.log(1 + (this.documents.length - df + 0.5) / (df + 0.5));
-        const tf = termFreq.get(term)!;
+        const tf = termFreq.get(term);
 
         const numerator = tf * (this.k1 + 1);
         const denominator = tf + this.k1 * (1 - this.b + this.b * (docLength / this.avgDocLength));
@@ -157,7 +157,7 @@ export class RAGInterface extends BaseComponent {
       });
 
       Toast.show(`Indexed ${chunks.length} chunks successfully using BM25.`, 'success');
-    } catch (_e) {
+    } catch {
       Toast.show('Failed to read file', 'error');
     }
   }

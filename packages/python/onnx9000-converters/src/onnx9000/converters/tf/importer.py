@@ -1,13 +1,18 @@
-"""Module providing core logic and structural definitions."""
-
-from typing import Any
+"""Implementation of importer (converters / tf / importer.py) providing TFImporter, load_tf."""
 
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Node, Tensor
 
 
 def _convert_dtype(tf_dtype: int) -> DType:
-    """Implement the _convert_dtype method or operation."""
+    """Execute convert dtype operation.
+
+    Args:
+        tf_dtype: Parameter specifying tf dtype (int).
+
+    Returns:
+        Result of convert dtype (DType).
+    """
     if tf_dtype == 1:
         return DType.FLOAT32
     if tf_dtype == 3:
@@ -19,12 +24,20 @@ class TFImporter:
     """Class TFImporter implementation."""
 
     def __init__(self) -> None:
-        """Implement the __init__ method or operation."""
+        """Initialize TFImporter with configured parameters and state."""
         self.graph = Graph(name="tf_model")
         self.tensor_map: dict[str, str] = {}
 
     def convert_nhwc_to_nchw(self, input_name: str, node_name: str) -> str:
-        """Implement the convert_nhwc_to_nchw method or operation."""
+        """Execute convert nhwc to nchw on TFImporter.
+
+        Args:
+            input_name: Parameter specifying input name (str).
+            node_name: Parameter specifying node name (str).
+
+        Returns:
+            Result of convert nhwc to nchw (str).
+        """
         t_out = f"{node_name}_nchw"
         t_node = Node(
             op_type="Transpose",
@@ -38,7 +51,15 @@ class TFImporter:
         return t_out
 
     def convert_nchw_to_nhwc(self, input_name: str, node_name: str) -> str:
-        """Implement the convert_nchw_to_nhwc method or operation."""
+        """Execute convert nchw to nhwc on TFImporter.
+
+        Args:
+            input_name: Parameter specifying input name (str).
+            node_name: Parameter specifying node name (str).
+
+        Returns:
+            Result of convert nchw to nhwc (str).
+        """
         t_out = f"{node_name}_nhwc"
         t_node = Node(
             op_type="Transpose",
@@ -51,8 +72,17 @@ class TFImporter:
         self.graph.tensors[t_out] = Tensor(name=t_out, dtype=DType.FLOAT32.value, shape=())
         return t_out
 
-    def parse(self, graph_def: dict[str, Any]) -> Graph:
-        """Implement the parse method or operation."""
+    def parse(
+        self, graph_def: dict[str, int | float | str | bool | bytes | list | dict | tuple | None]
+    ) -> Graph:
+        """Execute parse on TFImporter.
+
+        Args:
+            graph_def: Parameter specifying graph def (dict[str, Union[int, float, str, bool, bytes, list, dict, tuple, None]]).
+
+        Returns:
+            Result of parse (Graph).
+        """
         for node in graph_def.get("node", []):
             op = node["op"]
             name = node["name"]
@@ -147,8 +177,17 @@ class TFImporter:
         return self.graph
 
 
-def load_tf(model_path_or_dict: Any) -> Graph:
-    """Implement the load_tf method or operation."""
+def load_tf(
+    model_path_or_dict: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> Graph:
+    """Execute load tf operation.
+
+    Args:
+        model_path_or_dict: Parameter specifying model path or dict (Union[int, float, str, bool, bytes, list, dict, tuple, None]).
+
+    Returns:
+        Result of load tf (Graph).
+    """
     importer = TFImporter()
     if isinstance(model_path_or_dict, dict):
         return importer.parse(model_path_or_dict)

@@ -3,7 +3,7 @@
 import unittest
 
 import numpy as np
-import onnx9000.core.onnx_pb2 as onnx_pb2
+from onnx9000.core import onnx_pb2
 from onnx9000.core.parser.core import (
     _parse_attribute,
     parse_model,
@@ -12,10 +12,10 @@ from onnx9000.core.parser.core import (
 
 
 class TestParserSparse(unittest.TestCase):
-    """Docstring for D101."""
+    """Represents test parser sparse inheriting from unittest.TestCase, supporting operations such as test_parse_sparse_tensor, test_model_sparse."""
 
-    def test_parse_sparse_tensor(self):
-        """Docstring for D102."""
+    def test_parse_sparse_tensor(self) -> None:
+        """Verify that parse sparse tensor behaves as expected."""
         sparse = onnx_pb2.SparseTensorProto()
         sparse.dims.extend([2, 2])
         sparse.values.data_type = 1
@@ -43,8 +43,8 @@ class TestParserSparse(unittest.TestCase):
         pa2 = _parse_attribute(attr2)
         self.assertEqual(pa2.attr_type, "SPARSE_TENSORS")
 
-    def test_model_sparse(self):
-        """Docstring for D102."""
+    def test_model_sparse(self) -> None:
+        """Verify that model sparse behaves as expected."""
         # We need to test the model with a sparse_initializer
         model = onnx_pb2.ModelProto()
         model.graph.name = "test"

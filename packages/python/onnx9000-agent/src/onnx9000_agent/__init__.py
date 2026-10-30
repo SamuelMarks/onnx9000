@@ -1,6 +1,5 @@
-"""Agent module."""
+"""Backward-compatible re-export module for `onnx9000_agent`."""
 
+from onnx9000.agent import Agent, AgentConfig, AgentMessage, AgentTool, run
 
-def run():
-    """Run agent."""
-    return "[agent] processed"
+__all__ = ["Agent", "AgentConfig", "AgentMessage", "AgentTool", "run"]

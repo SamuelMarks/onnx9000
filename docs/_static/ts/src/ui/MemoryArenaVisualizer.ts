@@ -90,7 +90,7 @@ export class MemoryArenaVisualizer extends BaseComponent {
       });
       node.inputs.forEach((inp) => {
         if (activeLifetimes.has(inp)) {
-          activeLifetimes.get(inp)!.endNode = i;
+          activeLifetimes.get(inp).endNode = i;
         }
       });
     });
@@ -146,7 +146,7 @@ export class MemoryArenaVisualizer extends BaseComponent {
       this.render();
     });
 
-    globalEvents.on('nodeSelected', (node: any) => {
+    globalEvents.on('nodeSelected', (node: { inputs: string[]; outputs: string[] } | null) => {
       this.activeBlocks.clear();
       if (node) {
         node.inputs.forEach((i: string) => {

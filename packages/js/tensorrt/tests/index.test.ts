@@ -1,7 +1,8 @@
-import { describe, expect, it, vi } from "vitest";
-import { Builder } from "../src/index.js";
+import { describe, expect, it, vi } from 'vitest';
+import { trtFfi } from '../src/ffi.js';
+import { Builder, TensorRTProvider } from '../src/index.js';
 
-vi.mock("../src/ffi.js", () => ({
+vi.mock('../src/ffi.js', () => ({
   trtFfi: {
     lib: {
       createInferBuilder_INTERNAL: vi.fn().mockReturnValue({}),
@@ -14,8 +15,8 @@ vi.mock("../src/ffi.js", () => ({
   },
 }));
 
-describe("TensorRT Builder", () => {
-  it("should build", () => {
+describe('TensorRT Builder', () => {
+  it('should build and handle errors and repeated destroy', () => {
     const b = new Builder();
     expect(b.ptr).toBeDefined();
 
@@ -25,6 +26,27 @@ describe("TensorRT Builder", () => {
     n.markOutput({ ptr: {} });
 
     n.destroy();
+    n.destroy();
     b.destroy();
+    b.destroy();
+
+    const lib = trtFfi.lib;
+    if (!lib) throw new Error('Expected trtFfi.lib to be defined');
+
+    vi.mocked(trtFfi.getVersion).mockReturnValueOnce([0, 0, 0]);
+    vi.mocked(lib.createInferBuilder_INTERNAL).mockReturnValueOnce(null);
+    expect(() => new Builder()).toThrow('Failed to create Builder');
+
+    const b2 = new Builder();
+    vi.mocked(lib.createNetworkV2).mockReturnValueOnce(null);
+    expect(() => b2.createNetwork()).toThrow('Failed to create NetworkDefinition');
+
+    const origLib = trtFfi.lib;
+    trtFfi.lib = null;
+    expect(() => new Builder()).toThrow('TensorRT library not loaded');
+    trtFfi.lib = origLib;
+
+    const p = new TensorRTProvider({ name: 'test' });
+    expect(p.graph).toEqual({ name: 'test' });
   });
 });

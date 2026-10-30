@@ -17,12 +17,16 @@ from onnx9000.core.dtypes import DType
 class Dummy(Module):
     """Class Dummy implementation."""
 
-    def __init__(self, c=1) -> None:
+    def __init__(
+        self, c: int | float | str | bool | bytes | list | dict | tuple | None = 1
+    ) -> None:
         """Test the __init__ functionality."""
         super().__init__()
         self.c = c
 
-    def forward(self, x):
+    def forward(
+        self, x: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Test the forward functionality."""
         return x + self.c
 

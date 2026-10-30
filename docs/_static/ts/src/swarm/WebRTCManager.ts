@@ -11,7 +11,7 @@ export interface IPeerMessage {
     | 'crdt_delta'
     | 'editor_sync'
     | 'voice_chat_init';
-  payload?: any;
+  payload?: unknown;
 }
 
 export class WebRTCManager {

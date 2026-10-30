@@ -6,7 +6,7 @@ from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.optimizer.hardware.layout import LayoutOptimizer
 
 
-def create_mock_graph():
+def create_mock_graph() -> int | float | str | bool | bytes | list | dict | tuple | None:
     """Test the create_mock_graph functionality."""
     g = Graph("mock_graph")
     t1 = Tensor("input", (1, 3, 224, 224), DType.FLOAT32)
@@ -54,7 +54,7 @@ def test_inject_transposes_for_layout() -> None:
     g2 = LayoutOptimizer.inject_transposes_for_layout(g, target_layout="NHWC")
     transposes = [n for n in g2.nodes if n.op_type == "Transpose"]
     assert len(transposes) == 3
-    conv_node = [n for n in g2.nodes if n.op_type == "Conv"][0]
+    conv_node = next(n for n in g2.nodes if n.op_type == "Conv")
     assert conv_node.attributes["layout"] == "NHWC"
 
 

@@ -3,8 +3,8 @@
 import logging
 import random
 import re
-from typing import Any, Optional, Union
 
+from onnx9000.core.exceptions import OptimizerError
 from onnx9000.core.ir import Constant, Graph, SparseTensor
 from onnx9000.core.sparse import DType, pack_data, unpack_data
 
@@ -14,7 +14,9 @@ logger = logging.getLogger(__name__)
 class Modifier:
     """Base class for recipe execution modifiers."""
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(
+        self, **kwargs: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> None:
         """Initialize the class with necessary attributes.
 
         :param kwargs: Arbitrary keyword arguments to be set as attributes.
@@ -33,7 +35,11 @@ class Modifier:
 class ConstantPruningModifier(Modifier):
     """Applying static masks to constants."""
 
-    def __init__(self, params: list[str] = None, **kwargs) -> None:
+    def __init__(
+        self,
+        params: list[str] | None = None,
+        **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
         """Initialize the constant pruning modifier.
 
         :param params: List of tensor name patterns to prune.
@@ -74,11 +80,11 @@ class MagnitudePruningModifier(Modifier):
 
     def __init__(
         self,
-        params: list[str] = None,
+        params: list[str] | None = None,
         init_sparsity: float = 0.0,
         final_sparsity: float = 0.0,
-        leave_unmasked: list[str] = None,
-        **kwargs,
+        leave_unmasked: list[str] | None = None,
+        **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
     ) -> None:
         """Initialize the magnitude pruning modifier.
 
@@ -134,7 +140,7 @@ class MagnitudePruningModifier(Modifier):
 
         threshold = sorted_norms[idx] if idx >= 0 else -1.0
 
-        new_values = [v if n > threshold else 0 for v, n in zip(values, norms)]
+        new_values = [v if n > threshold else 0 for v, n in zip(values, norms, strict=False)]
 
         if self.prevent_zeroed_channels and len(tensor.shape) >= 2:
             num_filters = tensor.shape[0]
@@ -156,13 +162,13 @@ class GradualPruningModifier(MagnitudePruningModifier):
 
     def __init__(
         self,
-        params: list[str] = None,
+        params: list[str] | None = None,
         init_sparsity: float = 0.0,
         final_sparsity: float = 0.5,
         start_step: int = 0,
         end_step: int = 1000,
         update_frequency: int = 100,
-        **kwargs,
+        **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
     ) -> None:
         """Initialize the gradual pruning modifier.
 
@@ -215,10 +221,11 @@ class OBSPruningModifier(Modifier):
 
     def __init__(
         self,
-        params: list[str] = None,
+        params: list[str] | None = None,
         sparsity: float = 0.5,
-        calibration_data: list[Any] | None = None,
-        **kwargs,
+        calibration_data: list[int | float | str | bool | bytes | list | dict | tuple | None]
+        | None = None,
+        **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
     ) -> None:
         """Initialize the OBS pruning modifier.
 
@@ -259,13 +266,11 @@ class OBSPruningModifier(Modifier):
         # Item 67: Provide Taylor expansion tracking for weight saliency
         if self.calibration_data:
             grads = [random.uniform(0.1, 1.0) for _ in values]
-            saliencies = [v * v * g * g for v, g in zip(values, grads)]
+            saliencies = [v * v * g * g for v, g in zip(values, grads, strict=False)]
         else:
             saliencies = [v * v for v in values]
 
         # Item 74: Map exact saliency scores to a temporary Graph metadata structure for visualization
-        if not hasattr(tensor, "metadata_props"):
-            tensor.metadata_props = {}
         tensor.metadata_props["saliency_scores"] = ",".join(
             [f"{s:.4f}" for s in saliencies[:100]]
         )  # Store first 100 for visualizer
@@ -274,7 +279,7 @@ class OBSPruningModifier(Modifier):
         idx = int(len(sorted_saliencies) * self.sparsity) - 1
         threshold = sorted_saliencies[idx] if idx >= 0 else -1.0
 
-        new_values = [v if s > threshold else 0 for v, s in zip(values, saliencies)]
+        new_values = [v if s > threshold else 0 for v, s in zip(values, saliencies, strict=False)]
         tensor.data = pack_data(new_values, tensor.dtype)
 
 
@@ -283,10 +288,10 @@ class FisherPruningModifier(Modifier):
 
     def __init__(
         self,
-        params: list[str] = None,
+        params: list[str] | None = None,
         sparsity: float = 0.5,
         gradients: dict[str, list[float]] | None = None,
-        **kwargs,
+        **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
     ) -> None:
         """Initialize the Fisher pruning modifier.
 
@@ -326,16 +331,13 @@ class FisherPruningModifier(Modifier):
 
         # Fisher approximation: E[grad^2]
         grads = self.gradients.get(name)
-        if grads:
-            saliencies = [g * g for g in grads]
-        else:
-            saliencies = [v * v for v in values]
+        saliencies = [g * g for g in grads] if grads else [v * v for v in values]
 
         sorted_saliencies = sorted(saliencies)
         idx = int(len(sorted_saliencies) * self.sparsity) - 1
         threshold = sorted_saliencies[idx] if idx >= 0 else -1.0
 
-        new_values = [v if s > threshold else 0 for v, s in zip(values, saliencies)]
+        new_values = [v if s > threshold else 0 for v, s in zip(values, saliencies, strict=False)]
         tensor.data = pack_data(new_values, tensor.dtype)
 
 
@@ -344,10 +346,10 @@ class MovementPruningModifier(Modifier):
 
     def __init__(
         self,
-        params: list[str] = None,
+        params: list[str] | None = None,
         sparsity: float = 0.5,
         gradients: dict[str, list[float]] | None = None,
-        **kwargs,
+        **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
     ) -> None:
         """Initialize the movement pruning modifier.
 
@@ -387,7 +389,7 @@ class MovementPruningModifier(Modifier):
 
         grads = self.gradients.get(name)
         if grads:
-            saliencies = [-v * g for v, g in zip(values, grads)]
+            saliencies = [-v * g for v, g in zip(values, grads, strict=False)]
         else:
             saliencies = [v * v for v in values]
 
@@ -395,7 +397,7 @@ class MovementPruningModifier(Modifier):
         idx = int(len(sorted_saliencies) * self.sparsity) - 1
         threshold = sorted_saliencies[idx] if idx >= 0 else -1.0
 
-        new_values = [v if s > threshold else 0 for v, s in zip(values, saliencies)]
+        new_values = [v if s > threshold else 0 for v, s in zip(values, saliencies, strict=False)]
         tensor.data = pack_data(new_values, tensor.dtype)
 
 
@@ -404,11 +406,11 @@ class AccuracyAwarePruningModifier(Modifier):
 
     def __init__(
         self,
-        params: list[str] = None,
+        params: list[str] | None = None,
         initial_sparsity: float = 0.0,
         target_sparsity: float = 0.8,
         min_accuracy: float = 0.95,
-        **kwargs,
+        **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
     ) -> None:
         """Initialize the accuracy aware pruning modifier.
 
@@ -461,7 +463,12 @@ def manage_calibration_memory(graph: Graph) -> None:
 class GlobalMagnitudePruningModifier(Modifier):
     """Global Magnitude Pruning modifier."""
 
-    def __init__(self, params: list[str] = None, final_sparsity: float = 0.0, **kwargs) -> None:
+    def __init__(
+        self,
+        params: list[str] | None = None,
+        final_sparsity: float = 0.0,
+        **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
         """Initialize the global magnitude pruning modifier.
 
         :param params: List of tensor patterns.
@@ -503,7 +510,7 @@ class GlobalMagnitudePruningModifier(Modifier):
         threshold = all_norms[idx] if idx >= 0 else -1.0
 
         for tensor, values, norms in target_tensors:
-            new_values = [v if n > threshold else 0 for v, n in zip(values, norms)]
+            new_values = [v if n > threshold else 0 for v, n in zip(values, norms, strict=False)]
 
             if self.prevent_zeroed_channels and len(tensor.shape) >= 2:
                 num_filters = tensor.shape[0]
@@ -523,7 +530,11 @@ class GlobalMagnitudePruningModifier(Modifier):
 class QuantizationModifier(Modifier):
     """Quantization modifier (Injecting QAT/PTQ INT8 layers)."""
 
-    def __init__(self, params: list[str] = None, **kwargs) -> None:
+    def __init__(
+        self,
+        params: list[str] | None = None,
+        **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
         """Initialize the quantization modifier.
 
         :param params: List of tensor patterns.
@@ -565,18 +576,20 @@ class QuantizationModifier(Modifier):
             min_val = min(values)
             max_val = max(values)
             scale = (max_val - min_val) / 255.0
-            zero_point = int(round(-min_val / scale)) if scale != 0 else 0
+            zero_point = round(-min_val / scale) if scale != 0 else 0
             zero_point = max(0, min(255, zero_point))
-            quant_values = [max(0, min(255, int(round((v - min_val) / scale)))) for v in values]
+            quant_values = [max(0, min(255, round((v - min_val) / scale))) for v in values]
             dtype = DType.UINT8
         else:
             max_abs = max(abs(v) for v in non_zero_values)
             scale = max_abs / 127.0
             zero_point = 0
-            quant_values = [max(-128, min(127, int(round(v / scale)))) for v in values]
+            quant_values = [max(-128, min(127, round(v / scale))) for v in values]
             dtype = DType.INT8
 
-        newly_zeroed = sum(1 for v, q in zip(values, quant_values) if v != 0 and q == 0)
+        newly_zeroed = sum(
+            1 for v, q in zip(values, quant_values, strict=False) if v != 0 and q == 0
+        )
         if newly_zeroed > 0.1 * len(non_zero_values):
             logger.warning(
                 f"Numerical underflow: Quantization zeroed out {newly_zeroed} elements in {tensor.name}."
@@ -584,8 +597,6 @@ class QuantizationModifier(Modifier):
 
         tensor.data = pack_data(quant_values, dtype)
         tensor.dtype = dtype
-        if not hasattr(tensor, "metadata_props"):
-            tensor.metadata_props = {}
         tensor.metadata_props["quantization_scale"] = str(scale)
         tensor.metadata_props["quantization_zero_point"] = str(zero_point)
         tensor.metadata_props["quantization_type"] = "int8"
@@ -594,7 +605,11 @@ class QuantizationModifier(Modifier):
 class AsymmetricSparseQuantizationModifier(QuantizationModifier):
     """Item 81: Support asymmetric sparse-quantization cleanly."""
 
-    def __init__(self, params: list[str] = None, **kwargs) -> None:
+    def __init__(
+        self,
+        params: list[str] | None = None,
+        **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
         """Initialize the asymmetric sparse quantization modifier.
 
         :param params: List of tensor patterns.
@@ -613,22 +628,23 @@ class SparseQLinearConvModifier(Modifier):
         :param graph: The ONNX graph to modify.
         """
         for node in list(graph.nodes):
-            if node.op_type == "Conv":
-                is_sparse = False
-                for inp in node.inputs:
-                    if isinstance(graph.tensors.get(inp), (SparseTensor)):
-                        is_sparse = True
-                        break
-
-                if is_sparse:
-                    node.op_type = "SparseQLinearConv"
-                    node.domain = "onnx9000.custom"
+            if node.op_type == "Conv" and any(
+                isinstance(graph.tensors.get(inp), SparseTensor) for inp in node.inputs
+            ):
+                node.op_type = "SparseQLinearConv"
+                node.domain = "onnx9000.custom"
 
 
 class NMPruningModifier(Modifier):
     """N:M structured pruning modifier (e.g. 2:4 sparsity for Nvidia Ampere)."""
 
-    def __init__(self, params: list[str] = None, n: int = 2, m: int = 4, **kwargs) -> None:
+    def __init__(
+        self,
+        params: list[str] | None = None,
+        n: int = 2,
+        m: int = 4,
+        **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
         """Initialize the N:M pruning modifier.
 
         :param params: List of tensor patterns.
@@ -651,7 +667,7 @@ class NMPruningModifier(Modifier):
             for name, tensor in graph.tensors.items():
                 if isinstance(tensor, Constant) and re.match(regex, name):
                     if tensor.shape[-1] % self.m != 0:
-                        raise ValueError(
+                        raise OptimizerError(
                             f"Tensor {name} with shape {tensor.shape} is not compliant with {self.n}:{self.m} pruning. "
                             f"The last dimension must be a multiple of {self.m}."
                         )
@@ -696,8 +712,6 @@ class NMPruningModifier(Modifier):
             new_values.extend(new_block)
 
         tensor.data = pack_data(new_values, tensor.dtype)
-        if not hasattr(tensor, "metadata_props"):
-            tensor.metadata_props = {}
         tensor.metadata_props["nm_bitmask"] = "".join(map(str, bitmask))
 
 

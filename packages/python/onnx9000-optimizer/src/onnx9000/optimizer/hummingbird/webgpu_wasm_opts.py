@@ -2,6 +2,7 @@
 
 import logging
 
+from onnx9000.core.exceptions import OptimizerError
 from onnx9000.core.ir import Graph
 
 logger = logging.getLogger(__name__)
@@ -11,7 +12,11 @@ class WebGPUWASMCompilerOpts:
     """WebGPU & WASM Execution Optimizations utility."""
 
     def __init__(self, max_buffer_size: int = 128 * 1024 * 1024) -> None:
-        """Initialize the instance."""
+        """Initialize WebGPUWASMCompilerOpts with configured parameters and state.
+
+        Args:
+            max_buffer_size: Parameter specifying max buffer size (int).
+        """
         self.max_buffer_size = max_buffer_size
         self.max_texture_dim = 8192
 
@@ -20,7 +25,7 @@ class WebGPUWASMCompilerOpts:
         # Already handled by pure math (no If/Loop nodes are generated)
         for node in g.nodes:
             if node.op_type in ("If", "Loop"):
-                raise ValueError("Branch divergence detected in WebGPU optimized graph.")
+                raise OptimizerError("Branch divergence detected in WebGPU optimized graph.")
 
     def ensure_constants_fit(self, g: Graph) -> None:
         """Ensure all generated constants fit within WebGPU max buffer sizes (128MB/256MB)."""

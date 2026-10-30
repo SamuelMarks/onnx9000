@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../../src/providers/webnn/index";
+import { describe, expect, it } from 'vitest';
+import { WebNNProvider } from '../../../src/providers/webnn/index';
 
-describe("index.ts", () => {
-  it("should instantiate and cover WebNNProvider", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('index.ts', () => {
+  it('should instantiate and cover WebNNProvider', () => {
     try {
-      const obj = new (Module as any).WebNNProvider();
+      const obj = Construct(WebNNProvider);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

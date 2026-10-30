@@ -1,5 +1,6 @@
-// @ts-nocheck
-
+/**
+ * @fileoverview WebNNPolyfillRunner module for sphinx-demo-ui.
+ */
 import { globalEventBus } from './EventBus';
 import { WorkerManager } from './WorkerManager';
 
@@ -16,18 +17,19 @@ export class WebNNPolyfillRunner {
    */
   public async runInference(
     onnxBinary: Uint8Array,
-    inputs: Record<string, Float32Array | Int32Array>
+    inputs: Record<string, Float32Array | Int32Array>,
   ): Promise<Record<string, object>> {
     console.log(`Starting WebNN Polyfill execution...`);
     globalEventBus.emit('INFERENCE_STARTED');
 
     const start = performance.now();
 
+    let outputs: Record<string, object>;
     try {
       WorkerManager.getInstance().initWorker('/workers/webnn-worker.js');
-      const outputs = (await WorkerManager.getInstance().execute('RUN_WEBNN', {
+      outputs = (await WorkerManager.getInstance().execute('RUN_WEBNN', {
         binary: onnxBinary,
-        inputs
+        inputs,
       })) as Record<string, object>;
 
       const end = performance.now();
@@ -35,13 +37,13 @@ export class WebNNPolyfillRunner {
       console.log(`WebNN execution complete in ${latency.toFixed(2)} ms.`);
 
       globalEventBus.emit('INFERENCE_SUCCESS', { latency, outputs });
-      return outputs;
-    } catch (e: any) {
+    } catch (e) {
       console.error(`WebNN execution failed`, e);
       globalEventBus.emit('INFERENCE_ERROR', e);
       throw e;
     } finally {
       WorkerManager.getInstance().terminate();
     }
+    return outputs;
   }
 }

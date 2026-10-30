@@ -8,12 +8,12 @@ from onnx9000.core.ir import Graph
 class MockTree:
     """Represents the Mock Tree class."""
 
-    def __init__(self):
-        """Initialize the instance."""
+    def __init__(self) -> None:
+        """Initialize MockTree with configured parameters and state."""
         self.classes_ = np.array(["A", "B"])
 
 
-def test_tree_classifier_strings():
+def test_tree_classifier_strings() -> None:
     """Tests the tree classifier strings functionality."""
     g = Graph("g")
     _convert_tree_classifier(MockTree(), ["input"], g)

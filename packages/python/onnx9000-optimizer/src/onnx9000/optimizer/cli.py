@@ -2,7 +2,6 @@
 
 import json
 from pathlib import Path
-from typing import Any
 
 from onnx9000.core.execution import SessionOptions
 from onnx9000.optimizer.olive.auto import AutoOptimizer
@@ -50,16 +49,26 @@ class ModelCache:
     """Implement caching mechanisms for Intermediate Models."""
 
     def __init__(self, cache_dir: str = ".cache") -> None:
-        """Init."""
+        """Initialize ModelCache with configured parameters and state.
+
+        Args:
+            cache_dir: Parameter specifying cache dir (str).
+        """
         self.cache_dir = Path(cache_dir)
         self.cache_dir.mkdir(parents=True, exist_ok=True)
 
-    def save(self, key: str, data: dict[str, Any]) -> None:
+    def save(
+        self,
+        key: str,
+        data: dict[str, int | float | str | bool | bytes | list | dict | tuple | None],
+    ) -> None:
         """Save cache."""
         with open(self.cache_dir / f"{key}.json", "w") as f:
             json.dump(data, f)
 
-    def load(self, key: str) -> dict[str, Any]:
+    def load(
+        self, key: str
+    ) -> dict[str, int | float | str | bool | bytes | list | dict | tuple | None]:
         """Load cache."""
         try:
             with open(self.cache_dir / f"{key}.json") as f:

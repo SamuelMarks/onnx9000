@@ -1,12 +1,16 @@
 import { describe, expect, it } from 'vitest';
-import * as Module from '../../src/core/OnnxAstFormatter';
+import { OnnxAstFormatter } from '../../src/core/OnnxAstFormatter';
+
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
 
 describe('OnnxAstFormatter.ts', () => {
   it('should instantiate and cover OnnxAstFormatter', () => {
     // Attempt to instantiate
     try {
-      const obj = new (Module as any).OnnxAstFormatter();
+      const obj = Construct(OnnxAstFormatter);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

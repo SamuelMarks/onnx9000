@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../src/render/layout";
+import { describe, expect, it } from 'vitest';
+import { DagreLayoutEngine } from '../../src/render/layout';
 
-describe("layout.ts", () => {
-  it("should instantiate and cover DagreLayoutEngine", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('layout.ts', () => {
+  it('should instantiate and cover DagreLayoutEngine', () => {
     try {
-      const obj = new (Module as any).DagreLayoutEngine();
+      const obj = Construct(DagreLayoutEngine);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

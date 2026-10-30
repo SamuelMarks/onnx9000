@@ -2,20 +2,24 @@
 
 from unittest.mock import patch
 
-import onnx9000.toolkit.script.op as op
+from onnx9000.toolkit.script import op
 from onnx9000.toolkit.script.parser import script
 
 
 class Float:
     """Represents the Float class."""
 
-    def __class_getitem__(cls, item):
+    def __class_getitem__(
+        cls, item: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Execute class getitem magic method operation."""
         return item
 
 
 @script
-def multi_out_func(x):
+def multi_out_func(
+    x: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
     """Execute the multi out func operation."""
     y = op.Add(x, x)
     z = op.Sub(x, x)
@@ -23,11 +27,13 @@ def multi_out_func(x):
 
 
 @script
-def dummy_test_func_coverage(x: Float[10, 20]):
+def dummy_test_func_coverage(
+    x: Float[10, 20],
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
     """Test the func coverage functionality."""
     eq = x == x
     op.Add(x, x)
-    (a, b) = multi_out_func(x)
+    (_a, _b) = multi_out_func(x)
     acc1 = x
     acc2 = x
     for _i in x:
@@ -59,11 +65,14 @@ def test_no_frame() -> None:
     with patch("inspect.currentframe", return_value=None):
 
         @script
-        def dummy_func(x):
+        def dummy_func(
+            x: int | float | str | bool | bytes | list | dict | tuple | None,
+        ) -> int | float | str | bool | bytes | list | dict | tuple | None:
             """Test the dummy func functionality."""
             return x
 
         dummy_func()
+    assert test_no_frame is not None
 
 
 class MyObj:
@@ -73,11 +82,12 @@ class MyObj:
 
 
 my_obj = MyObj()
-multi_out_func = multi_out_func
 
 
 @script
-def call_attribute(x):
+def call_attribute(
+    x: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
     """Execute the call attribute operation."""
     return op.Add(x, x)
 
@@ -93,7 +103,9 @@ def test_ast_attribute_coverage() -> None:
     from onnx9000.toolkit.script.parser import script
 
     @script
-    def dummy_subgraph(x):
+    def dummy_subgraph(
+        x: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Test the dummy subgraph functionality."""
         return op.Add(x, x)
 
@@ -106,7 +118,9 @@ def test_ast_attribute_coverage() -> None:
     o.dummy_subgraph = dummy_subgraph
 
     @script
-    def caller(x):
+    def caller(
+        x: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Test the caller functionality."""
         return o.dummy_subgraph(x)
 

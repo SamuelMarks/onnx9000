@@ -19,7 +19,7 @@ export class SafetensorsWriter {
     if (model.docString) {
       try {
         meta = JSON.parse(model.docString);
-      } catch (_e) {
+      } catch {
         meta = { description: model.docString };
       }
     }

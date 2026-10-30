@@ -4,7 +4,7 @@ from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Node, Tensor
 
 
-def test_compile_training_graph():
+def test_compile_training_graph() -> None:
     """Test the compilation of a basic training graph."""
     g = Graph("TestCompile")
     g.inputs = ["X"]
@@ -17,17 +17,27 @@ def test_compile_training_graph():
     g.nodes.append(n)
 
     # Mock loss and optim
-    def mock_loss(out, target, b):
+    def mock_loss(
+        out: int | float | str | bool | bytes | list | dict | tuple | None,
+        target: int | float | str | bool | bytes | list | dict | tuple | None,
+        b: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> str:
         """Mock loss function."""
         return "loss_out"
 
     mock_loss(None, None, None)
 
-    def mock_optim(builder, params, grads, lr):
+    def mock_optim(
+        builder: int | float | str | bool | bytes | list | dict | tuple | None,
+        params: int | float | str | bool | bytes | list | dict | tuple | None,
+        grads: int | float | str | bool | bytes | list | dict | tuple | None,
+        lr: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
         """Mock optimizer function."""
         return None
 
     mock_optim(None, None, None, None)
+    assert n is not None or n is None
 
     # Note: we need builder to actually not crash. AOTBuilder calls these.
     # It might be easier to use real ones from the toolkit if possible, or mock AOTBuilder.

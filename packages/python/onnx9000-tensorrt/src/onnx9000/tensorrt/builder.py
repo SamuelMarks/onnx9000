@@ -2,6 +2,7 @@
 
 import ctypes
 
+from onnx9000.core.exceptions import BackendExecutionError
 from onnx9000.tensorrt.enums import MemoryPoolType
 from onnx9000.tensorrt.ffi import ffi
 
@@ -9,11 +10,15 @@ from onnx9000.tensorrt.ffi import ffi
 class BuilderConfig:
     """BuilderConfig class."""
 
-    def __init__(self, ptr: int):
-        """Initialize."""
+    def __init__(self, ptr: int) -> None:
+        """Initialize BuilderConfig with configured parameters and state.
+
+        Args:
+            ptr: Parameter specifying ptr (int).
+        """
         self.ptr = ptr
 
-    def set_memory_pool_limit(self, pool_type: MemoryPoolType, size: int):
+    def set_memory_pool_limit(self, pool_type: MemoryPoolType, size: int) -> None:
         """Execute set_memory_pool_limit."""
         if hasattr(ffi.lib, "setMemoryPoolLimit"):
             ffi.lib.setMemoryPoolLimit(
@@ -28,12 +33,16 @@ class BuilderConfig:
 class NetworkDefinition:
     """NetworkDefinition class."""
 
-    def __init__(self, ptr: int):
-        """Initialize."""
+    def __init__(self, ptr: int) -> None:
+        """Initialize NetworkDefinition with configured parameters and state.
+
+        Args:
+            ptr: Parameter specifying ptr (int).
+        """
         self.ptr = ptr
         self.tensors = {}
 
-    def destroy(self):
+    def destroy(self) -> None:
         """Execute destroy."""
         destroy_func = getattr(ffi.lib, "destroyNetworkDefinition", None)
         if destroy_func:
@@ -43,15 +52,24 @@ class NetworkDefinition:
 class Builder:
     """Builder class."""
 
-    def __init__(self, logger_callback=None):
-        """Initialize."""
+    def __init__(
+        self, logger_callback: int | float | str | bool | bytes | list | dict | tuple | None = None
+    ) -> None:
+        """Initialize Builder with configured parameters and state.
+
+        Args:
+            logger_callback: Parameter specifying logger callback.
+
+        Raises:
+            RuntimeError: If an invalid state or argument is encountered during execution.
+        """
         self.ptr = None
         if not ffi.lib:
-            raise RuntimeError("TensorRT library not loaded")
+            raise BackendExecutionError("TensorRT library not loaded")
 
         create_builder = getattr(ffi.lib, "createInferBuilder_INTERNAL", None)
         if not create_builder:
-            raise RuntimeError("createInferBuilder_INTERNAL not found in TensorRT lib")
+            raise BackendExecutionError("createInferBuilder_INTERNAL not found in TensorRT lib")
 
         create_builder.restype = ctypes.c_void_p
         create_builder.argtypes = [ctypes.c_void_p, ctypes.c_int]
@@ -89,7 +107,7 @@ class Builder:
 
         self.ptr = create_builder(ctypes.pointer(self.logger), ctypes.c_int(trt_version))
         if not self.ptr:
-            raise RuntimeError("Failed to create TensorRT Builder")
+            raise BackendExecutionError("Failed to create TensorRT Builder")
 
         ffi.register_pointer(self.ptr, self)
 
@@ -97,7 +115,7 @@ class Builder:
         """Execute create_network."""
         create_network = getattr(ffi.lib, "createNetworkV2", None)
         if not create_network:
-            raise RuntimeError("createNetworkV2 not found")
+            raise BackendExecutionError("createNetworkV2 not found")
 
         # 1 << 0 for Explicit Batch
         flags = 1 << 0
@@ -106,20 +124,20 @@ class Builder:
 
         net_ptr = create_network(ctypes.c_void_p(self.ptr), ctypes.c_int32(flags))
         if not net_ptr:
-            raise RuntimeError("Failed to create NetworkDefinition")
+            raise BackendExecutionError("Failed to create NetworkDefinition")
         return NetworkDefinition(net_ptr)
 
     def create_builder_config(self) -> BuilderConfig:
         """Execute create_builder_config."""
         create_config = getattr(ffi.lib, "createBuilderConfig", None)
         if not create_config:
-            raise RuntimeError("createBuilderConfig not found")
+            raise BackendExecutionError("createBuilderConfig not found")
         create_config.restype = ctypes.c_void_p
         create_config.argtypes = [ctypes.c_void_p]
         cfg_ptr = create_config(ctypes.c_void_p(self.ptr))
         return BuilderConfig(cfg_ptr)
 
-    def destroy(self):
+    def destroy(self) -> None:
         """Execute destroy."""
         if not self.ptr or getattr(ffi, "lib", None) is None:
             return
@@ -129,6 +147,6 @@ class Builder:
         ffi.unregister_pointer(self.ptr)
         self.ptr = None
 
-    def __del__(self):
-        """Initialize."""
+    def __del__(self) -> None:
+        """Clean up resources and native handles held by Builder."""
         self.destroy()

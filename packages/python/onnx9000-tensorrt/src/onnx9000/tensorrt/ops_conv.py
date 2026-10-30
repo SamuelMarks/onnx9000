@@ -1,19 +1,23 @@
 """Ops conv."""
 
 import ctypes
-from typing import Any
 
+from onnx9000.core.exceptions import BackendExecutionError
 from onnx9000.tensorrt.ffi import ffi
 from onnx9000.tensorrt.network import INetworkDefinition, ITensor
 from onnx9000.tensorrt.registry import register_op
 
 
 @register_op("", "Conv")
-def trt_conv(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
+def trt_conv(
+    network: INetworkDefinition,
+    node: int | float | str | bool | bytes | list | dict | tuple | None,
+    tensors: dict[str, ITensor],
+) -> None:
     """Execute trt_conv."""
     add_conv_func = getattr(ffi.lib, "addConvolutionNd", None)
     if not add_conv_func:
-        raise RuntimeError("addConvolutionNd not found")
+        raise BackendExecutionError("addConvolutionNd not found")
 
     in_name = node.inputs[0]
     node.inputs[1]
@@ -41,7 +45,7 @@ def trt_conv(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]
     )  # Weights
 
     if not ptr:
-        raise RuntimeError("Failed to add Conv")
+        raise BackendExecutionError("Failed to add Conv")
 
     out_name = node.outputs[0]
     tensors[out_name] = ITensor(ptr, out_name)

@@ -1,4 +1,4 @@
-"""Module providing core logic and structural definitions."""
+"""Unit tests and verification suite for builder functionality."""
 
 from onnx9000.converters.frontend.builder import (
     GraphBuilder,
@@ -33,7 +33,9 @@ def test_jit_decorator() -> None:
     """Tests the test_jit_decorator functionality."""
 
     @jit
-    def my_func(x):
+    def my_func(
+        x: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Test the my_func functionality."""
         return x + x
 
@@ -50,7 +52,9 @@ def test_jit_multi_out() -> None:
     """Tests the test_jit_multi_out functionality."""
 
     @jit
-    def my_func(x):
+    def my_func(
+        x: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Test the my_func functionality."""
         return (x + x, x * x)
 
@@ -63,7 +67,9 @@ def test_jit_list_out() -> None:
     """Tests the test_jit_list_out functionality."""
 
     @jit
-    def my_func(x):
+    def my_func(
+        x: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Test the my_func functionality."""
         return [x + x, x * x]
 

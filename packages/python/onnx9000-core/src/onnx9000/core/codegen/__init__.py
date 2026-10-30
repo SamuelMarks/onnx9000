@@ -7,7 +7,7 @@ from onnx9000.core.codegen.triton import TritonExporter
 
 __all__ = [
     "ONNXToFlaxNNXVisitor",
-    "ONNXToPyTorchVisitor",
     "ONNXToKerasVisitor",
+    "ONNXToPyTorchVisitor",
     "TritonExporter",
 ]

@@ -4,11 +4,11 @@ import glob
 import logging
 import os
 from pathlib import Path
-from typing import Union
 
 import numpy as np
 from onnx9000.backends.session import InferenceSession, SessionOptions
 from onnx9000.core.dtypes import DType
+from onnx9000.core.exceptions import BackendExecutionError, Onnx9000Error
 from onnx9000.core.execution import ExecutionProvider
 from onnx9000.core.ir import Tensor
 from onnx9000.core.parser.core import load_tensor
@@ -62,7 +62,7 @@ class ONNXBackendTestRunner:
         }
         np_dtype = dtype_mapping.get(tensor.dtype)
         if np_dtype is None:
-            raise TypeError(f"Unsupported dtype for numpy conversion: {tensor.dtype}")
+            raise BackendExecutionError(f"Unsupported dtype for numpy conversion: {tensor.dtype}")
         arr = np.frombuffer(tensor.data, dtype=np_dtype)
         return arr.reshape(tensor.shape)
 
@@ -130,5 +130,19 @@ class ONNXBackendTestRunner:
             return (True, "Passed")
         except AssertionError as e:
             return (False, f"Numerical tolerance mismatch: {e}")
-        except Exception as e:
+        except (
+            Onnx9000Error,
+            OSError,
+            ValueError,
+            TypeError,
+            RuntimeError,
+            KeyError,
+            IndexError,
+            AttributeError,
+            ImportError,
+            LookupError,
+            ArithmeticError,
+            BufferError,
+            StopIteration,
+        ) as e:
             return (False, f"Execution failed: {e}")

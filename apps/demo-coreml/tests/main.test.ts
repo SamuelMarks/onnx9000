@@ -1,32 +1,26 @@
-import { beforeEach, describe, expect, it } from "vitest";
+// @vitest-environment jsdom
+import { beforeEach, describe, expect, it } from 'vitest';
+import { coremlJsonReplacer, initCoremlDemo } from '../src/main.js';
 
-describe("demo", () => {
+describe('demo-coreml', () => {
   beforeEach(() => {
-    document.body.innerHTML = `
-      <textarea id="prompt"></textarea>
-      <button id="runBtn"></button>
-      <div id="output"></div>
-    `;
+    document.body.innerHTML = '<button id="convert-btn"></button><div id="output"></div>';
   });
 
-  it("should run flow", async () => {
-    // import to execute module top-level
-    try {
-      await import("../src/main.js");
-    } catch (_e) {}
+  it('should convert ONNX graph to CoreML MIL AST and format bigint values', () => {
+    expect(coremlJsonReplacer('k', 42n)).toBe('42n');
+    expect(coremlJsonReplacer('k', 'str')).toBe('str');
 
-    const btn = document.getElementById("runBtn");
-    const prompt = document.getElementById("prompt");
-    const _out = document.getElementById("output");
+    document.body.innerHTML = '';
+    initCoremlDemo();
 
-    if (btn) btn.click();
-    if (prompt && btn) {
-      prompt.value = "test";
-      btn.click();
-    }
+    document.body.innerHTML = '<button id="convert-btn"></button><div id="output"></div>';
+    initCoremlDemo();
 
-    // allow some async code to run
-    await new Promise((r) => setTimeout(r, 100));
-    expect(true).toBe(true);
+    const btn = document.getElementById('convert-btn') as HTMLButtonElement;
+    const out = document.getElementById('output') as HTMLElement;
+
+    btn.click();
+    expect(out.innerText).toContain('main');
   });
 });

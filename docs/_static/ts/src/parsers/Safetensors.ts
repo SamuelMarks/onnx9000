@@ -54,7 +54,7 @@ export class SafetensorsParser {
     let header: SafetensorHeader;
     try {
       header = JSON.parse(jsonString);
-    } catch (_e) {
+    } catch {
       throw new Error('Failed to parse Safetensors JSON header.');
     }
 

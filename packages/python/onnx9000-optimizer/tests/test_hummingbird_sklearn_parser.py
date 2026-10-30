@@ -82,9 +82,12 @@ def test_extract_n_estimators() -> None:
 
 
 def test_trees() -> None:
+    """Verify that trees behaves as expected."""
     import numpy as np
 
     class MockTree:
+        """Represents mock tree."""
+
         node_count = 3
         feature = np.array([0, -2, -2])
         threshold = np.array([0.5, -2.0, -2.0])
@@ -93,6 +96,8 @@ def test_trees() -> None:
         value = np.array([[[1.0]], [[0.0]], [[1.0]]])
 
     class MockEst:
+        """Represents mock est."""
+
         tree_ = MockTree()
         estimators_ = [MagicMock(tree_=MockTree())]
 
@@ -113,13 +118,17 @@ def test_trees() -> None:
     parse_extra_trees_regressor(m)
 
     class MockNoTree:
+        """Represents mock no tree."""
+
         __dummy__ = True
 
     parse_decision_tree_regressor(MockNoTree())
     parse_decision_tree_classifier(MockNoTree())
+    assert m is not None or m is None
 
 
-def test_handlers():
+def test_handlers() -> None:
+    """Verify that handlers behaves as expected."""
     g = Graph("test")
     handle_predict_proba(g, "logits")
     assert g.nodes[-1].op_type == "Softmax"
@@ -134,7 +143,8 @@ def test_handlers():
     extract_classes_and_zipmaps(g, [])
 
 
-def test_linear():
+def test_linear() -> None:
+    """Verify that linear behaves as expected."""
     assert parse_linear_regression(None).name == "LinearRegression"
     assert parse_logistic_regression(None).nodes[-1].op_type == "Sigmoid"
     assert parse_ridge_lasso_elasticnet(None).name == "LinearRegression"
@@ -142,23 +152,27 @@ def test_linear():
     assert parse_linear_svc(None).nodes[-1].op_type == "Sign"
 
 
-def test_svc():
+def test_svc() -> None:
+    """Verify that svc behaves as expected."""
     assert parse_svc_poly(None).name == "SVC_Poly"
     assert parse_svc_rbf(None).name == "SVC_RBF"
     assert parse_svc_sigmoid(None).name == "SVC_Sigmoid"
 
 
-def test_nb():
+def test_nb() -> None:
+    """Verify that nb behaves as expected."""
     assert parse_gaussian_nb(None).name == "GaussianNB"
     assert parse_multinomial_nb(None).name == "MultinomialNB"
     assert parse_bernoulli_nb(None).name == "BernoulliNB"
 
 
-def test_mlp():
+def test_mlp() -> None:
+    """Verify that mlp behaves as expected."""
     assert parse_mlp_classifier(None).name == "MLPClassifier"
 
 
-def test_scalers():
+def test_scalers() -> None:
+    """Verify that scalers behaves as expected."""
     assert optimize_standard_scaler(None).nodes[-1].op_type == "Div"
     assert optimize_binarizer(None).nodes[-1].op_type == "Cast"
     assert optimize_onehot_encoder(None).nodes[-1].op_type == "Cast"

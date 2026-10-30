@@ -1,6 +1,6 @@
-"""Module providing core logic and structural definitions."""
+"""Implementation of compiler (training / autograd / compiler.py) providing AutogradEngine, _NoGradContext, AOTBuilder, extract_partial_subgraph."""
 
-"\nAutograd Compiler\n\nTransforms a standard forward-pass ONNX-like IR Graph into a unified graph\ncontaining both the forward pass and the backward propagation steps (VJPs).\n"
+from onnx9000.core.exceptions import AutogradError
 from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.toolkit.training.autograd.rules import get_vjp_rule
 from onnx9000.toolkit.training.autograd.utils import reverse_topological_sort
@@ -220,7 +220,7 @@ def optimize_intermediate_casts(graph: Graph) -> None:
     while changed:
         changed = False
         nodes_to_remove = []
-        for i, node in enumerate(graph.nodes):
+        for _i, node in enumerate(graph.nodes):
             if node.op_type == "Cast":
                 # Check for Cast from A to A (redundant)
                 inp_name = node.inputs[0]
@@ -240,8 +240,7 @@ def optimize_intermediate_casts(graph: Graph) -> None:
                     break
 
         for node in nodes_to_remove:
-            if node in graph.nodes:
-                graph.nodes.remove(node)
+            graph.nodes.remove(node)
 
 
 def scale_backward_graph_for_mixed_precision(graph: Graph, scale_factor: float = 65536.0) -> None:
@@ -360,7 +359,7 @@ def set_eval_mode(graph: Graph) -> Graph:
         eval_graph.outputs.append(name)
     for name in graph.initializers:
         eval_graph.initializers.append(name)
-    for name, tensor in graph.tensors.items():
+    for _name, tensor in graph.tensors.items():
         eval_graph.add_tensor(tensor)
 
     for node in graph.nodes:
@@ -455,7 +454,7 @@ class AutogradEngine:
     """Class AutogradEngine implementation."""
 
     def __init__(self) -> None:
-        """Implement the __init__ method or operation."""
+        """Initialize AutogradEngine with configured parameters and state."""
         self._no_grad = False
         self._retained_grads: list[str] = []
 
@@ -464,29 +463,54 @@ class AutogradEngine:
         if tensor_name not in self._retained_grads:
             self._retained_grads.append(tensor_name)
 
-    def no_grad(self):
-        """Implement the no_grad method or operation."""
+    def no_grad(self) -> int | float | str | bool | bytes | list | dict | tuple | None:
+        """Execute no grad on AutogradEngine.
+
+        Returns:
+            Result of no grad.
+        """
         return _NoGradContext(self)
 
-    def build_backward_graph(self, fwd_graph):
-        """Implement the build_backward_graph method or operation."""
+    def build_backward_graph(
+        self, fwd_graph: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
+        """Execute build backward graph on AutogradEngine.
+
+        Args:
+            fwd_graph: Parameter specifying fwd graph.
+
+        Returns:
+            Result of build backward graph.
+        """
         return build_backward_graph(fwd_graph, self._retained_grads)
 
 
 class _NoGradContext:
     """Class _NoGradContext implementation."""
 
-    def __init__(self, engine) -> None:
-        """Implement the __init__ method or operation."""
+    def __init__(
+        self, engine: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> None:
+        """Initialize _NoGradContext with configured parameters and state.
+
+        Args:
+            engine: Parameter specifying engine.
+        """
         self.engine = engine
 
-    def __enter__(self):
-        """Implement the __enter__ method or operation."""
+    def __enter__(self) -> None:
+        """Enter the runtime context managed by _NoGradContext."""
         self.prev = self.engine._no_grad
         self.engine._no_grad = True
 
-    def __exit__(self, *args):
-        """Implement the __exit__ method or operation."""
+    def __exit__(
+        self, *args: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> None:
+        """Exit the runtime context managed by _NoGradContext and handle exceptions.
+
+        Args:
+            *args: Variadic positional arguments for args.
+        """
         self.engine._no_grad = self.prev
 
 
@@ -535,7 +559,7 @@ def inject_nan_inf_bypass(graph: Graph, grad_names: list[str]) -> None:
 
     # We will simulate the `IsNaN` and `IsInf` detection natively.
     is_invalid_nodes = []
-    for i, g in enumerate(grad_names):
+    for _i, g in enumerate(grad_names):
         is_nan_name = f"{g}_isnan"
         is_inf_name = f"{g}_isinf"
         or_name = f"{g}_invalid"
@@ -566,7 +590,7 @@ def inject_nan_inf_bypass(graph: Graph, grad_names: list[str]) -> None:
     return None
 
 
-def build_backward_graph(fwd_graph: Graph, retained_grads: list = None) -> Graph:
+def build_backward_graph(fwd_graph: Graph, retained_grads: list | None = None) -> Graph:
     """Given a forward graph, traces it backwards to emit nodes that calculate.
 
     gradients for all differentiable parameters.
@@ -597,14 +621,14 @@ def build_backward_graph(fwd_graph: Graph, retained_grads: list = None) -> Graph
         if not grad_outputs:
             continue
 
-        if node.domain and node.domain != "" and node.domain != "ai.onnx":
-            raise RuntimeError(
+        if node.domain and node.domain not in {"", "ai.onnx"}:
+            raise AutogradError(
                 f"Operation {node.op_type} belongs to custom domain '{node.domain}' and cannot be implicitly differentiated. Please register a VJP rule using `register_vjp`."
             )
 
         rule = get_vjp_rule(node.op_type)
         if rule is None:
-            raise RuntimeError(
+            raise AutogradError(
                 f"Operation {node.op_type} is not differentiable. Cannot trace gradients."
             )
         (new_nodes, grad_inputs) = rule.build_backward_nodes(node, grad_outputs)
@@ -677,13 +701,13 @@ def ensure_no_microsoft_opsets(graph: Graph) -> None:
     """
     for node in graph.nodes:
         if node.domain and "com.microsoft" in node.domain:
-            raise ValueError(f"Proprietary opset {node.domain} found in node {node.name}")
+            raise AutogradError(f"Proprietary opset {node.domain} found in node {node.name}")
 
     # Also check opset_imports if available
     if hasattr(graph, "opset_imports"):
         for domain in graph.opset_imports:
             if "com.microsoft" in domain:
-                raise ValueError(f"Proprietary opset {domain} imported in graph {graph.name}")
+                raise AutogradError(f"Proprietary opset {domain} imported in graph {graph.name}")
 
 
 def enforce_webgpu_limits(graph: Graph) -> None:
@@ -701,7 +725,9 @@ def enforce_webgpu_limits(graph: Graph) -> None:
                 if isinstance(d, int):
                     vol *= d
             if vol * 4 > max_buffer_size:
-                raise ValueError(f"Tensor {t_name} exceeds WebGPU max buffer size limit of 256MB")
+                raise AutogradError(
+                    f"Tensor {t_name} exceeds WebGPU max buffer size limit of 256MB"
+                )
 
 
 def track_vram_usage(graph: Graph) -> float:
@@ -753,7 +779,11 @@ class AOTBuilder:
     """Class AOTBuilder implementation."""
 
     def __init__(self, fwd_graph: Graph) -> None:
-        """Implement the __init__ method or operation."""
+        """Initialize AOTBuilder with configured parameters and state.
+
+        Args:
+            fwd_graph: Parameter specifying fwd graph (Graph).
+        """
         self.fwd_graph = fwd_graph
         self.engine = AutogradEngine()
         if not hasattr(self.fwd_graph, "opset_imports"):
@@ -801,7 +831,11 @@ class AOTBuilder:
 
         return bwd_only_graph
 
-    def build_lora_optimizer_graph(self, optimizer_generator, learning_rate: str) -> Graph:
+    def build_lora_optimizer_graph(
+        self,
+        optimizer_generator: int | float | str | bool | bytes | list | dict | tuple | None,
+        learning_rate: str,
+    ) -> Graph:
         """Compiles LoRA-specific optimizer steps (only updating A and B tensors).
 
         Extracts gradients exclusively for LoRA_A and LoRA_B, saving memory.
@@ -826,7 +860,11 @@ class AOTBuilder:
         optimizer_generator(opt_graph, learning_rate, params)
         return opt_graph
 
-    def build_optimizer_graph(self, optimizer_generator, learning_rate: str) -> Graph:
+    def build_optimizer_graph(
+        self,
+        optimizer_generator: int | float | str | bool | bytes | list | dict | tuple | None,
+        learning_rate: str,
+    ) -> Graph:
         """Output a simplified isolated ApplyOptimizer graph natively."""
         opt_graph = Graph(name=f"{self.fwd_graph.name}_aot_optimizer")
         params = [i for i in self.fwd_graph.initializers if self.fwd_graph.tensors[i].requires_grad]
@@ -843,7 +881,11 @@ class AOTBuilder:
         optimizer_generator(opt_graph, learning_rate, params)
         return opt_graph
 
-    def build_gradient_deltas_graph(self, optimizer_generator, learning_rate: str) -> Graph:
+    def build_gradient_deltas_graph(
+        self,
+        optimizer_generator: int | float | str | bool | bytes | list | dict | tuple | None,
+        learning_rate: str,
+    ) -> Graph:
         """Exposes native API for calculating gradient deltas only (delta = NewWeight - OldWeight).
 
         Useful for Federated Learning where delta is sent back to the server instead of applying it locally.
@@ -872,9 +914,21 @@ class AOTBuilder:
         return opt_graph
 
     def build_training_graph(
-        self, loss_node_generator, optimizer_generator, learning_rate: str
+        self,
+        loss_node_generator: int | float | str | bool | bytes | list | dict | tuple | None,
+        optimizer_generator: int | float | str | bool | bytes | list | dict | tuple | None,
+        learning_rate: str,
     ) -> Graph:
-        """Implement the build_training_graph method or operation."""
+        """Execute build training graph on AOTBuilder.
+
+        Args:
+            loss_node_generator: Parameter specifying loss node generator.
+            optimizer_generator: Parameter specifying optimizer generator.
+            learning_rate: Parameter specifying learning rate (str).
+
+        Returns:
+            Result of build training graph (Graph).
+        """
         train_graph = Graph(name=f"{self.fwd_graph.name}_aot_training")
         for n in self.fwd_graph.nodes:
             train_graph.add_node(n)
@@ -884,7 +938,7 @@ class AOTBuilder:
             train_graph.outputs.append(name)
         for name in self.fwd_graph.initializers:
             train_graph.initializers.append(name)
-        for name, t in self.fwd_graph.tensors.items():
+        for _name, t in self.fwd_graph.tensors.items():
             train_graph.add_tensor(t)
         loss_out = "loss"
         loss_node_generator(train_graph, self.fwd_graph.outputs[0], "target", loss_out)

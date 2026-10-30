@@ -1,4 +1,4 @@
-"""Final coverage for optimizer sparse modifier."""
+"""Unit tests for optimizer sparse modifiers."""
 
 import pytest
 from onnx9000.core.ir import Graph, Node
@@ -8,27 +8,19 @@ from onnx9000.optimizer.sparse.modifier import (
 )
 
 
-def test_sparse_modifier_gaps():
-    """Verify branches in modifier.py."""
+def test_sparse_modifier_gaps() -> None:
+    """Verify branches in MagnitudePruningModifier."""
     graph = Graph("test")
     graph.add_node(Node("Identity", ["in"], ["out"]))
 
-    mod = MagnitudePruningModifier(["test_tensor"])
-    # Trigger branches
-    try:
+    mod = MagnitudePruningModifier(params=["test_tensor"])
+    with pytest.raises(AttributeError):
         mod.apply_sparsity(0.5)
-    except Exception:
-        assert True
 
 
-def test_nm_pruning_modifier_gap():
-    """Verify line 715 logic for NMPruningModifier."""
-    Graph("test_nm")
-    # NMPruningModifier takes (params, n, m)
-    mod = NMPruningModifier(["weight"], n=2, m=4)
-    try:
-        # Pass a mock node to trigger _process_node_internal
-        node = Node("Conv", ["x", "weight"], ["y"])
+def test_nm_pruning_modifier_gap() -> None:
+    """Verify NMPruningModifier initialization and attribute error on internal call."""
+    mod = NMPruningModifier(params=["weight"], n=2, m=4)
+    node = Node("Conv", ["x", "weight"], ["y"])
+    with pytest.raises(AttributeError):
         mod._process_node_internal(node)
-    except Exception:
-        assert True

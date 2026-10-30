@@ -2,6 +2,8 @@
  * @fileoverview builder.ts
  * Provides builder functionality for the onnx2gguf package.
  */
+import { Onnx9000Error } from '@onnx9000/core';
+/** Enumeration `GGUFValueType`. */
 export enum GGUFValueType {
   UINT8 = 0,
   INT8 = 1,
@@ -18,6 +20,7 @@ export enum GGUFValueType {
   FLOAT64 = 12,
 }
 
+/** Enumeration `GGUFTensorType`. */
 export enum GGUFTensorType {
   F32 = 0,
   F16 = 1,
@@ -26,12 +29,15 @@ export enum GGUFTensorType {
   Q8_0 = 8,
 }
 
+/** Represents the `GGUFWriter` class. */
 export class GGUFWriter {
+  /** Property `kvs` of `GGUFWriter`. */
   public kvs: {
     key: string;
     type: GGUFValueType;
     val: ReturnType<typeof JSON.parse>;
   }[] = [];
+  /** Property `tensors` of `GGUFWriter`. */
   public tensors: {
     name: string;
     shape: bigint[];
@@ -39,42 +45,108 @@ export class GGUFWriter {
     offset: bigint;
   }[] = [];
 
+  /**
+   * Executes `addUint8` on `GGUFWriter`.
+   * @param key Parameter `key`.
+   * @param val Parameter `val`.
+   */
   public addUint8(key: string, val: number): void {
     this.kvs.push({ key, type: GGUFValueType.UINT8, val });
   }
+  /**
+   * Executes `addInt8` on `GGUFWriter`.
+   * @param key Parameter `key`.
+   * @param val Parameter `val`.
+   */
   public addInt8(key: string, val: number): void {
     this.kvs.push({ key, type: GGUFValueType.INT8, val });
   }
+  /**
+   * Executes `addUint16` on `GGUFWriter`.
+   * @param key Parameter `key`.
+   * @param val Parameter `val`.
+   */
   public addUint16(key: string, val: number): void {
     this.kvs.push({ key, type: GGUFValueType.UINT16, val });
   }
+  /**
+   * Executes `addInt16` on `GGUFWriter`.
+   * @param key Parameter `key`.
+   * @param val Parameter `val`.
+   */
   public addInt16(key: string, val: number): void {
     this.kvs.push({ key, type: GGUFValueType.INT16, val });
   }
+  /**
+   * Executes `addUint32` on `GGUFWriter`.
+   * @param key Parameter `key`.
+   * @param val Parameter `val`.
+   */
   public addUint32(key: string, val: number): void {
     this.kvs.push({ key, type: GGUFValueType.UINT32, val });
   }
+  /**
+   * Executes `addInt32` on `GGUFWriter`.
+   * @param key Parameter `key`.
+   * @param val Parameter `val`.
+   */
   public addInt32(key: string, val: number): void {
     this.kvs.push({ key, type: GGUFValueType.INT32, val });
   }
+  /**
+   * Executes `addFloat32` on `GGUFWriter`.
+   * @param key Parameter `key`.
+   * @param val Parameter `val`.
+   */
   public addFloat32(key: string, val: number): void {
     this.kvs.push({ key, type: GGUFValueType.FLOAT32, val });
   }
+  /**
+   * Executes `addUint64` on `GGUFWriter`.
+   * @param key Parameter `key`.
+   * @param val Parameter `val`.
+   */
   public addUint64(key: string, val: bigint): void {
     this.kvs.push({ key, type: GGUFValueType.UINT64, val });
   }
+  /**
+   * Executes `addInt64` on `GGUFWriter`.
+   * @param key Parameter `key`.
+   * @param val Parameter `val`.
+   */
   public addInt64(key: string, val: bigint): void {
     this.kvs.push({ key, type: GGUFValueType.INT64, val });
   }
+  /**
+   * Executes `addFloat64` on `GGUFWriter`.
+   * @param key Parameter `key`.
+   * @param val Parameter `val`.
+   */
   public addFloat64(key: string, val: number): void {
     this.kvs.push({ key, type: GGUFValueType.FLOAT64, val });
   }
+  /**
+   * Executes `addBool` on `GGUFWriter`.
+   * @param key Parameter `key`.
+   * @param val Parameter `val`.
+   */
   public addBool(key: string, val: boolean): void {
     this.kvs.push({ key, type: GGUFValueType.BOOL, val });
   }
+  /**
+   * Executes `addString` on `GGUFWriter`.
+   * @param key Parameter `key`.
+   * @param val Parameter `val`.
+   */
   public addString(key: string, val: string): void {
     this.kvs.push({ key, type: GGUFValueType.STRING, val });
   }
+  /**
+   * Executes `addArray` on `GGUFWriter`.
+   * @param key Parameter `key`.
+   * @param val Parameter `val`.
+   * @param arrayType Parameter `arrayType`.
+   */
   public addArray(
     key: string,
     val: ReturnType<typeof JSON.parse>[],
@@ -87,15 +159,21 @@ export class GGUFWriter {
     });
   }
 
-  public addTensorInfo(
-    name: string,
-    shape: bigint[],
-    type: GGUFTensorType,
-    offset: bigint,
-  ): void {
+  /**
+   * Executes `addTensorInfo` on `GGUFWriter`.
+   * @param name Parameter `name`.
+   * @param shape Parameter `shape`.
+   * @param type Parameter `type`.
+   * @param offset Parameter `offset`.
+   */
+  public addTensorInfo(name: string, shape: bigint[], type: GGUFTensorType, offset: bigint): void {
     this.tensors.push({ name, shape, type, offset });
   }
 
+  /**
+   * Executes `getHeaderSize` on `GGUFWriter`.
+   * @returns Result of `getHeaderSize`.
+   */
   public getHeaderSize(): number {
     let size = 0;
     size += 4; // Magic
@@ -124,7 +202,7 @@ export class GGUFWriter {
 
     let alignment = 32;
     for (const kv of this.kvs) {
-      if (kv.key === "general.alignment" && kv.type === GGUFValueType.UINT32) {
+      if (kv.key === 'general.alignment' && kv.type === GGUFValueType.UINT32) {
         alignment = kv.val as number;
       }
     }
@@ -133,10 +211,13 @@ export class GGUFWriter {
     return size;
   }
 
-  private getValueSize(
-    type: GGUFValueType,
-    val: ReturnType<typeof JSON.parse>,
-  ): number {
+  /**
+   * Executes `getValueSize` on `GGUFWriter`.
+   * @param type Parameter `type`.
+   * @param val Parameter `val`.
+   * @returns Result of `getValueSize`.
+   */
+  private getValueSize(type: GGUFValueType, val: ReturnType<typeof JSON.parse>): number {
     switch (type) {
       case GGUFValueType.UINT8:
       case GGUFValueType.INT8:
@@ -167,10 +248,16 @@ export class GGUFWriter {
         return s;
       }
       default:
-        throw new Error("Unknown type");
+        throw new Onnx9000Error('Unknown type');
     }
   }
 
+  /**
+   * Executes `writeHeader` on `GGUFWriter`.
+   * @param buffer Parameter `buffer`.
+   * @param byteOffset Parameter `byteOffset`.
+   * @returns Result of `writeHeader`.
+   */
   public writeHeader(buffer: ArrayBuffer, byteOffset: number = 0): number {
     const view = new DataView(buffer, byteOffset);
     let offset = 0;
@@ -185,10 +272,7 @@ export class GGUFWriter {
       offset += encoded.length;
     };
 
-    const writeVal = (
-      vtype: GGUFValueType,
-      val: ReturnType<typeof JSON.parse>,
-    ) => {
+    const writeVal = (vtype: GGUFValueType, val: ReturnType<typeof JSON.parse>) => {
       switch (vtype) {
         case GGUFValueType.UINT8:
           view.setUint8(offset, val);
@@ -250,7 +334,7 @@ export class GGUFWriter {
           break;
         }
         default:
-          throw new Error("Unknown type");
+          throw new Onnx9000Error('Unknown type');
       }
     };
 
@@ -295,7 +379,7 @@ export class GGUFWriter {
 
     let alignment = 32;
     for (const kv of this.kvs) {
-      if (kv.key === "general.alignment" && kv.type === GGUFValueType.UINT32) {
+      if (kv.key === 'general.alignment' && kv.type === GGUFValueType.UINT32) {
         alignment = kv.val;
       }
     }

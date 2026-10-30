@@ -17,7 +17,7 @@ def generate_quantize_linear(
     scale_name: str,
     zp_name: str,
     out_name: str,
-):
+) -> None:
     """Generate QuantizeLinear."""
     b.emit(f"/* {node.op_type} */")
     b.emit("{")
@@ -71,7 +71,7 @@ def generate_dequantize_linear(
     scale_name: str,
     zp_name: str,
     out_name: str,
-):
+) -> None:
     """Generate DequantizeLinear."""
     b.emit(f"/* {node.op_type} */")
     b.emit("{")
@@ -119,7 +119,7 @@ def generate_qlinear_matmul(
     s_out: str,
     zp_out: str,
     out: str,
-):
+) -> None:
     """Generate QLinearMatMul loops using precision-safe INT32 accumulators."""
     b.emit(f"/* {node.op_type} */")
     b.emit("{")
@@ -250,7 +250,7 @@ def generate_qlinear_conv(
     zp_out: str,
     bias: str,
     out: str,
-):
+) -> None:
     """Generate QLinearConv loops using precision-safe INT32 accumulators."""
     b.emit(f"/* {node.op_type} */")
     b.emit("{")

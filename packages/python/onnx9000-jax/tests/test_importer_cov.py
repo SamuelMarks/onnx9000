@@ -2,9 +2,13 @@
 
 import numpy as np
 import pytest
+from onnx9000.core.dtypes import DType
+from onnx9000.jax.importer import _map_jax_type, load, load_jax
 
 try:
     import jax
+
+    _ = jax
     import jax.numpy as jnp
 
     JAX_AVAILABLE = True
@@ -15,10 +19,13 @@ from onnx9000.jax.jax_importer import JAXImporter
 
 
 @pytest.mark.skipif(not JAX_AVAILABLE, reason="JAX not available")
-def test_jax_importer_basic():
+def test_jax_importer_basic() -> None:
     """Test basic JAX function import."""
 
-    def simple_func(x, y):
+    def simple_func(
+        x: int | float | str | bool | bytes | list | dict | tuple | None,
+        y: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Simple func."""
         return jnp.sin(x) + y
 
@@ -33,14 +40,16 @@ def test_jax_importer_basic():
 
 
 @pytest.mark.skipif(not JAX_AVAILABLE, reason="JAX not available")
-def test_jax_importer_constants():
+def test_jax_importer_constants() -> None:
     """Test JAX import with constants."""
     if not JAX_AVAILABLE:
         return
 
     c = jnp.array([2.0], dtype=jnp.float32)
 
-    def const_func(x):
+    def const_func(
+        x: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Const func."""
         return x * c
 
@@ -50,7 +59,7 @@ def test_jax_importer_constants():
     assert any(n.op_type == "Mul" for n in graph.nodes)
 
 
-def test_jax_importer_dtype_mapping():
+def test_jax_importer_dtype_mapping() -> None:
     """Test JAX dtype mapping directly."""
     importer = JAXImporter()
     from onnx9000.core.dtypes import DType
@@ -60,11 +69,10 @@ def test_jax_importer_dtype_mapping():
     assert importer._map_dtype(np.float64) == DType.FLOAT32  # default fallback in code
 
 
-def test_jax_importer_primitive_mapping():
+def test_jax_importer_primitive_mapping() -> None:
     """Test JAX primitive mapping."""
     importer = JAXImporter()
 
-    import onnx9000.jax.jax_ops
     from onnx9000.core.registry import global_registry
 
     op_func = global_registry.get_op("jax", "add")
@@ -77,19 +85,15 @@ def test_jax_importer_primitive_mapping():
     assert name1 == name2
 
 
-from onnx9000.core.dtypes import DType
-from onnx9000.jax.importer import _map_jax_type, load, load_jax
-
-
-def test_map_jax_type():
-    """Docstring for D103."""
+def test_map_jax_type() -> None:
+    """Verify that map jax type behaves as expected."""
     assert _map_jax_type("f32") == DType.FLOAT32
     assert _map_jax_type("i32") == DType.INT32
     assert _map_jax_type("other") == DType.FLOAT32
 
 
-def test_load_jax_with_consts():
-    """Docstring for D103."""
+def test_load_jax_with_consts() -> None:
+    """Verify that load jax with consts behaves as expected."""
     jaxpr_dict = {
         "invars": [{"name": "in1", "type": "f32", "shape": [1]}],
         "outvars": [{"name": "out1", "type": "f32", "shape": [1]}],
@@ -117,8 +121,8 @@ def test_load_jax_with_consts():
     assert any(n.op_type == "unknown_primitive" for n in nodes)
 
 
-def test_load_auto_format():
-    """Docstring for D103."""
+def test_load_auto_format() -> None:
+    """Verify that load auto format behaves as expected."""
     assert load({}, format="tf") is None
     assert load({"node": []}) is None
 

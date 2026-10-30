@@ -6,7 +6,7 @@ from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.optimizer.simplifier.passes.dce import IdentityEliminationPass
 
 
-def test_reshape_shape():
+def test_reshape_shape() -> None:
     """Tests the reshape shape functionality."""
     g = Graph("mock")
     g.add_node(Node("Shape", ["x"], ["shape"], {}, "s"))
@@ -16,7 +16,7 @@ def test_reshape_shape():
     assert g.outputs[0] == "x"
 
 
-def test_expand_shape():
+def test_expand_shape() -> None:
     """Tests the expand shape functionality."""
     g = Graph("mock")
     g.add_node(Node("Shape", ["x"], ["shape"], {}, "s"))
@@ -26,7 +26,7 @@ def test_expand_shape():
     assert g.outputs[0] == "x"
 
 
-def test_pad_zero():
+def test_pad_zero() -> None:
     """Tests the pad zero functionality."""
     g = Graph("mock")
     pads_val = np.array([0, 0, 0, 0], dtype=np.int64)
@@ -39,7 +39,7 @@ def test_pad_zero():
     assert g.outputs[0] == "x"
 
 
-def test_tile_ones():
+def test_tile_ones() -> None:
     """Tests the tile ones functionality."""
     g = Graph("mock")
     repeats_val = np.array([1, 1, 1], dtype=np.int64)
@@ -52,7 +52,7 @@ def test_tile_ones():
     assert g.outputs[0] == "x"
 
 
-def test_slice_max_int():
+def test_slice_max_int() -> None:
     """Tests the slice max int functionality."""
     g = Graph("mock")
     starts = np.array([0], dtype=np.int64)
@@ -77,7 +77,7 @@ def test_slice_max_int():
     assert g.outputs[0] == "x"
 
 
-def test_reduce_sum_scalar():
+def test_reduce_sum_scalar() -> None:
     """Tests the reduce sum scalar functionality."""
     g = Graph("mock")
     scalar_val = np.array(5.0, dtype=np.float32)
@@ -90,7 +90,7 @@ def test_reduce_sum_scalar():
     assert g.outputs[0] == "x"
 
 
-def test_reduce_mean_scalar():
+def test_reduce_mean_scalar() -> None:
     """Tests the reduce mean scalar functionality."""
     g = Graph("mock")
     scalar_val = np.array(5.0, dtype=np.float32)
@@ -103,7 +103,7 @@ def test_reduce_mean_scalar():
     assert g.outputs[0] == "x"
 
 
-def test_constant_folding_tile():
+def test_constant_folding_tile() -> None:
     """Tests the constant folding tile functionality."""
     from onnx9000.optimizer.simplifier.passes.constant_folding import (
         ConstantFoldingPass,
@@ -128,7 +128,7 @@ def test_constant_folding_tile():
     )
 
 
-def test_constant_folding_split():
+def test_constant_folding_split() -> None:
     """Tests the constant folding split functionality."""
     from onnx9000.optimizer.simplifier.passes.constant_folding import (
         ConstantFoldingPass,

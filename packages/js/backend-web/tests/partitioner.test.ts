@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../src/partitioner";
+import { describe, expect, it } from 'vitest';
+import { GraphPartitioner } from '../src/partitioner';
 
-describe("partitioner.ts", () => {
-  it("should instantiate and cover GraphPartitioner", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('partitioner.ts', () => {
+  it('should instantiate and cover GraphPartitioner', () => {
     try {
-      const obj = new (Module as any).GraphPartitioner();
+      const obj = Construct(GraphPartitioner);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

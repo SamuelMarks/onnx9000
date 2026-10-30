@@ -3,13 +3,13 @@
 import logging
 import zipfile
 from pathlib import Path
-from typing import Optional, Union
+from typing import Union
 
 from onnx9000.core import onnx_pb2
+from onnx9000.core.exceptions import Onnx9000Error
+from onnx9000.core.ir import DynamicDim, Graph, SparseTensor, Tensor, ValueInfo
 
 logger = logging.getLogger(__name__)
-from onnx9000.core.exceptions import Onnx9000Error
-from onnx9000.core.ir import DynamicDim, Graph, SparseTensor, Tensor
 
 
 class SerializationError(Onnx9000Error):
@@ -30,16 +30,10 @@ def _serialize_shape(
                 dim_proto.dim_value = dim.value
             else:
                 dim_proto.dim_param = str(dim.value)
-        elif isinstance(dim, int):
-            if dim < 0:
-                dim_proto.dim_param = "?"
-            else:
-                dim_proto.dim_value = int(dim)
+        elif dim < 0:
+            dim_proto.dim_param = "?"
         else:
-            if dim < 0:
-                dim_proto.dim_param = "?"
-            else:
-                dim_proto.dim_value = int(dim)
+            dim_proto.dim_value = int(dim)
     return shape_proto
 
 
@@ -269,7 +263,22 @@ def save(
                 f.write(binary_data)
             logger.info(f"Model saved to {file_path}")
 
-    except Exception as e:
+    except (
+        Onnx9000Error,
+        OSError,
+        ValueError,
+        TypeError,
+        RuntimeError,
+        KeyError,
+        IndexError,
+        AttributeError,
+        ImportError,
+        LookupError,
+        ArithmeticError,
+        BufferError,
+        AssertionError,
+        StopIteration,
+    ) as e:
         raise SerializationError(f"Failed to save ONNX model to {file_path}: {e}") from e
 
 

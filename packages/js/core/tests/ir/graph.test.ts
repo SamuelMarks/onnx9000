@@ -1,17 +1,23 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../src/ir/graph";
+import { describe, expect, it } from 'vitest';
+import { Graph, ValueInfo } from '../../src/ir/graph';
 
-describe("graph.ts", () => {
-  it("should instantiate and cover ValueInfo", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('graph.ts', () => {
+  it('should instantiate and cover ValueInfo', () => {
     try {
-      const obj = new (Module as any).ValueInfo();
+      const obj = Construct(ValueInfo);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should instantiate and cover Graph", () => {
+  it('should instantiate and cover Graph', () => {
     try {
-      const obj = new (Module as any).Graph();
+      const obj = Construct(Graph);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

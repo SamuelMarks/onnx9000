@@ -26,7 +26,7 @@ from onnx9000.toolkit.safetensors.parser import (
 )
 
 
-def test_parser_edge_cases_and_mocks():
+def test_parser_edge_cases_and_mocks() -> None:
     """Test parser edge cases and mocks."""
     with pytest.raises(SafetensorsFileEmptyError):
         SafeTensors(b"")
@@ -35,33 +35,39 @@ def test_parser_edge_cases_and_mocks():
     b_io = io.BytesIO()
     b_io.write(save({"a": np.array([1, 2], dtype=np.int32)}))
     with SafeTensors(b_io) as st:
-        assert "a" in st.keys()
+        assert "a" in st
 
     class StreamWithoutGetBuffer:
         """StreamWithoutGetBuffer implementation."""
 
-        def __init__(self, data):
+        def __init__(
+            self, data: int | float | str | bool | bytes | list | dict | tuple | None
+        ) -> None:
             """Perform   init   operation."""
             self.data = data
             self.pos = 0
 
-        def read(self):
+        def read(self) -> int | float | str | bool | bytes | list | dict | tuple | None:
             """Perform read operation."""
             return self.data[self.pos :]
 
-        def seek(self, offset, whence=0):
+        def seek(
+            self,
+            offset: int | float | str | bool | bytes | list | dict | tuple | None,
+            whence: int | float | str | bool | bytes | list | dict | tuple | None = 0,
+        ) -> None:
             """Perform seek operation."""
             if whence == 0:
                 self.pos = offset
             elif whence == 2:
                 self.pos = len(self.data) + offset
 
-        def tell(self):
+        def tell(self) -> int | float | str | bool | bytes | list | dict | tuple | None:
             """Perform tell operation."""
             return self.pos
 
     st_stream = SafeTensors(StreamWithoutGetBuffer(b_io.getvalue()))
-    assert "a" in st_stream.keys()
+    assert "a" in st_stream
     with pytest.raises(SafetensorsFileEmptyError):
         SafeTensors(StreamWithoutGetBuffer(b""))
     with pytest.raises(SafetensorsFileTooSmallError):
@@ -86,7 +92,7 @@ def test_parser_edge_cases_and_mocks():
             f.write(save({"a": np.array([1, 2], dtype=np.int32)}))
         mmap.mmap.madvise if hasattr(mmap.mmap, "madvise") else None
         mock_mm = MagicMock()
-        mock_mm.madvise.side_effect = Exception("madvise failed")
+        mock_mm.madvise.side_effect = RuntimeError("madvise failed")
     with pytest.raises(SafetensorsInvalidJSONError, match="Tensor value must be a dict"):
         header = b'{"a": "not_a_dict"}'
         data = struct.pack("<Q", len(header)) + header + b"x"
@@ -97,7 +103,7 @@ def test_parser_edge_cases_and_mocks():
             class DuplicateKeysDict(dict):
                 """DuplicateKeysDict implementation."""
 
-                def items(self):
+                def items(self) -> int | float | str | bool | bytes | list | dict | tuple | None:
                     """Perform items operation."""
                     yield ("a", {"dtype": "I32", "shape": [1], "data_offsets": [0, 4]})
                     yield ("a", {"dtype": "I32", "shape": [1], "data_offsets": [4, 8]})
@@ -126,31 +132,32 @@ def test_parser_edge_cases_and_mocks():
             mock_cdll.return_value = mock_libc
             view = st_valid.get_pinned_tensor("a")
             assert len(view) > 0
-        with patch("ctypes.CDLL", side_effect=Exception("cdll error")):
+        with patch("ctypes.CDLL", side_effect=RuntimeError("cdll error")):
             view = st_valid.get_pinned_tensor("a")
-    with patch("sys.platform", "win32"):
-        with patch("mmap.mmap") as mock_mmap_win32:
-            mock_mm_obj = MagicMock()
-            mock_mmap_win32.return_value = mock_mm_obj
-            with patch("ctypes.windll", create=True) as mock_windll:
-                mock_kernel32 = MagicMock()
-                mock_kernel32.VirtualLock.return_value = 0
-                mock_windll.kernel32 = mock_kernel32
-                try:
-                    st_valid.get_pinned_tensor("a")
-                except TypeError:
-                    return None
-                mock_kernel32.VirtualLock.side_effect = Exception("virtuallock err")
-                try:
-                    st_valid.get_pinned_tensor("a")
-                except TypeError:
-                    return None
-    with patch.dict(
-        sys.modules,
-        {"onnx9000.core": None, "onnx9000.core.dtypes": None, "onnx9000.core.ir": None},
+    with patch("sys.platform", "win32"), patch("mmap.mmap") as mock_mmap_win32:
+        mock_mm_obj = MagicMock()
+        mock_mmap_win32.return_value = mock_mm_obj
+        with patch("ctypes.windll", create=True) as mock_windll:
+            mock_kernel32 = MagicMock()
+            mock_kernel32.VirtualLock.return_value = 0
+            mock_windll.kernel32 = mock_kernel32
+            try:
+                st_valid.get_pinned_tensor("a")
+            except TypeError:
+                return None
+            mock_kernel32.VirtualLock.side_effect = RuntimeError("virtuallock err")
+            try:
+                st_valid.get_pinned_tensor("a")
+            except TypeError:
+                return None
+    with (
+        patch.dict(
+            sys.modules,
+            {"onnx9000.core": None, "onnx9000.core.dtypes": None, "onnx9000.core.ir": None},
+        ),
+        pytest.raises(ImportError),
     ):
-        with pytest.raises(ImportError):
-            st_valid.get_onnx9000_tensor("a")
+        st_valid.get_onnx9000_tensor("a")
 
     class MockDType:
         """MockDType implementation."""
@@ -172,7 +179,9 @@ def test_parser_edge_cases_and_mocks():
     class MockTensor:
         """MockTensor implementation."""
 
-        def __init__(self, **kwargs):
+        def __init__(
+            self, **kwargs: int | float | str | bool | bytes | list | dict | tuple | None
+        ) -> None:
             """Perform   init   operation."""
             self.kwargs = kwargs
 
@@ -194,9 +203,8 @@ def test_parser_edge_cases_and_mocks():
         st_valid.tensors["b"] = {"dtype": "UNKNOWN", "shape": [1]}
         with pytest.raises(SafetensorsInvalidDtypeError):
             st_valid.get_onnx9000_tensor("b")
-    with patch.dict(sys.modules, {"numpy": None}):
-        with pytest.raises(ImportError):
-            st_valid.get_numpy("a")
+    with patch.dict(sys.modules, {"numpy": None}), pytest.raises(ImportError):
+        st_valid.get_numpy("a")
     st_valid.tensors["c"] = {"dtype": "UNKNOWN", "shape": [1]}
     with pytest.raises(SafetensorsInvalidDtypeError):
         st_valid.get_numpy("c")
@@ -218,7 +226,7 @@ def test_parser_edge_cases_and_mocks():
     class DuplicateDict(dict):
         """DuplicateDict implementation."""
 
-        def items(self):
+        def items(self) -> int | float | str | bool | bytes | list | dict | tuple | None:
             """Perform items operation."""
             yield ("a", np.array([1]))
             yield ("a", np.array([2]))
@@ -265,7 +273,7 @@ def test_parser_edge_cases_and_mocks():
     class MockTensorProto:
         """MockTensorProto implementation."""
 
-        def __init__(self):
+        def __init__(self) -> None:
             """Perform   init   operation."""
             self.raw_data = b"1234"
             self.dims = [1]
@@ -279,7 +287,7 @@ def test_parser_edge_cases_and_mocks():
             class RealMockTensorProto:
                 """RealMockTensorProto implementation."""
 
-                def __init__(self):
+                def __init__(self) -> None:
                     """Perform   init   operation."""
                     self.raw_data = b"1234"
                     self.dims = [1]

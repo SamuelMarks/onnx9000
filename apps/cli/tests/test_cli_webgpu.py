@@ -1,10 +1,13 @@
+"""Unit tests and verification suite for cli webgpu functionality."""
+
 import argparse
 from unittest.mock import patch
 
 from onnx9000_cli.main import webgpu_cmd
 
 
-def test_webgpu_cmd():
+def test_webgpu_cmd() -> None:
+    """Verify that webgpu cmd behaves as expected."""
     args = argparse.Namespace(model="dummy_model.onnx")
     with patch("builtins.print") as mock_print:
         webgpu_cmd(args)

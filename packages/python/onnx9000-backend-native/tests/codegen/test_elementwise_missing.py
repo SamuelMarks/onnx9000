@@ -5,7 +5,7 @@ from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Graph, Node, Tensor
 
 
-def test_elementwise_missing():
+def test_elementwise_missing() -> None:
     """Test elementwise missing."""
     g = Graph("TestAllMissing")
     g.inputs = ["in1", "in2"]

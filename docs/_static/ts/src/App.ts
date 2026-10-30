@@ -225,7 +225,7 @@ export class App {
             window.dispatchEvent(new Event('resize'));
           });
 
-          globalEvents.on('llmGenerate', (data: any) => {
+          globalEvents.on('llmGenerate', (data: { signal?: AbortSignal }) => {
             Toast.show('Started Generation', 'info');
 
             // 330. Mock Generator yielding tokens async
@@ -461,20 +461,24 @@ export class App {
                     // 188. Call WASM execution if it exports 'execute'
 
                     // Generate synthetic traces to mock profiling since we can't easily profile WASM from JS internally
-                    const traces: any[] = [];
+                    const traces: Array<{
+                      opName: string | undefined;
+                      startTime: number;
+                      duration: number;
+                    }> = [];
                     let tBase = performance.now();
 
                     const t0 = performance.now();
                     try {
-                      const exports = result.instance.exports as any;
+                      const exports = result.instance.exports as { execute?: () => void };
                       if (exports.execute) {
                         exports.execute();
 
                         // Mock traces based on graph nodes
-                        for (let j = 0; j < this.currentModel?.nodes.length; j++) {
+                        for (let j = 0; j < (this.currentModel?.nodes.length ?? 0); j++) {
                           const tExec = Math.random() * 2 + 0.1; // 0.1 to 2.1 ms mock
                           traces.push({
-                            opName: this.currentModel?.nodes[j].opType,
+                            opName: this.currentModel?.nodes[j]?.opType,
                             startTime: tBase,
                             duration: tExec,
                           });
@@ -617,45 +621,52 @@ export class App {
             }
           });
 
-          globalEvents.on('autograd', (payload: any) => {
-            if (!this.currentModel) {
-              Toast.show('No model loaded', 'error');
-              return;
-            }
-
-            try {
-              const { action, loss, optimizer } = payload;
-
-              if (action === 'inject') {
-                const grad = new Autograd(this.currentModel);
-                grad.appendLoss(loss);
-                grad.generateBackwardPass();
-                grad.appendOptimizer(optimizer, 0.01);
-
-                this.currentModel = grad.getModel();
-                globalEvents.emit('modelLoaded', this.currentModel);
-                Toast.show(`Injected Backward Pass (${loss} + ${optimizer})`, 'success');
-
-                // Push to undo stack
-                this.undoStack.push(JSON.parse(JSON.stringify(this.currentModel)));
-                if (this.undoStack.length > 10) this.undoStack.shift();
-              } else if (action === 'train_step') {
-                Toast.show('Simulating WASM Training Step...', 'info');
-                // 224. Implement JavaScript training loop
-                // 226. Trigger WASM training step function
-                // 227. Extract Loss
-                setTimeout(() => {
-                  const loss = Math.random() * 2;
-                  Toast.show(`Training Step Complete. Loss: ${loss.toFixed(4)}`, 'success');
-                  console.info(`[Train] Step Time: 15ms | Loss: ${loss.toFixed(4)}`);
-                  globalEvents.emit('lossUpdated', loss);
-                }, 500);
+          globalEvents.on(
+            'autograd',
+            (payload: {
+              action: string;
+              loss: 'CrossEntropy' | 'MSE';
+              optimizer: 'Adam' | 'SGD';
+            }) => {
+              if (!this.currentModel) {
+                Toast.show('No model loaded', 'error');
+                return;
               }
-            } catch (e) {
-              Toast.show(`Autograd Error: ${e}`, 'error');
-              console.error(e);
-            }
-          });
+
+              try {
+                const { action, loss, optimizer } = payload;
+
+                if (action === 'inject') {
+                  const grad = new Autograd(this.currentModel);
+                  grad.appendLoss(loss);
+                  grad.generateBackwardPass();
+                  grad.appendOptimizer(optimizer, 0.01);
+
+                  this.currentModel = grad.getModel();
+                  globalEvents.emit('modelLoaded', this.currentModel);
+                  Toast.show(`Injected Backward Pass (${loss} + ${optimizer})`, 'success');
+
+                  // Push to undo stack
+                  this.undoStack.push(JSON.parse(JSON.stringify(this.currentModel)));
+                  if (this.undoStack.length > 10) this.undoStack.shift();
+                } else if (action === 'train_step') {
+                  Toast.show('Simulating WASM Training Step...', 'info');
+                  // 224. Implement JavaScript training loop
+                  // 226. Trigger WASM training step function
+                  // 227. Extract Loss
+                  setTimeout(() => {
+                    const loss = Math.random() * 2;
+                    Toast.show(`Training Step Complete. Loss: ${loss.toFixed(4)}`, 'success');
+                    console.info(`[Train] Step Time: 15ms | Loss: ${loss.toFixed(4)}`);
+                    globalEvents.emit('lossUpdated', loss);
+                  }, 500);
+                }
+              } catch (e) {
+                Toast.show(`Autograd Error: ${e}`, 'error');
+                console.error(e);
+              }
+            },
+          );
 
           // 521. CRDT Collaboration State
           let crdt: GraphCRDT | null = null;
@@ -677,7 +688,7 @@ export class App {
             }
           });
 
-          globalEvents.on('crdtDeltaReceived', (delta: any) => {
+          globalEvents.on('crdtDeltaReceived', (delta: Parameters<GraphCRDT['applyDelta']>[0]) => {
             if (crdt) {
               const changed = crdt.applyDelta(delta);
               if (changed) {
@@ -722,8 +733,8 @@ export class App {
           });
 
           // 499. Lock dynamic shapes UI response
-          window.addEventListener('lockShape', (e: any) => {
-            const tensorName = e.detail;
+          window.addEventListener('lockShape', (e: Event) => {
+            const tensorName = (e as CustomEvent<string>).detail;
             const dimsStr = prompt(
               `Enter static dimensions for tensor '${tensorName}' as a comma-separated list (e.g. 1,3,224,224):`,
             );
@@ -756,7 +767,7 @@ export class App {
 
             if (action === 'undo') {
               if (this.undoStack.length > 0) {
-                this.currentModel = this.undoStack.pop()!;
+                this.currentModel = this.undoStack.pop();
                 globalEvents.emit('modelLoaded', this.currentModel);
                 Toast.show('Undo successful', 'success');
               } else {
@@ -971,7 +982,7 @@ export class App {
           setInterval(async () => {
             // mock poll
           }, 5000);
-        } catch (_e) {
+        } catch {
           Toast.show('Mount failed or cancelled', 'error');
         }
       });

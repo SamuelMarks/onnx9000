@@ -1,22 +1,24 @@
 """JAX jaxpr to onnx9000 IR importer."""
 
 from collections.abc import Callable
-from typing import Any
 
 from onnx9000.core.dtypes import DType
+from onnx9000.core.exceptions import Onnx9000Error
 from onnx9000.core.ir import Graph, Node, Variable
 
 
 class JAXImporter:
     """Importer for JAX computation graphs (jaxpr)."""
 
-    def __init__(self, graph_name: str = "jax_graph"):
+    def __init__(self, graph_name: str = "jax_graph") -> None:
         """Initialize the JAXImporter."""
         self.builder = Graph(graph_name)
         self.var_map = {}
         self._var_counter = 0
 
-    def get_var_name(self, var: Any) -> str:
+    def get_var_name(
+        self, var: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> str:
         """Get or create a unique name for a JAX variable.
 
         Args:
@@ -48,18 +50,30 @@ class JAXImporter:
 
         return name
 
-    def import_func(self, func: Callable, *args: Any, **kwargs: Any) -> Graph:
+    def import_func(
+        self,
+        func: Callable,
+        *args: int | float | str | bool | bytes | list | dict | tuple | None,
+        **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> Graph:
         """Trace a JAX function and import it into onnx9000 IR."""
         import jax
 
-        def flat_func(*args, **kwargs):
+        def flat_func(
+            *args: int | float | str | bool | bytes | list | dict | tuple | None,
+            **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+        ) -> int | float | str | bool | bytes | list | dict | tuple | None:
             """Execute internal flattened function for JAX tracing."""
             return func(*args, **kwargs)
 
         jaxpr = jax.make_jaxpr(flat_func)(*args, **kwargs)
         return self.import_jaxpr(jaxpr.jaxpr, jaxpr.consts)
 
-    def import_jaxpr(self, jaxpr: Any, consts: list[Any]) -> Graph:
+    def import_jaxpr(
+        self,
+        jaxpr: int | float | str | bool | bytes | list | dict | tuple | None,
+        consts: list[int | float | str | bool | bytes | list | dict | tuple | None],
+    ) -> Graph:
         """Import a JAX jaxpr structure into onnx9000 IR."""
         # Add inputs
         for var in jaxpr.invars:
@@ -67,7 +81,7 @@ class JAXImporter:
             self.builder.inputs.append(name)
 
         # Add constants
-        for var, val in zip(jaxpr.constvars, consts):
+        for var, val in zip(jaxpr.constvars, consts, strict=False):
             name = self.get_var_name(var)
             import numpy as np
             from onnx9000.core.ir import Constant
@@ -81,13 +95,27 @@ class JAXImporter:
             out_names = [self.get_var_name(v) for v in eqn.outvars]
             params = dict(eqn.params.items())
 
-            import onnx9000.jax.jax_ops
             from onnx9000.core.registry import global_registry
 
             try:
                 op_func = global_registry.get_op("jax", eqn.primitive.name)
                 node = op_func(inputs=in_names, outputs=out_names, params=params)
-            except Exception:
+            except (
+                Onnx9000Error,
+                OSError,
+                ValueError,
+                TypeError,
+                RuntimeError,
+                KeyError,
+                IndexError,
+                AttributeError,
+                ImportError,
+                LookupError,
+                ArithmeticError,
+                BufferError,
+                AssertionError,
+                StopIteration,
+            ):
                 # Fallback to uppercase
                 op_type = eqn.primitive.name.capitalize()
                 node = Node(
@@ -107,7 +135,9 @@ class JAXImporter:
 
         return self.builder
 
-    def _map_dtype(self, jax_dtype: Any) -> DType:
+    def _map_dtype(
+        self, jax_dtype: int | float | str | bool | bytes | list | dict | tuple | None
+    ) -> DType:
         """Map JAX dtype to onnx9000 DType."""
         import numpy as np
 

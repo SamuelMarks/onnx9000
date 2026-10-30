@@ -2,47 +2,69 @@
  * @fileoverview ensemble.ts
  * Provides ensemble functionality for the serve package.
  */
+import { BackendError } from '@onnx9000/core';
+/** Type alias `EnsembleNodeType`. */
 export type EnsembleNodeType =
-  | "model"
-  | "logic"
-  | "tokenizer"
-  | "post_processor"
-  | "lora_adapter"
-  | "condition";
+  | 'model'
+  | 'logic'
+  | 'tokenizer'
+  | 'post_processor'
+  | 'lora_adapter'
+  | 'condition';
 
+/** Interface `EnsembleNode` definition. */
 export interface EnsembleNode {
+  /** Property `id`. */
   id: string;
+  /** Property `type`. */
   type: EnsembleNodeType;
+  /** Property `model_name`. */
   model_name?: string;
+  /** Property `inputs`. */
   inputs: Record<string, string>; // Maps local input names to source node outputs (e.g., { "image": "nodeA.output0" })
+  /** Property `outputs`. */
   outputs: string[];
-  logic?: (
-    inputs: Record<string, ReturnType<typeof JSON.parse>>,
-  ) => ReturnType<typeof JSON.parse>;
+  /** Property `logic`. */
+  logic?: (inputs: Record<string, ReturnType<typeof JSON.parse>>) => ReturnType<typeof JSON.parse>;
+  /** Property `condition`. */
   condition?: (inputs: Record<string, ReturnType<typeof JSON.parse>>) => string; // Returns the next node id to route to
 }
 
+/** Interface `EnsembleConfig` definition. */
 export interface EnsembleConfig {
+  /** Property `name`. */
   name: string;
+  /** Property `nodes`. */
   nodes: EnsembleNode[];
+  /** Property `inputs`. */
   inputs: string[]; // Global ensemble inputs
+  /** Property `outputs`. */
   outputs: Record<string, string>; // Maps global output names to node outputs
 }
 
+/** Represents the `ModelEnsemble` class. */
 export class ModelEnsemble {
   // 77. Define `Ensemble` JSON configuration
+  /**
+   * Initializes a new `ModelEnsemble` instance.
+   * @param config Parameter `config`.
+   */
   constructor(public config: EnsembleConfig) {
     this.validate();
   }
 
   // 88. Prevent infinite routing loops within the ensemble definition natively.
+  /**
+   * Executes `validate` on `ModelEnsemble`.
+   * @returns Result of `validate`.
+   */
   private validate() {
     const adj: Record<string, string[]> = {};
     for (const node of this.config.nodes) {
       adj[node.id] = [];
       for (const src of Object.values(node.inputs)) {
-        if (src.includes(".")) {
-          const srcNode = src.split(".")[0];
+        if (src.includes('.')) {
+          const srcNode = src.split('.')[0];
           if (srcNode && adj[node.id]) adj[node.id]?.push(srcNode);
         }
       }
@@ -66,9 +88,7 @@ export class ModelEnsemble {
 
     for (const node of this.config.nodes) {
       if (checkCycle(node.id)) {
-        throw new Error(
-          `Infinite routing loop detected involving node ${node.id}`,
-        );
+        throw new BackendError(`Infinite routing loop detected involving node ${node.id}`);
       }
     }
   }
@@ -79,6 +99,12 @@ export class ModelEnsemble {
   // 81. Route Image Upload -> ResNet50 -> JS Logic -> Text Model -> JSON Response.
   // 82. Manage end-to-end memory buffers across the ensemble to ensure zero-copy bridging.
   // 84. Track latency individually across the ensemble steps.
+  /**
+   * Executes `execute` on `ModelEnsemble`.
+   * @param globalInputs Parameter `globalInputs`.
+   * @param _context Parameter `_context`.
+   * @returns Result of `execute`.
+   */
   public async execute(
     globalInputs: Record<string, ReturnType<typeof JSON.parse>>,
     _context: ReturnType<typeof JSON.parse>,
@@ -106,29 +132,27 @@ export class ModelEnsemble {
       const resolvedInputs: Record<string, ReturnType<typeof JSON.parse>> = {};
 
       for (const [localKey, src] of Object.entries(node.inputs)) {
-        const [srcNodeId, _srcOutput] = src.includes(".")
-          ? src.split(".")
-          : ["global", src];
+        const [srcNodeId, _srcOutput] = src.includes('.') ? src.split('.') : ['global', src];
 
-        if (srcNodeId !== "global" && nodePromises[srcNodeId!]) {
-          await nodePromises[srcNodeId!];
+        if (srcNodeId && srcNodeId !== 'global' && srcNodeId in nodePromises) {
+          await nodePromises[srcNodeId];
         }
         resolvedInputs[localKey] = memory[src];
       }
 
-      if (node.type === "logic" && node.logic) {
+      if (node.type === 'logic' && node.logic) {
         const result = await node.logic(resolvedInputs);
         memory[`${node.id}.out`] = result;
-      } else if (node.type === "condition" && node.condition) {
+      } else if (node.type === 'condition' && node.condition) {
         const nextNode = node.condition(resolvedInputs);
         memory[`${node.id}.route`] = nextNode;
-      } else if (node.type === "model") {
+      } else if (node.type === 'model') {
         memory[`${node.id}.output0`] = { data: [1.0] };
-      } else if (node.type === "tokenizer") {
+      } else if (node.type === 'tokenizer') {
         memory[`${node.id}.input_ids`] = [101, 2023, 102];
-      } else if (node.type === "post_processor") {
+      } else if (node.type === 'post_processor') {
         memory[`${node.id}.out`] = { bounding_boxes: [] };
-      } else if (node.type === "lora_adapter") {
+      } else if (node.type === 'lora_adapter') {
         memory[`${node.id}.weights`] = { ...resolvedInputs };
       }
 

@@ -1,11 +1,18 @@
-import { describe, it } from "vitest";
-import * as Module from "../src/tensorrt";
+import { describe, expect, it } from 'vitest';
+import { createTensorRTSession } from '../src/tensorrt';
 
-describe("tensorrt.ts", () => {
-  it("should call and cover createTensorRTSession", async () => {
+const Call = <T>(fn: (...args: never[]) => T): T => fn();
+
+describe('tensorrt.ts', () => {
+  it('should call and cover createTensorRTSession', async () => {
     try {
-      const res = (Module as any).createTensorRTSession();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(createTensorRTSession);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

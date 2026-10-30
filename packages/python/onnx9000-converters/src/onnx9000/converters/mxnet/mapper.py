@@ -1,7 +1,6 @@
 """MXNet to ONNX IR Mapper."""
 
 import ast
-from typing import Any
 
 import numpy as np
 from onnx9000.core.ir import Constant, Graph, Node, Variable
@@ -10,7 +9,11 @@ from onnx9000.core.ir import Constant, Graph, Node, Variable
 class MXNetMapper:
     """Mapper to convert MXNet parsed models to ONNX IR."""
 
-    def __init__(self, symbol_info: dict[str, Any], weights: dict[str, np.ndarray]):
+    def __init__(
+        self,
+        symbol_info: dict[str, int | float | str | bool | bytes | list | dict | tuple | None],
+        weights: dict[str, np.ndarray],
+    ) -> None:
         """Initialize mapper."""
         self.symbol_info = symbol_info
         self.weights = weights
@@ -29,7 +32,7 @@ class MXNetMapper:
         """Map MXNet model to ONNX IR."""
         nodes = self.symbol_info.get("nodes", [])
 
-        for i, node_info in enumerate(nodes):
+        for _i, node_info in enumerate(nodes):
             op_type = node_info.get("op", "")
             name = node_info.get("name", "")
 

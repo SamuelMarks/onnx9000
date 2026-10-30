@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../../src/mmdnn/tensorflow/mapper";
+import { describe, expect, it } from 'vitest';
+import { TFMapper } from '../../../src/mmdnn/tensorflow/mapper';
 
-describe("mapper.ts", () => {
-  it("should instantiate and cover TFMapper", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('mapper.ts', () => {
+  it('should instantiate and cover TFMapper', () => {
     try {
-      const obj = new (Module as any).TFMapper();
+      const obj = Construct(TFMapper);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

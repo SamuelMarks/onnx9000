@@ -1,7 +1,6 @@
 """Provides tree traversal module functionality."""
 
 import logging
-from typing import Any
 
 from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.optimizer.hummingbird.analysis import analyze_tree_depth
@@ -13,8 +12,17 @@ logger = logging.getLogger(__name__)
 class TreeTraversalCompiler:
     """TreeTraversal Strategy compiler."""
 
-    def __init__(self, tree: TreeAbstractions, batch_size: Any = "N") -> None:
-        """Initialize the instance."""
+    def __init__(
+        self,
+        tree: TreeAbstractions,
+        batch_size: int | float | str | bool | bytes | list | dict | tuple | None = "N",
+    ) -> None:
+        """Initialize TreeTraversalCompiler with configured parameters and state.
+
+        Args:
+            tree: Parameter specifying tree (TreeAbstractions).
+            batch_size: Parameter specifying batch size (Union[int, float, str, bool, bytes, list, dict, tuple, None]).
+        """
         self.tree = tree
         self.batch_size = batch_size
         self.max_depth = int(analyze_tree_depth(tree)["max"])
@@ -139,7 +147,9 @@ class TreeTraversalCompiler:
 
 
 def compile_forest_tree_traversal(
-    g: Graph, trees: list[TreeAbstractions], batch_size: Any = "N"
+    g: Graph,
+    trees: list[TreeAbstractions],
+    batch_size: int | float | str | bool | bytes | list | dict | tuple | None = "N",
 ) -> None:
     """Implement parallel traversal of all trees in an ensemble using batched Gathers.
 

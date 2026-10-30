@@ -1,3 +1,5 @@
+"""Unit tests and verification suite for jax all functionality."""
+
 import struct
 
 import numpy as np
@@ -8,48 +10,149 @@ from onnx9000.jax.jax_importer import JAXImporter
 # --- flax_parser.py ---
 
 
-def pack_uint8(b):
+def pack_uint8(
+    b: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
+    """Execute pack uint8 operation.
+
+    Args:
+        b: Parameter specifying b.
+
+    Returns:
+        Result of pack uint8.
+    """
     return struct.pack("B", b)
 
 
-def pack_uint16(b):
+def pack_uint16(
+    b: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
+    """Execute pack uint16 operation.
+
+    Args:
+        b: Parameter specifying b.
+
+    Returns:
+        Result of pack uint16.
+    """
     return struct.pack(">H", b)
 
 
-def pack_uint32(b):
+def pack_uint32(
+    b: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
+    """Execute pack uint32 operation.
+
+    Args:
+        b: Parameter specifying b.
+
+    Returns:
+        Result of pack uint32.
+    """
     return struct.pack(">I", b)
 
 
-def pack_uint64(b):
+def pack_uint64(
+    b: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
+    """Execute pack uint64 operation.
+
+    Args:
+        b: Parameter specifying b.
+
+    Returns:
+        Result of pack uint64.
+    """
     return struct.pack(">Q", b)
 
 
-def pack_int8(b):
+def pack_int8(
+    b: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
+    """Execute pack int8 operation.
+
+    Args:
+        b: Parameter specifying b.
+
+    Returns:
+        Result of pack int8.
+    """
     return struct.pack(">b", b)
 
 
-def pack_int16(b):
+def pack_int16(
+    b: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
+    """Execute pack int16 operation.
+
+    Args:
+        b: Parameter specifying b.
+
+    Returns:
+        Result of pack int16.
+    """
     return struct.pack(">h", b)
 
 
-def pack_int32(b):
+def pack_int32(
+    b: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
+    """Execute pack int32 operation.
+
+    Args:
+        b: Parameter specifying b.
+
+    Returns:
+        Result of pack int32.
+    """
     return struct.pack(">i", b)
 
 
-def pack_int64(b):
+def pack_int64(
+    b: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
+    """Execute pack int64 operation.
+
+    Args:
+        b: Parameter specifying b.
+
+    Returns:
+        Result of pack int64.
+    """
     return struct.pack(">q", b)
 
 
-def pack_float(b):
+def pack_float(
+    b: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
+    """Execute pack float operation.
+
+    Args:
+        b: Parameter specifying b.
+
+    Returns:
+        Result of pack float.
+    """
     return struct.pack(">f", b)
 
 
-def pack_double(b):
+def pack_double(
+    b: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
+    """Execute pack double operation.
+
+    Args:
+        b: Parameter specifying b.
+
+    Returns:
+        Result of pack double.
+    """
     return struct.pack(">d", b)
 
 
-def test_parse_msgpack():
+def test_parse_msgpack() -> None:
     # Test valid msgpack bytes
+    """Verify that parse msgpack behaves as expected."""
     assert parse_msgpack(b"\x00") == 0
     assert parse_msgpack(b"\x7f") == 127
     assert parse_msgpack(b"\xe0") == -32
@@ -135,7 +238,12 @@ def test_parse_msgpack():
 
 
 # --- jax_importer.py ---
-def test_jax_importer():
+def test_jax_importer() -> None:
+    """Verify that jax importer behaves as expected.
+
+    Returns:
+        Result of test jax importer.
+    """
     importer = JAXImporter()
 
     # Test var naming
@@ -154,12 +262,18 @@ def test_jax_importer():
 
     # with aval
     class DummyAval:
-        def __init__(self):
+        """Represents dummy aval."""
+
+        def __init__(self) -> None:
+            """Initialize DummyAval with configured parameters and state."""
             self.shape = (1, 2)
             self.dtype = np.float32
 
     class DummyVar:
-        def __init__(self):
+        """Represents dummy var."""
+
+        def __init__(self) -> None:
+            """Initialize DummyVar with configured parameters and state."""
             self.aval = DummyAval()
 
     var3 = DummyVar()
@@ -173,10 +287,13 @@ def test_jax_importer():
     assert importer._map_dtype(np.float64) == DType.FLOAT32  # fallback
 
     # We need to mock jax.make_jaxpr and everything around it to test import_func without JAX installed
-    from unittest.mock import MagicMock, patch
+    from unittest.mock import MagicMock
 
     class MockJaxpr:
-        def __init__(self):
+        """Represents mock jaxpr."""
+
+        def __init__(self) -> None:
+            """Initialize MockJaxpr with configured parameters and state."""
             self.invars = [MagicMock()]
             self.outvars = [MagicMock()]
             self.constvars = [MagicMock()]
@@ -189,12 +306,38 @@ def test_jax_importer():
             self.eqns = [eqn]
 
     class MockMadeJaxpr:
-        def __init__(self):
+        """Represents mock made jaxpr."""
+
+        def __init__(self) -> None:
+            """Initialize MockMadeJaxpr with configured parameters and state."""
             self.jaxpr = MockJaxpr()
             self.consts = [np.array([1, 2])]
 
-    def mock_make_jaxpr(f):
-        def wrapper(*args, **kwargs):
+    def mock_make_jaxpr(
+        f: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
+        """Execute mock make jaxpr operation.
+
+        Args:
+            f: Parameter specifying f.
+
+        Returns:
+            Result of mock make jaxpr.
+        """
+
+        def wrapper(
+            *args: int | float | str | bool | bytes | list | dict | tuple | None,
+            **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+        ) -> int | float | str | bool | bytes | list | dict | tuple | None:
+            """Execute wrapper operation.
+
+            Args:
+                *args: Variadic positional arguments for args.
+                **kwargs: Variadic keyword arguments for kwargs.
+
+            Returns:
+                Result of wrapper.
+            """
             f(*args, **kwargs)
             return MockMadeJaxpr()
 
@@ -203,9 +346,18 @@ def test_jax_importer():
     import sys
 
     sys.modules["jax"] = MagicMock(make_jaxpr=mock_make_jaxpr)
-    import jax
 
-    def dummy_func(x):
+    def dummy_func(
+        x: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
+        """Execute dummy func operation.
+
+        Args:
+            x: Parameter specifying x.
+
+        Returns:
+            Result of dummy func.
+        """
         return x
 
     graph = importer.import_func(dummy_func, 1)
@@ -224,7 +376,21 @@ def test_jax_importer():
     # test mock_op registered
     from onnx9000.core.registry import global_registry
 
-    def registered_op(inputs, outputs, params):
+    def registered_op(
+        inputs: int | float | str | bool | bytes | list | dict | tuple | None,
+        outputs: int | float | str | bool | bytes | list | dict | tuple | None,
+        params: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
+        """Execute registered op operation.
+
+        Args:
+            inputs: Parameter specifying inputs.
+            outputs: Parameter specifying outputs.
+            params: Parameter specifying params.
+
+        Returns:
+            Result of registered op.
+        """
         from onnx9000.core.ir import Node
 
         return Node(

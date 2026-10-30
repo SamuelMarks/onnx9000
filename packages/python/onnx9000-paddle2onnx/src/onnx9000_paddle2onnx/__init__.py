@@ -1,4 +1,19 @@
-def convert(model_str: str) -> str:
-    if not model_str:
-        raise ValueError("Invalid model string")
-    return f"[ONNX-IR] from {model_str}"
+"""Backward-compatible re-export module for `onnx9000_paddle2onnx`."""
+
+from onnx9000.paddle2onnx import (
+    PaddleGraph,
+    PaddleToONNXGraphBuilder,
+    convert,
+    convert_paddle_to_onnx,
+    load_paddle_model,
+    paddle_optimize_graph,
+)
+
+__all__ = [
+    "PaddleGraph",
+    "PaddleToONNXGraphBuilder",
+    "convert",
+    "convert_paddle_to_onnx",
+    "load_paddle_model",
+    "paddle_optimize_graph",
+]

@@ -1,32 +1,39 @@
-import { beforeEach, describe, expect, it } from "vitest";
+// @vitest-environment jsdom
 
-describe("demo", () => {
+import * as transformersMod from '@onnx9000/transformers';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { initTransformersDemo } from '../src/main.js';
+
+describe('demo-transformers', () => {
   beforeEach(() => {
-    document.body.innerHTML = `
-      <textarea id="prompt"></textarea>
-      <button id="runBtn"></button>
-      <div id="output"></div>
-    `;
+    document.body.innerHTML = '<button id="run-btn"></button><div id="transformers-output"></div>';
   });
 
-  it("should run flow", async () => {
-    // import to execute module top-level
-    try {
-      await import("../src/main.js");
-    } catch (_e) {}
+  it('should execute sentiment-analysis pipeline and handle errors', async () => {
+    document.body.innerHTML = '';
+    initTransformersDemo();
 
-    const btn = document.getElementById("runBtn");
-    const prompt = document.getElementById("prompt");
-    const _out = document.getElementById("output");
+    document.body.innerHTML = '<button id="run-btn"></button><div id="transformers-output"></div>';
+    initTransformersDemo();
 
-    if (btn) btn.click();
-    if (prompt && btn) {
-      prompt.value = "test";
-      btn.click();
-    }
+    const btn = document.getElementById('run-btn') as HTMLButtonElement;
+    const out = document.getElementById('transformers-output') as HTMLElement;
 
-    // allow some async code to run
-    await new Promise((r) => setTimeout(r, 100));
-    expect(true).toBe(true);
+    btn.click();
+    await new Promise((r) => setTimeout(r, 50));
+    expect(out.innerText).toContain('Success! Transformers.js pipeline ran successfully.');
+
+    const spy = vi
+      .spyOn(transformersMod, 'pipeline')
+      .mockRejectedValueOnce(new Error('Model error'));
+    btn.click();
+    await new Promise((r) => setTimeout(r, 50));
+    expect(out.innerText).toContain('Error: Model error');
+
+    spy.mockRejectedValueOnce('raw error');
+    btn.click();
+    await new Promise((r) => setTimeout(r, 50));
+    expect(out.innerText).toContain('Error: raw error');
+    spy.mockRestore();
   });
 });

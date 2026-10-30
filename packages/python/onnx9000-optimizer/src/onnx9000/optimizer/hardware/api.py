@@ -1,7 +1,5 @@
 """Hardware-Aware Execution Pipelining API module."""
 
-from typing import Any
-
 from onnx9000.core.ir import Graph, Node
 from onnx9000.optimizer.hardware.layout import LayoutOptimizer
 from onnx9000.optimizer.hardware.pipeline import PipelineOptimizer
@@ -103,7 +101,10 @@ def quantize_dynamic(graph: Graph) -> Graph:
     return g
 
 
-def quantize_static(graph: Graph, calibration_data: list[Any]) -> Graph:
+def quantize_static(
+    graph: Graph,
+    calibration_data: list[int | float | str | bool | bytes | list | dict | tuple | None],
+) -> Graph:
     """Create quantize_static API."""
     g = Graph(graph.name + "_stat_quantized")
     g.inputs = graph.inputs.copy()
@@ -152,12 +153,16 @@ def quantize_static(graph: Graph, calibration_data: list[Any]) -> Graph:
     return g
 
 
-def parse_olive_config(config_json: dict[str, Any]) -> dict[str, Any]:
+def parse_olive_config(
+    config_json: dict[str, int | float | str | bool | bytes | list | dict | tuple | None],
+) -> dict[str, int | float | str | bool | bytes | list | dict | tuple | None]:
     """Support parsing standard ONNX Runtime JSON configuration files."""
     return {"parsed": True, "raw": config_json}
 
 
-def generate_optimization_report(original_graph: Graph, optimized_graph: Graph) -> dict[str, Any]:
+def generate_optimization_report(
+    original_graph: Graph, optimized_graph: Graph
+) -> dict[str, int | float | str | bool | bytes | list | dict | tuple | None]:
     """Generate an optimization report."""
     orig_vram = LayoutOptimizer.estimate_vram_usage(original_graph)
     opt_vram = LayoutOptimizer.estimate_vram_usage(optimized_graph)

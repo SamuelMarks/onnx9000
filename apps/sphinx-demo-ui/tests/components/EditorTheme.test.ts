@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 import * as monaco from 'monaco-editor';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Editor } from '../../src/components/Editor';

@@ -1,10 +1,8 @@
 """Mixtral."""
 
-from typing import Any, Optional
-
 from onnx9000.core.ir import Tensor, Variable
 from onnx9000.core.models.llama import SwiGLU
-from onnx9000.core.ops import add, gather_nd, mul, scatter_nd, squeeze, topk, unsqueeze
+from onnx9000.core.ops import add, gather_nd, scatter_nd, topk
 from onnx9000.core.primitives import (
     Gemm,
     GroupedQueryAttention,
@@ -21,8 +19,18 @@ def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:
 class SparseMoE:
     """Sparse mo e."""
 
-    def __init__(self, num_experts: int, top_k: int, dim: int, ffn_dim: int, prefix: str = ""):
-        """Init."""
+    def __init__(
+        self, num_experts: int, top_k: int, dim: int, ffn_dim: int, prefix: str = ""
+    ) -> None:
+        """Initialize SparseMoE with configured parameters and state.
+
+        Args:
+            num_experts: Parameter specifying num experts (int).
+            top_k: Parameter specifying top k (int).
+            dim: Parameter specifying dim (int).
+            ffn_dim: Parameter specifying ffn dim (int).
+            prefix: Parameter specifying prefix (str).
+        """
         self.prefix = prefix
         self.num_experts = num_experts
         self.top_k = top_k
@@ -36,7 +44,14 @@ class SparseMoE:
 
     def __call__(self, x: Tensor) -> Tensor:
         # Routing
-        """Call."""
+        """Invoke SparseMoE with the provided inputs and keyword arguments.
+
+        Args:
+            x: Parameter specifying x (Tensor).
+
+        Returns:
+            Result of call (Tensor).
+        """
         logits = self.gate(x, get_param(f"{self.prefix}.gate.weight", [self.num_experts, self.dim]))
 
         from onnx9000.core.ops import constant, softmax
@@ -75,8 +90,18 @@ class MixtralBlock:
         num_experts: int,
         top_k: int,
         prefix: str = "",
-    ):
-        """Init."""
+    ) -> None:
+        """Initialize MixtralBlock with configured parameters and state.
+
+        Args:
+            dim: Parameter specifying dim (int).
+            num_heads: Parameter specifying num heads (int).
+            num_kv_heads: Parameter specifying num kv heads (int).
+            ffn_dim: Parameter specifying ffn dim (int).
+            num_experts: Parameter specifying num experts (int).
+            top_k: Parameter specifying top k (int).
+            prefix: Parameter specifying prefix (str).
+        """
         self.prefix = prefix
         self.dim = dim
         self.norm1 = RMSNorm((dim,))
@@ -85,7 +110,16 @@ class MixtralBlock:
         self.moe = SparseMoE(num_experts, top_k, dim, ffn_dim, prefix=f"{prefix}.moe")
 
     def __call__(self, x: Tensor, pos: Tensor, mask: Tensor | None = None) -> Tensor:
-        """Call."""
+        """Invoke MixtralBlock with the provided inputs and keyword arguments.
+
+        Args:
+            x: Parameter specifying x (Tensor).
+            pos: Parameter specifying pos (Tensor).
+            mask: Parameter specifying mask (Tensor | None).
+
+        Returns:
+            Result of call (Tensor).
+        """
         identity = x
         x_norm = self.norm1(x, get_param(f"{self.prefix}.norm1.weight", [self.dim]))
         x_attn = self.attn(x_norm, x_norm, x_norm, mask=mask)
@@ -113,8 +147,20 @@ class Mixtral:
         num_experts: int = 8,
         top_k: int = 2,
         max_seq_len: int = 4096,
-    ):
-        """Init."""
+    ) -> None:
+        """Initialize Mixtral with configured parameters and state.
+
+        Args:
+            vocab_size: Parameter specifying vocab size (int).
+            dim: Parameter specifying dim (int).
+            num_heads: Parameter specifying num heads (int).
+            num_kv_heads: Parameter specifying num kv heads (int).
+            depth: Parameter specifying depth (int).
+            ffn_dim: Parameter specifying ffn dim (int).
+            num_experts: Parameter specifying num experts (int).
+            top_k: Parameter specifying top k (int).
+            max_seq_len: Parameter specifying max seq len (int).
+        """
         self.vocab_size = vocab_size
         self.dim = dim
         self.depth = depth
@@ -137,7 +183,16 @@ class Mixtral:
         self.rope = RoPE(dim // num_heads, max_seq_len=max_seq_len)
 
     def __call__(self, input_ids: Tensor, pos: Tensor, mask: Tensor | None = None) -> Tensor:
-        """Call."""
+        """Invoke Mixtral with the provided inputs and keyword arguments.
+
+        Args:
+            input_ids: Parameter specifying input ids (Tensor).
+            pos: Parameter specifying pos (Tensor).
+            mask: Parameter specifying mask (Tensor | None).
+
+        Returns:
+            Result of call (Tensor).
+        """
         from onnx9000.core.ops import gather
 
         x = gather(
@@ -156,7 +211,9 @@ class Mixtral:
         return x
 
 
-def mixtral_8x7b(**kwargs: Any) -> Mixtral:
+def mixtral_8x7b(
+    **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> Mixtral:
     """Mixtral 8x7b."""
     return Mixtral(
         vocab_size=32000,

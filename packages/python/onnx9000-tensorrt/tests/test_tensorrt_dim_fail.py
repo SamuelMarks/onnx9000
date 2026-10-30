@@ -6,14 +6,14 @@ import pytest
 from onnx9000.tensorrt.ops_dim import trt_reshape
 
 
-def test_reshape_missing_input():
-    """Docstring for D103."""
+def test_reshape_missing_input() -> None:
+    """Verify that reshape missing input behaves as expected."""
 
     class MockNode:
         """Mock node."""
 
-        def __init__(self):
-            """Init."""
+        def __init__(self) -> None:
+            """Initialize MockNode with configured parameters and state."""
             self.inputs = []
             self.outputs = ["out"]
 

@@ -1,4 +1,7 @@
 /**
+ * @fileoverview engine module for core.
+ */
+/**
  * ONNX9000 WebAssembly Execution Engine Scaffold.
  * This module provides the primary entry points for the WASM runtime.
  */

@@ -6,7 +6,11 @@ Translates ONNX operations to equivalent C++ bindings and memory buffers.
 import re
 
 
-def get_attribute(node, name, default=None):
+def get_attribute(
+    node: int | float | str | bool | bytes | list | dict | tuple | None,
+    name: int | float | str | bool | bytes | list | dict | tuple | None,
+    default: int | float | str | bool | bytes | list | dict | tuple | None = None,
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
     """Get an attribute value from an ONNX node.
 
     Args:

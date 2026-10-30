@@ -4,7 +4,7 @@ test.describe('WASM Standalone Demo App', () => {
   test.beforeEach(async ({ page }) => {
     try {
       await page.goto('/demo-wasm');
-    } catch (_e) {
+    } catch {
       test.skip();
     }
   });

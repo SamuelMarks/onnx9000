@@ -1,14 +1,14 @@
 """CNTK to ONNX IR Mapper."""
 
-from typing import Any  # pragma: no cover
-
 from onnx9000.core.ir import Graph, Node, Variable  # pragma: no cover
 
 
 class CNTKMapper:
     """Mapper to convert CNTK parsed models to ONNX IR."""
 
-    def __init__(self, model_info: dict[str, Any]):
+    def __init__(
+        self, model_info: dict[str, int | float | str | bool | bytes | list | dict | tuple | None]
+    ) -> None:
         """Initialize mapper."""
         self.model_info = model_info  # pragma: no cover
         self.graph = Graph("CNTKModel")  # pragma: no cover

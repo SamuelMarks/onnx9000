@@ -2,17 +2,24 @@
  * @fileoverview shape-inference.ts
  * Provides shape-inference functionality for the converters package.
  */
-// @ts-nocheck
-import type { Graph, Shape } from "@onnx9000/core";
-import type { MMDNNReporter } from "./reporter.js";
+import type { Graph, Shape } from '@onnx9000/core';
+import type { MMDNNReporter } from './reporter.js';
 
+/** Represents the `ShapeInferenceEngine` class. */
 export class ShapeInferenceEngine {
+  /** Property `shapeMap` of `ShapeInferenceEngine`. */
   private shapeMap: Map<string, Shape>;
 
+  /** Initializes a new `ShapeInferenceEngine` instance. */
   constructor() {
     this.shapeMap = new Map();
   }
 
+  /**
+   * Executes `inferShapes` on `ShapeInferenceEngine`.
+   * @param graph Parameter `graph`.
+   * @param reporter Parameter `reporter`.
+   */
   inferShapes(graph: Graph, reporter: MMDNNReporter): void {
     // Collect known shapes
     for (const input of graph.inputs) {
@@ -29,19 +36,15 @@ export class ShapeInferenceEngine {
     // Traverse topologically and deduce shapes
     for (const node of graph.nodes) {
       // Very basic example shape inference
-      if (
-        node.opType === "Relu" ||
-        node.opType === "Sigmoid" ||
-        node.opType === "Tanh"
-      ) {
-        const inputShape = this.shapeMap.get(node.inputs[0]!);
+      if (node.opType === 'Relu' || node.opType === 'Sigmoid' || node.opType === 'Tanh') {
+        const inputShape = this.shapeMap.get(node.inputs[0] ?? '');
         if (inputShape) {
-          this.shapeMap.set(node.outputs[0]!, inputShape);
+          this.shapeMap.set(node.outputs[0] ?? '', inputShape);
         }
-      } else if (node.opType === "Add" || node.opType === "Mul") {
+      } else if (node.opType === 'Add' || node.opType === 'Mul') {
         // Broadcast
-        const shapeA = this.shapeMap.get(node.inputs[0]!);
-        const shapeB = this.shapeMap.get(node.inputs[1]!);
+        const shapeA = this.shapeMap.get(node.inputs[0] ?? '');
+        const shapeB = this.shapeMap.get(node.inputs[1] ?? '');
         if (shapeA && shapeB) {
           const dimsA = shapeA;
           const dimsB = shapeB;
@@ -61,13 +64,10 @@ export class ShapeInferenceEngine {
               outDims.unshift(dA); // fallback
             }
           }
-          this.shapeMap.set(node.outputs[0]!, outDims);
+          this.shapeMap.set(node.outputs[0] ?? '', outDims);
         }
       } else {
-        reporter.warn(
-          `Missing shape inference rules for op: ${node.opType}`,
-          node.name,
-        );
+        reporter.warn(`Missing shape inference rules for op: ${node.opType}`, node.name);
       }
     }
 
@@ -80,6 +80,11 @@ export class ShapeInferenceEngine {
     }
   }
 
+  /**
+   * Executes `getShape` on `ShapeInferenceEngine`.
+   * @param tensorName Parameter `tensorName`.
+   * @returns Result of `getShape`.
+   */
   getShape(tensorName: string): Shape | undefined {
     return this.shapeMap.get(tensorName);
   }

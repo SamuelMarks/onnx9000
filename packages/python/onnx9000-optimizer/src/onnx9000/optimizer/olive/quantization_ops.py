@@ -1,7 +1,5 @@
 """Quantization & Weight Compression module."""
 
-from typing import Any
-
 from onnx9000.core.ir import Graph, Node, Tensor
 
 
@@ -88,7 +86,9 @@ class Quantizer:
         return (-1.0, 1.0)
 
     @staticmethod
-    def track_metrics(tensor: Tensor) -> dict[str, Any]:
+    def track_metrics(
+        tensor: Tensor,
+    ) -> dict[str, int | float | str | bool | bytes | list | dict | tuple | None]:
         """Track calibration metrics across 1D, 2D, and ND tensors."""
         return {"dims": tensor.shape}
 

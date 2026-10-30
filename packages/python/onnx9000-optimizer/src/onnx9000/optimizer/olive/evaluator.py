@@ -1,7 +1,5 @@
 """Evaluator for optimization passes."""
 
-from typing import Any
-
 from onnx9000.optimizer.olive.model import OliveModel
 
 
@@ -31,7 +29,9 @@ class Evaluator:
         return 0.0
 
     @staticmethod
-    def generate_report(original: OliveModel, optimized: OliveModel) -> dict[str, Any]:
+    def generate_report(
+        original: OliveModel, optimized: OliveModel
+    ) -> dict[str, int | float | str | bool | bytes | list | dict | tuple | None]:
         """Generate comprehensive JSON optimization reports."""
         return {
             "flops_before": Evaluator.evaluate_flops(original),

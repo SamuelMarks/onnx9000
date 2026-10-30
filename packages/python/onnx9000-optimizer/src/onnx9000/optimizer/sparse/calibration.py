@@ -1,13 +1,15 @@
 """Module for sparse calibration and loss simulation."""
 
 import math
-from typing import Any, Union
 
 
 class DataLoader:
     """Lightweight DataLoader for calibration datasets."""
 
-    def __init__(self, data: list[dict[str, Any]] | str) -> None:
+    def __init__(
+        self,
+        data: list[dict[str, int | float | str | bool | bytes | list | dict | tuple | None]] | str,
+    ) -> None:
         """Initialize with data list or path to JSON file.
 
         Args:
@@ -23,7 +25,7 @@ class DataLoader:
             self.data = data
         self.current_idx = 0
 
-    def __iter__(self):
+    def __iter__(self) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Return the iterator object itself.
 
         Returns:
@@ -32,7 +34,7 @@ class DataLoader:
         """
         return self
 
-    def __next__(self) -> dict[str, Any]:
+    def __next__(self) -> dict[str, int | float | str | bool | bytes | list | dict | tuple | None]:
         """Return the next item from the dataset.
 
         Returns:
@@ -73,7 +75,7 @@ def cross_entropy_loss(y_pred: list[list[float]], y_true: list[int]) -> float:
 
         # Softmax
         max_logit = max(logits)
-        exps = [math.exp(l - max_logit) for l in logits]
+        exps = [math.exp(val - max_logit) for val in logits]
         sum_exps = sum(exps)
         prob = exps[target] / sum_exps
 

@@ -1,32 +1,30 @@
-import { beforeEach, describe, expect, it } from "vitest";
+// @vitest-environment jsdom
+import { beforeEach, describe, expect, it } from 'vitest';
+import { initOptimizeDemo } from '../src/main.js';
 
-describe("demo", () => {
+describe('demo-optimize', () => {
   beforeEach(() => {
-    document.body.innerHTML = `
-      <textarea id="prompt"></textarea>
-      <button id="runBtn"></button>
-      <div id="output"></div>
-    `;
+    document.body.innerHTML =
+      '<input id="modelPath"/><input id="outputPath"/><input id="passes"/><button id="optimizeBtn"></button><button id="resetBtn"></button><div id="output"></div>';
   });
 
-  it("should run flow", async () => {
-    // import to execute module top-level
-    try {
-      await import("../src/main.js");
-    } catch (_e) {}
+  it('should run graph optimization and reset', async () => {
+    document.body.innerHTML = '';
+    initOptimizeDemo();
 
-    const btn = document.getElementById("runBtn");
-    const prompt = document.getElementById("prompt");
-    const _out = document.getElementById("output");
+    document.body.innerHTML =
+      '<input id="modelPath"/><input id="outputPath"/><input id="passes"/><button id="optimizeBtn"></button><button id="resetBtn"></button><div id="output"></div>';
+    initOptimizeDemo();
 
-    if (btn) btn.click();
-    if (prompt && btn) {
-      prompt.value = "test";
-      btn.click();
-    }
+    const optimizeBtn = document.getElementById('optimizeBtn') as HTMLButtonElement;
+    const resetBtn = document.getElementById('resetBtn') as HTMLButtonElement;
+    const out = document.getElementById('output') as HTMLDivElement;
 
-    // allow some async code to run
-    await new Promise((r) => setTimeout(r, 100));
-    expect(true).toBe(true);
+    optimizeBtn.click();
+    await new Promise((r) => setTimeout(r, 180));
+    expect(out.textContent).toContain('Graph optimization complete.');
+
+    resetBtn.click();
+    expect(out.textContent).toContain('Waiting to optimize...');
   });
 });

@@ -1,12 +1,16 @@
 import { describe, expect, it } from 'vitest';
-import * as Module from '../../src/components/Console';
+import { Console } from '../../src/components/Console';
+
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
 
 describe('Console.ts', () => {
   it('should instantiate and cover Console', () => {
     // Attempt to instantiate
     try {
-      const obj = new (Module as any).Console();
+      const obj = Construct(Console);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

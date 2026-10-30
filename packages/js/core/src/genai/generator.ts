@@ -1,14 +1,25 @@
-import type { Tensor } from "../ir/tensor.js";
-import type { State } from "./state.js";
-import type { GeneratorParams } from "./types.js";
+/**
+ * @fileoverview generator module for core.
+ */
+import { Onnx9000Error } from '../exceptions.js';
+import type { Tensor } from '../ir/tensor.js';
+import type { State } from './state.js';
+import type { GeneratorParams } from './types.js';
 
 /**
  * Base Generator class for stateful decoding.
  */
 export abstract class Generator {
+  /** Property `state` of `Generator`. */
   protected state: State;
+  /** Property `params` of `Generator`. */
   protected params: GeneratorParams;
 
+  /**
+   * Initializes a new `Generator` instance.
+   * @param state Parameter `state`.
+   * @param params Parameter `params`.
+   */
   constructor(state: State, params: GeneratorParams) {
     this.state = state;
     this.params = params;
@@ -43,8 +54,7 @@ export abstract class Generator {
     let currentTokens = 0;
     const maxTokens =
       this.params.maxNewTokens ??
-      this.params.maxLength -
-        (promptIds.shape[promptIds.shape.length - 1] as number);
+      this.params.maxLength - (promptIds.shape[promptIds.shape.length - 1] as number);
 
     let logits = await this.prefill(promptIds);
     let nextToken = this.sample(logits);
@@ -77,25 +87,22 @@ export abstract class Generator {
   protected sample(logits: Tensor): number {
     // Basic greedy search implementation for now.
     // Needs proper logit processing pipeline later.
-    if (
-      logits.data instanceof Float32Array ||
-      logits.data instanceof Float64Array
-    ) {
+    if (logits.data instanceof Float32Array || logits.data instanceof Float64Array) {
       const data = logits.data;
       const vocabSize = logits.shape[logits.shape.length - 1] as number;
       // Get the last logits
       const offset = data.length - vocabSize;
       let maxVal = -Infinity;
       let maxIdx = -1;
-      for (let i = 0; i < vocabSize; i++) {
-        if (data[offset + i]! > maxVal) {
-          maxVal = data[offset + i]!;
+      for (const [i, v] of data.subarray(offset, offset + vocabSize).entries()) {
+        if (v > maxVal) {
+          maxVal = v;
           maxIdx = i;
         }
       }
       return maxIdx;
     }
-    throw new Error("Unsupported logit data type for sampling.");
+    throw new Onnx9000Error('Unsupported logit data type for sampling.');
   }
 
   /**

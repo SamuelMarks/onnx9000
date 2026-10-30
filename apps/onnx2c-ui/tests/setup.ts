@@ -1,17 +1,17 @@
-(global as any).Worker = class Worker {
-  onmessage: any;
-  postMessage(_msg: any) {
+(global as typeof globalThis & { Worker: unknown }).Worker = class Worker {
+  onmessage: ((ev: { data: unknown }) => void) | null = null;
+  postMessage(_msg: unknown) {
     if (this.onmessage) {
       this.onmessage({
         data: {
-          header: "mock header",
-          source: "mock source",
-          summary: "mock summary",
+          header: 'mock header',
+          source: 'mock source',
+          summary: 'mock summary',
           arenaSize: 500,
         },
       });
     }
   }
 };
-(global as any).URL.createObjectURL = () => "blob:mock";
-(global as any).URL.revokeObjectURL = () => {};
+global.URL.createObjectURL = () => 'blob:mock';
+global.URL.revokeObjectURL = () => {};

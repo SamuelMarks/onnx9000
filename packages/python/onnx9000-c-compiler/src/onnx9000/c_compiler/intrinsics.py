@@ -17,7 +17,7 @@ def emit_cmsis_nn_qlinear_matmul(
     zp2: int,
     zp_out: int,
     multiplier: float,
-):
+) -> None:
     """Emit CMSIS-NN specific arm_fully_connected_s8 call."""
     b.emit(f"/* CMSIS-NN arm_fully_connected_s8 optimized ({M}x{K}x{N}) */")
     # For now, this is a conceptual structural mapping based on the CMSIS-NN API
@@ -70,7 +70,7 @@ def emit_cmsis_nn_qlinear_conv(
     strides: list,
     pads: list,
     dilations: list,
-):
+) -> None:
     """Emit CMSIS-NN specific arm_convolve_s8 call."""
     b.emit("/* CMSIS-NN arm_convolve_s8 optimized */")
     b.emit("cmsis_nn_context ctx;")
@@ -114,9 +114,9 @@ def emit_cmsis_nn_qlinear_conv(
     )
 
 
-def apply_simd_unroll(b: C89Builder, target: str):
+def apply_simd_unroll(b: C89Builder, target: str) -> None:
     """Generate SIMD loop unrolling hints based on target platform."""
-    if target == "desktop" or target == "avx2":
+    if target in {"desktop", "avx2"}:
         b.emit("#pragma omp parallel for")
         b.emit("#pragma GCC unroll 4")
     elif target == "riscv-v":
@@ -137,7 +137,7 @@ def emit_esp_nn_qlinear_matmul(
     zp2: int,
     zp_out: int,
     multiplier: float,
-):
+) -> None:
     """Emit ESP-NN specific esp_nn_fully_connected_s8 call for ESP32-S3/C6."""
     b.emit(f"/* ESP-NN esp_nn_fully_connected_s8 optimized ({M}x{K}x{N}) */")
     b.emit(f"/* Offline calculation needed for multiplier {multiplier} */")
@@ -170,7 +170,7 @@ def emit_esp_nn_qlinear_conv(
     strides: list,
     pads: list,
     dilations: list,
-):
+) -> None:
     """Emit ESP-NN specific esp_nn_conv_s8 call for ESP32-S3/C6."""
     b.emit("/* ESP-NN esp_nn_conv_s8 optimized */")
     b.emit("int32_t out_mult = 1; /* Placeholder */")
@@ -181,7 +181,7 @@ def emit_esp_nn_qlinear_conv(
     )
 
 
-def emit_avx2_headers(b: C89Builder, target: str):
+def emit_avx2_headers(b: C89Builder, target: str) -> None:
     """Emit AVX2/SIMD headers if the target architecture supports them."""
     if target == "avx2":
         b.emit("#ifdef __AVX2__")

@@ -2,7 +2,6 @@
  * @fileoverview WasmOverlay.ts
  * Provides WasmOverlay functionality for the Sphinx Demo UI.
  */
-// @ts-nocheck
 import { Component } from '../core/Component';
 import { globalEventBus } from '../core/EventBus';
 import { t } from '../core/I18n';
@@ -13,18 +12,29 @@ import { WasmManager, WasmState } from '../core/WasmManager';
  * are lazy-loaded by the user.
  */
 export class WasmOverlay extends Component<HTMLDivElement> {
+  /** Property `loadButton` of `WasmOverlay`. */
   private loadButton!: HTMLButtonElement;
+  /** Property `progressContainer` of `WasmOverlay`. */
   private progressContainer!: HTMLDivElement;
+  /** Property `progressBar` of `WasmOverlay`. */
   private progressBar!: HTMLDivElement;
+  /** Property `progressText` of `WasmOverlay`. */
   private progressText!: HTMLParagraphElement;
+  /** Property `errorText` of `WasmOverlay`. */
   private errorText!: HTMLParagraphElement;
+  /** Property `sizeInfo` of `WasmOverlay`. */
   private sizeInfo!: HTMLParagraphElement;
 
+  /** Initializes a new `WasmOverlay` instance. */
   constructor() {
     super();
     this.element = this.render();
   }
 
+  /**
+   * Executes `render` on `WasmOverlay`.
+   * @returns Result of `render`.
+   */
   protected render(): HTMLDivElement {
     const overlay = document.createElement('div');
     overlay.className = 'demo-wasm-overlay';
@@ -83,6 +93,7 @@ export class WasmOverlay extends Component<HTMLDivElement> {
     return overlay;
   }
 
+  /** Executes `onMount` on `WasmOverlay`. */
   protected onMount(): void {
     // Estimate download size before they click
     fetch('/onnx9000.wasm', { method: 'HEAD' })
@@ -116,37 +127,40 @@ export class WasmOverlay extends Component<HTMLDivElement> {
         const desc = this.element.querySelector('p');
         if (desc) desc.textContent = t('wasm.desc');
         if (this.loadButton) this.loadButton.textContent = t('wasm.start');
-      })
+      }),
     );
 
     // Listen to WASM progress events
     this.onCleanup(
-      globalEventBus.on<object>('WASM_PROGRESS', (payload) => {
-        let progress = 0;
-        let loaded = 0;
-        let total = 0;
+      globalEventBus.on<number | { progress?: number; loaded?: number; total?: number }>(
+        'WASM_PROGRESS',
+        (payload) => {
+          let progress = 0;
+          let loaded = 0;
+          let total = 0;
 
-        if (typeof payload === 'number') {
-          progress = payload;
-        } else if (payload && typeof payload.progress === 'number') {
-          progress = payload.progress;
-          loaded = payload.loaded || 0;
-          total = payload.total || 0;
-        }
+          if (typeof payload === 'number') {
+            progress = payload;
+          } else if (payload && typeof payload.progress === 'number') {
+            progress = payload.progress;
+            loaded = payload.loaded || 0;
+            total = payload.total || 0;
+          }
 
-        this.progressBar.style.width = `${progress}%`;
+          this.progressBar.style.width = `${progress}%`;
 
-        if (total > 0) {
-          const loadedMB = (loaded / (1024 * 1024)).toFixed(1);
-          const totalMB = (total / (1024 * 1024)).toFixed(1);
-          this.progressText.textContent = `${progress}% (${loadedMB} MB / ${totalMB} MB)`;
-        } else if (loaded > 0) {
-          const loadedMB = (loaded / (1024 * 1024)).toFixed(1);
-          this.progressText.textContent = `${progress}% (${loadedMB} MB)`;
-        } else {
-          this.progressText.textContent = `${progress}%`;
-        }
-      })
+          if (total > 0) {
+            const loadedMB = (loaded / (1024 * 1024)).toFixed(1);
+            const totalMB = (total / (1024 * 1024)).toFixed(1);
+            this.progressText.textContent = `${progress}% (${loadedMB} MB / ${totalMB} MB)`;
+          } else if (loaded > 0) {
+            const loadedMB = (loaded / (1024 * 1024)).toFixed(1);
+            this.progressText.textContent = `${progress}% (${loadedMB} MB)`;
+          } else {
+            this.progressText.textContent = `${progress}%`;
+          }
+        },
+      ),
     );
 
     // Listen to WASM state changes
@@ -165,7 +179,7 @@ export class WasmOverlay extends Component<HTMLDivElement> {
             this.unmount();
           }, 300); // 300ms transition time
         }
-      })
+      }),
     );
   }
 }

@@ -1,12 +1,12 @@
 """Tests for the ONNX9000 SDK CLI bindings."""
 
 
-def test_sdk_cli_bindings():
+def test_sdk_cli_bindings() -> None:
     """Verify that autograd, tvm, and diffusers are exposed in the CLI."""
     import argparse
     from unittest.mock import patch
 
-    import onnx9000_cli.main as main
+    from onnx9000_cli import main
 
     args = argparse.Namespace(
         model="test.onnx",

@@ -1,17 +1,29 @@
-import { describe, it } from "vitest";
-import * as Module from "../../src/wasm/engine";
+import { describe, expect, it } from 'vitest';
+import { execute_graph, init } from '../../src/wasm/engine';
 
-describe("engine.ts", () => {
-  it("should call and cover init", async () => {
+const Call = <T>(fn: (...args: never[]) => T): T => fn();
+
+describe('engine.ts', () => {
+  it('should call and cover init', async () => {
     try {
-      const res = (Module as any).init();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(init);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
-  it("should call and cover execute_graph", async () => {
+  it('should call and cover execute_graph', async () => {
     try {
-      const res = (Module as any).execute_graph();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(execute_graph);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

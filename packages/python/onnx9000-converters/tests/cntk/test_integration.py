@@ -7,7 +7,7 @@ import tempfile
 from onnx9000.converters.cntk import CNTKConverter
 
 
-def test_cntk_snapshot_integration():
+def test_cntk_snapshot_integration() -> None:
     """Verify CNTK snapshot exists."""
     snapshot_path = os.path.join(
         os.path.dirname(__file__), "../../../../../snapshots/cntk-2.7.post2.json"
@@ -19,7 +19,7 @@ def test_cntk_snapshot_integration():
     assert "objects" in data
 
 
-def test_cntk_converter_parse():
+def test_cntk_converter_parse() -> None:
     """Test full parse pipeline."""
     converter = CNTKConverter()
 

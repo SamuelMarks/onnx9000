@@ -2,13 +2,12 @@
  * @fileoverview Editor.ts
  * Provides Editor functionality for the Sphinx Demo UI.
  */
-// @ts-nocheck
 
 import * as monaco from 'monaco-editor';
 import { Component } from '../core/Component';
 import { globalEventBus } from '../core/EventBus';
 
-(window as object).monaco = monaco;
+(window as never as Record<string, unknown>).monaco = monaco;
 
 import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker&inline';
 import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker&inline';
@@ -31,14 +30,20 @@ self.MonacoEnvironment = {
       return new tsWorker();
     }
     return new editorWorker();
-  }
+  },
 };
 
+/** Interface `EditorOptions` definition. */
 export interface EditorOptions {
+  /** Property `language`. */
   language?: string;
+  /** Property `initialValue`. */
   initialValue?: string;
+  /** Property `readOnly`. */
   readOnly?: boolean;
+  /** Property `theme`. */
   theme?: 'vs-light' | 'vs-dark' | 'hc-black';
+  /** Property `onChange`. */
   onChange?: (value: string) => void;
 }
 
@@ -47,12 +52,20 @@ export interface EditorOptions {
  * Includes caching and lifecycle hooks for responsive resizing.
  */
 export class Editor extends Component<HTMLDivElement> {
+  /** Property `editor` of `Editor`. */
   private editor!: monaco.editor.IStandaloneCodeEditor;
+  /** Property `options` of `Editor`. */
   private options: EditorOptions;
+  /** Property `cachedModels` of `Editor`. */
   private cachedModels: Map<string, monaco.editor.ITextModel> = new Map();
   /* private currentFileId: string | null = null; */
+  /** Property `resizeObserver` of `Editor`. */
   private resizeObserver!: ResizeObserver;
 
+  /**
+   * Initializes a new `Editor` instance.
+   * @param options Parameter `options`.
+   */
   constructor(options?: EditorOptions) {
     super();
     this.options = {
@@ -60,13 +73,17 @@ export class Editor extends Component<HTMLDivElement> {
       initialValue: '',
       readOnly: false,
       theme: 'vs-light',
-      ...options
+      ...options,
     };
 
     // Delay instantiation until mount because Monaco needs an attached DOM node
     this.element = this.render();
   }
 
+  /**
+   * Executes `render` on `Editor`.
+   * @returns Result of `render`.
+   */
   protected render(): HTMLDivElement {
     const container = document.createElement('div');
     container.className = 'demo-editor-container';
@@ -76,6 +93,7 @@ export class Editor extends Component<HTMLDivElement> {
     return container;
   }
 
+  /** Executes `onMount` on `Editor`. */
   protected onMount(): void {
     this.editor = monaco.editor.create(this.element, {
       value: this.options.initialValue,
@@ -85,7 +103,7 @@ export class Editor extends Component<HTMLDivElement> {
       automaticLayout: false, // We handle it via ResizeObserver for better perf/control
       minimap: { enabled: false },
       scrollBeyondLastLine: false,
-      wordWrap: 'on'
+      wordWrap: 'on',
     });
 
     // Try to load cached content from localStorage
@@ -101,7 +119,7 @@ export class Editor extends Component<HTMLDivElement> {
       try {
         localStorage.setItem(
           `onnx9000-demo-editor-${this.options.language}`,
-          this.editor.getValue()
+          this.editor.getValue(),
         );
       } catch (e) {
         console.warn('Failed to save editor state to localStorage', e);
@@ -120,7 +138,7 @@ export class Editor extends Component<HTMLDivElement> {
           try {
             localStorage.setItem(
               `onnx9000-demo-editor-${this.options.language}`,
-              this.editor.getValue()
+              this.editor.getValue(),
             );
           } catch (e) {
             console.warn('Failed to save editor state to localStorage', e);
@@ -141,9 +159,12 @@ export class Editor extends Component<HTMLDivElement> {
     this.resizeObserver.observe(this.element);
 
     this.onCleanup(
-      globalEventBus.on<string>('THEME_CHANGED', (theme: object) => {
-        this.setTheme(theme);
-      })
+      globalEventBus.on<'vs-light' | 'vs-dark' | 'hc-black'>(
+        'THEME_CHANGED',
+        (theme: 'vs-light' | 'vs-dark' | 'hc-black') => {
+          this.setTheme(theme);
+        },
+      ),
     );
 
     this.onCleanup(() => {
@@ -183,16 +204,28 @@ export class Editor extends Component<HTMLDivElement> {
     }
   }
 
+  /**
+   * Executes `getValue` on `Editor`.
+   * @returns Result of `getValue`.
+   */
   public getValue(): string {
     return this.editor ? this.editor.getValue() : '';
   }
 
+  /**
+   * Executes `setValue` on `Editor`.
+   * @param value Parameter `value`.
+   */
   public setValue(value: string): void {
     if (this.editor) {
       this.editor.setValue(value);
     }
   }
 
+  /**
+   * Executes `setTheme` on `Editor`.
+   * @param theme Parameter `theme`.
+   */
   public setTheme(theme: 'vs-light' | 'vs-dark' | 'hc-black'): void {
     monaco.editor.setTheme(theme);
   }

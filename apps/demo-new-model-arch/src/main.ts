@@ -1,79 +1,62 @@
-/* v8 ignore start */
-import { Graph } from "@onnx9000/core";
+/**
+ * @fileoverview New Model Architecture Builder Demo UI.
+ */
+import { Graph } from '@onnx9000/core';
 
 /**
  * Initializes the new model architecture demo UI.
  */
 export function initNewModelArchDemo(): void {
-  const parseBtn = document.getElementById("parseBtn") as HTMLButtonElement;
-  const resetBtn = document.getElementById("resetBtn") as HTMLButtonElement;
-  const outputDiv = document.getElementById("output") as HTMLDivElement;
-  const _archInput = document.getElementById(
-    "archInput",
-  ) as HTMLTextAreaElement;
+  const parseBtn = document.getElementById('parseBtn') as HTMLButtonElement | null;
+  const resetBtn = document.getElementById('resetBtn') as HTMLButtonElement | null;
+  const outputDiv = document.getElementById('output') as HTMLDivElement | null;
+  const archSelect = document.getElementById('archSelect') as HTMLSelectElement | null;
 
   if (!parseBtn || !resetBtn || !outputDiv) return;
 
   const log = (msg: string) => {
-    outputDiv.textContent += `${msg}\n`;
+    outputDiv.textContent += `${msg}
+`;
   };
 
-  parseBtn.addEventListener("click", () => {
+  parseBtn.addEventListener('click', () => {
     parseBtn.disabled = true;
-    outputDiv.textContent = "";
+    outputDiv.textContent = '';
 
-    log("Analyzing custom model architecture definition...");
+    const arch = archSelect?.value || 'mamba';
+    log(`Initializing architecture builder for: ${arch.toUpperCase()}...`);
 
     setTimeout(() => {
-      log("Building ONNX9000 Core IR representation...");
+      const g = new Graph(`${arch}_graph`);
+      log('Instantiating core blocks...');
 
-      try {
-        const g = new Graph("MyCustomVisionTransformer_IR");
-
-        g.inputs.push({
-          name: "input_image",
-          shape: [1, 3, 224, 224],
-          dtype: "float32",
-        });
-        g.outputs.push({ name: "logits", shape: [1, 1000], dtype: "float32" });
-        g.nodes.push({
-          name: "custom_vit_encoder",
-          opType: "CustomViTEncoder",
-          inputs: ["input_image"],
-          outputs: ["logits"],
-          attributes: { layers: 12, heads: 8 },
-        });
+      setTimeout(() => {
+        if (arch === 'mamba') {
+          log(' - Added SelectiveScan (SSM) nodes');
+          log(' - Added 1D Depthwise Convolution');
+        } else if (arch === 'rwkv') {
+          log(' - Added TimeMix and ChannelMix blocks');
+          log(' - Configured WKV linear attention');
+        } else {
+          log(' - Added Router Gate (Top-2) and 8 Expert MLPs');
+        }
 
         setTimeout(() => {
-          log("Validating topological sort & static shapes...");
-
-          setTimeout(() => {
-            log("Architecture mapped to core IR successfully!");
-            log("\nGenerated IR JSON:");
-            log(JSON.stringify(g, null, 2));
-            resetBtn.disabled = false;
-          }, 600);
-        }, 500);
-      } catch (err: any) {
-        log(`Error generating IR: ${err.message}`);
-        resetBtn.disabled = false;
-      }
-    }, 600);
+          log(`
+Generated IR JSON:`);
+          log(JSON.stringify(g, null, 2));
+          resetBtn.disabled = false;
+        }, 40);
+      }, 40);
+    }, 40);
   });
 
-  resetBtn.addEventListener("click", () => {
-    outputDiv.textContent = 'Ready. Click "Parse & Lower to IR" to start.\n';
+  resetBtn.addEventListener('click', () => {
+    outputDiv.textContent = `Select an architecture and click "Generate Graph IR".
+`;
     parseBtn.disabled = false;
     resetBtn.disabled = true;
   });
 }
 
-document.addEventListener("DOMContentLoaded", initNewModelArchDemo);
-if (
-  document.readyState === "complete" ||
-  document.readyState === "interactive"
-) {
-  initNewModelArchDemo();
-}
-
-/* v8 ignore stop */
+initNewModelArchDemo();

@@ -8,44 +8,41 @@ if [ ! -d "node_modules" ]; then
 fi
 
 echo "Running Pre-commit Linters & Formatters..."
-ruff format --config pyproject.toml
-fd -eh -ec -x clang-format --style=LLVM -i
-npx prettier --write "packages/**/*.ts" "apps/**/*.ts"
+uv run ruff format --config pyproject.toml
+if command -v fd >/dev/null 2>&1 && command -v clang-format >/dev/null 2>&1; then
+  fd -eh -ec -x clang-format --style=LLVM -i
+else
+  echo "⚠️  fd or clang-format not found; skipping C/C++ formatting check."
+fi
+pnpm exec biome check --write .
 
 echo "Running Static Analysis..."
 pnpm lint
 uv run ruff check .
+uv run python scripts/check_docstrings.py
 uv run mypy .
 
 echo "Building TypeScript packages..."
-npx turbo run build
+pnpm exec turbo run build
 
 echo "Running Tests & Generating Coverage..."
 # Export PYTHONPATH for all python source directories
-export PYTHONPATH=$(find packages/python -maxdepth 1 -mindepth 1 -type d | sed 's/$/\/src/' | tr '\n' ':'):apps/cli/src
+export PYTHONPATH=$(find packages/python -maxdepth 1 -mindepth 1 -type d | sed 's/$/\/src/' | tr '
+' ':'):apps/cli/src
 
 # 1. TypeScript tests
+pnpm exec vitest run --coverage
 
 # 2. Python Tests (Generating coverage.json)
-# Clear old coverage
 rm -f .coverage coverage.json
 
-for pkg in packages/python/*/ apps/cli/; do
-  if [ -d "$pkg/tests" ]; then
-    echo "Running tests for $pkg..."
-    # uv run pytest --cov=onnx9000 --cov=onnx9000_cli --cov-append "$pkg/tests/"
-  fi
-done
+uv run pytest -c pyproject.toml --cov --cov-branch --cov-fail-under=100 -q
 
-# Generate json report from the combined .coverage
+# Generate json report and enforce 100% coverage threshold
 uv run coverage json
+uv run coverage report --fail-under=100
 
 echo "Updating Badges in README.md..."
-python3 scripts/update_badges.py
+uv run python scripts/update_badges.py
 
-# Stage files automatically formatted/modified by this script.
-git add README.md
-git add scripts/update_badges.py
-# Stage any files modified by formatting
-git ls-files --modified | xargs git add || true
 echo "Pre-commit hook finished successfully!"

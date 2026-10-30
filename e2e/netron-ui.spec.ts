@@ -4,7 +4,7 @@ test.describe('netron-ui', () => {
   test.beforeEach(async ({ page }) => {
     try {
       await page.goto('/netron-ui.html');
-    } catch (_e) {
+    } catch {
       test.skip();
     }
   });

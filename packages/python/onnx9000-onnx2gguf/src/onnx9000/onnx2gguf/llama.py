@@ -1,12 +1,13 @@
 """Module providing onnx2gguf functionality."""
 
 import re
-from typing import Any
 
 from onnx9000.core.ir import Graph, Tensor
 
 
-def extract_llama_metadata(graph: Graph) -> dict[str, Any]:
+def extract_llama_metadata(
+    graph: Graph,
+) -> dict[str, int | float | str | bool | bytes | list | dict | tuple | None]:
     """Extract llama metadata."""
     meta = {}
     vocab_size = 32000
@@ -19,20 +20,16 @@ def extract_llama_metadata(graph: Graph) -> dict[str, Any]:
     for name, t in graph.tensors.items():
         if not isinstance(t, Tensor):
             continue
-        if name.endswith("embed_tokens.weight"):
-            if len(t.shape) == 2:
-                (vocab_size, hidden_size) = t.shape
-        elif name.endswith("layers.0.self_attn.q_proj.weight"):
-            if len(t.shape) == 2:
-                num_heads = t.shape[0] // head_dim
-        elif name.endswith("layers.0.self_attn.k_proj.weight"):
-            if len(t.shape) == 2:
-                num_kv_heads = t.shape[0] // head_dim
-        elif name.endswith("layers.0.mlp.up_proj.weight"):
-            if len(t.shape) == 2:
-                intermediate_size = t.shape[0]
+        if name.endswith("embed_tokens.weight") and len(t.shape) == 2:
+            (vocab_size, hidden_size) = t.shape
+        elif name.endswith("layers.0.self_attn.q_proj.weight") and len(t.shape) == 2:
+            num_heads = t.shape[0] // head_dim
+        elif name.endswith("layers.0.self_attn.k_proj.weight") and len(t.shape) == 2:
+            num_kv_heads = t.shape[0] // head_dim
+        elif name.endswith("layers.0.mlp.up_proj.weight") and len(t.shape) == 2:
+            intermediate_size = t.shape[0]
     layers = set()
-    for name in graph.tensors.keys():
+    for name in graph.tensors:
         match = re.search("model\\.layers\\.(\\d+)", name)
         if match:
             layers.add(int(match.group(1)))
@@ -44,7 +41,7 @@ def extract_llama_metadata(graph: Graph) -> dict[str, Any]:
             break
     is_swiglu = False
     for n in graph.nodes:
-        if n.op_type == "Swish" or n.op_type == "Silu":
+        if n.op_type in {"Swish", "Silu"}:
             is_swiglu = True
             break
     meta["llama.context_length"] = 2048

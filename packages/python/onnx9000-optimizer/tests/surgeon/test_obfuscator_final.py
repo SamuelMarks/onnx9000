@@ -1,12 +1,11 @@
 """Tests for obfuscator final."""
 
-import pytest
 from onnx9000.core.ir import DType, Graph, Node, ValueInfo, Variable
 from onnx9000.optimizer.surgeon.obfuscator import obfuscate_names
 
 
-def test_obfuscate_names_with_interface():
-    """Docstring for D103."""
+def test_obfuscate_names_with_interface() -> None:
+    """Verify that obfuscate names with interface behaves as expected."""
     graph = Graph("test_graph")
 
     # Input and Output

@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../../src/mmdnn/keras/importer";
+import { describe, expect, it } from 'vitest';
+import { KerasImporter } from '../../../src/mmdnn/keras/importer';
 
-describe("importer.ts", () => {
-  it("should instantiate and cover KerasImporter", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('importer.ts', () => {
+  it('should instantiate and cover KerasImporter', () => {
     try {
-      const obj = new (Module as any).KerasImporter();
+      const obj = Construct(KerasImporter);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

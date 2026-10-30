@@ -3,8 +3,8 @@
  * Provides emitter functionality for the coreml package.
  */
 
-import { WIRE_TYPE_LENGTH_DELIMITED, WIRE_TYPE_VARINT } from "@onnx9000/core";
-import { Writer } from "./protobuf.js";
+import { WIRE_TYPE_LENGTH_DELIMITED, WIRE_TYPE_VARINT } from '@onnx9000/core';
+import { Writer } from './protobuf.js';
 import type {
   FeatureDescription,
   Metadata,
@@ -12,8 +12,13 @@ import type {
   Model,
   ModelDescription,
   NeuralNetwork,
-} from "./schema.js";
+} from './schema.js';
 
+/**
+ * Executes `emitModel`.
+ * @param model Parameter `model`.
+ * @returns Result of `emitModel`.
+ */
 export function emitModel(model: Model): Uint8Array {
   const writer = new Writer();
   if (model.specificationVersion !== undefined) {
@@ -40,6 +45,11 @@ export function emitModel(model: Model): Uint8Array {
   return writer.finish();
 }
 
+/**
+ * Executes `emitModelDescription`.
+ * @param desc Parameter `desc`.
+ * @returns Result of `emitModelDescription`.
+ */
 function emitModelDescription(desc: ModelDescription): Uint8Array {
   const writer = new Writer();
   for (const input of desc.input) {
@@ -63,6 +73,11 @@ function emitModelDescription(desc: ModelDescription): Uint8Array {
   return writer.finish();
 }
 
+/**
+ * Executes `emitFeatureDescription`.
+ * @param feat Parameter `feat`.
+ * @returns Result of `emitFeatureDescription`.
+ */
 function emitFeatureDescription(feat: FeatureDescription): Uint8Array {
   const writer = new Writer();
   if (feat.name) {
@@ -117,6 +132,11 @@ function emitFeatureDescription(feat: FeatureDescription): Uint8Array {
   return writer.finish();
 }
 
+/**
+ * Executes `emitMetadata`.
+ * @param meta Parameter `meta`.
+ * @returns Result of `emitMetadata`.
+ */
 function emitMetadata(meta: Metadata): Uint8Array {
   const writer = new Writer();
   if (meta.shortDescription) {
@@ -154,6 +174,11 @@ function emitMetadata(meta: Metadata): Uint8Array {
   return writer.finish();
 }
 
+/**
+ * Executes `emitNeuralNetwork`.
+ * @param nn Parameter `nn`.
+ * @returns Result of `emitNeuralNetwork`.
+ */
 function emitNeuralNetwork(nn: NeuralNetwork): Uint8Array {
   const writer = new Writer();
   if (nn.layers) {
@@ -178,36 +203,39 @@ function emitNeuralNetwork(nn: NeuralNetwork): Uint8Array {
   return writer.finish();
 }
 
+/**
+ * Executes `emitMILSpecProgram`.
+ * @param prog Parameter `prog`.
+ * @returns Result of `emitMILSpecProgram`.
+ */
 function emitMILSpecProgram(prog: MILSpecProgram): Uint8Array {
   const writer = new Writer();
   writer.writeTag(1, WIRE_TYPE_VARINT);
   writer.writeVarInt(prog.version);
   if (prog.functions) {
     for (const funcName of Object.keys(prog.functions)) {
-      const funcObj = prog.functions[funcName];
-      if (funcObj !== undefined) {
-        const funcWriter = new Writer();
-        for (const inp of funcObj.inputs) {
-          const inpWriter = new Writer();
-          inpWriter.writeTag(1, WIRE_TYPE_LENGTH_DELIMITED);
-          inpWriter.writeString(inp.name);
-          const inpBytes = inpWriter.finish();
-          funcWriter.writeTag(1, WIRE_TYPE_LENGTH_DELIMITED);
-          funcWriter.writeVarInt(inpBytes.length);
-          funcWriter.writeBytes(inpBytes);
-        }
-        const funcBytes = funcWriter.finish();
-        const entryWriter = new Writer();
-        entryWriter.writeTag(1, WIRE_TYPE_LENGTH_DELIMITED);
-        entryWriter.writeString(funcName);
-        entryWriter.writeTag(2, WIRE_TYPE_LENGTH_DELIMITED);
-        entryWriter.writeVarInt(funcBytes.length);
-        entryWriter.writeBytes(funcBytes);
-        const entryBytes = entryWriter.finish();
-        writer.writeTag(2, WIRE_TYPE_LENGTH_DELIMITED);
-        writer.writeVarInt(entryBytes.length);
-        writer.writeBytes(entryBytes);
+      const funcObj = prog.functions[funcName] as (typeof prog.functions)[string];
+      const funcWriter = new Writer();
+      for (const inp of funcObj.inputs) {
+        const inpWriter = new Writer();
+        inpWriter.writeTag(1, WIRE_TYPE_LENGTH_DELIMITED);
+        inpWriter.writeString(inp.name);
+        const inpBytes = inpWriter.finish();
+        funcWriter.writeTag(1, WIRE_TYPE_LENGTH_DELIMITED);
+        funcWriter.writeVarInt(inpBytes.length);
+        funcWriter.writeBytes(inpBytes);
       }
+      const funcBytes = funcWriter.finish();
+      const entryWriter = new Writer();
+      entryWriter.writeTag(1, WIRE_TYPE_LENGTH_DELIMITED);
+      entryWriter.writeString(funcName);
+      entryWriter.writeTag(2, WIRE_TYPE_LENGTH_DELIMITED);
+      entryWriter.writeVarInt(funcBytes.length);
+      entryWriter.writeBytes(funcBytes);
+      const entryBytes = entryWriter.finish();
+      writer.writeTag(2, WIRE_TYPE_LENGTH_DELIMITED);
+      writer.writeVarInt(entryBytes.length);
+      writer.writeBytes(entryBytes);
     }
   }
   return writer.finish();

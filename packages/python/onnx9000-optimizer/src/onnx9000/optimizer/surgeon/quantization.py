@@ -7,7 +7,9 @@ from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Constant, Graph, Node
 
 
-def quantize_ptq(graph: Graph, calibration_data: list[dict[str, np.ndarray]] = None) -> Graph:
+def quantize_ptq(
+    graph: Graph, calibration_data: list[dict[str, np.ndarray]] | None = None
+) -> Graph:
     """Post-training quantization with calibration dataset support."""
     for n in list(graph.nodes):
         if n.op_type in ["Conv", "Gemm", "MatMul"]:
@@ -26,7 +28,7 @@ def quantize_ptq(graph: Graph, calibration_data: list[dict[str, np.ndarray]] = N
                     data_min = np.min(data)
                     data_max = np.max(data)
                     scale = (data_max - data_min) / 255.0
-                    zp = int(round(-data_min / scale)) if scale != 0 else 0
+                    zp = round(-data_min / scale) if scale != 0 else 0
                     zp = max(0, min(255, zp))
 
                     quantized_data = np.clip(

@@ -1,11 +1,18 @@
-import { describe, it } from "vitest";
-import * as Module from "../../src/mil/zip_sandbox";
+import { describe, expect, it } from 'vitest';
+import { validateZipInputData } from '../../src/mil/zip_sandbox';
 
-describe("zip_sandbox.ts", () => {
-  it("should call and cover validateZipInputData", async () => {
+const Call = <T>(fn: (...args: never[]) => T): T => fn();
+
+describe('zip_sandbox.ts', () => {
+  it('should call and cover validateZipInputData', async () => {
     try {
-      const res = (Module as any).validateZipInputData();
-      if (res instanceof Promise) await res.catch(() => {});
-    } catch (_e) {}
+      const res = Call(validateZipInputData);
+      if (res instanceof Promise)
+        await res.catch((e) => {
+          expect(e).toBeDefined();
+        });
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

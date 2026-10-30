@@ -2,15 +2,20 @@
  * @fileoverview generator.ts
  * Provides generator functionality for the converters package.
  */
-// @ts-nocheck
-// @ts-nocheck
-import type { Graph, Node } from "@onnx9000/core";
 
+import type { Graph, Node, ValueInfo } from '@onnx9000/core';
+import { ConversionError } from '@onnx9000/core';
+
+/**
+ * Executes `isLinearGraph`.
+ * @param graph Parameter `graph`.
+ * @returns Result of `isLinearGraph`.
+ */
 export function isLinearGraph(graph: Graph): boolean {
   if (graph.inputs.length !== 1) return false;
   if (graph.outputs.length !== 1) return false;
 
-  let currentOutput = graph.inputs[0] ? graph.inputs[0].name : "";
+  let currentOutput = (graph.inputs[0] as ValueInfo).name;
   for (const node of graph.nodes) {
     const isInit = (name: string) =>
       graph.initializers.includes(name) || !!graph.tensors[name]?.isInitializer;
@@ -23,16 +28,26 @@ export function isLinearGraph(graph: Graph): boolean {
       return false;
     }
 
-    currentOutput = node.outputs[0] || "";
+    currentOutput = node.outputs[0] as string;
   }
-  return currentOutput === (graph.outputs[0] ? graph.outputs[0].name : "");
+  return currentOutput === (graph.outputs[0] as ValueInfo).name;
 }
 
+/**
+ * Executes `sanitizeName`.
+ * @param name Parameter `name`.
+ * @returns Result of `sanitizeName`.
+ */
 function sanitizeName(name: string): string {
-  if (/^[0-9]/.test(name)) return `v_${name.replace(/[^a-zA-Z0-9_]/g, "_")}`;
-  return name.replace(/[^a-zA-Z0-9_]/g, "_");
+  if (/^[0-9]/.test(name)) return `v_${name.replace(/[^a-zA-Z0-9_]/g, '_')}`;
+  return name.replace(/[^a-zA-Z0-9_]/g, '_');
 }
 
+/**
+ * Executes `generateTFJSCode`.
+ * @param graph Parameter `graph`.
+ * @returns Result of `generateTFJSCode`.
+ */
 export function generateTFJSCode(graph: Graph): string {
   const linear = isLinearGraph(graph);
   let code = `import * as tf from '@tensorflow/tfjs';\n\n`;
@@ -59,25 +74,22 @@ export function generateTFJSCode(graph: Graph): string {
     }
 
     for (const node of graph.nodes) {
-      const outVar = sanitizeName(node.outputs[0] || "");
+      const outVar = sanitizeName(node.outputs[0] || '');
       const isInit = (name: string) =>
-        graph.initializers.includes(name) ||
-        !!graph.tensors[name]?.isInitializer;
-      const dynamicInputs = node.inputs
-        .filter((inName) => !isInit(inName))
-        .map(sanitizeName);
+        graph.initializers.includes(name) || !!graph.tensors[name]?.isInitializer;
+      const dynamicInputs = node.inputs.filter((inName) => !isInit(inName)).map(sanitizeName);
 
       const layerCode = generateLayerCode(node, graph, false);
 
       if (dynamicInputs.length === 1) {
         code += `  const ${outVar} = ${layerCode}.apply(${dynamicInputs[0]});\n`;
       } else {
-        code += `  const ${outVar} = ${layerCode}.apply([${dynamicInputs.join(", ")}]);\n`;
+        code += `  const ${outVar} = ${layerCode}.apply([${dynamicInputs.join(', ')}]);\n`;
       }
     }
 
     const outputVars = graph.outputs.map((out) => sanitizeName(out.name));
-    code += `  const model = tf.model({ inputs: [${inputVars.join(", ")}], outputs: [${outputVars.join(", ")}] });\n`;
+    code += `  const model = tf.model({ inputs: [${inputVars.join(', ')}], outputs: [${outputVars.join(', ')}] });\n`;
     code += `  return model;\n`;
   }
 
@@ -85,15 +97,25 @@ export function generateTFJSCode(graph: Graph): string {
   return code;
 }
 
+/**
+ * Executes `stringifyOptions`.
+ * @param obj Parameter `obj`.
+ * @returns Result of `stringifyOptions`.
+ */
 function stringifyOptions(obj: ReturnType<typeof JSON.parse>): string {
-  return JSON.stringify(obj, (_, v) =>
-    typeof v === "bigint" ? Number(v) : v,
-  ).replace(/"/g, "'");
+  return JSON.stringify(obj, (_, v) => (typeof v === 'bigint' ? Number(v) : v)).replace(/"/g, "'");
 }
 
+/**
+ * Executes `generateLayerCode`.
+ * @param node Parameter `node`.
+ * @param graph Parameter `graph`.
+ * @param isFirst Parameter `isFirst`.
+ * @returns Result of `generateLayerCode`.
+ */
 function generateLayerCode(node: Node, graph: Graph, isFirst: boolean): string {
   const op = node.opType;
-  const options: Record<string, object> = {};
+  const options: Record<string, unknown> = {};
 
   if (isFirst && graph.inputs.length > 0) {
     const inputInfo = graph.inputs[0];
@@ -103,7 +125,7 @@ function generateLayerCode(node: Node, graph: Graph, isFirst: boolean): string {
     }
   }
 
-  if (op === "Conv") {
+  if (op === 'Conv') {
     const wName = node.inputs[1];
     const wTensor = wName ? graph.tensors[wName] : undefined;
     if (wTensor?.shape) {
@@ -115,17 +137,13 @@ function generateLayerCode(node: Node, graph: Graph, isFirst: boolean): string {
     if (stridesAttr) options.strides = stridesAttr.value;
 
     const padsAttr = node.attributes.pads;
-    if (
-      padsAttr &&
-      Array.isArray(padsAttr.value) &&
-      padsAttr.value.every((p: number) => p > 0)
-    ) {
-      options.padding = "same";
+    if (padsAttr && Array.isArray(padsAttr.value) && padsAttr.value.every((p: number) => p > 0)) {
+      options.padding = 'same';
     } else {
-      options.padding = "valid";
+      options.padding = 'valid';
     }
 
-    options.dataFormat = "channelsFirst";
+    options.dataFormat = 'channelsFirst';
 
     if (node.inputs.length > 2) {
       options.useBias = true;
@@ -134,7 +152,7 @@ function generateLayerCode(node: Node, graph: Graph, isFirst: boolean): string {
     }
 
     return `tf.layers.conv2d(${stringifyOptions(options)})`;
-  } else if (op === "Gemm") {
+  } else if (op === 'Gemm') {
     const wName = node.inputs[1];
     const wTensor = wName ? graph.tensors[wName] : undefined;
     const transBAttr = node.attributes.transB;
@@ -157,7 +175,7 @@ function generateLayerCode(node: Node, graph: Graph, isFirst: boolean): string {
     }
 
     return `tf.layers.dense(${stringifyOptions(options)})`;
-  } else if (op === "MaxPool" || op === "AveragePool") {
+  } else if (op === 'MaxPool' || op === 'AveragePool') {
     const kernelShapeAttr = node.attributes.kernel_shape;
     if (kernelShapeAttr) options.poolSize = kernelShapeAttr.value;
 
@@ -165,32 +183,28 @@ function generateLayerCode(node: Node, graph: Graph, isFirst: boolean): string {
     if (stridesAttr) options.strides = stridesAttr.value;
 
     const padsAttr = node.attributes.pads;
-    if (
-      padsAttr &&
-      Array.isArray(padsAttr.value) &&
-      padsAttr.value.every((p: number) => p > 0)
-    ) {
-      options.padding = "same";
+    if (padsAttr && Array.isArray(padsAttr.value) && padsAttr.value.every((p: number) => p > 0)) {
+      options.padding = 'same';
     } else {
-      options.padding = "valid";
+      options.padding = 'valid';
     }
 
-    options.dataFormat = "channelsFirst";
+    options.dataFormat = 'channelsFirst';
 
-    const func = op === "MaxPool" ? "maxPooling2d" : "averagePooling2d";
+    const func = op === 'MaxPool' ? 'maxPooling2d' : 'averagePooling2d';
     return `tf.layers.${func}(${stringifyOptions(options)})`;
-  } else if (op === "BatchNormalization") {
+  } else if (op === 'BatchNormalization') {
     options.axis = 1; // channelsFirst => channel is at axis 1
     return `tf.layers.batchNormalization(${stringifyOptions(options)})`;
-  } else if (op === "Relu") {
+  } else if (op === 'Relu') {
     return `tf.layers.reLU(${stringifyOptions(options)})`;
-  } else if (op === "GlobalAveragePool") {
-    options.dataFormat = "channelsFirst";
+  } else if (op === 'GlobalAveragePool') {
+    options.dataFormat = 'channelsFirst';
     return `tf.layers.globalAveragePooling2d(${stringifyOptions(options)})`;
-  } else if (op === "Flatten") {
-    options.dataFormat = "channelsFirst";
+  } else if (op === 'Flatten') {
+    options.dataFormat = 'channelsFirst';
     return `tf.layers.flatten(${stringifyOptions(options)})`;
   }
 
-  throw new Error(`Unsupported operator: ${op}`);
+  throw new ConversionError(`Unsupported operator: ${op}`);
 }

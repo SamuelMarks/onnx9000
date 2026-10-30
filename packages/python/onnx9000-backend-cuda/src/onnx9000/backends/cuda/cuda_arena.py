@@ -11,6 +11,7 @@ from onnx9000.backends.cuda.bindings import (
     check_cuda_error,
     is_cuda_available,
 )
+from onnx9000.core.exceptions import BackendExecutionError, Onnx9000Error
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +20,7 @@ class CUDAMemoryPlanner:
     """Manages memory allocations on the CUDA device."""
 
     def __init__(self) -> None:
-        """Implement the __init__ method or operation."""
+        """Initialize CUDAMemoryPlanner with configured parameters and state."""
         self.allocations: dict[str, CUdeviceptr] = {}
         self.arena_ptr = CUdeviceptr(0)
         self.offsets: dict[str, tuple[int, int]] = {}
@@ -65,14 +66,16 @@ class CUDAMemoryPlanner:
 
     def get_tensor_ptr(self, name: str) -> CUdeviceptr:
         """Execute the get tensor ptr operation."""
-        if name in self.dynamic_allocations:  # pragma: no cover
+        if name in self.dynamic_allocations:
             return self.dynamic_allocations[name][0]
         if name in self.offsets:
             (offset, _) = self.offsets[name]
             return CUdeviceptr(self.arena_ptr.value + offset)
-        raise RuntimeError(f"Tensor {name} not found in CUDA memory planner")
+        raise BackendExecutionError(f"Tensor {name} not found in CUDA memory planner")
 
-    def set_tensor(self, name: str, host_data: np.ndarray, stream: ctypes.c_void_p = None) -> None:
+    def set_tensor(
+        self, name: str, host_data: np.ndarray, stream: ctypes.c_void_p | None = None
+    ) -> None:
         """Execute the set tensor operation."""
         if not is_cuda_available():
             if not hasattr(self, "_cpu_fallback_tensors"):
@@ -89,7 +92,7 @@ class CUDAMemoryPlanner:
                 dst_ptr = ptr
             else:
                 dst_ptr = CUdeviceptr(self.arena_ptr.value + offset)
-        elif name in self.dynamic_allocations:  # pragma: no cover
+        elif name in self.dynamic_allocations:
             (ptr, size) = self.dynamic_allocations[name]
             if size_bytes > size:
                 check_cuda_error(_cuda_lib.cuMemFree_v2(ptr))
@@ -116,7 +119,7 @@ class CUDAMemoryPlanner:
         if name not in self.offsets:
             self.tensors_shape_dtype[name] = (host_data.shape, host_data.dtype)
 
-    def get_host_tensor(self, name: str, stream: ctypes.c_void_p = None) -> np.ndarray:
+    def get_host_tensor(self, name: str, stream: ctypes.c_void_p | None = None) -> np.ndarray:
         """Execute the get host tensor operation."""
         if (
             not is_cuda_available()
@@ -125,8 +128,8 @@ class CUDAMemoryPlanner:
         ):
             return self._cpu_fallback_tensors[name]
         if name not in self.offsets and name not in self.dynamic_allocations:
-            raise RuntimeError(f"Tensor {name} not found.")
-        if name in self.dynamic_allocations:  # pragma: no cover
+            raise BackendExecutionError(f"Tensor {name} not found.")
+        if name in self.dynamic_allocations:
             (ptr, size_bytes) = self.dynamic_allocations[name]
             (shape, dtype) = self.tensors_shape_dtype.get(
                 name, ((size_bytes // 4,), np.dtype("float32"))
@@ -167,18 +170,33 @@ class CUDAMemoryPlanner:
         self.dynamic_allocations.clear()
 
     def __del__(self) -> None:
-        """Implement the __del__ method or operation."""
+        """Clean up resources and native handles held by CUDAMemoryPlanner."""
         try:
             self.cleanup()
-        except Exception as e:
+        except (
+            Onnx9000Error,
+            OSError,
+            ValueError,
+            TypeError,
+            RuntimeError,
+            KeyError,
+            IndexError,
+            AttributeError,
+            ImportError,
+            LookupError,
+            ArithmeticError,
+            BufferError,
+            AssertionError,
+            StopIteration,
+        ) as e:
             logger.debug(f"Exception during CUDAMemoryPlanner cleanup: {e}")
 
     def allocate_dynamic(self, name: str, size: int, shape: tuple[int, ...], dtype: str) -> None:
         """Execute the allocate dynamic operation."""
         if not is_cuda_available():
             return
-        if name in self.dynamic_allocations:  # pragma: no cover
-            _cuda_lib.cuMemFree(self.dynamic_allocations[name][0])  # pragma: no cover
+        if name in self.dynamic_allocations:
+            _cuda_lib.cuMemFree(self.dynamic_allocations[name][0])
         ptr = CUdeviceptr(0)
         check_cuda_error(_cuda_lib.cuMemAlloc(ctypes.byref(ptr), size))
         self.dynamic_allocations[name] = (ptr, size)

@@ -1,7 +1,5 @@
 """Efficientnet."""
 
-from typing import Any
-
 from onnx9000.core.ir import Tensor, Variable
 from onnx9000.core.ops import add, flatten, global_average_pool, mul, reshape
 from onnx9000.core.primitives import (
@@ -22,8 +20,14 @@ def get_param(name: str, shape: list[int], dtype: int = 1) -> Variable:
 class SqueezeExcitation:
     """Squeeze-and-Excitation block."""
 
-    def __init__(self, in_channels: int, squeeze_channels: int, prefix: str = ""):
-        """Init."""
+    def __init__(self, in_channels: int, squeeze_channels: int, prefix: str = "") -> None:
+        """Initialize SqueezeExcitation with configured parameters and state.
+
+        Args:
+            in_channels: Parameter specifying in channels (int).
+            squeeze_channels: Parameter specifying squeeze channels (int).
+            prefix: Parameter specifying prefix (str).
+        """
         self.prefix = prefix
         self.in_channels = in_channels
         self.squeeze_channels = squeeze_channels
@@ -33,7 +37,14 @@ class SqueezeExcitation:
         self.scale_act = Sigmoid()
 
     def __call__(self, x: Tensor) -> Tensor:
-        """Call."""
+        """Invoke SqueezeExcitation with the provided inputs and keyword arguments.
+
+        Args:
+            x: Parameter specifying x (Tensor).
+
+        Returns:
+            Result of call (Tensor).
+        """
         scale = global_average_pool(x)
         scale = flatten(scale)
 
@@ -69,8 +80,17 @@ class MBConv:
         stride: int,
         kernel_size: int,
         prefix: str = "",
-    ):
-        """Init."""
+    ) -> None:
+        """Initialize MBConv with configured parameters and state.
+
+        Args:
+            in_channels: Parameter specifying in channels (int).
+            out_channels: Parameter specifying out channels (int).
+            expand_ratio: Parameter specifying expand ratio (int).
+            stride: Parameter specifying stride (int).
+            kernel_size: Parameter specifying kernel size (int).
+            prefix: Parameter specifying prefix (str).
+        """
         self.prefix = prefix
         self.in_channels = in_channels
         self.out_channels = out_channels
@@ -102,7 +122,14 @@ class MBConv:
         self.bn2 = BatchNormalization(out_channels)
 
     def __call__(self, x: Tensor) -> Tensor:
-        """Call."""
+        """Invoke MBConv with the provided inputs and keyword arguments.
+
+        Args:
+            x: Parameter specifying x (Tensor).
+
+        Returns:
+            Result of call (Tensor).
+        """
         identity = x
 
         if self.expand_ratio != 1:
@@ -169,8 +196,12 @@ class MBConv:
 class EfficientNet:
     """EfficientNet implementation built using IR macros/primitives."""
 
-    def __init__(self, num_classes: int = 1000):
-        """Init."""
+    def __init__(self, num_classes: int = 1000) -> None:
+        """Initialize EfficientNet with configured parameters and state.
+
+        Args:
+            num_classes: Parameter specifying num classes (int).
+        """
         self.num_classes = num_classes
         self.stem_conv = ConvND(2, 3, 32, kernel_size=3, stride=2, padding=1, bias=False)
         self.stem_bn = BatchNormalization(32)
@@ -186,7 +217,14 @@ class EfficientNet:
         self.classifier = Gemm(trans_b=1)
 
     def __call__(self, x: Tensor) -> Tensor:
-        """Call."""
+        """Invoke EfficientNet with the provided inputs and keyword arguments.
+
+        Args:
+            x: Parameter specifying x (Tensor).
+
+        Returns:
+            Result of call (Tensor).
+        """
         x = self.stem_conv(
             x,
             get_param(
@@ -233,6 +271,8 @@ class EfficientNet:
         return x
 
 
-def efficientnet_b0(**kwargs: Any) -> EfficientNet:
+def efficientnet_b0(
+    **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> EfficientNet:
     """Efficientnet b0."""
     return EfficientNet(**kwargs)

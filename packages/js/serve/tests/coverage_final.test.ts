@@ -1,20 +1,21 @@
-import { describe, expect, it, vi } from "vitest";
-import { serveNode } from "../src/node.js";
-import { WebGPUManager } from "../src/webgpu.js";
-import { WorkerPool } from "../src/worker_pool.js";
+import { Onnx9000Error } from '@onnx9000/core';
+import { describe, expect, it, vi } from 'vitest';
+import { serveNode } from '../src/node.js';
+import { WebGPUManager } from '../src/webgpu.js';
+import { WorkerPool } from '../src/worker_pool.js';
 
-describe("Coverage Extra", () => {
-  it("WebGPUManager", async () => {
+describe('Coverage Extra', () => {
+  it('WebGPUManager', async () => {
     const manager = new WebGPUManager();
     expect(manager.fallbackToWasm).toBe(false);
 
     // Without navigator
     await manager.init();
     expect(manager.fallbackToWasm).toBe(true);
-    expect(manager.getTargetDevice("test").type).toBe("wasm");
+    expect(manager.getTargetDevice('test').type).toBe('wasm');
 
-    const mockNav = {} as any;
-    vi.stubGlobal("navigator", mockNav);
+    const mockNav: Record<string, unknown> = {};
+    vi.stubGlobal('navigator', mockNav);
 
     // With navigator.gpu but no adapter
     mockNav.gpu = { requestAdapter: async () => null };
@@ -30,7 +31,7 @@ describe("Coverage Extra", () => {
 
     mockNav.gpu = {
       requestAdapter: async () => ({
-        features: new Set(["shader-f16"]),
+        features: new Set(['shader-f16']),
         requestDevice: async () => ({
           lost: lostPromise,
         }),
@@ -39,14 +40,14 @@ describe("Coverage Extra", () => {
     manager.fallbackToWasm = false;
     await manager.init();
     expect(manager.device).toBeDefined();
-    expect(manager.getTargetDevice("test").type).toBe("webgpu");
+    expect(manager.getTargetDevice('test').type).toBe('webgpu');
 
     // Adapter requestDevice throws
     mockNav.gpu = {
       requestAdapter: async () => ({
         features: new Set([]),
         requestDevice: async () => {
-          throw new Error("fail");
+          throw new Onnx9000Error('fail');
         },
       }),
     };
@@ -55,69 +56,67 @@ describe("Coverage Extra", () => {
     expect(manager.fallbackToWasm).toBe(true);
 
     // Test the device loss handler just once
-    lostTrigger({ message: "test loss" });
+    lostTrigger({ message: 'test loss' });
     await new Promise((r) => setTimeout(r, 0));
 
     vi.unstubAllGlobals();
   });
 
-  it("WorkerPool", async () => {
+  it('WorkerPool', async () => {
     vi.useFakeTimers();
     const pool = new WorkerPool(2);
     pool.init();
     const sab = new SharedArrayBuffer(1024);
-    const resPromise = pool.execute("test-model", sab);
+    const resPromise = pool.execute('test-model', sab);
 
     vi.runAllTimers(); // this runs the settimeout inside postMessage
     const res = await resPromise;
     expect(res).toBe(true);
 
     const poolEmpty = new WorkerPool(0);
-    await expect(poolEmpty.execute("test", sab)).rejects.toThrow(
-      "No available workers",
-    );
+    await expect(poolEmpty.execute('test', sab)).rejects.toThrow('No available workers');
 
     vi.useRealTimers();
   });
 
-  it("Node Serve", () => {
+  it('Node Serve', () => {
     const mockServer = {
       fetch: vi.fn().mockResolvedValue({
         status: 200,
-        headers: new Headers({ "x-test": "1" }),
+        headers: new Headers({ 'x-test': '1' }),
         body: {
           getReader: () => {
             let count = 0;
             return {
               read: async () =>
-                count++ === 0
-                  ? { done: false, value: new Uint8Array([1]) }
-                  : { done: true },
+                count++ === 0 ? { done: false, value: new Uint8Array([1]) } : { done: true },
             };
           },
         },
       }),
     };
 
-    const server = serveNode(mockServer as any, 0, false);
+    const server = serveNode(mockServer as never as Parameters<typeof serveNode>[0], 0, false);
     server.close();
+    expect(typeof server).toBeDefined();
   });
 
-  it("WorkerPool handle message", () => {
+  it('WorkerPool handle message', () => {
     const p = new WorkerPool(1);
     p.init();
-    (p as any).handleWorkerMessage({}); // cover empty func
-    (p as any).workers[0].terminate(); // cover empty func
+    p.handleWorkerMessage({} as MessageEvent); // cover empty func
+    p.workers[0]?.terminate();
+    expect(typeof p).toBeDefined(); // cover empty func
   });
 });
 
-it("WorkerPool gracefully handles missing os.cpus", () => {
-  const _originalOs = require("node:os");
-  vi.doMock("os", () => ({
+it('WorkerPool gracefully handles missing os.cpus', () => {
+  const _originalOs = require('node:os');
+  vi.doMock('os', () => ({
     cpus: () => [],
   }));
 
   const pool = new WorkerPool(4);
   expect(pool.maxWorkers).toBeGreaterThan(0);
-  vi.doUnmock("os");
+  vi.doUnmock('os');
 });

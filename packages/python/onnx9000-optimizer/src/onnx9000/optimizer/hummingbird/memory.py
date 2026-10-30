@@ -1,7 +1,6 @@
 """Provides memory module functionality."""
 
 import logging
-from typing import Optional
 
 from onnx9000.optimizer.hummingbird.strategies import Strategy, TargetHardware
 
@@ -12,7 +11,7 @@ class TreeAbstractions:
     """Intermediate abstractions mapping tree nodes to native tensors."""
 
     def __init__(self) -> None:
-        """Initialize the instance."""
+        """Initialize TreeAbstractions with configured parameters and state."""
         self.features: list[int] = []
         self.thresholds: list[float] = []
         self.left_children: list[int] = []

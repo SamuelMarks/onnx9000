@@ -4,8 +4,8 @@ Translates ONNX operations to equivalent C++ bindings and memory buffers.
 """
 
 import abc
-from typing import TYPE_CHECKING
 
+from onnx9000.backends.codegen.generator import Generator
 from onnx9000.core.ir import Node
 
 
@@ -13,7 +13,7 @@ class OpGenerator(abc.ABC):
     """Interface for C++ operator writers."""
 
     @abc.abstractmethod
-    def generate(self, node: Node, generator_context: "onnx9000.backends.codegen.Generator") -> str:
+    def generate(self, node: Node, generator_context: Generator) -> str:
         """Generate C++ code for the given node.
 
         Args:
@@ -25,4 +25,3 @@ class OpGenerator(abc.ABC):
             A string containing the generated C++ code.
 
         """
-        raise NotImplementedError  # pragma: no cover

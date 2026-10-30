@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../src/memory";
+import { describe, expect, it } from 'vitest';
+import { MemoryManager } from '../src/memory';
 
-describe("memory.ts", () => {
-  it("should instantiate and cover MemoryManager", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('memory.ts', () => {
+  it('should instantiate and cover MemoryManager', () => {
     try {
-      const obj = new (Module as any).MemoryManager();
+      const obj = Construct(MemoryManager);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

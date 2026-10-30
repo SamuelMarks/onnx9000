@@ -6,7 +6,7 @@ from onnx9000.core.ir import Graph, Node, Tensor
 from onnx9000.optimizer.simplifier.passes.dce import IdentityEliminationPass
 
 
-def test_chained_expand():
+def test_chained_expand() -> None:
     """Test chained expand."""
     g = Graph("TestExpand")
     g.tensors["X"] = Tensor("X", (1,), DType.FLOAT32)
@@ -25,7 +25,7 @@ def test_chained_expand():
     assert n2.inputs[0] == "X"
 
 
-def test_slice_dynamic_steps():
+def test_slice_dynamic_steps() -> None:
     """Test slice dynamic steps."""
     g = Graph("TestSliceDynamic")
     g.tensors["X"] = Tensor("X", (2,), DType.FLOAT32)
@@ -56,7 +56,7 @@ def test_slice_dynamic_steps():
     assert not changed  # dynamic steps, should not be eliminated
 
 
-def test_reduce_scalar():
+def test_reduce_scalar() -> None:
     """Test elimination of redundant reductions on scalar tensors."""
     g = Graph("TestReduce")
     g.tensors["X"] = Tensor("X", (), DType.FLOAT32)

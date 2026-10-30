@@ -1,7 +1,5 @@
 """Quantizer module for ONNX hardware optimization."""
 
-from typing import Any, Optional, Union
-
 import numpy as np
 
 
@@ -143,7 +141,7 @@ class Quantizer:
             mode="constant",
             constant_values=0,
         )
-        (batch, in_channels, in_h, in_w) = x_padded.shape
+        (batch, _in_channels, in_h, in_w) = x_padded.shape
         (out_channels, _, k_h, k_w) = w_shifted.shape
         out_h = (in_h - k_h) // strides[0] + 1
         out_w = (in_w - k_w) // strides[1] + 1
@@ -264,7 +262,7 @@ class Quantizer:
         scales = np.zeros(num_channels, dtype=np.float32)
         zero_points = np.zeros(num_channels, dtype=np.int8)
         for i in range(num_channels):
-            slc: list[slice | int] = [slice(None)] * len(shape)
+            slc = [slice(None)] * len(shape)
             slc[axis] = i
             channel_data = tensor[tuple(slc)]
             min_val = np.min(channel_data)
@@ -317,15 +315,14 @@ class Quantizer:
                     expanded[start:end] = quantized_bins[j] / count
             ref_sum = np.sum(reference)
             exp_sum = np.sum(expanded)
-            if ref_sum > 0 and exp_sum > 0:
-                p = reference / ref_sum
-                q = expanded / exp_sum
-                p = np.where(p == 0, 1e-08, p)
-                q = np.where(q == 0, 1e-08, q)
-                kl = float(np.sum(p * np.log(p / q)))
-                if kl < min_kl:
-                    min_kl = kl
-                    optimal_threshold = float(bin_edges[i])
+            p = reference / ref_sum
+            q = expanded / exp_sum
+            p = np.where(p == 0, 1e-08, p)
+            q = np.where(q == 0, 1e-08, q)
+            kl = float(np.sum(p * np.log(p / q)))
+            if kl < min_kl:
+                min_kl = kl
+                optimal_threshold = float(bin_edges[i])
         return (-optimal_threshold, optimal_threshold)
 
     @staticmethod
@@ -404,7 +401,9 @@ class Quantizer:
         return bf16_bytes.view(np.float32)
 
     @staticmethod
-    def convert_initializer_to_int8(tensor_proto: Any) -> Any:
+    def convert_initializer_to_int8(
+        tensor_proto: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Convert initializer weights to INT8 natively in Python (compressing the Protobuf)."""
         import numpy as np
 
@@ -419,7 +418,7 @@ class Quantizer:
                 data = np.array(tensor_proto.float_data, dtype=np.float32)
             else:
                 return tensor_proto
-            (q_data, scale, zp) = Quantizer.quantize_symmetric(data)
+            (q_data, _scale, _zp) = Quantizer.quantize_symmetric(data)
             tensor_proto.data_type = 3
             tensor_proto.raw_data = q_data.tobytes()
         return tensor_proto

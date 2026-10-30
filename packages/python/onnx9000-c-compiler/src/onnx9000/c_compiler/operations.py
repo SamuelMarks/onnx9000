@@ -8,7 +8,9 @@ from onnx9000.core.ir import Node, Tensor
 from onnx9000.core.profiler import resolve_volume
 
 
-def get_strides(shape):
+def get_strides(
+    shape: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
     """Perform get strides operation."""
     if not shape:
         return []
@@ -23,7 +25,11 @@ def get_strides(shape):
     return strides
 
 
-def resolve_broadcast_indices(out_shape, in_shape, loop_var="i"):
+def resolve_broadcast_indices(
+    out_shape: int | float | str | bool | bytes | list | dict | tuple | None,
+    in_shape: int | float | str | bool | bytes | list | dict | tuple | None,
+    loop_var: int | float | str | bool | bytes | list | dict | tuple | None = "i",
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
     """Perform resolve broadcast indices operation."""
     if not in_shape or resolve_volume(in_shape) == 1:
         return "0"
@@ -47,8 +53,8 @@ def resolve_broadcast_indices(out_shape, in_shape, loop_var="i"):
             )
             if in_stride == 1:
                 parts.append(coord)
-            if in_stride == 1:
-                parts.append(coord)
+            else:
+                parts.append(f"({coord} * {in_stride})")
     return " + ".join(parts)
 
 
@@ -62,7 +68,7 @@ def generate_elementwise_binary(
     in1: str,
     in2: str,
     out: str,
-):
+) -> None:
     """Perform generate elementwise binary operation."""
     b.emit(f"/* Elementwise {node.op_type} */")
     b.emit("{")
@@ -73,20 +79,23 @@ def generate_elementwise_binary(
     is_int_div_pow2 = False
     pow2_shift = 0
     if (
-        op_char == "/"
-        and in2_tensor
-        and (
-            getattr(in2_tensor, "is_initializer", False) or type(in2_tensor).__name__ == "Constant"
+        (
+            op_char == "/"
+            and in2_tensor
+            and (
+                getattr(in2_tensor, "is_initializer", False)
+                or type(in2_tensor).__name__ == "Constant"
+            )
+            and getattr(in2_tensor, "data", None)
         )
-        and getattr(in2_tensor, "data", None)
+        and in2_tensor.dtype in (DType.INT32, DType.INT64)
+        and resolve_volume(in2_tensor.shape) == 1
     ):
-        if in2_tensor.dtype in (DType.INT32, DType.INT64):
-            if resolve_volume(in2_tensor.shape) == 1:
-                fmt = "i" if in2_tensor.dtype == DType.INT32 else "q"
-                val = struct.unpack(f"<{fmt}", in2_tensor.data[: struct.calcsize(f"<{fmt}")])[0]
-                if val > 0 and val & val - 1 == 0:
-                    is_int_div_pow2 = True
-                    pow2_shift = val.bit_length() - 1
+        fmt = "i" if in2_tensor.dtype == DType.INT32 else "q"
+        val = struct.unpack(f"<{fmt}", in2_tensor.data[: struct.calcsize(f"<{fmt}")])[0]
+        if val > 0 and val & val - 1 == 0:
+            is_int_div_pow2 = True
+            pow2_shift = val.bit_length() - 1
     b.emit(f"for ({i_var} = 0; {i_var} < {size_var}; ++{i_var}) {{")
     b.push_indent()
     idx1 = resolve_broadcast_indices(
@@ -116,7 +125,7 @@ def generate_math_call(
     in1: str,
     out: str,
     fallback_macro: bool = False,
-):
+) -> None:
     """Perform generate math call operation."""
     b.emit(f"/* Math {node.op_type} */")
     b.emit("{")
@@ -149,7 +158,7 @@ def generate_math_binary_call(
     in1: str,
     in2: str,
     out: str,
-):
+) -> None:
     """Perform generate math binary call operation."""
     b.emit(f"/* Math Binary {node.op_type} */")
     b.emit("{")
@@ -180,7 +189,7 @@ def generate_math_unary_op(
     in1_tensor: Tensor,
     in1: str,
     out: str,
-):
+) -> None:
     """Perform generate math unary op operation."""
     b.emit(f"/* Unary {node.op_type} */")
     b.emit("{")
@@ -207,7 +216,7 @@ def generate_sign(
     in1_tensor: Tensor,
     in1: str,
     out: str,
-):
+) -> None:
     """Perform generate sign operation."""
     b.emit(f"/* Sign {node.op_type} */")
     b.emit("{")
@@ -242,7 +251,7 @@ def generate_matmul(
     beta: float = 0.0,
     bias: str = "",
     is_integer: bool = False,
-):
+) -> None:
     """Generate MatMul, BatchMatMul, and Gemm operations."""
     b.emit(f"/* {node.op_type} */")
     b.emit("{")
@@ -315,15 +324,20 @@ def generate_matmul(
     b.emit("}")
 
 
-def generate_einsum(b, node, out_tensor, in_tensors, out, ins):
+def generate_einsum(
+    b: int | float | str | bool | bytes | list | dict | tuple | None,
+    node: int | float | str | bool | bytes | list | dict | tuple | None,
+    out_tensor: int | float | str | bool | bytes | list | dict | tuple | None,
+    in_tensors: int | float | str | bool | bytes | list | dict | tuple | None,
+    out: int | float | str | bool | bytes | list | dict | tuple | None,
+    ins: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Compile Einsum cleanly."""
     equation = node.attributes.get("equation", "")
-    if isinstance(equation, bytes):  # pragma: no cover
-        equation = equation.decode("utf-8")  # pragma: no cover
-    elif hasattr(equation, "value"):  # pragma: no cover
+    if hasattr(equation, "value"):
         equation = equation.value
-    if isinstance(equation, bytes):  # pragma: no cover
-        equation = equation.decode("utf-8")  # pragma: no cover
+    if isinstance(equation, bytes):
+        equation = equation.decode("utf-8")
     elif not isinstance(equation, str):
         equation = str(equation)
 
@@ -333,7 +347,7 @@ def generate_einsum(b, node, out_tensor, in_tensors, out, ins):
 
     # Try cblas_sgemm mapping
     # A standard matrix multiply is "mk,kn->mn"
-    if lhs == "mk,kn" and rhs == "mn" and len(ins) == 2:  # pragma: no cover
+    if lhs == "mk,kn" and rhs == "mn" and len(ins) == 2:
         shape_a = in_tensors[0].shape
         shape_b = in_tensors[1].shape
         m = shape_a[0]
@@ -395,7 +409,10 @@ def generate_einsum(b, node, out_tensor, in_tensors, out, ins):
         b.emit(f"for ({c_var} = 0; {c_var} < {limit}; ++{c_var}) {{")
         b.push_indent()
 
-    def get_index_expr(eq, shape):
+    def get_index_expr(
+        eq: int | float | str | bool | bytes | list | dict | tuple | None,
+        shape: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Perform get index expr operation."""
         exprs = []
         stride = 1

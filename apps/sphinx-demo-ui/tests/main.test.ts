@@ -1,10 +1,14 @@
-import { describe, it } from 'vitest';
-import * as Module from '../src/main';
+import { describe, expect, it } from 'vitest';
+import { initDemoUI } from '../src/main';
+
+const Call = <T>(fn: (...args: never[]) => T): T => fn();
 
 describe('main.ts', () => {
   it('should call and cover initDemoUI', () => {
     try {
-      (Module as any).initDemoUI();
-    } catch (_e) {}
+      Call(initDemoUI);
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

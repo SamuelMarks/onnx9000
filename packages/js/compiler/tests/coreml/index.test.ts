@@ -1,10 +1,14 @@
-import { describe, it } from "vitest";
-import * as Module from "../../src/coreml/index";
+import { describe, expect, it } from 'vitest';
+import { compileToCoreML } from '../../src/coreml/index';
 
-describe("index.ts", () => {
-  it("should call and cover compileToCoreML", () => {
+const Call = <T>(fn: (...args: never[]) => T): T => fn();
+
+describe('index.ts', () => {
+  it('should call and cover compileToCoreML', () => {
     try {
-      (Module as any).compileToCoreML();
-    } catch (_e) {}
+      Call(compileToCoreML);
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

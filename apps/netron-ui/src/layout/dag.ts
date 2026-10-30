@@ -5,52 +5,84 @@
  * This module is responsible for computing the visual layout of an ONNX graph,
  * producing node and edge coordinates for either Top-Bottom (TB) or Left-Right (LR) directions.
  */
-import type { Graph } from "@onnx9000/core";
+import type { Graph } from '@onnx9000/core';
 
-export type FlowDirection = "TB" | "LR";
+/** Type alias `FlowDirection`. */
+export type FlowDirection = 'TB' | 'LR';
 
+/** Interface `Box` definition. */
 export interface Box {
+  /** Property `x`. */
   x: number;
+  /** Property `y`. */
   y: number;
+  /** Property `width`. */
   width: number;
+  /** Property `height`. */
   height: number;
 }
 
+/** Interface `LayoutNode` definition. */
 export interface LayoutNode extends Box {
+  /** Property `id`. */
   id: string;
+  /** Property `opType`. */
   opType: string;
+  /** Property `name`. */
   name: string;
-  type: "node" | "input" | "output" | "constant";
+  /** Property `type`. */
+  type: 'node' | 'input' | 'output' | 'constant';
+  /** Property `stringValue`. */
   stringValue?: string; // 297. For inline string rendering
 }
 
+/** Interface `LayoutEdge` definition. */
 export interface LayoutEdge {
+  /** Property `from`. */
   from: string; // Node ID
+  /** Property `to`. */
   to: string; // Node ID
+  /** Property `points`. */
   points: { x: number; y: number }[];
+  /** Property `tensorName`. */
   tensorName: string;
+  /** Property `dtype`. */
   dtype?: string;
+  /** Property `shape`. */
   shape?: string;
+  /** Property `isOptional`. */
   isOptional?: boolean;
 }
 
+/** Interface `LayoutGroup` definition. */
 export interface LayoutGroup extends Box {
+  /** Property `name`. */
   name: string;
+  /** Property `depth`. */
   depth: number;
 }
 
+/** Interface `GraphLayout` definition. */
 export interface GraphLayout {
+  /** Property `nodes`. */
   nodes: LayoutNode[];
+  /** Property `edges`. */
   edges: LayoutEdge[];
+  /** Property `groups`. */
   groups?: LayoutGroup[];
+  /** Property `width`. */
   width: number;
+  /** Property `height`. */
   height: number;
 }
 
-export function computeLayout(
-  graph: Graph,
-  direction: FlowDirection = "TB",
-): GraphLayout {
+/**
+ * Executes `computeLayout`.
+ * @param graph Parameter `graph`.
+ * @param direction Parameter `direction`.
+ * @returns Result of `computeLayout`.
+ */
+export function computeLayout(graph: Graph, direction: FlowDirection = 'TB'): GraphLayout {
   const layoutNodes: LayoutNode[] = [];
   const layoutEdges: LayoutEdge[] = [];
   const layoutGroups: LayoutGroup[] = [];
@@ -74,7 +106,7 @@ export function computeLayout(
   for (const node of graph.nodes) {
     allNodeIds.add(node.id);
     for (const out of node.outputs) {
-      producerMap.set(out, node.id);
+      if (out) producerMap.set(out, node.id);
     }
   }
 
@@ -87,13 +119,13 @@ export function computeLayout(
   const levels = new Map<string, number>();
 
   function getLevel(nodeId: string): number {
-    if (levels.has(nodeId)) return levels.get(nodeId)!;
+    if (levels.has(nodeId)) return levels.get(nodeId) as number;
 
     let maxParentLevel = -1;
 
-    if (nodeId.startsWith("input_") || nodeId.startsWith("const_")) {
+    if (nodeId.startsWith('input_') || nodeId.startsWith('const_')) {
       maxParentLevel = -1;
-    } else if (nodeId.startsWith("output_")) {
+    } else if (nodeId.startsWith('output_')) {
       const tensorName = nodeId.substring(7);
       const p = producerMap.get(tensorName);
       if (p) maxParentLevel = Math.max(maxParentLevel, getLevel(p));
@@ -101,6 +133,7 @@ export function computeLayout(
       const node = graph.nodes.find((n) => n.id === nodeId);
       if (node) {
         for (const input of node.inputs) {
+          if (!input) continue;
           const p = producerMap.get(input);
           if (p) {
             maxParentLevel = Math.max(maxParentLevel, getLevel(p));
@@ -120,10 +153,7 @@ export function computeLayout(
   }
 
   // Group by levels
-  const levelBuckets: string[][] = Array.from(
-    { length: maxLevel + 1 },
-    () => [],
-  );
+  const levelBuckets: string[][] = Array.from({ length: maxLevel + 1 }, () => []);
   for (const nodeId of allNodeIds) {
     levelBuckets[getLevel(nodeId)]?.push(nodeId);
   }
@@ -138,47 +168,48 @@ export function computeLayout(
 
   const positions = new Map<string, Box>();
 
-  if (direction === "TB") {
+  if (direction === 'TB') {
     let currentY = 50;
     for (const bucket of levelBuckets) {
-      const bucketWidth =
-        bucket.length * (NODE_WIDTH + HORIZONTAL_GAP) - HORIZONTAL_GAP;
+      const bucketWidth = bucket.length * (NODE_WIDTH + HORIZONTAL_GAP) - HORIZONTAL_GAP;
       let currentX = -bucketWidth / 2;
 
       for (const nodeId of bucket) {
-        let opType = "Unknown";
+        let opType = 'Unknown';
         let name = nodeId;
-        let type: LayoutNode["type"] = "node";
+        let type: LayoutNode['type'] = 'node';
         let stringValue: string | undefined;
 
-        if (nodeId.startsWith("input_")) {
-          opType = "Input";
+        if (nodeId.startsWith('input_')) {
+          opType = 'Input';
           name = nodeId.substring(6);
-          type = "input";
-        } else if (nodeId.startsWith("const_")) {
-          opType = "Constant";
+          type = 'input';
+        } else if (nodeId.startsWith('const_')) {
+          opType = 'Constant';
           name = nodeId.substring(6);
-          type = "constant";
+          type = 'constant';
           // 297. Find the string value if any
           const tensor = graph.tensors[name];
-          if (tensor && tensor.dtype === "string" && tensor.data) {
-            const decoder = new TextDecoder("utf-8");
-            // oxlint-disable-next-line
-            const str = decoder
-              .decode(tensor.data)
-              .replace(/[\x00-\x1F\x7F]/g, "");
+          if (tensor && tensor.dtype === 'string' && tensor.data) {
+            const decoder = new TextDecoder('utf-8');
+            const str = Array.from(decoder.decode(tensor.data))
+              .filter((ch) => {
+                const code = ch.charCodeAt(0);
+                return code > 0x1f && code !== 0x7f;
+              })
+              .join('');
             stringValue = str.length > 15 ? `${str.substring(0, 15)}...` : str;
           }
-        } else if (nodeId.startsWith("output_")) {
-          opType = "Output";
+        } else if (nodeId.startsWith('output_')) {
+          opType = 'Output';
           name = nodeId.substring(7);
-          type = "output";
+          type = 'output';
         } else {
           const n = graph.nodes.find((n) => n.id === nodeId);
           if (n) {
             opType = n.opType;
             name = n.name;
-            if (opType === "Constant" && n.attributes.value_string) {
+            if (opType === 'Constant' && n.attributes.value_string) {
               const v = String(n.attributes.value_string.value);
               stringValue = v.length > 15 ? `${v.substring(0, 15)}...` : v;
             }
@@ -225,43 +256,44 @@ export function computeLayout(
     // LR
     let currentX = 50;
     for (const bucket of levelBuckets) {
-      const bucketHeight =
-        bucket.length * (NODE_HEIGHT + VERTICAL_GAP) - VERTICAL_GAP;
+      const bucketHeight = bucket.length * (NODE_HEIGHT + VERTICAL_GAP) - VERTICAL_GAP;
       let currentY = -bucketHeight / 2;
 
       for (const nodeId of bucket) {
-        let opType = "Unknown";
+        let opType = 'Unknown';
         let name = nodeId;
-        let type: LayoutNode["type"] = "node";
+        let type: LayoutNode['type'] = 'node';
         let stringValue: string | undefined;
 
-        if (nodeId.startsWith("input_")) {
-          opType = "Input";
+        if (nodeId.startsWith('input_')) {
+          opType = 'Input';
           name = nodeId.substring(6);
-          type = "input";
-        } else if (nodeId.startsWith("const_")) {
-          opType = "Constant";
+          type = 'input';
+        } else if (nodeId.startsWith('const_')) {
+          opType = 'Constant';
           name = nodeId.substring(6);
-          type = "constant";
+          type = 'constant';
           const tensor = graph.tensors[name];
-          if (tensor && tensor.dtype === "string" && tensor.data) {
-            const decoder = new TextDecoder("utf-8");
-            // oxlint-disable-next-line
-            const str = decoder
-              .decode(tensor.data)
-              .replace(/[\x00-\x1F\x7F]/g, "");
+          if (tensor && tensor.dtype === 'string' && tensor.data) {
+            const decoder = new TextDecoder('utf-8');
+            const str = Array.from(decoder.decode(tensor.data))
+              .filter((ch) => {
+                const code = ch.charCodeAt(0);
+                return code > 0x1f && code !== 0x7f;
+              })
+              .join('');
             stringValue = str.length > 15 ? `${str.substring(0, 15)}...` : str;
           }
-        } else if (nodeId.startsWith("output_")) {
-          opType = "Output";
+        } else if (nodeId.startsWith('output_')) {
+          opType = 'Output';
           name = nodeId.substring(7);
-          type = "output";
+          type = 'output';
         } else {
           const n = graph.nodes.find((n) => n.id === nodeId);
           if (n) {
             opType = n.opType;
             name = n.name;
-            if (opType === "Constant" && n.attributes.value_string) {
+            if (opType === 'Constant' && n.attributes.value_string) {
               const v = String(n.attributes.value_string.value);
               stringValue = v.length > 15 ? `${v.substring(0, 15)}...` : v;
             }
@@ -319,12 +351,12 @@ export function computeLayout(
     }
   >();
   for (const node of layoutNodes) {
-    if (node.type !== "node") continue;
-    const parts = node.name.split("/");
+    if (node.type !== 'node') continue;
+    const parts = node.name.split('/');
     if (parts.length > 1) {
-      let currentScope = "";
+      let currentScope = '';
       for (let i = 0; i < parts.length - 1; i++) {
-        currentScope += (i === 0 ? "" : "/") + parts[i];
+        currentScope += (i === 0 ? '' : '/') + parts[i];
         if (!scopeMap.has(currentScope)) {
           scopeMap.set(currentScope, {
             minX: Infinity,
@@ -335,7 +367,14 @@ export function computeLayout(
             depth: i,
           });
         }
-        const b = scopeMap.get(currentScope)!;
+        const b = scopeMap.get(currentScope) as {
+          minX: number;
+          minY: number;
+          maxX: number;
+          maxY: number;
+          count: number;
+          depth: number;
+        };
         b.minX = Math.min(b.minX, node.x);
         b.minY = Math.min(b.minY, node.y);
         b.maxX = Math.max(b.maxX, node.x + node.width);
@@ -364,13 +403,12 @@ export function computeLayout(
 
   // Helper to add edge
   function addEdge(from: string, to: string, tensorName: string) {
-    const fromBox = positions.get(from);
-    const toBox = positions.get(to);
-    if (!fromBox || !toBox) return;
+    const fromBox = positions.get(from) as Box;
+    const toBox = positions.get(to) as Box;
 
     // Attempt to format tensor shapes/dtypes
-    let dtypeStr = "";
-    let shapeStr = "";
+    let dtypeStr = '';
+    let shapeStr = '';
 
     // Find info
     const info =
@@ -378,16 +416,16 @@ export function computeLayout(
       graph.outputs.find((o) => o.name === tensorName);
     if (info) {
       dtypeStr = info.dtype;
-      shapeStr = `[${info.shape.join(", ")}]`;
+      shapeStr = `[${info.shape.join(', ')}]`;
     } else {
       const t = graph.tensors[tensorName];
       if (t) {
         dtypeStr = t.dtype;
-        shapeStr = `[${t.shape.join(", ")}]`;
+        shapeStr = `[${t.shape.join(', ')}]`;
       }
     }
 
-    if (direction === "TB") {
+    if (direction === 'TB') {
       layoutEdges.push({
         from,
         to,
@@ -423,7 +461,7 @@ export function computeLayout(
   // Node edges
   for (const node of graph.nodes) {
     for (const input of node.inputs) {
-      if (input === "") {
+      if (input === '') {
         // This is an omitted optional input, no edge to draw.
         continue;
       }

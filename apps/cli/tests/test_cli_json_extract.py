@@ -1,95 +1,88 @@
+"""Tests for the json-extract CLI subcommand."""
+
+from __future__ import annotations
+
 import argparse
 import json
-from unittest.mock import MagicMock, mock_open, patch
+from unittest.mock import mock_open, patch
 
+from onnx9000.core.dtypes import DType
+from onnx9000.core.ir import Attribute, DynamicDim, Graph, Node, Tensor, ValueInfo
 from onnx9000_cli.main import json_extract_cmd
 
 
-def test_json_extract_cmd_stdout():
+def test_json_extract_cmd_stdout() -> None:
+    """Verify json_extract_cmd serializes a Graph via to_dict() to stdout."""
     args = argparse.Namespace(model="dummy.onnx", output=None)
-    mock_graph = MagicMock()
-    mock_graph.__dict__ = {"test_attr": "value"}
+    graph = Graph("test_graph")
+    graph.inputs.append(ValueInfo("x", (DynamicDim("N"), 3), DType.FLOAT32))
+    graph.nodes.append(
+        Node("Relu", ["x"], ["y"], {"alpha": Attribute("alpha", "FLOAT", 0.1)}, name="relu_0")
+    )
 
     with (
-        patch("onnx9000_cli.main.load_onnx", return_value=mock_graph),
-        patch("onnx9000.core.parser.core.load", return_value=mock_graph),
+        patch("onnx9000_cli.main.load_onnx", return_value=graph),
         patch("builtins.print") as mock_print,
     ):
         json_extract_cmd(args)
 
-    mock_print.assert_any_call('{\n  "test_attr": "value"\n}')
+    calls = mock_print.call_args_list
+    out_str = calls[-1][0][0]
+    parsed = json.loads(out_str)
+    assert parsed["name"] == "test_graph"
+    assert parsed["nodes"][0]["op_type"] == "Relu"
 
 
-def test_json_extract_cmd_file():
+def test_json_extract_cmd_file() -> None:
+    """Verify json_extract_cmd writes serialized JSON including Tensor raw bytes to a file."""
     args = argparse.Namespace(model="dummy.onnx", output="out.json")
-    mock_graph = MagicMock()
-    mock_graph.__dict__ = {"test_attr": b"buffer_data"}
+    graph = Graph("test_graph")
+    t = Tensor("w", (2,), DType.FLOAT32, data=b"buffer_data")
+    graph.add_tensor(t)
 
     m_open = mock_open()
     with (
-        patch("onnx9000_cli.main.load_onnx", return_value=mock_graph),
-        patch("onnx9000.core.parser.core.load", return_value=mock_graph),
+        patch("onnx9000_cli.main.load_onnx", return_value=graph),
         patch("builtins.open", m_open),
         patch("builtins.print"),
     ):
         json_extract_cmd(args)
 
     m_open.assert_called_once_with("out.json", "w")
-    # check that we wrote [Buffer: 11 bytes] for the bytes object
-    m_open().write.assert_called_once_with('{\n  "test_attr": "[Buffer: 11 bytes]"\n}')
+    written = m_open().write.call_args[0][0]
+    parsed = json.loads(written)
+    assert parsed["tensors"]["w"]["data"] == "[Buffer: 11 bytes]"
 
 
-def test_json_extract_cmd_set():
+def test_json_extract_cmd_set_and_fallback() -> None:
+    """Verify default_serializer handles sets, raw bytes, DynamicDim, and string fallback."""
     args = argparse.Namespace(model="dummy.onnx", output=None)
 
-    class DummyGraph:
-        def __init__(self):
-            self.my_set = {1, 2}
-            self._hidden = True
+    class CustomObj:
+        """Custom non-JSON object for fallback serialization."""
 
-    mock_graph = DummyGraph()
+        def __str__(self) -> str:
+            """Return string representation."""
+            return "CustomStr"
+
+    payload = {
+        "my_set": {"a"},
+        "raw": b"1234",
+        "dim": DynamicDim("B"),
+        "attr": Attribute("k", "INT", 5),
+        "custom": CustomObj(),
+    }
 
     with (
-        patch("onnx9000_cli.main.load_onnx", return_value=mock_graph),
-        patch("onnx9000.core.parser.core.load", return_value=mock_graph),
+        patch("onnx9000_cli.main.load_onnx", return_value=payload),
         patch("builtins.print") as mock_print,
     ):
         json_extract_cmd(args)
 
-    # Set gets converted to list
-    calls = mock_print.call_args_list
-    out = calls[-1][0][0]
-
-    # parse the json to check correctly regardless of order
-    out_dict = json.loads(out)
-    assert "my_set" in out_dict
-    assert isinstance(out_dict["my_set"], list)
-    assert set(out_dict["my_set"]) == {1, 2}
-    assert "_hidden" not in out_dict
-
-
-def test_json_extract_cmd_str_fallback():
-    args = argparse.Namespace(model="dummy.onnx", output=None)
-    mock_graph = MagicMock()
-
-    # give it something that has no __dict__, isn't bytes/set to hit str() fallback
-    # like a simple int or a custom class with __slots__
-    class Slotted:
-        __slots__ = ["val"]
-
-        def __init__(self):
-            self.val = 42
-
-        def __str__(self):
-            return "SlottedObj"
-
-    mock_graph.__dict__ = {"test_attr": Slotted()}
-
-    with (
-        patch("onnx9000_cli.main.load_onnx", return_value=mock_graph),
-        patch("onnx9000.core.parser.core.load", return_value=mock_graph),
-        patch("builtins.print") as mock_print,
-    ):
-        json_extract_cmd(args)
-
-    mock_print.assert_any_call('{\n  "test_attr": "SlottedObj"\n}')
+    out_str = mock_print.call_args_list[-1][0][0]
+    parsed = json.loads(out_str)
+    assert parsed["my_set"] == ["a"]
+    assert parsed["raw"] == "[Buffer: 4 bytes]"
+    assert parsed["dim"] == {"value": "B"}
+    assert parsed["attr"]["value"] == 5
+    assert parsed["custom"] == "CustomStr"

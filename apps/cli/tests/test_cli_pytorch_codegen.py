@@ -1,10 +1,13 @@
+"""Unit tests and verification suite for cli pytorch codegen functionality."""
+
 import argparse
 from unittest.mock import MagicMock, mock_open, patch
 
 from onnx9000_cli.main import pytorch_codegen_cmd
 
 
-def test_pytorch_codegen_cmd_stdout():
+def test_pytorch_codegen_cmd_stdout() -> None:
+    """Verify that pytorch codegen cmd stdout behaves as expected."""
     args = argparse.Namespace(model="dummy.onnx", output=None)
     mock_graph = MagicMock()
 
@@ -25,7 +28,8 @@ def test_pytorch_codegen_cmd_stdout():
     mock_print.assert_any_call("class MyModel(nn.Module): pass")
 
 
-def test_pytorch_codegen_cmd_file():
+def test_pytorch_codegen_cmd_file() -> None:
+    """Verify that pytorch codegen cmd file behaves as expected."""
     args = argparse.Namespace(model="dummy.onnx", output="out.py")
     mock_graph = MagicMock()
 

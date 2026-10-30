@@ -1,11 +1,8 @@
 """Simplify ONNX graphs through high-level API functions."""
 
-from __future__ import annotations
-
-"""Provides api.py module functionality."""
-
 import logging
 
+from onnx9000.core.exceptions import Onnx9000Error
 from onnx9000.core.ir import Graph
 from onnx9000.optimizer.simplifier.passes.constant_folding import constant_folding
 from onnx9000.optimizer.simplifier.passes.dce import dead_code_elimination
@@ -38,7 +35,7 @@ def _calculate_graph_size(graph: Graph) -> int:
     return size
 
 
-def check_disconnected_outputs(graph: Graph):
+def check_disconnected_outputs(graph: Graph) -> None:
     """Check and remove disconnected outputs from the ONNX graph."""
     producers = {}
     for node in graph.nodes:
@@ -71,7 +68,7 @@ def check_disconnected_outputs(graph: Graph):
             )
 
 
-def extract_scalars(graph: Graph):
+def extract_scalars(graph: Graph) -> None:
     """Extract and isolate scalar operations to simplify computation."""
     # Some ops require 1D arrays (like Concat, Slice, Split). But Add, Mul, Pow, etc. broadcast 0D.
     # In ONNX, if an initializer is 1D with size 1, it might be safer to keep it 1D unless we know consumers broadcast it well.
@@ -97,10 +94,9 @@ def extract_scalars(graph: Graph):
         if tensor and getattr(tensor, "shape", None) == (1,):
             safe_to_scalar = True
             for node in graph.nodes:
-                if init_name in node.inputs:
-                    if node.op_type not in elementwise_ops:
-                        safe_to_scalar = False
-                        break
+                if init_name in node.inputs and node.op_type not in elementwise_ops:
+                    safe_to_scalar = False
+                    break
             if safe_to_scalar:
                 tensor.shape = ()
                 import numpy as np
@@ -141,6 +137,13 @@ def simplify(
         max_iterations: Maximum number of simplification iterations to prevent infinite loops.
         log_json_summary: If True, logs a JSON summary of changes.
         size_limit_mb: If > 0, tracks model size limits.
+        unused_inputs_to_prune: Optional list of unused graph input names to prune.
+        input_shapes: Optional mapping of input tensor names to static or symbolic shapes.
+        strip_metadata: If True, strips docstrings and producer metadata from the graph.
+        nodes_to_preserve: Optional list of node names that must not be eliminated or fused.
+        tensor_types: Optional mapping of input tensor names to target dtype strings.
+        target_opset: Optional target ONNX opset version to set on the simplified graph.
+        sort_value_info: If True, sorts graph value_info entries alphabetically by name.
 
     Returns:
         The simplified Graph.
@@ -152,6 +155,8 @@ def simplify(
         skip_rules.append("constant_folding")
     if skip_fusions:
         skip_rules.append("fusions")
+    if skip_shape_inference:
+        skip_rules.append("shape_inference")
     if skip_fuse_bn:
         skip_rules.append("fuse_bn")
 
@@ -163,30 +168,14 @@ def simplify(
     if input_shapes:
         from onnx9000.core.ir import DynamicDim
 
-        for inp in graph.inputs:
-            inp_name = getattr(inp, "name", inp)
-            if inp_name in input_shapes:
-                new_shape = []
-                for dim in input_shapes[inp_name]:
-                    if isinstance(dim, str):
-                        new_shape.append(DynamicDim(dim))
-                    else:
-                        new_shape.append(int(dim))
-                if not isinstance(inp, str):
-                    inp.shape = tuple(new_shape)
-                if inp_name in graph.tensors:
-                    graph.tensors[inp_name].shape = tuple(new_shape)
-                logger.info(f"Overrode input shape for '{inp_name}' to {new_shape}")
-        for t_name, tensor in graph.tensors.items():
-            if t_name in input_shapes:
-                new_shape = []
-                for dim in input_shapes[t_name]:
-                    if isinstance(dim, str):
-                        new_shape.append(DynamicDim(dim))
-                    else:
-                        new_shape.append(int(dim))
-                tensor.shape = tuple(new_shape)
-                logger.info(f"Overrode tensor shape for '{t_name}' to {tensor.shape}")
+        for name, dims in input_shapes.items():
+            new_shape = tuple(DynamicDim(dim) if isinstance(dim, str) else int(dim) for dim in dims)
+            for inp in graph.inputs:
+                if getattr(inp, "name", inp) == name and not isinstance(inp, str):
+                    inp.shape = new_shape
+            if name in graph.tensors:
+                graph.tensors[name].shape = new_shape
+            logger.info(f"Overrode input shape for '{name}' to {new_shape}")
 
     if tensor_types:
         from onnx9000.core.dtypes import DType
@@ -208,32 +197,15 @@ def simplify(
             "BOOL": DType.BOOL,
             "BFLOAT16": DType.BFLOAT16,
         }
-        for inp in graph.inputs:
-            inp_name = getattr(inp, "name", inp)
-            if inp_name in tensor_types:
-                t_str = str(tensor_types[inp_name]).upper()
-                if t_str in type_mapping:
-                    if not isinstance(inp, str):
-                        inp.dtype = type_mapping[t_str]
-                    if inp_name in graph.tensors:
-                        graph.tensors[inp_name].dtype = type_mapping[t_str]
-                    logger.info(f"Overrode input type for '{inp_name}' to {type_mapping[t_str]}")
-        for t_name, tensor in graph.tensors.items():
-            if t_name in tensor_types:
-                t_str = str(tensor_types[t_name]).upper()
-                if t_str in type_mapping:
-                    tensor.dtype = type_mapping[t_str]
-                    logger.info(f"Overrode tensor type for '{t_name}' to {tensor.dtype}")
-        for t_name, tensor in graph.tensors.items():
-            if t_name in input_shapes:
-                new_shape = []
-                for dim in input_shapes[t_name]:
-                    if isinstance(dim, str):
-                        new_shape.append(DynamicDim(dim))
-                    else:
-                        new_shape.append(int(dim))
-                tensor.shape = tuple(new_shape)
-                logger.info(f"Overrode tensor shape for '{t_name}' to {tensor.shape}")
+        for name, t_val in tensor_types.items():
+            dtype = type_mapping.get(str(t_val).upper())
+            if dtype is not None:
+                for inp in graph.inputs:
+                    if getattr(inp, "name", inp) == name and not isinstance(inp, str):
+                        inp.dtype = dtype
+                if name in graph.tensors:
+                    graph.tensors[name].dtype = dtype
+                logger.info(f"Overrode input type for '{name}' to {dtype}")
 
     initial_size = _calculate_graph_size(graph)
     if size_limit_mb > 0 and initial_size > size_limit_mb * 1024 * 1024:
@@ -270,7 +242,22 @@ def simplify(
 
             try:
                 infer_shapes_and_types(graph)
-            except Exception as e:
+            except (
+                Onnx9000Error,
+                OSError,
+                ValueError,
+                TypeError,
+                RuntimeError,
+                KeyError,
+                IndexError,
+                AttributeError,
+                ImportError,
+                LookupError,
+                ArithmeticError,
+                BufferError,
+                AssertionError,
+                StopIteration,
+            ) as e:
                 import traceback
 
                 logger.warning(f"Shape inference failed: {e}\n{traceback.format_exc()}")
@@ -298,7 +285,7 @@ def simplify(
                 new_opsets[domain] = target_opset
                 logger.info(f"Target Opset overriden to {target_opset} for domain ''")
 
-    if target_opset is not None and "" not in new_opsets and "" in used_domains:
+    if target_opset is not None and "" not in new_opsets:
         new_opsets[""] = target_opset
 
     graph.opset_imports = new_opsets

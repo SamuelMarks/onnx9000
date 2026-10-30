@@ -1,8 +1,8 @@
 """Ops matmul."""
 
 import ctypes
-from typing import Any
 
+from onnx9000.core.exceptions import BackendExecutionError
 from onnx9000.tensorrt.enums import MatrixOperation
 from onnx9000.tensorrt.ffi import ffi
 from onnx9000.tensorrt.network import INetworkDefinition, ITensor
@@ -10,11 +10,15 @@ from onnx9000.tensorrt.registry import register_op
 
 
 @register_op("", "MatMul")
-def trt_matmul(network: INetworkDefinition, node: Any, tensors: dict[str, ITensor]):
+def trt_matmul(
+    network: INetworkDefinition,
+    node: int | float | str | bool | bytes | list | dict | tuple | None,
+    tensors: dict[str, ITensor],
+) -> None:
     """Execute trt_matmul."""
     add_matmul_func = getattr(ffi.lib, "addMatrixMultiply", None)
     if not add_matmul_func:
-        raise RuntimeError("addMatrixMultiply not found")
+        raise BackendExecutionError("addMatrixMultiply not found")
 
     in1_name = node.inputs[0]
     in2_name = node.inputs[1]
@@ -43,7 +47,7 @@ def trt_matmul(network: INetworkDefinition, node: Any, tensors: dict[str, ITenso
         ctypes.c_int32(opB.value),
     )
     if not ptr:
-        raise RuntimeError("Failed to add MatMul")
+        raise BackendExecutionError("Failed to add MatMul")
 
     out_name = node.outputs[0]
     tensors[out_name] = ITensor(ptr, out_name)

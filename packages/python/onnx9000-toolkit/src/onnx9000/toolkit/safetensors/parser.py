@@ -7,13 +7,8 @@ import os
 import struct
 import sys
 from collections.abc import Iterator
-from typing import Any, Optional, Union
 
-
-class SafetensorsError(Exception):
-    """Base exception for all safetensors-related errors."""
-
-    __dummy__ = True
+from onnx9000.core.exceptions import Onnx9000Error, SafetensorsError
 
 
 class SafetensorsHeaderTooLargeError(SafetensorsError):
@@ -144,7 +139,7 @@ class SafeTensors:
         data: str | os.PathLike | bytes | io.IOBase,
         mmap_hint: bool = True,
         verify_hash: str | None = None,
-    ):
+    ) -> None:
         """Initialize the SafeTensors reader.
 
         Args:
@@ -175,16 +170,31 @@ class SafeTensors:
                 self.fd = os.open(self.filename, os.O_RDONLY)
                 self.mm = mmap.mmap(self.fd, 0, access=mmap.ACCESS_READ)
             except OSError as e:
-                raise SafetensorsError(f"Failed to map file {self.filename}: {e}")
+                raise SafetensorsError(f"Failed to map file {self.filename}: {e}") from e
             except MemoryError as e:
                 raise SafetensorsError(
                     f"Failed to map file {self.filename} (insufficient address space/RAM): {e}"
-                )
+                ) from e
 
             if mmap_hint and hasattr(mmap, "MADV_WILLNEED"):
                 try:
                     self.mm.madvise(mmap.MADV_WILLNEED)
-                except Exception:
+                except (
+                    Onnx9000Error,
+                    OSError,
+                    ValueError,
+                    TypeError,
+                    RuntimeError,
+                    KeyError,
+                    IndexError,
+                    AttributeError,
+                    ImportError,
+                    LookupError,
+                    ArithmeticError,
+                    BufferError,
+                    AssertionError,
+                    StopIteration,
+                ):
                     return None
             self.data_view = memoryview(self.mm)
         elif isinstance(data, bytes):
@@ -209,7 +219,7 @@ class SafeTensors:
                 self.buffer = data.read()
                 self.data_view = memoryview(self.buffer)
         else:
-            raise TypeError("data must be a path, bytes, or file-like object")
+            raise SafetensorsError("data must be a path, bytes, or file-like object")
 
         if verify_hash:
             import hashlib
@@ -239,7 +249,7 @@ class SafeTensors:
             header_str = header_bytes.tobytes().decode("utf-8")
         except UnicodeDecodeError as e:
             self._close()
-            raise SafetensorsInvalidHeaderError(f"Invalid UTF-8 header: {e}")
+            raise SafetensorsInvalidHeaderError(f"Invalid UTF-8 header: {e}") from e
 
         try:
             self.header = json.loads(header_str)
@@ -248,16 +258,18 @@ class SafeTensors:
                 raise SafetensorsInvalidJSONError("JSON header must be a dictionary/object")
         except json.JSONDecodeError as e:
             self._close()
-            raise SafetensorsInvalidJSONError(f"Invalid JSON header: {e}")
+            raise SafetensorsInvalidJSONError(f"Invalid JSON header: {e}") from e
         except RecursionError as e:
             self._close()
-            raise SafetensorsInvalidJSONError(f"JSON deeply nested recursion limits reached: {e}")
+            raise SafetensorsInvalidJSONError(
+                f"JSON deeply nested recursion limits reached: {e}"
+            ) from e
 
         self.metadata = self.header.pop("__metadata__", {})
         self.metadata_length = len(self.metadata)
 
         # XSS Protection
-        for k, v in self.metadata.items():
+        for _k, v in self.metadata.items():
             if isinstance(v, str) and ("<script" in v.lower() or "javascript:" in v.lower()):
                 self._close()
                 raise SafetensorsError("Executable script tags detected in metadata")
@@ -272,7 +284,7 @@ class SafeTensors:
         self.tensors = {}
         self._validate_header()
 
-    def _validate_header(self):
+    def _validate_header(self) -> None:
         """Validate the safetensors header for consistency and correctness."""
         seen_regions = []
         for name, info in self.header.items():
@@ -356,7 +368,7 @@ class SafeTensors:
 
         """
         if not isinstance(name, str):
-            raise TypeError(f"Key must be string, got {type(name)}")
+            raise SafetensorsError(f"Key must be string, got {type(name)}")
         if name not in self.tensors:
             raise KeyError(f"Tensor {name} not found")
 
@@ -386,7 +398,22 @@ class SafeTensors:
         if dtype in struct_char_map and shape:
             try:
                 view = view.cast(struct_char_map[dtype], shape=tuple(shape))
-            except Exception:
+            except (
+                Onnx9000Error,
+                OSError,
+                ValueError,
+                TypeError,
+                RuntimeError,
+                KeyError,
+                IndexError,
+                AttributeError,
+                ImportError,
+                LookupError,
+                ArithmeticError,
+                BufferError,
+                AssertionError,
+                StopIteration,
+            ):
                 _ignore = True  # ignore if python doesn't support the shape cast
 
         return view
@@ -442,7 +469,22 @@ class SafeTensors:
                         import logging
 
                         logging.getLogger(__name__).warning(f"mlock failed for tensor {name}")
-            except Exception as e:
+            except (
+                Onnx9000Error,
+                OSError,
+                ValueError,
+                TypeError,
+                RuntimeError,
+                KeyError,
+                IndexError,
+                AttributeError,
+                ImportError,
+                LookupError,
+                ArithmeticError,
+                BufferError,
+                AssertionError,
+                StopIteration,
+            ) as e:
                 import logging
 
                 logging.getLogger(__name__).debug(f"Could not mlock tensor {name}: {e}")
@@ -456,7 +498,22 @@ class SafeTensors:
                     import logging
 
                     logging.getLogger(__name__).warning(f"VirtualLock failed for tensor {name}")
-            except Exception as e:
+            except (
+                Onnx9000Error,
+                OSError,
+                ValueError,
+                TypeError,
+                RuntimeError,
+                KeyError,
+                IndexError,
+                AttributeError,
+                ImportError,
+                LookupError,
+                ArithmeticError,
+                BufferError,
+                AssertionError,
+                StopIteration,
+            ) as e:
                 import logging
 
                 logging.getLogger(__name__).debug(f"Could not VirtualLock tensor {name}: {e}")
@@ -486,7 +543,9 @@ class SafeTensors:
             info["data_offsets"][1] - info["data_offsets"][0] for info in self.tensors.values()
         )
 
-    def get_onnx9000_tensor(self, name: str):
+    def get_onnx9000_tensor(
+        self, name: str
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Map a safetensor to a framework-agnostic onnx9000.core.ir.Tensor.
 
         Args:
@@ -504,7 +563,7 @@ class SafeTensors:
             from onnx9000.core.dtypes import DType
             from onnx9000.core.ir import Tensor
         except ImportError:
-            raise ImportError("onnx9000.core is not available for get_onnx9000_tensor()")
+            raise ImportError("onnx9000.core is not available for get_onnx9000_tensor()") from None
 
         _dtype_map = {
             "F64": DType.FLOAT64,
@@ -539,7 +598,9 @@ class SafeTensors:
             data=data,
         )
 
-    def get_numpy(self, name: str, downcast_f16: bool = False, quantize_int8: bool = False):
+    def get_numpy(
+        self, name: str, downcast_f16: bool = False, quantize_int8: bool = False
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Convert a tensor to a numpy array.
 
         Args:
@@ -558,7 +619,7 @@ class SafeTensors:
         try:
             import numpy as np
         except ImportError:
-            raise ImportError("numpy is not available for get_numpy()")
+            raise ImportError("numpy is not available for get_numpy()") from None
 
         _np_dtypes = {
             "F64": np.dtype("<f8"),
@@ -586,9 +647,7 @@ class SafeTensors:
         arr = np.frombuffer(view, dtype=_np_dtypes[dtype]).reshape(shape)
         arr.flags.writeable = False
 
-        if downcast_f16 and arr.dtype == np.float32:
-            arr = arr.astype(np.float16)
-        elif downcast_f16 and arr.dtype == np.float64:
+        if (downcast_f16 and arr.dtype == np.float32) or (downcast_f16 and arr.dtype == np.float64):
             arr = arr.astype(np.float16)
 
         if quantize_int8 and arr.dtype in (np.float32, np.float16):
@@ -632,7 +691,15 @@ class SafeTensors:
         """
         return key in self.tensors
 
-    def _close(self):
+    def __iter__(self) -> Iterator[str]:
+        """Iterate over tensor names in the file.
+
+        Returns:
+            An iterator over tensor names.
+        """
+        return iter(self.keys())
+
+    def _close(self) -> None:
         """Close the file and release resources."""
         if hasattr(self, "data_view") and self.data_view is not None:
             self.data_view.release()
@@ -647,20 +714,28 @@ class SafeTensors:
             os.close(self.fd)
             self.fd = None
 
-    def __del__(self):
+    def __del__(self) -> None:
         """Clean up resources when the object is deleted."""
         self._close()
 
-    def __enter__(self):
+    def __enter__(self) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Enter the context manager."""
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(
+        self,
+        exc_type: int | float | str | bool | bytes | list | dict | tuple | None,
+        exc_val: int | float | str | bool | bytes | list | dict | tuple | None,
+        exc_tb: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
         """Exit the context manager and close resources."""
         self._close()
 
 
-def save(tensors: dict[str, Any], metadata: dict[str, str] | None = None) -> bytes:
+def save(
+    tensors: dict[str, int | float | str | bool | bytes | list | dict | tuple | None],
+    metadata: dict[str, str] | None = None,
+) -> bytes:
     """Serialize tensors and return raw bytes.
 
     Args:
@@ -687,7 +762,7 @@ def save(tensors: dict[str, Any], metadata: dict[str, str] | None = None) -> byt
 
     for name, data in tensors.items():
         if not isinstance(name, str):
-            raise TypeError(f"Dictionary keys must be strings, got {type(name)}")
+            raise SafetensorsError(f"Dictionary keys must be strings, got {type(name)}")
         if name in header:
             raise SafetensorsDuplicateKeyError(f"Duplicate key {name}")
 
@@ -793,11 +868,11 @@ def save(tensors: dict[str, Any], metadata: dict[str, str] | None = None) -> byt
 
 
 def save_file(
-    tensors: dict[str, Any],
+    tensors: dict[str, int | float | str | bool | bytes | list | dict | tuple | None],
     filename: str,
     metadata: dict[str, str] | None = None,
     overwrite: bool = True,
-):
+) -> None:
     """Save tensors to a file in safetensors format.
 
     Args:
@@ -818,7 +893,7 @@ def save_file(
 
 def load_file(
     filename: str, prefix: str = "", pattern: str | None = None, device: str = "cpu"
-) -> dict[str, Any]:
+) -> dict[str, int | float | str | bool | bytes | list | dict | tuple | None]:
     """Load tensors from a safetensors file.
 
     Args:
@@ -838,9 +913,9 @@ def load_file(
     regex = re.compile(pattern) if pattern else None
 
     with SafeTensors(filename) as st:
-        for name in st.keys():
+        for name in st:
             if not isinstance(name, str):
-                raise TypeError(f"Dictionary keys must be strings, got {type(name)}")
+                raise SafetensorsError(f"Dictionary keys must be strings, got {type(name)}")
 
             if regex and not regex.match(name):
                 continue
@@ -851,7 +926,9 @@ def load_file(
     return result
 
 
-def load(data: bytes, prefix: str = "", pattern: str | None = None) -> dict[str, Any]:
+def load(
+    data: bytes, prefix: str = "", pattern: str | None = None
+) -> dict[str, int | float | str | bool | bytes | list | dict | tuple | None]:
     """Load tensors from safetensors bytes.
 
     Args:
@@ -869,9 +946,9 @@ def load(data: bytes, prefix: str = "", pattern: str | None = None) -> dict[str,
     regex = re.compile(pattern) if pattern else None
 
     with SafeTensors(data) as st:
-        for name in st.keys():
+        for name in st:
             if not isinstance(name, str):
-                raise TypeError(f"Dictionary keys must be strings, got {type(name)}")
+                raise SafetensorsError(f"Dictionary keys must be strings, got {type(name)}")
             if regex and not regex.match(name):
                 continue
             new_name = prefix + name
@@ -932,7 +1009,9 @@ def get_tensor(filename: str, key: str) -> memoryview:
         return memoryview(bytes(st.get_tensor(key)))
 
 
-def safe_open(filename: str, framework: str = "pt", device: str = "cpu"):
+def safe_open(
+    filename: str, framework: str = "pt", device: str = "cpu"
+) -> int | float | str | bool | bytes | list | dict | tuple | None:
     """Open a safetensors file (emulates HuggingFace API).
 
     Args:
@@ -950,7 +1029,9 @@ def safe_open(filename: str, framework: str = "pt", device: str = "cpu"):
 class SafeTensorsSharded:
     """A reader for sharded safetensors models."""
 
-    def __init__(self, index_filename: str):
+    _files: dict[str, SafeTensors] = {}
+
+    def __init__(self, index_filename: str) -> None:
         """Initialize the sharded safetensors reader.
 
         Args:
@@ -960,6 +1041,7 @@ class SafeTensorsSharded:
             SafetensorsError: If the index file is invalid.
 
         """
+        self._files = {}
         self.index_filename = index_filename
         self.base_dir = os.path.dirname(index_filename)
 
@@ -969,7 +1051,6 @@ class SafeTensorsSharded:
 
         self.metadata = self.index.get("metadata", {})
         self.weight_map = self.index.get("weight_map", {})
-        self._files = {}
 
     def _get_file(self, filename: str) -> SafeTensors:
         """Get a SafeTensors reader for a specific shard file.
@@ -1011,7 +1092,7 @@ class SafeTensorsSharded:
         st = self._get_file(filename)
         return st.get_tensor(name)
 
-    def get_numpy(self, name: str):
+    def get_numpy(self, name: str) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Get a tensor from the sharded model as a numpy array.
 
         Args:
@@ -1064,32 +1145,37 @@ class SafeTensorsSharded:
         """
         return self.get_tensor(key)
 
-    def _close(self):
+    def _close(self) -> None:
         """Close all shard files."""
         for st in self._files.values():
             st._close()
         self._files.clear()
 
-    def __del__(self):
+    def __del__(self) -> None:
         """Clean up resources when the object is deleted."""
         self._close()
 
-    def __enter__(self):
+    def __enter__(self) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Enter the context manager."""
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(
+        self,
+        exc_type: int | float | str | bool | bytes | list | dict | tuple | None,
+        exc_val: int | float | str | bool | bytes | list | dict | tuple | None,
+        exc_tb: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
         """Exit the context manager and close resources."""
         self._close()
 
 
 def save_sharded(
-    tensors: dict[str, Any],
+    tensors: dict[str, int | float | str | bool | bytes | list | dict | tuple | None],
     base_dir: str,
     metadata: dict[str, str] | None = None,
     max_shard_size: int = 10 * 1024 * 1024 * 1024,
     prefix: str = "model",
-):
+) -> None:
     """Save tensors as a sharded safetensors model.
 
     Args:
@@ -1133,7 +1219,7 @@ def save_sharded(
         shard_path = os.path.join(base_dir, shard_filename)
         save_file(shard_tensors, shard_path, metadata if i == 0 else None)
 
-        for name in shard_tensors.keys():
+        for name in shard_tensors:
             weight_map[name] = shard_filename
 
     index_data = {"metadata": metadata or {}, "weight_map": weight_map}

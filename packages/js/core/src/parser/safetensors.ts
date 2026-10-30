@@ -1,7 +1,16 @@
 /**
+ * @fileoverview safetensors module for core.
+ */
+import { Onnx9000Error } from '../exceptions.js';
+
+/**
  * Error thrown for general safetensors issues.
  */
-export class SafetensorsError extends Error {
+export class SafetensorsError extends Onnx9000Error {
+  /**
+   * Initializes a new `SafetensorsError` instance.
+   * @param message Parameter `message`.
+   */
   constructor(message: string) {
     super(message);
     this.name = this.constructor.name;
@@ -61,19 +70,19 @@ export class SafetensorsFileTooSmallError extends SafetensorsError {}
  * Supported data types in safetensors format.
  */
 export type Dtype =
-  | "F64"
-  | "F32"
-  | "F16"
-  | "BF16"
-  | "I64"
-  | "I32"
-  | "I16"
-  | "I8"
-  | "U64"
-  | "U32"
-  | "U16"
-  | "U8"
-  | "BOOL";
+  | 'F64'
+  | 'F32'
+  | 'F16'
+  | 'BF16'
+  | 'I64'
+  | 'I32'
+  | 'I16'
+  | 'I8'
+  | 'U64'
+  | 'U32'
+  | 'U16'
+  | 'U8'
+  | 'BOOL';
 
 /**
  * Sizes in bytes for each supported dtype.
@@ -101,14 +110,11 @@ const DTYPE_SIZES: Record<Dtype, number> = {
  */
 function calculateVolume(shape: number[]): number {
   if (!Array.isArray(shape)) {
-    throw new SafetensorsShapeMismatchError("Shape must be an array");
+    throw new SafetensorsShapeMismatchError('Shape must be an array');
   }
   let vol = 1;
   for (const dim of shape) {
-    if (dim < 0)
-      throw new SafetensorsShapeMismatchError(
-        `Negative dimension found: ${dim}`,
-      );
+    if (dim < 0) throw new SafetensorsShapeMismatchError(`Negative dimension found: ${dim}`);
     if (dim > Number.MAX_SAFE_INTEGER)
       throw new SafetensorsShapeMismatchError(`Dimension too large: ${dim}`);
     vol *= dim;
@@ -120,8 +126,11 @@ function calculateVolume(shape: number[]): number {
  * Metadata for a single tensor in a safetensors file.
  */
 export interface TensorInfo {
+  /** Property `dtype`. */
   dtype: Dtype;
+  /** Property `shape`. */
   shape: number[];
+  /** Property `data_offsets`. */
   data_offsets: [number, number];
 }
 
@@ -129,7 +138,12 @@ export interface TensorInfo {
  * Interface for Pyodide or Emscripten modules.
  */
 export interface EmscriptenModule {
+  /**
+   * Method `_malloc`.
+   * @param size Parameter `size`.
+   */
   _malloc(size: number): number;
+  /** Property `HEAPU8`. */
   HEAPU8: Uint8Array;
 }
 
@@ -137,7 +151,9 @@ export interface EmscriptenModule {
  * Interface for Pyodide instance.
  */
 export interface PyodideInstance {
+  /** Property `_module`. */
   _module: EmscriptenModule;
+  /** Property `HEAPU8`. */
   HEAPU8: Uint8Array;
 }
 
@@ -145,6 +161,10 @@ export interface PyodideInstance {
  * Interface for Emscripten FS.
  */
 export interface EmscriptenFS {
+  /**
+   * Method `lookupPath`.
+   * @param path Parameter `path`.
+   */
   lookupPath(path: string): { node: { contents: Uint8Array } };
 }
 
@@ -152,29 +172,30 @@ export interface EmscriptenFS {
  * Represents a parsed safetensors file.
  */
 export class SafeTensors {
+  /** Property `metadata` of `SafeTensors`. */
   public readonly metadata: Record<string, string>;
+  /** Property `metadataLength` of `SafeTensors`. */
   public readonly metadataLength: number;
+  /** Property `tensors` of `SafeTensors`. */
   public readonly tensors: Record<string, TensorInfo>;
+  /** Property `buffer` of `SafeTensors`. */
   private readonly buffer: ArrayBuffer | SharedArrayBuffer;
+  /** Property `headerSize` of `SafeTensors`. */
   private readonly headerSize: number;
-  private readonly endiannessOverride?: "LE" | "BE" | undefined;
+  /** Property `endiannessOverride` of `SafeTensors`. */
+  private readonly endiannessOverride?: 'LE' | 'BE' | undefined;
 
   /**
    * Initializes SafeTensors from a buffer.
    * @param buffer The file content buffer
    * @param endianness Optional endianness override for testing
    */
-  constructor(
-    buffer: ArrayBuffer | SharedArrayBuffer,
-    endianness?: "LE" | "BE",
-  ) {
+  constructor(buffer: ArrayBuffer | SharedArrayBuffer, endianness?: 'LE' | 'BE') {
     if (buffer.byteLength === 0) {
-      throw new SafetensorsFileEmptyError("File is empty");
+      throw new SafetensorsFileEmptyError('File is empty');
     }
     if (buffer.byteLength < 8) {
-      throw new SafetensorsFileTooSmallError(
-        "File too small to contain header size",
-      );
+      throw new SafetensorsFileTooSmallError('File too small to contain header size');
     }
 
     this.buffer = buffer;
@@ -185,22 +206,18 @@ export class SafeTensors {
     // JavaScript bitwise operations are 32-bit, so we use BigInt
     const headerSizeBig = view.getBigUint64(0, true);
     if (headerSizeBig > BigInt(100 * 1024 * 1024)) {
-      throw new SafetensorsHeaderTooLargeError(
-        "Header size exceeds 100MB limit",
-      );
+      throw new SafetensorsHeaderTooLargeError('Header size exceeds 100MB limit');
     }
     this.headerSize = Number(headerSizeBig);
 
     if (this.headerSize + 8 > buffer.byteLength) {
-      throw new SafetensorsOutOfBoundsError(
-        "Header size exceeds file boundaries",
-      );
+      throw new SafetensorsOutOfBoundsError('Header size exceeds file boundaries');
     }
 
     const headerBytes = new Uint8Array(buffer, 8, this.headerSize);
     let headerStr: string;
     try {
-      const decoder = new TextDecoder("utf-8", { fatal: true });
+      const decoder = new TextDecoder('utf-8', { fatal: true });
       headerStr = decoder.decode(headerBytes);
     } catch (e) {
       throw new SafetensorsInvalidHeaderError(`Invalid UTF-8 header: ${e}`);
@@ -208,28 +225,22 @@ export class SafeTensors {
 
     let headerObj: Record<string, TensorInfo | Record<string, string>>;
     try {
-      headerObj = JSON.parse(headerStr);
-      if (
-        typeof headerObj !== "object" ||
-        headerObj === null ||
-        Array.isArray(headerObj)
-      ) {
-        throw new Error("Header must be a dictionary/object");
-      }
+      headerObj = JSON.parse(headerStr) as Record<string, TensorInfo | Record<string, string>>;
     } catch (e) {
       throw new SafetensorsInvalidJSONError(`Invalid JSON header: ${e}`);
+    }
+    if (typeof headerObj !== 'object' || headerObj === null || Array.isArray(headerObj)) {
+      throw new SafetensorsInvalidJSONError('Header must be a dictionary/object');
     }
 
     this.metadata = (headerObj.__metadata__ as Record<string, string>) || {};
     this.metadataLength = Object.keys(this.metadata).length;
 
     for (const [_k, v] of Object.entries(this.metadata)) {
-      if (typeof v === "string") {
+      if (typeof v === 'string') {
         const lower = v.toLowerCase();
-        if (lower.includes("<script") || lower.includes("javascript:")) {
-          throw new SafetensorsError(
-            "Executable script tags detected in metadata",
-          );
+        if (lower.includes('<script') || lower.includes('javascript:')) {
+          throw new SafetensorsError('Executable script tags detected in metadata');
         }
       }
     }
@@ -242,9 +253,7 @@ export class SafeTensors {
     for (const [name, infoRaw] of Object.entries(headerObj)) {
       const info = infoRaw as TensorInfo;
       if (this.tensors[name]) {
-        throw new SafetensorsDuplicateKeyError(
-          `Duplicate tensor name: ${name}`,
-        );
+        throw new SafetensorsDuplicateKeyError(`Duplicate tensor name: ${name}`);
       }
 
       const dtype = info.dtype;
@@ -258,21 +267,15 @@ export class SafeTensors {
       const end = offsets[1];
 
       if (begin > end) {
-        throw new SafetensorsInvalidOffsetError(
-          `Invalid offsets: begin ${begin} > end ${end}`,
-        );
+        throw new SafetensorsInvalidOffsetError(`Invalid offsets: begin ${begin} > end ${end}`);
       }
       if (begin % 8 !== 0) {
-        throw new SafetensorsAlignmentError(
-          `Offset begin ${begin} is not 8-byte aligned`,
-        );
+        throw new SafetensorsAlignmentError(`Offset begin ${begin} is not 8-byte aligned`);
       }
 
       const absEnd = 8 + this.headerSize + end;
       if (absEnd > buffer.byteLength) {
-        throw new SafetensorsOutOfBoundsError(
-          `Data region for ${name} exceeds file boundaries`,
-        );
+        throw new SafetensorsOutOfBoundsError(`Data region for ${name} exceeds file boundaries`);
       }
 
       const expectedSize = calculateVolume(shape) * DTYPE_SIZES[dtype];
@@ -289,10 +292,10 @@ export class SafeTensors {
     // Check overlaps
     seenRegions.sort((a, b) => a[0] - b[0]);
     for (let i = 0; i < seenRegions.length - 1; i++) {
-      const current = seenRegions[i];
-      const next = seenRegions[i + 1];
-      if (current && next && current[1] > next[0]) {
-        throw new SafetensorsOverlapError("Tensor data regions overlap");
+      const current = seenRegions[i] as [number, number];
+      const next = seenRegions[i + 1] as [number, number];
+      if (current[1] > next[0]) {
+        throw new SafetensorsOverlapError('Tensor data regions overlap');
       }
     }
   }
@@ -305,18 +308,13 @@ export class SafeTensors {
    */
   public getTensor(name: string, copy: boolean = false): Uint8Array {
     if (!this.tensors[name]) {
-      throw new Error(`Tensor ${name} not found`);
+      throw new SafetensorsError(`Tensor ${name} not found`);
     }
 
     const info = this.tensors[name];
     const [begin, end] = info.data_offsets;
     const absBegin = 8 + this.headerSize + begin;
     const length = end - begin;
-
-    // JS DataView / ArrayBuffer has 2GB-4GB limits in some engines natively
-    if (absBegin + length > Number.MAX_SAFE_INTEGER) {
-      throw new SafetensorsOutOfBoundsError(`Offset > MAX_SAFE_INTEGER bounds`);
-    }
 
     if (copy) {
       return new Uint8Array(this.buffer.slice(absBegin, absBegin + length));
@@ -345,76 +343,69 @@ export class SafeTensors {
     | Float32Array
     | Float64Array {
     const info = this.tensors[name];
-    if (!info) throw new Error(`Tensor ${name} not found`);
+    if (!info) throw new SafetensorsError(`Tensor ${name} not found`);
     const uint8 = this.getTensor(name, copy);
     let { buffer, byteOffset, byteLength } = uint8;
 
     const enforceAlignment = (elementSize: number) => {
       const currentEndianness = this.endiannessOverride || getEndianness();
-      if (
-        byteOffset % elementSize !== 0 ||
-        (currentEndianness === "BE" && elementSize > 1)
-      ) {
+      if (byteOffset % elementSize !== 0 || (currentEndianness === 'BE' && elementSize > 1)) {
         // Unaligned buffer fallback or Big-Endian fallback: explicitly copy to aligned array
-        const slice = new Uint8Array(
-          buffer.slice(byteOffset, byteOffset + byteLength),
-        );
+        const slice = new Uint8Array(buffer.slice(byteOffset, byteOffset + byteLength));
         buffer = slice.buffer;
         byteOffset = slice.byteOffset;
         byteLength = slice.byteLength;
 
-        if (currentEndianness === "BE" && elementSize > 1) {
+        if (currentEndianness === 'BE' && elementSize > 1) {
           swapEndianness(buffer, byteOffset, byteLength, elementSize);
         }
       }
     };
 
     switch (info.dtype as string) {
-      case "F64":
+      case 'F64':
         enforceAlignment(8);
         return new Float64Array(buffer, byteOffset, byteLength / 8);
-      case "F32":
+      case 'F32':
         enforceAlignment(4);
         return new Float32Array(buffer, byteOffset, byteLength / 4);
-      case "I32":
+      case 'I32':
         enforceAlignment(4);
         return new Int32Array(buffer, byteOffset, byteLength / 4);
-      case "I16":
+      case 'I16':
         enforceAlignment(2);
         return new Int16Array(buffer, byteOffset, byteLength / 2);
-      case "I8":
+      case 'I8':
         return new Int8Array(buffer, byteOffset, byteLength);
-      case "U32":
+      case 'U32':
         enforceAlignment(4);
         return new Uint32Array(buffer, byteOffset, byteLength / 4);
-      case "U16":
+      case 'U16':
         enforceAlignment(2);
         return new Uint16Array(buffer, byteOffset, byteLength / 2);
-      case "U8":
+      case 'U8':
         return new Uint8Array(buffer, byteOffset, byteLength);
-      case "I64":
+      case 'I64':
         enforceAlignment(8);
         return new BigInt64Array(buffer, byteOffset, byteLength / 8);
-      case "U64":
+      case 'U64':
         enforceAlignment(8);
         return new BigUint64Array(buffer, byteOffset, byteLength / 8);
-      case "F16":
+      case 'F16':
         enforceAlignment(2);
         return new Uint16Array(buffer, byteOffset, byteLength / 2);
-      case "BF16":
+      case 'BF16':
         enforceAlignment(2);
         return new Uint16Array(buffer, byteOffset, byteLength / 2);
-      case "BOOL":
+      case 'BOOL':
         return new Uint8Array(buffer, byteOffset, byteLength);
-      case "C64":
-      case "C128":
+      case 'C64':
+      case 'C128':
         throw new SafetensorsInvalidDtypeError(
           `Complex types (${info.dtype}) are not currently supported by standard safetensors JS parser.`,
         );
       default:
-        throw new SafetensorsInvalidDtypeError(
-          `Unsupported or proprietary dtype: ${info.dtype}`,
-        );
+        throw new SafetensorsInvalidDtypeError(`Unsupported or proprietary dtype: ${info.dtype}`);
     }
   }
 
@@ -433,32 +424,31 @@ export class SafeTensors {
  * @returns Header information
  */
 export async function fetchSafetensorsHeader(url: string) {
-  if (url.startsWith("hf://")) {
-    url = url.replace("hf://", "https://huggingface.co/");
-    const parts = (url.split("huggingface.co/")[1] || "").split("/");
-    if (parts.length >= 3 && !parts.includes("resolve")) {
+  if (url.startsWith('hf://')) {
+    url = url.replace('hf://', 'https://huggingface.co/');
+    const afterDomain = url.slice('https://huggingface.co/'.length);
+    const parts = afterDomain.split('/');
+    if (parts.length >= 3 && !parts.includes('resolve')) {
       const user = parts[0];
       const repo = parts[1];
-      const file = parts.slice(2).join("/");
+      const file = parts.slice(2).join('/');
       url = `https://huggingface.co/${user}/${repo}/resolve/main/${file}`;
     }
   }
-  const headers: Record<string, string> = { Range: "bytes=0-7" };
-  if (typeof process !== "undefined" && process.env && process.env.HF_TOKEN) {
+  const headers: Record<string, string> = { Range: 'bytes=0-7' };
+  if (typeof process !== 'undefined' && process.env && process.env.HF_TOKEN) {
     headers.Authorization = `Bearer ${process.env.HF_TOKEN}`;
   }
 
   let cache: Cache | undefined;
-  if (typeof caches !== "undefined") {
+  if (typeof caches !== 'undefined') {
     try {
-      cache = await caches.open("onnx9000-safetensors");
-      const cachedRes = await cache.match(
-        new Request(url, { headers: { Range: "bytes=0-7" } }),
-      );
+      cache = await caches.open('onnx9000-safetensors');
+      const cachedRes = await cache.match(new Request(url, { headers: { Range: 'bytes=0-7' } }));
       if (cachedRes) {
         // Ignore, we will rely on HTTP Cache-Control or specific Range caching down below.
       }
-    } catch (_e) {
+    } catch {
       // Ignore Cache API errors in environments where it's unavailable (like opaque Origins)
     }
   }
@@ -475,9 +465,9 @@ export async function fetchSafetensorsHeader(url: string) {
 
     // Cache full file into CacheStorage for IndexedDB equivalence without external indexeddb packages
     if (cache) {
-      try {
-        await cache.put(new Request(url), new Response(fullBuf));
-      } catch (_e) {}
+      await Promise.resolve(cache.put(new Request(url), new Response(fullBuf))).catch(
+        () => undefined,
+      );
     }
 
     // Emulate streaming by extracting everything from the downloaded buffer
@@ -491,12 +481,11 @@ export async function fetchSafetensorsHeader(url: string) {
     };
   }
 
-  if (!res8.ok)
-    throw new Error(`Failed to fetch header size: ${res8.statusText}`);
+  if (!res8.ok) throw new SafetensorsError(`Failed to fetch header size: ${res8.statusText}`);
 
   // Parse Accept-Ranges
-  const acceptRanges = res8.headers.get("Accept-Ranges");
-  if (acceptRanges === "none") {
+  const acceptRanges = res8.headers.get('Accept-Ranges');
+  if (acceptRanges === 'none') {
     console.warn(
       `[onnx9000] Server at ${url} explicitly rejects Range requests. Proceeding with caution, might need full download.`,
     );
@@ -506,27 +495,23 @@ export async function fetchSafetensorsHeader(url: string) {
   const view = new DataView(buf8);
   const headerSizeBig = view.getBigUint64(0, true);
   if (headerSizeBig > BigInt(100 * 1024 * 1024))
-    throw new SafetensorsHeaderTooLargeError("Header size exceeds 100MB");
+    throw new SafetensorsHeaderTooLargeError('Header size exceeds 100MB');
   const headerSize = Number(headerSizeBig);
 
   headers.Range = `bytes=8-${7 + headerSize}`;
   const resHeader = await fetch(url, { headers });
-  if (!resHeader.ok) throw new Error(`Failed to fetch header`);
+  if (!resHeader.ok) throw new SafetensorsError(`Failed to fetch header`);
   const bufHeader = await resHeader.arrayBuffer();
-  const decoder = new TextDecoder("utf-8", { fatal: true });
+  const decoder = new TextDecoder('utf-8', { fatal: true });
   const headerStr = decoder.decode(bufHeader);
   let headerObj: Record<string, TensorInfo | Record<string, string>>;
   try {
-    headerObj = JSON.parse(headerStr);
-    if (
-      typeof headerObj !== "object" ||
-      headerObj === null ||
-      Array.isArray(headerObj)
-    ) {
-      throw new Error("Header must be a dictionary/object");
-    }
+    headerObj = JSON.parse(headerStr) as Record<string, TensorInfo | Record<string, string>>;
   } catch (e) {
     throw new SafetensorsInvalidJSONError(`Invalid JSON header: ${e}`);
+  }
+  if (typeof headerObj !== 'object' || headerObj === null || Array.isArray(headerObj)) {
+    throw new SafetensorsInvalidJSONError('Header must be a dictionary/object');
   }
   return { headerObj, headerSize, fullBuffer: undefined };
 }
@@ -549,13 +534,13 @@ export async function fetchSafetensorsChunk(
   fullBuffer?: ArrayBuffer,
   onProgress?: (loaded: number, total: number) => void,
 ): Promise<Uint8Array> {
-  if (url.startsWith("ws://") || url.startsWith("wss://")) {
+  if (url.startsWith('ws://') || url.startsWith('wss://')) {
     // Support WebSockets for P2P tensor weight distribution in browser
     return new Promise((resolve, reject) => {
       const ws = new WebSocket(url);
-      ws.binaryType = "arraybuffer";
+      ws.binaryType = 'arraybuffer';
       ws.onopen = () => {
-        ws.send(JSON.stringify({ type: "request_chunk", begin, end }));
+        ws.send(JSON.stringify({ type: 'request_chunk', begin, end }));
       };
       ws.onmessage = (event) => {
         if (event.data instanceof ArrayBuffer) {
@@ -564,23 +549,24 @@ export async function fetchSafetensorsChunk(
         }
       };
       ws.onerror = (e) => {
-        reject(new Error(`WebSocket chunk fetch failed: ${e}`));
+        reject(new SafetensorsError(`WebSocket chunk fetch failed: ${e}`));
       };
     });
   }
 
-  if (url.startsWith("hf://")) {
-    url = url.replace("hf://", "https://huggingface.co/");
-    const parts = (url.split("huggingface.co/")[1] || "").split("/");
-    if (parts.length >= 3 && !parts.includes("resolve")) {
+  if (url.startsWith('hf://')) {
+    url = url.replace('hf://', 'https://huggingface.co/');
+    const afterDomain = url.slice('https://huggingface.co/'.length);
+    const parts = afterDomain.split('/');
+    if (parts.length >= 3 && !parts.includes('resolve')) {
       const user = parts[0];
       const repo = parts[1];
-      const file = parts.slice(2).join("/");
+      const file = parts.slice(2).join('/');
       url = `https://huggingface.co/${user}/${repo}/resolve/main/${file}`;
     }
   }
-  const headers: Record<string, string> = { Connection: "keep-alive" };
-  if (typeof process !== "undefined" && process.env && process.env.HF_TOKEN) {
+  const headers: Record<string, string> = { Connection: 'keep-alive' };
+  if (typeof process !== 'undefined' && process.env && process.env.HF_TOKEN) {
     headers.Authorization = `Bearer ${process.env.HF_TOKEN}`;
   }
 
@@ -606,16 +592,16 @@ export async function fetchSafetensorsChunk(
 
   // Check CacheStorage
   let cache: Cache | undefined;
-  if (typeof caches !== "undefined") {
+  if (typeof caches !== 'undefined') {
     try {
-      cache = await caches.open("onnx9000-safetensors");
+      cache = await caches.open('onnx9000-safetensors');
       const cachedRes = await cache.match(new Request(url, { headers }));
       if (cachedRes) {
         const buf = await cachedRes.arrayBuffer();
         if (onProgress) onProgress(buf.byteLength, buf.byteLength);
         return new Uint8Array(buf);
       }
-    } catch (_e) {
+    } catch {
       // Ignore Cache API errors
     }
   }
@@ -625,7 +611,7 @@ export async function fetchSafetensorsChunk(
       const res = await fetch(url, { headers });
 
       if (res.status === 429) {
-        const retryAfter = parseInt(res.headers.get("Retry-After") || "5", 10);
+        const retryAfter = parseInt(res.headers.get('Retry-After') || '5', 10);
         console.warn(
           `[onnx9000] Hub Rate Limiting (429) detected. Backing off for ${retryAfter} seconds.`,
         );
@@ -636,17 +622,17 @@ export async function fetchSafetensorsChunk(
 
       if (!res.ok) {
         if (res.status === 404)
-          throw new Error(`404 Not Found: Shard missing at ${url}`);
+          throw new SafetensorsError(`404 Not Found: Shard missing at ${url}`);
         if (res.status === 403)
-          throw new Error(
+          throw new SafetensorsError(
             `403 Forbidden: Private HuggingFace Repo without HF_TOKEN or access denied at ${url}`,
           );
-        if (res.status === 416) throw new Error("416 Range Not Satisfiable");
-        throw new Error(`Failed to fetch chunk`);
+        if (res.status === 416) throw new SafetensorsError('416 Range Not Satisfiable');
+        throw new SafetensorsError(`Failed to fetch chunk`);
       }
 
       // Provide visual progress bar hooks for Content-Length streams
-      const contentLength = res.headers.get("Content-Length");
+      const contentLength = res.headers.get('Content-Length');
       const total = contentLength ? parseInt(contentLength, 10) : chunkLength;
 
       if (!res.body) {
@@ -655,9 +641,7 @@ export async function fetchSafetensorsChunk(
 
         if (cache) {
           const responseToCache = new Response(buf, { headers: res.headers });
-          await cache
-            .put(new Request(url, { headers }), responseToCache)
-            .catch(() => undefined);
+          await cache.put(new Request(url, { headers }), responseToCache).catch(() => undefined);
         }
 
         return new Uint8Array(buf);
@@ -688,19 +672,14 @@ export async function fetchSafetensorsChunk(
         const responseToCache = new Response(finalBuffer.buffer, {
           headers: res.headers,
         });
-        await cache
-          .put(new Request(url, { headers }), responseToCache)
-          .catch(() => undefined);
+        await cache.put(new Request(url, { headers }), responseToCache).catch(() => undefined);
       }
 
       return finalBuffer;
     } catch (e) {
       attempt++;
       if (attempt >= MAX_RETRIES) throw e;
-      console.warn(
-        `[onnx9000] Fetch chunk failed, retrying (${attempt}/${MAX_RETRIES})...`,
-        e,
-      );
+      console.warn(`[onnx9000] Fetch chunk failed, retrying (${attempt}/${MAX_RETRIES})...`, e);
       await new Promise((resolve) => setTimeout(resolve, 1000 * 2 ** attempt)); // Exponential backoff
     }
   }
@@ -720,17 +699,14 @@ export async function* loadTensors(
     pattern?: string | RegExp;
   } = {},
 ): AsyncGenerator<{ name: string; info: TensorInfo; data: Uint8Array }> {
-  const { headerObj, headerSize, fullBuffer } =
-    await fetchSafetensorsHeader(url);
+  const { headerObj, headerSize, fullBuffer } = await fetchSafetensorsHeader(url);
   delete headerObj.__metadata__;
 
   let entries = Object.entries(headerObj);
 
   if (options.pattern) {
     const regex =
-      typeof options.pattern === "string"
-        ? new RegExp(options.pattern)
-        : options.pattern;
+      typeof options.pattern === 'string' ? new RegExp(options.pattern) : options.pattern;
     entries = entries.filter(([name]) => regex.test(name));
   }
 
@@ -744,13 +720,7 @@ export async function* loadTensors(
     const promises = batch.map(async ([name, infoRaw]) => {
       const info = infoRaw as TensorInfo;
       const [begin, end] = info.data_offsets;
-      const data = await fetchSafetensorsChunk(
-        url,
-        headerSize,
-        begin,
-        end,
-        fullBuffer,
-      );
+      const data = await fetchSafetensorsChunk(url, headerSize, begin, end, fullBuffer);
       return { name, info, data };
     });
 
@@ -762,12 +732,10 @@ export async function* loadTensors(
       yield result;
 
       // Explicitly hint to JS garbage collector to clear the array buffers if asked
-      if (options.cleanupViews && typeof result.data !== "undefined") {
+      if (options.cleanupViews && typeof result.data !== 'undefined') {
         // By reassigning we lose the view, but we can't force GC in pure JS.
         // It helps V8 discard the huge buffers when looping.
-        (
-          result as { name: string; info: TensorInfo; data: Uint8Array | null }
-        ).data = null;
+        (result as { name: string; info: TensorInfo; data: Uint8Array | null }).data = null;
       }
     }
 
@@ -800,12 +768,12 @@ export function createBuffer(
   byteLength: number,
   shared: boolean = false,
 ): ArrayBuffer | SharedArrayBuffer {
-  if (shared && typeof SharedArrayBuffer !== "undefined") {
+  if (shared && typeof SharedArrayBuffer !== 'undefined') {
     try {
       return new SharedArrayBuffer(byteLength);
-    } catch (_e) {
+    } catch {
       console.warn(
-        "[onnx9000] SharedArrayBuffer creation failed or blocked by COOP/COEP, falling back to ArrayBuffer.",
+        '[onnx9000] SharedArrayBuffer creation failed or blocked by COOP/COEP, falling back to ArrayBuffer.',
       );
       return new ArrayBuffer(byteLength);
     }
@@ -820,16 +788,11 @@ export function createBuffer(
  * @returns Serialized bytes as Uint8Array
  */
 export function saveSafetensors(
-  tensors: Record<
-    string,
-    Uint8Array | { data: Uint8Array; dtype?: string; shape?: number[] }
-  >,
+  tensors: Record<string, Uint8Array | { data: Uint8Array; dtype?: string; shape?: number[] }>,
   metadata?: Record<string, string>,
 ): Uint8Array {
   const header: Record<string, TensorInfo | Record<string, string>> = {};
-  const meta = metadata || {};
-  if (!meta.format) meta.format = "pt";
-  if (!meta.version) meta.version = "1.0";
+  const meta: Record<string, string> = { format: 'pt', version: '1.0', ...metadata };
 
   header.__metadata__ = meta;
 
@@ -842,7 +805,7 @@ export function saveSafetensors(
     }
 
     let data: Uint8Array;
-    let dtype = "U8";
+    let dtype = 'U8';
     let shape: number[];
 
     if (tensorInput instanceof Uint8Array) {
@@ -850,7 +813,7 @@ export function saveSafetensors(
       shape = [data.byteLength];
     } else {
       data = tensorInput.data;
-      dtype = tensorInput.dtype || "U8";
+      dtype = tensorInput.dtype || 'U8';
       shape = tensorInput.shape || [data.byteLength];
     }
 
@@ -879,7 +842,7 @@ export function saveSafetensors(
   const remainder = headerBytes.byteLength % 8;
   if (remainder !== 0) {
     const padding = 8 - remainder;
-    headerJsonStr += " ".repeat(padding);
+    headerJsonStr += ' '.repeat(padding);
     headerBytes = encoder.encode(headerJsonStr);
   }
 
@@ -909,9 +872,7 @@ export function saveSafetensors(
  * @param buffer Input buffer
  * @returns True if valid
  */
-export function checkSafetensors(
-  buffer: ArrayBuffer | SharedArrayBuffer,
-): boolean {
+export function checkSafetensors(buffer: ArrayBuffer | SharedArrayBuffer): boolean {
   try {
     new SafeTensors(buffer);
     return true;
@@ -925,12 +886,11 @@ export function checkSafetensors(
  * Detects system endianness.
  * @returns 'LE' or 'BE'
  */
-export function getEndianness(): "LE" | "BE" {
-  const arr32 = new Uint32Array([0x12345678]);
-  const arr8 = new Uint8Array(arr32.buffer);
-  if (arr8[0] === 0x78) return "LE";
-  if (arr8[0] === 0x12) return "BE";
-  return "LE"; // Default assume LE
+export function getEndianness(testBuffer?: ArrayBuffer): 'LE' | 'BE' {
+  const arr8 = testBuffer
+    ? new Uint8Array(testBuffer)
+    : new Uint8Array(new Uint32Array([0x12345678]).buffer);
+  return arr8[0] === 0x12 ? 'BE' : 'LE';
 }
 
 /**
@@ -951,8 +911,8 @@ export function swapEndianness(
     for (let j = 0; j < Math.floor(elementSize / 2); j++) {
       const idx1 = i + j;
       const idx2 = i + elementSize - 1 - j;
-      const tmp = view[idx1]!;
-      view[idx1] = view[idx2]!;
+      const tmp = view[idx1] as number;
+      view[idx1] = view[idx2] as number;
       view[idx2] = tmp;
     }
   }
@@ -963,12 +923,14 @@ export function swapEndianness(
  * @param uint16Array Input data
  * @returns Decoded float32 array
  */
-export function decodeBfloat16(uint16Array: Uint16Array): Float32Array {
+export function decodeBfloat16(
+  uint16Array: Uint16Array,
+  endianness: 'LE' | 'BE' = getEndianness(),
+): Float32Array {
   const float32 = new Float32Array(uint16Array.length);
   const float32view = new DataView(float32.buffer);
-  const isLE = getEndianness() === "LE";
-  for (let i = 0; i < uint16Array.length; i++) {
-    const h = uint16Array[i]!;
+  const isLE = endianness === 'LE';
+  for (const [i, h] of uint16Array.entries()) {
     float32view.setUint16(i * 4 + (isLE ? 2 : 0), h, isLE);
     float32view.setUint16(i * 4 + (isLE ? 0 : 2), 0, isLE);
   }
@@ -983,8 +945,7 @@ export function decodeBfloat16(uint16Array: Uint16Array): Float32Array {
 export function decodeFloat16(uint16Array: Uint16Array): Float32Array {
   const float32 = new Float32Array(uint16Array.length);
   const uint32 = new Uint32Array(float32.buffer);
-  for (let i = 0; i < uint16Array.length; i++) {
-    const h = uint16Array[i]!;
+  for (const [i, h] of uint16Array.entries()) {
     const sign = (h & 0x8000) << 16;
     let exp = (h & 0x7c00) >> 10;
     let frac = h & 0x03ff;
@@ -1021,14 +982,10 @@ export function decodeFloat16(uint16Array: Uint16Array): Float32Array {
  * @param module Emscripten module
  * @returns Pointer to allocated memory
  */
-export function _mallocSafetensors(
-  byteLength: number,
-  module: EmscriptenModule,
-): number {
+export function _mallocSafetensors(byteLength: number, module: EmscriptenModule): number {
   // Implement Emscripten _malloc wrapper in JS to pre-allocate exact payload sizes safely
   const ptr = module._malloc(byteLength);
-  if (!ptr)
-    throw new Error("Emscripten OOM (Out of Memory) allocating tensor payload");
+  if (!ptr) throw new SafetensorsError('Emscripten OOM (Out of Memory) allocating tensor payload');
   return ptr;
 }
 
@@ -1038,10 +995,7 @@ export function _mallocSafetensors(
  * @param pyodide Pyodide instance
  * @returns Pointer to data in WASM memory
  */
-export function passToPyodideWASM(
-  tensor: Uint8Array,
-  pyodide: PyodideInstance,
-): number {
+export function passToPyodideWASM(tensor: Uint8Array, pyodide: PyodideInstance): number {
   // Pass Safetensors pointers directly into Pyodide WASM memory
   const ptr = _mallocSafetensors(tensor.byteLength, pyodide._module);
   const wasmMemory = pyodide.HEAPU8;
@@ -1055,14 +1009,10 @@ export function passToPyodideWASM(
  * @param path File path
  * @returns Parsed SafeTensors object
  */
-export function extractFromPyodideFS(
-  FS: EmscriptenFS,
-  path: string,
-): SafeTensors {
+export function extractFromPyodideFS(FS: EmscriptenFS, path: string): SafeTensors {
   const node = FS.lookupPath(path).node;
   // In emscripten/pyodide FS, a file node's contents are usually under `node.contents` which is a Uint8Array.
-  if (!node?.contents)
-    throw new Error("Could not extract Uint8Array from Pyodide FS");
+  if (!node?.contents) throw new SafetensorsError('Could not extract Uint8Array from Pyodide FS');
 
   // We pass the underlying buffer. Note that node.contents.buffer is the entire WASM heap usually,
   // so we MUST slice it, OR we pass the sliced view, but `SafeTensors` expects an ArrayBuffer.
@@ -1084,7 +1034,7 @@ export async function benchmark10kKeys() {
   const header: Record<string, TensorInfo> = {};
   for (let i = 0; i < 10000; i++) {
     header[`key_${i}`] = {
-      dtype: "F64",
+      dtype: 'F64',
       shape: [1],
       data_offsets: [i * 8, (i + 1) * 8],
     };
@@ -1093,7 +1043,7 @@ export async function benchmark10kKeys() {
   let headerBytes = new TextEncoder().encode(headerStr);
   const pad = (8 - (headerBytes.byteLength % 8)) % 8;
   if (pad > 0) {
-    headerBytes = new TextEncoder().encode(headerStr + " ".repeat(pad));
+    headerBytes = new TextEncoder().encode(headerStr + ' '.repeat(pad));
   }
 
   const out = new Uint8Array(8 + headerBytes.byteLength + 80000);

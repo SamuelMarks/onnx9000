@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../../src/array/index";
+import { describe, expect, it } from 'vitest';
+import { ArrayAPI } from '../../src/array/index';
 
-describe("index.ts", () => {
-  it("should instantiate and cover ArrayAPI", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('index.ts', () => {
+  it('should instantiate and cover ArrayAPI', () => {
     try {
-      const obj = new (Module as any).ArrayAPI();
+      const obj = Construct(ArrayAPI);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

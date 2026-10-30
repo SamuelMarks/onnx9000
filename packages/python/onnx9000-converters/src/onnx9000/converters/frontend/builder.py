@@ -5,7 +5,6 @@ computation graphs from native Python execution.
 """
 
 import threading
-from typing import Any
 
 from onnx9000.converters.frontend.tensor import Node, Tensor
 
@@ -23,7 +22,7 @@ class GraphBuilder:
         self._tensor_counter = 0
         self.doc_string = ""
 
-    def to_graph(self):
+    def to_graph(self) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """To Graph function logic implementation."""
         from onnx9000.core.ir import Attribute as IRAttribute
         from onnx9000.core.ir import Graph
@@ -92,11 +91,26 @@ class Tracing:
         self.prev_builder: GraphBuilder | None = None
 
     def __enter__(self) -> GraphBuilder:
-        """Implement the __enter__ method."""
+        """Enter the runtime context managed by Tracing.
+
+        Returns:
+            Result of enter (GraphBuilder).
+        """
         self.prev_builder = get_active_builder()
         _tls.builder = self.builder
         return self.builder
 
-    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
-        """Implement the __exit__ method."""
+    def __exit__(
+        self,
+        exc_type: int | float | str | bool | bytes | list | dict | tuple | None,
+        exc_val: int | float | str | bool | bytes | list | dict | tuple | None,
+        exc_tb: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> None:
+        """Exit the runtime context managed by Tracing and handle exceptions.
+
+        Args:
+            exc_type: Parameter specifying exc type (Union[int, float, str, bool, bytes, list, dict, tuple, None]).
+            exc_val: Parameter specifying exc val (Union[int, float, str, bool, bytes, list, dict, tuple, None]).
+            exc_tb: Parameter specifying exc tb (Union[int, float, str, bool, bytes, list, dict, tuple, None]).
+        """
         _tls.builder = self.prev_builder

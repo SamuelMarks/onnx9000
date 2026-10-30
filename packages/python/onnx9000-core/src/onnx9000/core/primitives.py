@@ -1,21 +1,13 @@
-"""Module containing the Common Primitive Registry for ONNX9000.
-
-This module provides reusable, high-level primitives such as normalization layers
-(Batch, Layer, RMS, Group, Instance), Activation functions, Convolutions, and
-Attention blocks.
-"""
+"""Implementation of primitives (onnx9000 / core / primitives.py) providing BaseNorm, BatchNormalization, LayerNormalization, RMSNorm."""
 
 from collections.abc import Sequence
-from typing import Any, Optional, Union
 
 from onnx9000.core.ir import Tensor
 from onnx9000.core.ops import (
-    batch_normalization,
     group_normalization,
     instance_normalization,
     layer_normalization,
     record_op,
-    reshape,
     rms_normalization,
 )
 
@@ -32,7 +24,12 @@ class BaseNorm:
         """
         self.epsilon = epsilon
 
-    def __call__(self, x: Tensor, *args: Any, **kwargs: Any) -> Tensor:
+    def __call__(
+        self,
+        x: Tensor,
+        *args: int | float | str | bool | bytes | list | dict | tuple | None,
+        **kwargs: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> Tensor:
         """Apply normalization."""
         return x
 
@@ -210,15 +207,7 @@ class BaseActivation:
         self, num_points: int = 256, range_min: float = -8.0, range_max: float = 8.0
     ) -> Tensor:
         """Auto-generate Lookup Table (LUT) approximations for hardware fallbacks."""
-        import numpy as np
-        from onnx9000.core.ir import Tensor
-
-        (range_max - range_min) / (num_points - 1)
-        np.linspace(range_min, range_max, num_points, dtype=np.float32)
-        # We need a dummy tensor to pass to self.__call__ if it computes immediately,
-        # but right now self.__call__ just builds the graph!
-        # Wait, if we want to generate LUT, we need the actual math function or run inference.
-        # As an AST builder, LUT generation might just emit a Constant node with the LUT array.
+        _ = (range_max - range_min) / max(1, num_points - 1)
         return record_op(
             "Constant",
             [],
@@ -234,7 +223,14 @@ class Relu(BaseActivation):
     """ReLU activation."""
 
     def __call__(self, x: Tensor) -> Tensor:
-        """Call."""
+        """Invoke Relu with the provided inputs and keyword arguments.
+
+        Args:
+            x: Parameter specifying x (Tensor).
+
+        Returns:
+            Result of call (Tensor).
+        """
         from onnx9000.core.ops import relu
 
         return relu(x)
@@ -244,7 +240,14 @@ class Sigmoid(BaseActivation):
     """Sigmoid activation."""
 
     def __call__(self, x: Tensor) -> Tensor:
-        """Call."""
+        """Invoke Sigmoid with the provided inputs and keyword arguments.
+
+        Args:
+            x: Parameter specifying x (Tensor).
+
+        Returns:
+            Result of call (Tensor).
+        """
         from onnx9000.core.ops import sigmoid
 
         return sigmoid(x)
@@ -254,7 +257,14 @@ class Tanh(BaseActivation):
     """Tanh activation."""
 
     def __call__(self, x: Tensor) -> Tensor:
-        """Call."""
+        """Invoke Tanh with the provided inputs and keyword arguments.
+
+        Args:
+            x: Parameter specifying x (Tensor).
+
+        Returns:
+            Result of call (Tensor).
+        """
         from onnx9000.core.ops import tanh
 
         return tanh(x)
@@ -264,11 +274,22 @@ class LeakyRelu(BaseActivation):
     """LeakyReLU activation."""
 
     def __init__(self, alpha: float = 0.01) -> None:
-        """Init."""
+        """Initialize LeakyRelu with configured parameters and state.
+
+        Args:
+            alpha: Parameter specifying alpha (float).
+        """
         self.alpha = alpha
 
     def __call__(self, x: Tensor) -> Tensor:
-        """Call."""
+        """Invoke LeakyRelu with the provided inputs and keyword arguments.
+
+        Args:
+            x: Parameter specifying x (Tensor).
+
+        Returns:
+            Result of call (Tensor).
+        """
         from onnx9000.core.ops import leaky_relu
 
         return leaky_relu(x, alpha=self.alpha)
@@ -278,11 +299,22 @@ class Gelu(BaseActivation):
     """GELU activation."""
 
     def __init__(self, approximate: str = "none") -> None:
-        """Init."""
+        """Initialize Gelu with configured parameters and state.
+
+        Args:
+            approximate: Parameter specifying approximate (str).
+        """
         self.approximate = approximate
 
     def __call__(self, x: Tensor) -> Tensor:
-        """Call."""
+        """Invoke Gelu with the provided inputs and keyword arguments.
+
+        Args:
+            x: Parameter specifying x (Tensor).
+
+        Returns:
+            Result of call (Tensor).
+        """
         return record_op("Gelu", [x], {"approximate": self.approximate})
 
 
@@ -290,7 +322,14 @@ class Silu(BaseActivation):
     """SiLU / Swish activation."""
 
     def __call__(self, x: Tensor) -> Tensor:
-        """Call."""
+        """Invoke Silu with the provided inputs and keyword arguments.
+
+        Args:
+            x: Parameter specifying x (Tensor).
+
+        Returns:
+            Result of call (Tensor).
+        """
         from onnx9000.core.ops import swish
 
         return swish(x)
@@ -304,7 +343,14 @@ class Mish(BaseActivation):
     """Mish activation."""
 
     def __call__(self, x: Tensor) -> Tensor:
-        """Call."""
+        """Invoke Mish with the provided inputs and keyword arguments.
+
+        Args:
+            x: Parameter specifying x (Tensor).
+
+        Returns:
+            Result of call (Tensor).
+        """
         from onnx9000.core.ops import mish
 
         return mish(x)
@@ -317,14 +363,25 @@ class ConvFamily:
         self,
         in_channels: int,
         out_channels: int,
-        kernel_size: int | list[int],
-        stride: int | list[int] = 1,
-        padding: int | list[int] = 0,
-        dilation: int | list[int] = 1,
+        kernel_size: int | list,
+        stride: int | list = 1,
+        padding: int | list = 0,
+        dilation: int | list = 1,
         groups: int = 1,
         bias: bool = True,
-    ):
-        """Init."""
+    ) -> None:
+        """Initialize ConvFamily with configured parameters and state.
+
+        Args:
+            in_channels: Parameter specifying in channels (int).
+            out_channels: Parameter specifying out channels (int).
+            kernel_size: Parameter specifying kernel size (int | list).
+            stride: Parameter specifying stride (int | list).
+            padding: Parameter specifying padding (int | list).
+            dilation: Parameter specifying dilation (int | list).
+            groups: Parameter specifying groups (int).
+            bias: Parameter specifying bias (bool).
+        """
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.kernel_size = kernel_size
@@ -335,7 +392,16 @@ class ConvFamily:
         self.bias = bias
 
     def __call__(self, x: Tensor, w: Tensor, b: Tensor | None = None) -> Tensor:
-        """Call."""
+        """Invoke ConvFamily with the provided inputs and keyword arguments.
+
+        Args:
+            x: Parameter specifying x (Tensor).
+            w: Parameter specifying w (Tensor).
+            b: Parameter specifying b (Tensor | None).
+
+        Returns:
+            Result of call (Tensor).
+        """
         return x
 
 
@@ -347,14 +413,26 @@ class ConvND(ConvFamily):
         dims: int,
         in_channels: int,
         out_channels: int,
-        kernel_size: int | list[int],
-        stride: int | list[int] = 1,
-        padding: int | list[int] = 0,
-        dilation: int | list[int] = 1,
+        kernel_size: int | list,
+        stride: int | list = 1,
+        padding: int | list = 0,
+        dilation: int | list = 1,
         groups: int = 1,
         bias: bool = True,
-    ):
-        """Init."""
+    ) -> None:
+        """Initialize ConvND with configured parameters and state.
+
+        Args:
+            dims: Parameter specifying dims (int).
+            in_channels: Parameter specifying in channels (int).
+            out_channels: Parameter specifying out channels (int).
+            kernel_size: Parameter specifying kernel size (int | list).
+            stride: Parameter specifying stride (int | list).
+            padding: Parameter specifying padding (int | list).
+            dilation: Parameter specifying dilation (int | list).
+            groups: Parameter specifying groups (int).
+            bias: Parameter specifying bias (bool).
+        """
         super().__init__(
             in_channels,
             out_channels,
@@ -368,7 +446,16 @@ class ConvND(ConvFamily):
         self.dims = dims
 
     def __call__(self, x: Tensor, w: Tensor, b: Tensor | None = None) -> Tensor:
-        """Call."""
+        """Invoke ConvND with the provided inputs and keyword arguments.
+
+        Args:
+            x: Parameter specifying x (Tensor).
+            w: Parameter specifying w (Tensor).
+            b: Parameter specifying b (Tensor | None).
+
+        Returns:
+            Result of call (Tensor).
+        """
         from onnx9000.core.ops import record_op
 
         # Unify list conversion
@@ -403,13 +490,23 @@ class DepthwiseConv(ConvND):
         self,
         dims: int,
         channels: int,
-        kernel_size: int | list[int],
-        stride: int | list[int] = 1,
-        padding: int | list[int] = 0,
-        dilation: int | list[int] = 1,
+        kernel_size: int | list,
+        stride: int | list = 1,
+        padding: int | list = 0,
+        dilation: int | list = 1,
         bias: bool = True,
-    ):
-        """Init."""
+    ) -> None:
+        """Initialize DepthwiseConv with configured parameters and state.
+
+        Args:
+            dims: Parameter specifying dims (int).
+            channels: Parameter specifying channels (int).
+            kernel_size: Parameter specifying kernel size (int | list).
+            stride: Parameter specifying stride (int | list).
+            padding: Parameter specifying padding (int | list).
+            dilation: Parameter specifying dilation (int | list).
+            bias: Parameter specifying bias (bool).
+        """
         super().__init__(
             dims,
             channels,
@@ -427,7 +524,15 @@ class MatMul:
     """Standardize broadcasting rules (NumPy semantics)."""
 
     def __call__(self, x: Tensor, y: Tensor) -> Tensor:
-        """Call."""
+        """Invoke MatMul with the provided inputs and keyword arguments.
+
+        Args:
+            x: Parameter specifying x (Tensor).
+            y: Parameter specifying y (Tensor).
+
+        Returns:
+            Result of call (Tensor).
+        """
         from onnx9000.core.ops import matmul
 
         return matmul(x, y)
@@ -436,15 +541,33 @@ class MatMul:
 class Gemm:
     """Standardize broadcasting rules (NumPy semantics)."""
 
-    def __init__(self, alpha: float = 1.0, beta: float = 1.0, trans_a: int = 0, trans_b: int = 0):
-        """Init."""
+    def __init__(
+        self, alpha: float = 1.0, beta: float = 1.0, trans_a: int = 0, trans_b: int = 0
+    ) -> None:
+        """Initialize Gemm with configured parameters and state.
+
+        Args:
+            alpha: Parameter specifying alpha (float).
+            beta: Parameter specifying beta (float).
+            trans_a: Parameter specifying trans a (int).
+            trans_b: Parameter specifying trans b (int).
+        """
         self.alpha = alpha
         self.beta = beta
         self.trans_a = trans_a
         self.trans_b = trans_b
 
     def __call__(self, x: Tensor, y: Tensor, c: Tensor | None = None) -> Tensor:
-        """Call."""
+        """Invoke Gemm with the provided inputs and keyword arguments.
+
+        Args:
+            x: Parameter specifying x (Tensor).
+            y: Parameter specifying y (Tensor).
+            c: Parameter specifying c (Tensor | None).
+
+        Returns:
+            Result of call (Tensor).
+        """
         from onnx9000.core.ops import gemm
 
         return gemm(x, y, c, self.alpha, self.beta, self.trans_a, self.trans_b)
@@ -453,14 +576,30 @@ class Gemm:
 class MultiHeadAttention:
     """Parametrized by num_heads, qkv_bias, out_bias. Reused across ViT, BERT, and Whisper."""
 
-    def __init__(self, num_heads: int, qkv_bias: bool = True, out_bias: bool = True):
-        """Init."""
+    def __init__(self, num_heads: int, qkv_bias: bool = True, out_bias: bool = True) -> None:
+        """Initialize MultiHeadAttention with configured parameters and state.
+
+        Args:
+            num_heads: Parameter specifying num heads (int).
+            qkv_bias: Parameter specifying qkv bias (bool).
+            out_bias: Parameter specifying out bias (bool).
+        """
         self.num_heads = num_heads
         self.qkv_bias = qkv_bias
         self.out_bias = out_bias
 
     def __call__(self, q: Tensor, k: Tensor, v: Tensor, mask: Tensor | None = None) -> Tensor:
-        """Call."""
+        """Invoke MultiHeadAttention with the provided inputs and keyword arguments.
+
+        Args:
+            q: Parameter specifying q (Tensor).
+            k: Parameter specifying k (Tensor).
+            v: Parameter specifying v (Tensor).
+            mask: Parameter specifying mask (Tensor | None).
+
+        Returns:
+            Result of call (Tensor).
+        """
         from onnx9000.core.ops import attention
 
         # ONNX Attention supports q, k, v, mask.
@@ -474,7 +613,17 @@ class FlashAttention(MultiHeadAttention):
     """Standardized hardware-fused attention. Falls back to MultiHeadAttention if unsupported."""
 
     def __call__(self, q: Tensor, k: Tensor, v: Tensor, mask: Tensor | None = None) -> Tensor:
-        """Call."""
+        """Invoke FlashAttention with the provided inputs and keyword arguments.
+
+        Args:
+            q: Parameter specifying q (Tensor).
+            k: Parameter specifying k (Tensor).
+            v: Parameter specifying v (Tensor).
+            mask: Parameter specifying mask (Tensor | None).
+
+        Returns:
+            Result of call (Tensor).
+        """
         from onnx9000.core.ops import record_op
 
         inputs = [q, k, v]
@@ -492,13 +641,30 @@ class GroupedQueryAttention(MultiHeadAttention):
         num_kv_heads: int,
         qkv_bias: bool = False,
         out_bias: bool = False,
-    ):
-        """Init."""
+    ) -> None:
+        """Initialize GroupedQueryAttention with configured parameters and state.
+
+        Args:
+            num_heads: Parameter specifying num heads (int).
+            num_kv_heads: Parameter specifying num kv heads (int).
+            qkv_bias: Parameter specifying qkv bias (bool).
+            out_bias: Parameter specifying out bias (bool).
+        """
         super().__init__(num_heads, qkv_bias, out_bias)
         self.num_kv_heads = num_kv_heads
 
     def __call__(self, q: Tensor, k: Tensor, v: Tensor, mask: Tensor | None = None) -> Tensor:
-        """Call."""
+        """Invoke GroupedQueryAttention with the provided inputs and keyword arguments.
+
+        Args:
+            q: Parameter specifying q (Tensor).
+            k: Parameter specifying k (Tensor).
+            v: Parameter specifying v (Tensor).
+            mask: Parameter specifying mask (Tensor | None).
+
+        Returns:
+            Result of call (Tensor).
+        """
         from onnx9000.core.ops import record_op
 
         inputs = [q, k, v]
@@ -514,14 +680,28 @@ class GroupedQueryAttention(MultiHeadAttention):
 class RoPE:
     """Standard 1D/2D RoPE reusable for LLMs and Vision."""
 
-    def __init__(self, dim: int, base: float = 10000.0, max_seq_len: int = 2048):
-        """Init."""
+    def __init__(self, dim: int, base: float = 10000.0, max_seq_len: int = 2048) -> None:
+        """Initialize RoPE with configured parameters and state.
+
+        Args:
+            dim: Parameter specifying dim (int).
+            base: Parameter specifying base (float).
+            max_seq_len: Parameter specifying max seq len (int).
+        """
         self.dim = dim
         self.base = base
         self.max_seq_len = max_seq_len
 
     def __call__(self, x: Tensor, pos: Tensor) -> Tensor:
-        """Call."""
+        """Invoke RoPE with the provided inputs and keyword arguments.
+
+        Args:
+            x: Parameter specifying x (Tensor).
+            pos: Parameter specifying pos (Tensor).
+
+        Returns:
+            Result of call (Tensor).
+        """
         from onnx9000.core.ops import record_op
 
         return record_op("RoPE", [x, pos], {"dim": self.dim, "base": self.base})
@@ -530,12 +710,23 @@ class RoPE:
 class AlibiBias:
     """Standardized linear bias matrices for attention masks."""
 
-    def __init__(self, num_heads: int):
-        """Init."""
+    def __init__(self, num_heads: int) -> None:
+        """Initialize AlibiBias with configured parameters and state.
+
+        Args:
+            num_heads: Parameter specifying num heads (int).
+        """
         self.num_heads = num_heads
 
     def __call__(self, mask: Tensor) -> Tensor:
-        """Call."""
+        """Invoke AlibiBias with the provided inputs and keyword arguments.
+
+        Args:
+            mask: Parameter specifying mask (Tensor).
+
+        Returns:
+            Result of call (Tensor).
+        """
         from onnx9000.core.ops import record_op
 
         return record_op("AlibiBias", [mask], {"num_heads": self.num_heads})
@@ -544,15 +735,34 @@ class AlibiBias:
 class StateSpace:
     """Core primitive for Mamba (Parallel Scan / SSM convolution)."""
 
-    def __init__(self, d_model: int, d_state: int, d_conv: int, expand: int = 2):
-        """Init."""
+    def __init__(self, d_model: int, d_state: int, d_conv: int, expand: int = 2) -> None:
+        """Initialize StateSpace with configured parameters and state.
+
+        Args:
+            d_model: Parameter specifying d model (int).
+            d_state: Parameter specifying d state (int).
+            d_conv: Parameter specifying d conv (int).
+            expand: Parameter specifying expand (int).
+        """
         self.d_model = d_model
         self.d_state = d_state
         self.d_conv = d_conv
         self.expand = expand
 
     def __call__(self, x: Tensor, dt: Tensor, A: Tensor, B: Tensor, C: Tensor, D: Tensor) -> Tensor:
-        """Call."""
+        """Invoke StateSpace with the provided inputs and keyword arguments.
+
+        Args:
+            x: Parameter specifying x (Tensor).
+            dt: Parameter specifying dt (Tensor).
+            A: Parameter specifying a (Tensor).
+            B: Parameter specifying b (Tensor).
+            C: Parameter specifying c (Tensor).
+            D: Parameter specifying d (Tensor).
+
+        Returns:
+            Result of call (Tensor).
+        """
         from onnx9000.core.ops import record_op
 
         return record_op(
@@ -570,8 +780,13 @@ class StateSpace:
 class RNN:
     """Standard RNN primitive for linear attention / RWKV time mixing."""
 
-    def __init__(self, hidden_size: int, direction: str = "forward"):
-        """Init."""
+    def __init__(self, hidden_size: int, direction: str = "forward") -> None:
+        """Initialize RNN with configured parameters and state.
+
+        Args:
+            hidden_size: Parameter specifying hidden size (int).
+            direction: Parameter specifying direction (str).
+        """
         self.hidden_size = hidden_size
         self.direction = direction
 
@@ -584,7 +799,19 @@ class RNN:
         sequence_lens: Tensor | None = None,
         initial_h: Tensor | None = None,
     ) -> Tensor:
-        """Call."""
+        """Invoke RNN with the provided inputs and keyword arguments.
+
+        Args:
+            x: Parameter specifying x (Tensor).
+            w: Parameter specifying w (Tensor).
+            r: Parameter specifying r (Tensor).
+            b: Parameter specifying b (Tensor | None).
+            sequence_lens: Parameter specifying sequence lens (Tensor | None).
+            initial_h: Parameter specifying initial h (Tensor | None).
+
+        Returns:
+            Result of call (Tensor).
+        """
         from onnx9000.core.ops import rnn
 
         # Just pass required args to stub

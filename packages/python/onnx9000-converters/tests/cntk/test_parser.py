@@ -3,7 +3,7 @@
 from onnx9000.converters.cntk.parser import parse_cntk_model
 
 
-def test_parse_cntk_basic():
+def test_parse_cntk_basic() -> None:
     """Test parsing CNTK model bytes."""
     # Dummy protobuf
     data = b"\x0a\x04test"

@@ -3,7 +3,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { load } from '@onnx9000/core';
-import { OpenVinoExporter } from '../dist/index.js';
+import { OpenVinoExporter } from '../src/index.ts';
 
 function main() {
   const args = process.argv.slice(2);

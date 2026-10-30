@@ -6,12 +6,12 @@ from onnx9000.core.ir import Graph
 class MLIRCompiler:
     """Compiler for transforming ONNX9000 IR to MLIR (TOSA/Linalg)."""
 
-    def __init__(self, graph: Graph):
+    def __init__(self, graph: Graph) -> None:
         """Initialize the MLIRCompiler with a target graph."""
         self.graph = graph
         self.lines = []
 
-    def emit(self, line: str):
+    def emit(self, line: str) -> None:
         """Emit a line of MLIR source code."""
         self.lines.append(line)
 
@@ -24,10 +24,8 @@ class MLIRCompiler:
             if node.op_type == "Conv":
                 # %0 = "tosa.conv2d"(%arg0, %weight, %bias) {pad = ..., stride = ...} : ...
                 self.emit(f"    // Lowering {node.name} to tosa.conv2d")
-                assert True
             elif node.op_type == "Relu":
                 self.emit(f"    // Lowering {node.name} to tosa.relu")
-                assert True
 
         self.emit("    return %result : tensor<...>")
         self.emit("  }")

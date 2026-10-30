@@ -2,6 +2,13 @@
  * @fileoverview hub.ts
  * Provides hub functionality for the onnx2gguf package.
  */
+import { Onnx9000Error } from '@onnx9000/core';
+/**
+ * Executes `fetchHfConfig`.
+ * @param repoId Parameter `repoId`.
+ * @param token Parameter `token`.
+ * @returns Result of `fetchHfConfig`.
+ */
 export async function fetchHfConfig(
   repoId: string,
   token?: string,
@@ -18,22 +25,21 @@ export async function fetchHfConfig(
   const url = `https://huggingface.co/${repoId}/resolve/main`;
 
   let config = {};
-  let tokenizer = "";
+  let tokenizer = '';
 
   try {
     const configRes = await fetch(`${url}/config.json`, { headers });
     if (!configRes.ok) {
-      if (configRes.status === 404)
-        throw new Error("config.json not found (404)");
+      if (configRes.status === 404) throw new Onnx9000Error('config.json not found (404)');
 
       if (configRes.status === 403 || configRes.status === 401)
-        throw new Error("Unauthorized (403/401) - Check your token");
+        throw new Onnx9000Error('Unauthorized (403/401) - Check your token');
     } else {
       config = await configRes.json();
     }
   } catch (_e) {
     const e = _e instanceof Error ? _e : new Error(String(_e));
-    console.warn("Failed to fetch config:", e.message);
+    console.warn('Failed to fetch config:', e.message);
   }
 
   try {
@@ -44,12 +50,19 @@ export async function fetchHfConfig(
   } catch (_e) {
     const e = _e instanceof Error ? _e : new Error(String(_e));
 
-    console.warn("Failed to fetch tokenizer:", e.message);
+    console.warn('Failed to fetch tokenizer:', e.message);
   }
 
   return { config, tokenizer, url: `https://huggingface.co/${repoId}` };
 }
 
+/**
+ * Executes `generateReadme`.
+ * @param modelName Parameter `modelName`.
+ * @param originalRepo Parameter `originalRepo`.
+ * @param quantization Parameter `quantization`.
+ * @returns Result of `generateReadme`.
+ */
 export function generateReadme(
   modelName: string,
   originalRepo: string,

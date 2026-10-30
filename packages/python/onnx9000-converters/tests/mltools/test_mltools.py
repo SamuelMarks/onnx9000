@@ -105,11 +105,15 @@ def test_others() -> None:
 
     # CoreML
     class MockCoreMLRegressor:
+        """Represents mock core mlregressor."""
+
         treeEnsembleRegressor = True
 
     assert parse_coreml_model(MockCoreMLRegressor()).nodes[-1].op_type == "TreeEnsembleRegressor"
 
     class MockCoreMLClassifier:
+        """Represents mock core mlclassifier."""
+
         treeEnsembleClassifier = True
 
     assert parse_coreml_model(MockCoreMLClassifier()).nodes[-1].op_type == "TreeEnsembleClassifier"

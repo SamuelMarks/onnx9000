@@ -4,7 +4,8 @@ Provides lookup for operation signatures across different opset versions.
 """
 
 import json
-from typing import Any, Optional
+
+from onnx9000.core.exceptions import CompilationError
 
 
 class OpSchema:
@@ -84,16 +85,19 @@ def get_target_opset() -> int:
     return _target_opset
 
 
-def validate_op(op_type: str, inputs: list[Any], attributes: dict[str, Any]) -> None:
+def validate_op(
+    op_type: str,
+    inputs: list[int | float | str | bool | bytes | list | dict | tuple | None],
+    attributes: dict[str, int | float | str | bool | bytes | list | dict | tuple | None],
+) -> None:
     """Validate an operation's instantiation against the globally targeted opset schema."""
     schema = registry.get_schema(op_type, _target_opset)
     if schema is None:
         if op_type in registry.schemas:
             min_version = min(s.since_version for s in registry.schemas[op_type])
-            if _target_opset < min_version:
-                raise ValueError(
-                    f"Operation '{op_type}' requires opset {min_version}+, but target opset is {_target_opset}"
-                )
+            raise CompilationError(
+                f"Operation '{op_type}' requires opset {min_version}+, but target opset is {_target_opset}"
+            )
         return
     for attr in attributes:
         if attr not in schema.attributes:
@@ -103,5 +107,11 @@ def validate_op(op_type: str, inputs: list[Any], attributes: dict[str, Any]) -> 
                 f"Attribute '{attr}' is not valid for operation '{op_type}' in opset {_target_opset}.",
                 stacklevel=2,
             )
-    if False:
-        pass
+    if op_type == "Squeeze" and "axes" in attributes and _target_opset >= 13:
+        import warnings
+
+        warnings.warn(
+            "Attribute 'axes' will be converted to input for Squeeze in opset 13+.",
+            UserWarning,
+            stacklevel=2,
+        )

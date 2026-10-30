@@ -2,19 +2,31 @@
  * @fileoverview serializer.ts
  * Provides serializer functionality for the converters package.
  */
-// @ts-nocheck
-import type { Graph, Tensor } from "@onnx9000/core";
+import type { Graph, Tensor } from '@onnx9000/core';
 
+/** Interface `TFJSModelArtifacts` definition. */
 export interface TFJSModelArtifacts {
+  /** Property `modelJson`. */
   modelJson: object;
+  /** Property `weightsBin`. */
   weightsBin: Uint8Array;
 }
 
+/**
+ * Executes `sanitizeName`.
+ * @param name Parameter `name`.
+ * @returns Result of `sanitizeName`.
+ */
 function sanitizeName(name: string): string {
-  if (/^[0-9]/.test(name)) return `v_${name.replace(/[^a-zA-Z0-9_]/g, "_")}`;
-  return name.replace(/[^a-zA-Z0-9_]/g, "_");
+  if (/^[0-9]/.test(name)) return `v_${name.replace(/[^a-zA-Z0-9_]/g, '_')}`;
+  return name.replace(/[^a-zA-Z0-9_]/g, '_');
 }
 
+/**
+ * Executes `serializeTFJSWeights`.
+ * @param graph Parameter `graph`.
+ * @returns Result of `serializeTFJSWeights`.
+ */
 export function serializeTFJSWeights(graph: Graph): TFJSModelArtifacts {
   const weights: Tensor[] = [];
 
@@ -24,9 +36,7 @@ export function serializeTFJSWeights(graph: Graph): TFJSModelArtifacts {
     }
   }
 
-  for (const tName in graph.tensors) {
-    const t = graph.tensors[tName];
-    if (!t) continue;
+  for (const t of Object.values(graph.tensors)) {
     if (t.isInitializer && !weights.includes(t)) {
       weights.push(t);
     }
@@ -47,18 +57,14 @@ export function serializeTFJSWeights(graph: Graph): TFJSModelArtifacts {
 
   for (const w of weights) {
     if (w.data) {
-      const srcBytes = new Uint8Array(
-        w.data.buffer,
-        w.data.byteOffset,
-        w.data.byteLength,
-      );
+      const srcBytes = new Uint8Array(w.data.buffer, w.data.byteOffset, w.data.byteLength);
       weightsBin.set(srcBytes, offset);
 
       const shape = w.shape.map((s) => (s === -1 ? null : s));
-      let dtype = "float32";
-      if (w.dtype.includes("int")) dtype = "int32";
-      else if (w.dtype === "bool") dtype = "bool";
-      else if (w.dtype === "string") dtype = "string";
+      let dtype = 'float32';
+      if (w.dtype.includes('int')) dtype = 'int32';
+      else if (w.dtype === 'bool') dtype = 'bool';
+      else if (w.dtype === 'string') dtype = 'string';
 
       weightsManifestEntries.push({
         name: sanitizeName(w.name),
@@ -73,12 +79,12 @@ export function serializeTFJSWeights(graph: Graph): TFJSModelArtifacts {
   }
 
   const modelJson = {
-    format: "layers-model",
-    generatedBy: "onnx9000.mmdnn",
-    convertedBy: "onnx9000.mmdnn",
+    format: 'layers-model',
+    generatedBy: 'onnx9000.mmdnn',
+    convertedBy: 'onnx9000.mmdnn',
     weightsManifest: [
       {
-        paths: ["weights.bin"],
+        paths: ['weights.bin'],
         weights: weightsManifestEntries,
       },
     ],

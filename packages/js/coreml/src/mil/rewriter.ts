@@ -2,27 +2,36 @@
  * @fileoverview rewriter.ts
  * Provides rewriter functionality for the coreml package.
  */
-import type { Block, Operation, Var } from "./ast.js";
-import { TensorType } from "./types.js";
+import { Onnx9000Error } from '@onnx9000/core';
+import type { Block, Operation, Var } from './ast.js';
+import { TensorType } from './types.js';
 
-export function replaceOperation(
-  block: Block,
-  oldOp: Operation,
-  newOps: Operation[],
-): void {
+/**
+ * Executes `replaceOperation`.
+ * @param block Parameter `block`.
+ * @param oldOp Parameter `oldOp`.
+ * @param newOps Parameter `newOps`.
+ */
+export function replaceOperation(block: Block, oldOp: Operation, newOps: Operation[]): void {
   const idx = block.operations.indexOf(oldOp);
   if (idx === -1) {
-    throw new Error(`Operation ${oldOp.opType} not found in block`);
+    throw new Onnx9000Error(`Operation ${oldOp.opType} not found in block`);
   }
 
   // Splice the new operations in place of the old one
   block.operations.splice(idx, 1, ...newOps);
 }
 
+/**
+ * Executes `replaceVarUsage`.
+ * @param block Parameter `block`.
+ * @param oldVar Parameter `oldVar`.
+ * @param newVar Parameter `newVar`.
+ */
 export function replaceVarUsage(block: Block, oldVar: Var, newVar: Var): void {
   for (const op of block.operations) {
     for (const key in op.inputs) {
-      const inputs = op.inputs[key]!;
+      const inputs = op.inputs[key] as Var | Var[];
       if (Array.isArray(inputs)) {
         for (let i = 0; i < inputs.length; i++) {
           if (inputs[i]?.name === oldVar.name) {
@@ -45,6 +54,10 @@ export function replaceVarUsage(block: Block, oldVar: Var, newVar: Var): void {
   }
 }
 
+/**
+ * Executes `inferShapes`.
+ * @param block Parameter `block`.
+ */
 export function inferShapes(block: Block): void {
   const varShapes = new Map<string, (number | string)[]>();
 
@@ -60,19 +73,14 @@ export function inferShapes(block: Block): void {
     // Real MIL has exhaustive shape inference rules
 
     if (
-      op.opType === "add" ||
-      op.opType === "sub" ||
-      op.opType === "mul" ||
-      op.opType === "real_div"
+      op.opType === 'add' ||
+      op.opType === 'sub' ||
+      op.opType === 'mul' ||
+      op.opType === 'real_div'
     ) {
       const xInput = op.inputs.x;
       const yInput = op.inputs.y;
-      if (
-        xInput &&
-        yInput &&
-        !Array.isArray(xInput) &&
-        !Array.isArray(yInput)
-      ) {
+      if (xInput && yInput && !Array.isArray(xInput) && !Array.isArray(yInput)) {
         // Assume broadcast logic or identical shape
         const shapeX = varShapes.get(xInput.name) || [];
         const shapeY = varShapes.get(yInput.name) || [];
@@ -86,7 +94,7 @@ export function inferShapes(block: Block): void {
           }
         }
       }
-    } else if (op.opType === "const") {
+    } else if (op.opType === 'const') {
       for (const out of op.outputs) {
         if (out.type instanceof TensorType) {
           varShapes.set(out.name, out.type.shape);

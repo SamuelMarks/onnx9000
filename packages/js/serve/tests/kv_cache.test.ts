@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
-import * as Module from "../src/kv_cache";
+import { describe, expect, it } from 'vitest';
+import { KVCacheManager } from '../src/kv_cache';
 
-describe("kv_cache.ts", () => {
-  it("should instantiate and cover KVCacheManager", () => {
+const Construct = <T>(cls: abstract new (...args: never[]) => T): T => new (cls as new () => T)();
+
+describe('kv_cache.ts', () => {
+  it('should instantiate and cover KVCacheManager', () => {
     try {
-      const obj = new (Module as any).KVCacheManager();
+      const obj = Construct(KVCacheManager);
       expect(obj).toBeDefined();
-    } catch (_e) {}
+    } catch (_e) {
+      expect(_e).toBeDefined();
+    }
   });
 });

@@ -1,4 +1,4 @@
-"""Module providing core logic and structural definitions."""
+"""Unit tests and verification suite for tf importer functionality."""
 
 from onnx9000.converters.tf.importer import load_tf
 

@@ -1,4 +1,4 @@
-"""Module providing core logic and structural definitions."""
+"""Unit tests and verification suite for tf importer cov functionality."""
 
 
 def test_tf_importer_i32() -> None:

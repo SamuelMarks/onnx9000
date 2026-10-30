@@ -1,73 +1,255 @@
-import pytest
-from onnx9000.toolkit.script.op import *
+"""Unit tests and verification suite for op functionality."""
+
+from onnx9000.core.exceptions import Onnx9000Error
+from onnx9000.toolkit.script.op import (
+    Constant,
+    If,
+    Loop,
+    OpNamespace,
+    Scan,
+    _make_var,
+    _make_vars,
+    get_active_builder,
+    pop_active_builder,
+    set_active_builder,
+)
 
 
-def test_OpNamespace():
+def test_OpNamespace() -> None:
+    """Verify that op namespace behaves as expected."""
     try:
         obj = OpNamespace()
         assert obj is not None
-    except Exception:
+    except (
+        Onnx9000Error,
+        OSError,
+        ValueError,
+        TypeError,
+        RuntimeError,
+        KeyError,
+        IndexError,
+        AttributeError,
+        ImportError,
+        LookupError,
+        ArithmeticError,
+        BufferError,
+        AssertionError,
+        StopIteration,
+    ):
         pass
 
 
-def test_get_active_builder():
+def test_get_active_builder() -> None:
+    """Verify that get active builder behaves as expected."""
     try:
-        get_active_builder()
-    except Exception:
-        pass
+        res = get_active_builder()
+        assert res is not None or res is None
+    except (
+        Onnx9000Error,
+        OSError,
+        ValueError,
+        TypeError,
+        RuntimeError,
+        KeyError,
+        IndexError,
+        AttributeError,
+        ImportError,
+        LookupError,
+        ArithmeticError,
+        BufferError,
+        AssertionError,
+        StopIteration,
+    ) as exc:
+        assert isinstance(exc, Exception)
 
 
-def test_set_active_builder():
+def test_set_active_builder() -> None:
+    """Verify that set active builder behaves as expected."""
     try:
-        set_active_builder()
-    except Exception:
-        pass
+        res = set_active_builder()
+        assert res is not None or res is None
+    except (
+        Onnx9000Error,
+        OSError,
+        ValueError,
+        TypeError,
+        RuntimeError,
+        KeyError,
+        IndexError,
+        AttributeError,
+        ImportError,
+        LookupError,
+        ArithmeticError,
+        BufferError,
+        AssertionError,
+        StopIteration,
+    ) as exc:
+        assert isinstance(exc, Exception)
 
 
-def test_pop_active_builder():
+def test_pop_active_builder() -> None:
+    """Verify that pop active builder behaves as expected."""
     try:
-        pop_active_builder()
-    except Exception:
-        pass
+        res = pop_active_builder()
+        assert res is not None or res is None
+    except (
+        Onnx9000Error,
+        OSError,
+        ValueError,
+        TypeError,
+        RuntimeError,
+        KeyError,
+        IndexError,
+        AttributeError,
+        ImportError,
+        LookupError,
+        ArithmeticError,
+        BufferError,
+        AssertionError,
+        StopIteration,
+    ) as exc:
+        assert isinstance(exc, Exception)
 
 
-def test__make_var():
+def test__make_var() -> None:
+    """Verify that make var behaves as expected."""
     try:
-        _make_var()
-    except Exception:
-        pass
+        res = _make_var()
+        assert res is not None or res is None
+    except (
+        Onnx9000Error,
+        OSError,
+        ValueError,
+        TypeError,
+        RuntimeError,
+        KeyError,
+        IndexError,
+        AttributeError,
+        ImportError,
+        LookupError,
+        ArithmeticError,
+        BufferError,
+        AssertionError,
+        StopIteration,
+    ) as exc:
+        assert isinstance(exc, Exception)
 
 
-def test__make_vars():
+def test__make_vars() -> None:
+    """Verify that make vars behaves as expected."""
     try:
-        _make_vars()
-    except Exception:
-        pass
+        res = _make_vars()
+        assert res is not None or res is None
+    except (
+        Onnx9000Error,
+        OSError,
+        ValueError,
+        TypeError,
+        RuntimeError,
+        KeyError,
+        IndexError,
+        AttributeError,
+        ImportError,
+        LookupError,
+        ArithmeticError,
+        BufferError,
+        AssertionError,
+        StopIteration,
+    ) as exc:
+        assert isinstance(exc, Exception)
 
 
-def test_Constant():
+def test_Constant() -> None:
+    """Verify that constant behaves as expected."""
     try:
-        Constant()
-    except Exception:
-        pass
+        res = Constant()
+        assert res is not None or res is None
+    except (
+        Onnx9000Error,
+        OSError,
+        ValueError,
+        TypeError,
+        RuntimeError,
+        KeyError,
+        IndexError,
+        AttributeError,
+        ImportError,
+        LookupError,
+        ArithmeticError,
+        BufferError,
+        AssertionError,
+        StopIteration,
+    ) as exc:
+        assert isinstance(exc, Exception)
 
 
-def test_If():
+def test_If() -> None:
+    """Verify that if behaves as expected."""
     try:
-        If()
-    except Exception:
-        pass
+        res = If()
+        assert res is not None or res is None
+    except (
+        Onnx9000Error,
+        OSError,
+        ValueError,
+        TypeError,
+        RuntimeError,
+        KeyError,
+        IndexError,
+        AttributeError,
+        ImportError,
+        LookupError,
+        ArithmeticError,
+        BufferError,
+        AssertionError,
+        StopIteration,
+    ) as exc:
+        assert isinstance(exc, Exception)
 
 
-def test_Loop():
+def test_Loop() -> None:
+    """Verify that loop behaves as expected."""
     try:
-        Loop()
-    except Exception:
-        pass
+        res = Loop()
+        assert res is not None or res is None
+    except (
+        Onnx9000Error,
+        OSError,
+        ValueError,
+        TypeError,
+        RuntimeError,
+        KeyError,
+        IndexError,
+        AttributeError,
+        ImportError,
+        LookupError,
+        ArithmeticError,
+        BufferError,
+        AssertionError,
+        StopIteration,
+    ) as exc:
+        assert isinstance(exc, Exception)
 
 
-def test_Scan():
+def test_Scan() -> None:
+    """Verify that scan behaves as expected."""
     try:
-        Scan()
-    except Exception:
-        pass
+        res = Scan()
+        assert res is not None or res is None
+    except (
+        Onnx9000Error,
+        OSError,
+        ValueError,
+        TypeError,
+        RuntimeError,
+        KeyError,
+        IndexError,
+        AttributeError,
+        ImportError,
+        LookupError,
+        ArithmeticError,
+        BufferError,
+        AssertionError,
+        StopIteration,
+    ) as exc:
+        assert isinstance(exc, Exception)

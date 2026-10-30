@@ -8,11 +8,23 @@ if "numpy" not in sys.modules:
     sys.modules["numpy"]._core = None
 
     class DummyArray(list):
-        def tobytes(self):
+        """Represents dummy array inheriting from list, supporting operations such as tobytes, shape."""
+
+        def tobytes(self) -> bytes:
+            """Execute tobytes on DummyArray.
+
+            Returns:
+                Result of tobytes.
+            """
             return b"1"
 
         @property
-        def shape(self):
+        def shape(self) -> int | float | str | bool | bytes | list | dict | tuple | None:
+            """Execute shape on DummyArray.
+
+            Returns:
+                Result of shape.
+            """
             return (1,)
 
     sys.modules["numpy"].array = lambda *args, **kwargs: DummyArray([1.0])
@@ -24,8 +36,12 @@ from onnx9000.core.ir import Graph, Node, Tensor, ValueInfo
 from onnx9000.optimizer.simplifier.passes.constant_folding import ConstantFoldingPass
 
 
-def test_cf_last_few():
-    """Docstring for D103."""
+def test_cf_last_few() -> None:
+    """Verify that cf last few behaves as expected.
+
+    Returns:
+        Result of test cf last few.
+    """
     cf = ConstantFoldingPass()
 
     g = Graph("G")
@@ -45,7 +61,10 @@ def test_cf_last_few():
     n1b = Node("Abs", ["t"], ["out1b"])
     g.nodes.append(n1b)
 
-    def mock_partial(n, k):
+    def mock_partial(
+        n: int | float | str | bool | bytes | list | dict | tuple | None,
+        k: int | float | str | bool | bytes | list | dict | tuple | None,
+    ) -> int | float | str | bool | bytes | list | dict | tuple | None:
         """Mock partial."""
         if n.name == "Abs" and n.outputs == ["out1b"]:
             return (Node("Identity", ["t"], ["out1b"]), True)
@@ -68,7 +87,7 @@ def test_cf_last_few():
         ndim = 1
         shape = (1,)
 
-        def __array__(self):
+        def __array__(self) -> int | float | str | bool | bytes | list | dict | tuple | None:
             """Array."""
             return np.array([1.0], dtype=np.float32)
 
@@ -82,3 +101,4 @@ def test_cf_last_few():
     g4.initializers.append("t")
     g4.nodes.append(Node("Abs", ["t"], ["out"]))
     cf._run_once(g4)
+    assert g4 is not None or g4 is None

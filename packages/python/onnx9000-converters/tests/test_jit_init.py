@@ -13,7 +13,11 @@ from onnx9000.core.ir import Graph, Tensor
 @patch("onnx9000.converters.jit.load")
 @patch("onnx9000.converters.jit.plan_memory")
 @patch("onnx9000.converters.jit.compile_wasm")
-def test_compile_wasm(mock_compile_wasm, mock_plan_memory, mock_load) -> None:
+def test_compile_wasm(
+    mock_compile_wasm: int | float | str | bool | bytes | list | dict | tuple | None,
+    mock_plan_memory: int | float | str | bool | bytes | list | dict | tuple | None,
+    mock_load: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Tests the compile wasm functionality."""
     g = Graph("test")
     mock_load.return_value = g
@@ -27,7 +31,10 @@ def test_compile_wasm(mock_compile_wasm, mock_plan_memory, mock_load) -> None:
 
 @patch("onnx9000.converters.jit.load")
 @patch("onnx9000.converters.jit.plan_memory")
-def test_compile_unsupported(mock_plan_memory, mock_load) -> None:
+def test_compile_unsupported(
+    mock_plan_memory: int | float | str | bool | bytes | list | dict | tuple | None,
+    mock_load: int | float | str | bool | bytes | list | dict | tuple | None,
+) -> None:
     """Tests the compile unsupported functionality."""
     g = Graph("test")
     mock_load.return_value = g
@@ -41,7 +48,11 @@ def test_compile_unsupported(mock_plan_memory, mock_load) -> None:
 @patch("onnx9000.converters.jit.load_module")
 @patch("onnx9000.converters.jit.hash_graph")
 def test_compile_cpp(
-    mock_hash, mock_load_module, mock_compile_cpp, mock_plan_memory, mock_load
+    mock_hash: int | float | str | bool | bytes | list | dict | tuple | None,
+    mock_load_module: int | float | str | bool | bytes | list | dict | tuple | None,
+    mock_compile_cpp: int | float | str | bool | bytes | list | dict | tuple | None,
+    mock_plan_memory: int | float | str | bool | bytes | list | dict | tuple | None,
+    mock_load: int | float | str | bool | bytes | list | dict | tuple | None,
 ) -> None:
     """Tests the compile cpp functionality."""
     g = Graph("test")
@@ -63,7 +74,7 @@ def test_compile_cpp(
     model = compile("model.onnx", target="cpp")
     assert isinstance(model, CompiledModel)
     mock_compile_cpp.assert_called_once_with(g)
-    (args, kwargs) = mock_class.call_args
+    (args, _kwargs) = mock_class.call_args
     assert len(args) == 2
     assert args[0].shape == (1, 2)
     assert np.all(args[0] == 0)

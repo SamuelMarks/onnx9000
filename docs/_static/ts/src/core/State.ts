@@ -35,17 +35,19 @@ export class State<T> {
   }
 }
 
-export class PubSub {
-  private events: Map<string, Function[]> = new Map();
+export type PubSubCallback = (...args: never[]) => void;
 
-  on(event: string, callback: Function): void {
+export class PubSub {
+  private events: Map<string, PubSubCallback[]> = new Map();
+
+  on(event: string, callback: PubSubCallback): void {
     if (!this.events.has(event)) {
       this.events.set(event, []);
     }
     this.events.get(event)?.push(callback);
   }
 
-  off(event: string, callback: Function): void {
+  off(event: string, callback: PubSubCallback): void {
     const callbacks = this.events.get(event);
     if (callbacks) {
       this.events.set(
@@ -55,11 +57,11 @@ export class PubSub {
     }
   }
 
-  emit(event: string, ...args: any[]): void {
+  emit(event: string, ...args: unknown[]): void {
     const callbacks = this.events.get(event);
     if (callbacks) {
       for (const callback of callbacks) {
-        callback(...args);
+        (callback as (...a: unknown[]) => void)(...args);
       }
     }
   }

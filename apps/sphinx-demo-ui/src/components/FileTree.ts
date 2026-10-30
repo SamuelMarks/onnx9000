@@ -2,19 +2,27 @@
  * @fileoverview FileTree.ts
  * Provides FileTree functionality for the Sphinx Demo UI.
  */
-// @ts-nocheck
 import { Component } from '../core/Component';
 
+/** Interface `FileNode` definition. */
 export interface FileNode {
+  /** Property `name`. */
   name: string;
+  /** Property `type`. */
   type: 'file' | 'directory';
+  /** Property `path`. */
   path: string; // The full path
+  /** Property `content`. */
   content?: string; // Optional raw file content for mock data
+  /** Property `children`. */
   children?: FileNode[];
 }
 
+/** Interface `FileTreeOptions` definition. */
 export interface FileTreeOptions {
+  /** Property `root`. */
   root: FileNode;
+  /** Property `onSelect`. */
   onSelect?: (path: string) => void;
 }
 
@@ -22,10 +30,17 @@ export interface FileTreeOptions {
  * A highly reusable, nested file tree component for the Demo UI.
  */
 export class FileTree extends Component<HTMLDivElement> {
-  private options: FileTreeOptions;
+  /** Property `options` of `FileTree`. */
+  public options: FileTreeOptions;
+  /** Property `selectedPath` of `FileTree`. */
   private selectedPath: string | null = null;
+  /** Property `expandedPaths` of `FileTree`. */
   private expandedPaths: Set<string> = new Set();
 
+  /**
+   * Initializes a new `FileTree` instance.
+   * @param options Parameter `options`.
+   */
   constructor(options: FileTreeOptions) {
     super();
     this.options = options;
@@ -38,6 +53,10 @@ export class FileTree extends Component<HTMLDivElement> {
     this.element = this.render();
   }
 
+  /**
+   * Executes `render` on `FileTree`.
+   * @returns Result of `render`.
+   */
   protected render(): HTMLDivElement {
     const container = document.createElement('div');
     container.className = 'demo-file-tree';
@@ -49,6 +68,12 @@ export class FileTree extends Component<HTMLDivElement> {
     return container;
   }
 
+  /**
+   * Executes `renderTree` on `FileTree`.
+   * @param node Parameter `node`.
+   * @param isRoot Parameter `isRoot`.
+   * @returns Result of `renderTree`.
+   */
   private renderTree(node: FileNode, isRoot: boolean): HTMLUListElement {
     const ul = document.createElement('ul');
     if (!isRoot) {
@@ -108,21 +133,16 @@ export class FileTree extends Component<HTMLDivElement> {
     return ul;
   }
 
+  /** Executes `onMount` on `FileTree`. */
   protected onMount(): void {
     this.addDOMListener(this.element, 'click', (e) => {
       const target = e.target as HTMLElement;
       const label = target.closest('.demo-file-tree-label');
       if (!label) return;
 
-      const li = label.closest('.demo-file-tree-node');
-      if (!li) return;
-
-      const path = li.getAttribute('data-path');
-      if (!path) return;
-
-      // Find node in data
-      const node = this.findNode(this.options.root, path);
-      if (!node) return;
+      const li = label.closest('.demo-file-tree-node') as HTMLElement;
+      const path = li.getAttribute('data-path') as string;
+      const node = this.findNode(this.options.root, path) as FileNode;
 
       if (node.type === 'directory') {
         this.toggleDirectory(node.path);
@@ -132,6 +152,10 @@ export class FileTree extends Component<HTMLDivElement> {
     });
   }
 
+  /**
+   * Executes `toggleDirectory` on `FileTree`.
+   * @param path Parameter `path`.
+   */
   private toggleDirectory(path: string): void {
     if (this.expandedPaths.has(path)) {
       this.expandedPaths.delete(path);
@@ -141,10 +165,18 @@ export class FileTree extends Component<HTMLDivElement> {
     this.reRender();
   }
 
+  /**
+   * Executes `getSelectedPath` on `FileTree`.
+   * @returns Result of `getSelectedPath`.
+   */
   public getSelectedPath(): string | null {
     return this.selectedPath;
   }
 
+  /**
+   * Executes `selectFile` on `FileTree`.
+   * @param path Parameter `path`.
+   */
   public selectFile(path: string): void {
     this.selectedPath = path;
     this.reRender();
@@ -154,7 +186,13 @@ export class FileTree extends Component<HTMLDivElement> {
     }
   }
 
-  private findNode(node: FileNode, path: string): FileNode | null {
+  /**
+   * Executes `findNode` on `FileTree`.
+   * @param node Parameter `node`.
+   * @param path Parameter `path`.
+   * @returns Result of `findNode`.
+   */
+  public findNode(node: FileNode, path: string): FileNode | null {
     if (node.path === path) return node;
     if (node.children) {
       for (const child of node.children) {
@@ -165,6 +203,10 @@ export class FileTree extends Component<HTMLDivElement> {
     return null;
   }
 
+  /**
+   * Executes `updateData` on `FileTree`.
+   * @param root Parameter `root`.
+   */
   public updateData(root: FileNode): void {
     this.options.root = root;
     if (root.type === 'directory') {
@@ -173,6 +215,7 @@ export class FileTree extends Component<HTMLDivElement> {
     this.reRender();
   }
 
+  /** Executes `reRender` on `FileTree`. */
   private reRender(): void {
     this.element.innerHTML = '';
     const rootUList = this.renderTree(this.options.root, true);

@@ -12,16 +12,16 @@ from onnx9000.core.serializer import _serialize_shape, save
 
 
 class TestSerializerMore(unittest.TestCase):
-    """Docstring for D101."""
+    """Represents test serializer more inheriting from unittest.TestCase, supporting operations such as test_serialize_shape_float, test_serialize_sparse_and_external_and_compress."""
 
-    def test_serialize_shape_float(self):
-        """Docstring for D102."""
+    def test_serialize_shape_float(self) -> None:
+        """Verify that serialize shape float behaves as expected."""
         shape = _serialize_shape([1.0, -1.0])
         self.assertEqual(shape.dim[0].dim_value, 1)
         self.assertEqual(shape.dim[1].dim_param, "?")
 
-    def test_serialize_sparse_and_external_and_compress(self):
-        """Docstring for D102."""
+    def test_serialize_sparse_and_external_and_compress(self) -> None:
+        """Verify that serialize sparse and external and compress behaves as expected."""
         with tempfile.TemporaryDirectory() as tmpdir:
             path = Path(tmpdir) / "model.onnx"
             g = Graph("test")

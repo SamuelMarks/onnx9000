@@ -20,7 +20,19 @@ class RNNBase(Module):
         bidirectional: bool,
         dtype: DType,
     ) -> None:
-        """Implement the __init__ method."""
+        """Initialize RNNBase with configured parameters and state.
+
+        Args:
+            mode: Parameter specifying mode (str).
+            input_size: Parameter specifying input size (int).
+            hidden_size: Parameter specifying hidden size (int).
+            num_layers: Parameter specifying num layers (int).
+            bias: Parameter specifying bias (bool).
+            batch_first: Parameter specifying batch first (bool).
+            dropout: Parameter specifying dropout (float).
+            bidirectional: Parameter specifying bidirectional (bool).
+            dtype: Parameter specifying dtype (DType).
+        """
         super().__init__()
         self.mode = mode
         self.input_size = input_size
@@ -42,7 +54,15 @@ class RNNBase(Module):
             self.bias_hh_l0 = Parameter((self.num_directions * hidden_size,), dtype, "bias_hh_l0")
 
     def forward(self, input: Tensor, hx: Tensor | None = None) -> tuple[Tensor, Tensor]:
-        """Implement the forward method."""
+        """Execute forward on RNNBase.
+
+        Args:
+            input: Parameter specifying input (Tensor).
+            hx: Parameter specifying hx (Tensor | None).
+
+        Returns:
+            Result of forward (tuple[Tensor, Tensor]).
+        """
         from onnx9000.converters.frontend.utils import record_op
 
         attrs = {
@@ -76,7 +96,19 @@ class RNN(RNNBase):
         bidirectional: bool = False,
         dtype: DType = DType.FLOAT32,
     ) -> None:
-        """Implement the __init__ method."""
+        """Initialize RNN with configured parameters and state.
+
+        Args:
+            input_size: Parameter specifying input size (int).
+            hidden_size: Parameter specifying hidden size (int).
+            num_layers: Parameter specifying num layers (int).
+            nonlinearity: Parameter specifying nonlinearity (str).
+            bias: Parameter specifying bias (bool).
+            batch_first: Parameter specifying batch first (bool).
+            dropout: Parameter specifying dropout (float).
+            bidirectional: Parameter specifying bidirectional (bool).
+            dtype: Parameter specifying dtype (DType).
+        """
         super().__init__(
             "RNN",
             input_size,
@@ -104,7 +136,18 @@ class LSTM(RNNBase):
         bidirectional: bool = False,
         dtype: DType = DType.FLOAT32,
     ) -> None:
-        """Implement the __init__ method."""
+        """Initialize LSTM with configured parameters and state.
+
+        Args:
+            input_size: Parameter specifying input size (int).
+            hidden_size: Parameter specifying hidden size (int).
+            num_layers: Parameter specifying num layers (int).
+            bias: Parameter specifying bias (bool).
+            batch_first: Parameter specifying batch first (bool).
+            dropout: Parameter specifying dropout (float).
+            bidirectional: Parameter specifying bidirectional (bool).
+            dtype: Parameter specifying dtype (DType).
+        """
         super().__init__(
             "LSTM",
             input_size,
@@ -120,7 +163,15 @@ class LSTM(RNNBase):
     def forward(
         self, input: Tensor, hx: tuple[Tensor, Tensor] | None = None
     ) -> tuple[Tensor, tuple[Tensor, Tensor]]:
-        """Implement the forward method."""
+        """Execute forward on LSTM.
+
+        Args:
+            input: Parameter specifying input (Tensor).
+            hx: Parameter specifying hx (tuple[Tensor, Tensor] | None).
+
+        Returns:
+            Result of forward (tuple[Tensor, tuple[Tensor, Tensor]]).
+        """
         from onnx9000.converters.frontend.utils import record_op
 
         attrs = {
@@ -154,7 +205,18 @@ class GRU(RNNBase):
         bidirectional: bool = False,
         dtype: DType = DType.FLOAT32,
     ) -> None:
-        """Implement the __init__ method."""
+        """Initialize GRU with configured parameters and state.
+
+        Args:
+            input_size: Parameter specifying input size (int).
+            hidden_size: Parameter specifying hidden size (int).
+            num_layers: Parameter specifying num layers (int).
+            bias: Parameter specifying bias (bool).
+            batch_first: Parameter specifying batch first (bool).
+            dropout: Parameter specifying dropout (float).
+            bidirectional: Parameter specifying bidirectional (bool).
+            dtype: Parameter specifying dtype (DType).
+        """
         super().__init__(
             "GRU",
             input_size,
@@ -168,7 +230,15 @@ class GRU(RNNBase):
         )
 
     def forward(self, input: Tensor, hx: Tensor | None = None) -> tuple[Tensor, Tensor]:
-        """Implement the forward method."""
+        """Execute forward on GRU.
+
+        Args:
+            input: Parameter specifying input (Tensor).
+            hx: Parameter specifying hx (Tensor | None).
+
+        Returns:
+            Result of forward (tuple[Tensor, Tensor]).
+        """
         from onnx9000.converters.frontend.utils import record_op
 
         attrs = {

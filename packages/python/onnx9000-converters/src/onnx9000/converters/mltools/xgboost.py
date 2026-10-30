@@ -1,7 +1,6 @@
 """XGBoost JSON parser for pure-Python ONNX conversion."""
 
 import json
-from typing import Any
 
 from onnx9000.core.dtypes import DType
 from onnx9000.core.ir import Attribute, Graph, Node, ValueInfo
@@ -13,7 +12,9 @@ def parse_xgboost_json(json_str: str) -> Graph:
     return parse_xgboost_dict(data)
 
 
-def parse_xgboost_dict(data: dict[str, Any]) -> Graph:
+def parse_xgboost_dict(
+    data: dict[str, int | float | str | bool | bytes | list | dict | tuple | None],
+) -> Graph:
     """Parse an XGBoost dict representation."""
     graph = Graph("XGBoost_Model")
     graph.opset_imports = {"": 14, "ai.onnx.ml": 3}

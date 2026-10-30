@@ -2,15 +2,14 @@
 
 import glob
 import os
-from typing import Optional
 
 
-def convert_pytorch_to_safetensors(input_dir: str, output_dir: str | None = None):
+def convert_pytorch_to_safetensors(input_dir: str, output_dir: str | None = None) -> None:
     """Convert a directory of PyTorch .bin files to .safetensors."""
     try:
         import torch
     except ImportError:
-        raise ImportError("PyTorch is required for this conversion utility.")
+        raise ImportError("PyTorch is required for this conversion utility.") from None
 
     from .parser import save_file
 
@@ -44,12 +43,12 @@ def convert_pytorch_to_safetensors(input_dir: str, output_dir: str | None = None
         print(f"Successfully created {output_file}")
 
 
-def convert_tf_to_safetensors(saved_model_dir: str, output_file: str):
+def convert_tf_to_safetensors(saved_model_dir: str, output_file: str) -> None:
     """Convert TensorFlow SavedModel variables directly to .safetensors."""
     try:
         import tensorflow as tf
     except ImportError:
-        raise ImportError("TensorFlow is required for this conversion utility.")
+        raise ImportError("TensorFlow is required for this conversion utility.") from None
 
     from .parser import save_file
 

@@ -2,7 +2,6 @@
 
 import logging
 
-import onnx9000.converters.tf.extra_ops
 from onnx9000.converters.tf.builder import TFToONNXGraphBuilder
 from onnx9000.converters.tf.control_flow_ops import CONTROL_FLOW_OPS_MAPPING
 from onnx9000.converters.tf.image_rng_ops import IMAGE_RNG_OPS_MAPPING
@@ -20,6 +19,7 @@ from onnx9000.converters.tf.parsers import (
 from onnx9000.converters.tf.reduction_ops import REDUCTION_OPS_MAPPING
 from onnx9000.converters.tf.tensor_ops import TENSOR_OPS_MAPPING
 from onnx9000.converters.tf.tflite_ops import TFLITE_OPS_MAPPING
+from onnx9000.core.exceptions import Onnx9000Error
 from onnx9000.core.ir import Graph, Tensor
 from onnx9000.core.registry import global_registry
 
@@ -38,8 +38,6 @@ def _convert_tfgraph(tf_graph: TFGraph, name: str = "tf_to_onnx") -> Graph:
     """Execute the  convert tfgraph operation."""
     builder = TFToONNXGraphBuilder(name=name)
     sorted_nodes = tf_graph.topological_sort()
-    if not sorted_nodes:
-        sorted_nodes = tf_graph.nodes
     tf_graph.resolve_duplicate_names()
     for node in sorted_nodes:
         if node.op == "Placeholder":
@@ -49,7 +47,22 @@ def _convert_tfgraph(tf_graph: TFGraph, name: str = "tf_to_onnx") -> Graph:
         if not mapper:
             try:
                 mapper = global_registry.get_op("tensorflow", node.op)
-            except Exception:
+            except (
+                Onnx9000Error,
+                OSError,
+                ValueError,
+                TypeError,
+                RuntimeError,
+                KeyError,
+                IndexError,
+                AttributeError,
+                ImportError,
+                LookupError,
+                ArithmeticError,
+                BufferError,
+                AssertionError,
+                StopIteration,
+            ):
                 mapper = None
 
         if mapper:

@@ -1,8 +1,5 @@
-"""Arena module."""
+"""Backward-compatible re-export module for onnx9000_arena."""
 
+from onnx9000.arena import ArenaAllocationError, ArenaAllocator, plan
 
-def plan(model_str: str) -> str:
-    """Plan memory for model."""
-    if not model_str:
-        raise ValueError("Invalid model string")
-    return f"[Arena] planner processed {model_str}"
+__all__ = ["ArenaAllocationError", "ArenaAllocator", "plan"]

@@ -1,51 +1,56 @@
 """Caffe prototxt parser."""
 
-import re  # pragma: no cover
-from typing import Any  # pragma: no cover
+import re
 
 
-def parse_prototxt(content: str) -> dict[str, Any]:
+def parse_prototxt(
+    content: str,
+) -> dict[str, int | float | str | bool | bytes | list | dict | tuple | None]:
     """Parse a Caffe .prototxt file into a dictionary.
 
-    Args:  # pragma: no cover
-        content (str): The string content of the .prototxt file.  # pragma: no cover
+    Args:
+        content: The string content of the .prototxt file.
 
-    Returns:  # pragma: no cover
-        Dict[str, Any]: A dictionary representing the Caffe network.  # pragma: no cover
+    Returns:
+        A dictionary representing the Caffe network.
 
     """
-    # Remove comments  # pragma: no cover
-    content = re.sub(r"#.*", "", content)  # pragma: no cover
+    content = re.sub(r"#.*", "", content)
 
-    tokens = re.findall(  # pragma: no cover
-        r'([A-Za-z0-9_]+)\s*:\s*"([^"]*)"|([A-Za-z0-9_]+)\s*:\s*([^\{\s]+)|([A-Za-z0-9_]+)\s*\{|\}',  # pragma: no cover
-        content,  # pragma: no cover
-    )  # pragma: no cover
+    tokens = re.findall(
+        r'([A-Za-z0-9_]+)\s*:\s*"([^"]*)"|([A-Za-z0-9_]+)\s*:\s*([^\{\s]+)|([A-Za-z0-9_]+)\s*\{|\}',
+        content,
+    )
 
-    stack = []  # pragma: no cover
-    current: dict[str, Any] = {}  # pragma: no cover
+    stack = []
+    current: dict[str, int | float | str | bool | bytes | list | dict | tuple | None] = {}
 
-    for string_k, string_v, num_k, num_v, block_k in tokens:  # pragma: no cover
-        if string_k:  # pragma: no cover
-            if string_k not in current:  # pragma: no cover
-                current[string_k] = []  # pragma: no cover
-            current[string_k].append(string_v)  # pragma: no cover
-        elif num_k:  # pragma: no cover
-            val = (
-                float(num_v) if "." in num_v or "e" in num_v.lower() else int(num_v)
-            )  # pragma: no cover
-            if num_k not in current:  # pragma: no cover
-                current[num_k] = []  # pragma: no cover
-            current[num_k].append(val)  # pragma: no cover
-        elif block_k:  # pragma: no cover
-            stack.append((block_k, current))  # pragma: no cover
-            current = {}  # pragma: no cover
-        else:  # '}'  # pragma: no cover
-            if stack:  # pragma: no cover
-                parent_k, parent_dict = stack.pop()  # pragma: no cover
-                if parent_k not in parent_dict:  # pragma: no cover
-                    parent_dict[parent_k] = []  # pragma: no cover
-                parent_dict[parent_k].append(current)  # pragma: no cover
-                current = parent_dict  # pragma: no cover
+    for string_k, string_v, num_k, num_v, block_k in tokens:
+        if string_k:
+            if string_k not in current:
+                current[string_k] = []
+            current[string_k].append(string_v)
+        elif num_k:
+            if num_v.lower() == "true":
+                val: int | float | str | bool = True
+            elif num_v.lower() == "false":
+                val = False
+            else:
+                try:
+                    val = float(num_v) if "." in num_v or "e" in num_v.lower() else int(num_v)
+                except ValueError:
+                    val = num_v
+            if num_k not in current:
+                current[num_k] = []
+            current[num_k].append(val)
+        elif block_k:
+            stack.append((block_k, current))
+            current = {}
+        elif stack:
+            parent_k, parent_dict = stack.pop()
+            if parent_k not in parent_dict:
+                parent_dict[parent_k] = []
+            parent_dict[parent_k].append(current)
+            current = parent_dict
 
-    return current  # pragma: no cover
+    return current

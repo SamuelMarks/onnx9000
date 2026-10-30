@@ -1,40 +1,32 @@
-/* v8 ignore start */
-import { Graph, Node } from "@onnx9000/core";
-import { generateTriton } from "@onnx9000/triton-compiler";
+/**
+ * @fileoverview Triton Compiler Demo UI.
+ */
+import { Graph, Node, ValueInfo } from '@onnx9000/core';
+import { generateTriton } from '@onnx9000/triton-compiler';
 
 /**
  * Initializes the Triton compiler demo UI.
  */
 export function initTritonDemo(): void {
-  const generateBtn = document.getElementById(
-    "generate-btn",
-  ) as HTMLButtonElement;
-  const out = document.getElementById("output") as HTMLElement;
+  const generateBtn = document.getElementById('generate-btn') as HTMLButtonElement | null;
+  const out = document.getElementById('output') as HTMLElement | null;
 
   if (!generateBtn || !out) return;
 
-  generateBtn.addEventListener("click", () => {
-    out.innerText = "Generating...";
+  generateBtn.addEventListener('click', () => {
+    out.innerText = 'Generating...';
 
-    const g = new Graph("custom_fused_kernel");
-    g.inputs.push({ name: "A", shape: [1024], type: null as any });
-    g.inputs.push({ name: "B", shape: [1024], type: null as any });
-    g.outputs.push({ name: "C", shape: [1024], type: null as any });
+    const g = new Graph('custom_fused_kernel');
+    g.inputs.push(new ValueInfo('A', [1024], 'float32'));
+    g.inputs.push(new ValueInfo('B', [1024], 'float32'));
+    g.outputs.push(new ValueInfo('C', [1024], 'float32'));
 
-    const addNode = new Node("Add");
-    addNode.inputs = ["A", "B"];
-    addNode.outputs = ["C"];
+    const addNode = new Node('Add', ['A', 'B'], ['C']);
     g.nodes.push(addNode);
 
-    try {
-      const code = generateTriton(g, { blockM: 128 });
-      out.innerText = code;
-    } catch (e: any) {
-      out.innerText = `Error: ${e.message}`;
-    }
+    const code = generateTriton(g, { blockM: 128 });
+    out.innerText = code;
   });
 }
 
 initTritonDemo();
-
-/* v8 ignore stop */

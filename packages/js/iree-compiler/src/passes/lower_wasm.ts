@@ -3,50 +3,39 @@
  * Provides lower_wasm functionality for the iree-compiler package.
  */
 
-import * as scf from "../dialects/web/scf.js";
-import { Block, Operation, Region } from "../ir/core.js";
+import * as scf from '../dialects/web/scf.js';
+import { Block, Operation, Region, type Value } from '../ir/core.js';
 
 // 91-105. WASM Executable Translation
 
 // 93. Lower Linalg to SCF loops
+/**
+ * Executes `lowerLinalgToSCF`.
+ * @param region Parameter `region`.
+ */
 export function lowerLinalgToSCF(region: Region): void {
   // Stub: Translates web.linalg.generic into nested web.scf.for loops
   for (const block of region.blocks) {
     const newOps: Operation[] = [];
     for (const op of block.operations) {
-      if (op.opcode === "web.linalg.generic") {
+      if (op.opcode === 'web.linalg.generic') {
         // Emitting nested scf loops based on iteration domain
         const loopRegion = new Region();
         const loopBlock = new Block(loopRegion);
         loopRegion.pushBlock(loopBlock);
 
         // Emitting a dummy for loop for checklist purposes
-        const dummyZero = new Operation(
-          "web.vm.constant",
-          [],
-          [{ id: "index" }],
-          { value: 0 },
-        );
-        const dummyTen = new Operation(
-          "web.vm.constant",
-          [],
-          [{ id: "index" }],
-          { value: 10 },
-        );
-        const dummyOne = new Operation(
-          "web.vm.constant",
-          [],
-          [{ id: "index" }],
-          { value: 1 },
-        );
+        const dummyZero = new Operation('web.vm.constant', [], [{ id: 'index' }], { value: 0 });
+        const dummyTen = new Operation('web.vm.constant', [], [{ id: 'index' }], { value: 10 });
+        const dummyOne = new Operation('web.vm.constant', [], [{ id: 'index' }], { value: 1 });
         newOps.push(dummyZero, dummyTen, dummyOne);
 
         loopBlock.pushOperation(scf.yieldOp([]));
 
         const forLoop = scf.forOp(
-          dummyZero.results[0]!,
-          dummyTen.results[0]!,
-          dummyOne.results[0]!,
+          dummyZero.results[0] as Value,
+          dummyTen.results[0] as Value,
+          dummyOne.results[0] as Value,
           [],
           loopRegion,
         );
@@ -61,17 +50,31 @@ export function lowerLinalgToSCF(region: Region): void {
 }
 
 // 95. Loop unrolling
+/**
+ * Executes `unrollLoops`.
+ * @param _region Parameter `_region`.
+ */
 export function unrollLoops(_region: Region): void {
   // Stub
 }
 
 // 96. Vectorization pass
+/**
+ * Executes `vectorizeLoops`.
+ * @param _region Parameter `_region`.
+ */
 export function vectorizeLoops(_region: Region): void {
   // Stub
 }
 
 // 102. Compile mathematical kernels to WAT
+/** Represents the `WASMEmitter` class. */
 export class WASMEmitter {
+  /**
+   * Executes `emitWAT` on `WASMEmitter`.
+   * @param region Parameter `region`.
+   * @returns Result of `emitWAT`.
+   */
   emitWAT(region: Region): string {
     let wat = `(module\n`;
 
@@ -81,16 +84,16 @@ export class WASMEmitter {
     wat += `  (func $kernel_0 (export "kernel_0")\n`;
     for (const block of region.blocks) {
       for (const op of block.operations) {
-        if (op.opcode === "web.scf.for") {
+        if (op.opcode === 'web.scf.for') {
           // 94. Lower scf.for directly to WASM loop
           wat += `    (loop $L1\n`;
           // ... body ...
           wat += `      br_if $L1\n`;
           wat += `    )\n`;
-        } else if (op.opcode === "web.vm.add.i32") {
+        } else if (op.opcode === 'web.vm.add.i32') {
           // 98. Scalar operations
           wat += `    i32.add\n`;
-        } else if (op.opcode === "web.vm.add.v128") {
+        } else if (op.opcode === 'web.vm.add.v128') {
           // 97. Emit v128 SIMD intrinsics
           wat += `    v128.add\n`;
         }
@@ -104,6 +107,11 @@ export class WASMEmitter {
 
   // 103. Parse WAT into WASM binary
   // In real implementation this would use a library like wabt.js or emit raw bytecode directly
+  /**
+   * Executes `compileWATToWASM` on `WASMEmitter`.
+   * @param _wat Parameter `_wat`.
+   * @returns Result of `compileWATToWASM`.
+   */
   compileWATToWASM(_wat: string): Uint8Array {
     // Return dummy bytecode
     return new Uint8Array([0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00]); // WASM magic header

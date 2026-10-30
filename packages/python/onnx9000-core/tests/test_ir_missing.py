@@ -3,7 +3,7 @@
 import ctypes
 
 import pytest
-from onnx9000.core.ir import *
+from onnx9000.core.ir import Attribute, Constant, DynamicDim, Graph, Node, Tensor, Variable
 
 
 def test_ir_missing() -> None:
@@ -73,8 +73,8 @@ def test_ir_missing() -> None:
     assert Graph.tensors(g_copy) is not None
 
 
-def test_quantized_tensor():
-    """Docstring for D103."""
+def test_quantized_tensor() -> None:
+    """Verify that quantized tensor behaves as expected."""
     from onnx9000.core.ir import QuantizedTensor
 
     q = QuantizedTensor("q", "Q8_0", 32)
@@ -82,8 +82,8 @@ def test_quantized_tensor():
     assert q.block_size == 32
 
 
-def test_quantized_tensor_args():
-    """Docstring for D103."""
+def test_quantized_tensor_args() -> None:
+    """Verify that quantized tensor args behaves as expected."""
     from onnx9000.core.ir import QuantizedTensor
 
     q = QuantizedTensor(

@@ -11,7 +11,7 @@ from onnx9000.optimizer.hummingbird.gemm import (
 )
 
 
-def test_hummingbird_gemm_stubs():
+def test_hummingbird_gemm_stubs() -> None:
     """Tests the hummingbird gemm stubs functionality."""
     g = Graph("g")
     t = TreeAbstractions()
@@ -20,3 +20,4 @@ def test_hummingbird_gemm_stubs():
     compile_decision_tree_regressor_gemm(g, t)
     compile_decision_tree_classifier_gemm(g, t)
     compile_isolation_forest_gemm(g, [t])
+    assert t is not None or t is None

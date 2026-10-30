@@ -69,10 +69,12 @@ export class TensorEncryption {
   }
 
   public static async decryptModel(model: IModelGraph, password: string): Promise<IModelGraph> {
-    let docMeta: any;
+    let docMeta: { encrypted?: boolean; salt?: number[] };
     try {
-      docMeta = model.docString ? JSON.parse(model.docString) : {};
-    } catch (_e) {
+      docMeta = model.docString
+        ? (JSON.parse(model.docString) as { encrypted?: boolean; salt?: number[] })
+        : {};
+    } catch {
       throw new Error('Model missing valid metadata for decryption.');
     }
 
@@ -103,7 +105,7 @@ export class TensorEncryption {
             cipherText.buffer,
           );
           init.rawData = new Uint8Array(decryptedBuf);
-        } catch (_e) {
+        } catch {
           throw new Error(
             `Decryption failed on tensor ${init.name}. Invalid password or corrupt data.`,
           );

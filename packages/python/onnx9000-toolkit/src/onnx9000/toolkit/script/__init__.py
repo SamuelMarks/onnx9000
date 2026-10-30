@@ -4,6 +4,7 @@ It provides the GraphBuilder, operational definitions, script parser, and
 symbolic variables used to construct and manipulate ONNX models programmatically.
 """
 
+from onnx9000.core.exceptions import CompilationError, Onnx9000Error
 from onnx9000.core.ir import Graph
 from onnx9000.toolkit.script.builder import GraphBuilder
 from onnx9000.toolkit.script.op import op
@@ -17,13 +18,28 @@ def parse_and_compile(script_path: str) -> Graph:
 
     module = runpy.run_path(script_path)
     # Find the first decorated script function
-    for name, obj in module.items():
+    for _name, obj in module.items():
         if hasattr(obj, "_is_onnx_script"):
             try:
                 return obj.to_builder().build()
-            except Exception:
+            except (
+                Onnx9000Error,
+                OSError,
+                ValueError,
+                TypeError,
+                RuntimeError,
+                KeyError,
+                IndexError,
+                AttributeError,
+                ImportError,
+                LookupError,
+                ArithmeticError,
+                BufferError,
+                AssertionError,
+                StopIteration,
+            ):
                 return obj
-    raise ValueError(f"No @script decorated function found in {script_path}")
+    raise CompilationError(f"No @script decorated function found in {script_path}")
 
 
-__all__ = ["GraphBuilder", "op", "script", "Var", "parse_and_compile"]
+__all__ = ["GraphBuilder", "Var", "op", "parse_and_compile", "script"]
