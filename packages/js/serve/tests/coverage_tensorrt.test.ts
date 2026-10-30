@@ -4,11 +4,16 @@ import { createTensorRTSession } from '../src/tensorrt.js';
 
 describe('TensorRT wrapper coverage', () => {
   it('handles tensorrt missing error', async () => {
-    // Dynamic import will fail because @onnx9000/tensorrt is not installed properly or ffi is mocked/missing
+    vi.doMock('@onnx9000/tensorrt', () => {
+      throw new Error('Cannot find module ffi-napi');
+    });
+
     const g = new Graph();
     await expect(createTensorRTSession(g)).rejects.toThrow(
       'TensorRT provider requires Node.js and ffi-napi:',
     );
+
+    vi.doUnmock('@onnx9000/tensorrt');
   });
 
   it('handles tensorrt success', async () => {

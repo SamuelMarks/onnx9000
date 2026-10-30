@@ -13,15 +13,15 @@ jobs:
     env:
       GH_PAT: ${{ secrets.GH_PAT }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Setup Node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: 20
 
       - name: Setup Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: '3.10'
 
@@ -35,7 +35,7 @@ jobs:
 
       # 319. Cache TS build artifacts
       - name: Cache TS Build
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: docs/_static/app.bundle.js
           key: ${{ runner.os }}-esbuild-${{ hashFiles('docs/_static/ts/**/*.ts') }}

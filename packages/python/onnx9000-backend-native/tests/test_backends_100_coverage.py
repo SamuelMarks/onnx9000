@@ -1244,13 +1244,16 @@ def test_backend_native_remaining_branches(tmp_path: Path) -> None:
             DynamicLibrary("none_lib", versions=[1, 2])
 
     HardwareContextHandle._cleanup(None, MagicMock())
-    with patch(
-        "subprocess.check_output",
-        return_value=b"""hw.l1dcachesize: 32768
+    with (
+        patch("platform.system", return_value="Darwin"),
+        patch(
+            "subprocess.check_output",
+            return_value=b"""hw.l1dcachesize: 32768
 hw.l2cachesize: 262144
 hw.l3cachesize: 8388608
 other: 1
 """,
+        ),
     ):
         sizes = get_cache_sizes()
         assert sizes["l3"] == 8388608
